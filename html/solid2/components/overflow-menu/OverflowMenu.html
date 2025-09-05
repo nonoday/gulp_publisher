@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OverflowMenu Web Component</title>
+    <style>
+        .sv-overflow-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .sv-overflow-menu__trigger {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sv-overflow-menu__trigger:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .sv-overflow-menu__trigger:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .sv-overflow-menu__dropdown {
+            position: absolute;
+            z-index: 1000;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 4px 0;
+            min-width: 200px;
+        }
+
+        .sv-overflow-menu__dropdown--bottom-right {
+            top: calc(100% + 4px);
+            right: 0;
+        }
+
+        .sv-overflow-menu__item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+            color: #111827;
+            transition: background-color 0.15s ease;
+        }
+
+        .sv-overflow-menu__item:hover:not(.sv-overflow-menu__item--disabled) {
+            background: #f9fafb;
+        }
+
+        .sv-overflow-menu__item:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: -2px;
+            background: #eff6ff;
+        }
+
+        .sv-overflow-menu__item--disabled {
+            color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .sv-overflow-menu__item--danger {
+            color: #dc2626;
+        }
+
+        .sv-overflow-menu__divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 4px 0;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        class OverflowMenuComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._items = [];
+                this._icon = '';
+                this._label = '';
+                this._isOpen = false;
+            }
+
+            static get observedAttributes() {
+                return ['items', 'icon', 'label'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupEventListeners();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'items':
+                        try {
+                            this._items = value ? JSON.parse(value) : [];
+                        } catch (e) {
+                            this._items = [];
+                        }
+                        break;
+                    case 'icon':
+                        this._icon = value || '';
+                        break;
+                    case 'label':
+                        this._label = value || '';
+                        break;
+                }
+            }
+
+            render() {
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: inline-block; }
+                        .sv-overflow-menu {
+                            position: relative;
+                            display: inline-block;
+                        }
+                        .sv-overflow-menu__trigger {
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                            padding: 8px;
+                            background: transparent;
+                            border: 1px solid #d1d5db;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                        }
+                        .sv-overflow-menu__trigger:hover {
+                            background: #f9fafb;
+                            border-color: #9ca3af;
+                        }
+                        .sv-overflow-menu__trigger:focus-visible {
+                            outline: 2px solid #3b82f6;
+                            outline-offset: 2px;
+                        }
+                        .sv-overflow-menu__dropdown {
+                            position: absolute;
+                            z-index: 1000;
+                            background: #ffffff;
+                            border: 1px solid #e5e7eb;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                            padding: 4px 0;
+                            min-width: 200px;
+                            top: calc(100% + 4px);
+                            right: 0;
+                        }
+                        .sv-overflow-menu__item {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            width: 100%;
+                            padding: 8px 12px;
+                            background: transparent;
+                            border: none;
+                            text-align: left;
+                            cursor: pointer;
+                            font-size: 14px;
+                            color: #111827;
+                            transition: background-color 0.15s ease;
+                        }
+                        .sv-overflow-menu__item:hover:not(.sv-overflow-menu__item--disabled) {
+                            background: #f9fafb;
+                        }
+                        .sv-overflow-menu__item:focus-visible {
+                            outline: 2px solid #3b82f6;
+                            outline-offset: -2px;
+                            background: #eff6ff;
+                        }
+                        .sv-overflow-menu__item--disabled {
+                            color: #9ca3af;
+                            cursor: not-allowed;
+                            opacity: 0.6;
+                        }
+                        .sv-overflow-menu__item--danger {
+                            color: #dc2626;
+                        }
+                        .sv-overflow-menu__divider {
+                            height: 1px;
+                            background: #e5e7eb;
+                            margin: 4px 0;
+                        }
+                    </style>
+                    
+                    <div class="sv-overflow-menu">
+                        <button
+                            class="sv-overflow-menu__trigger"
+                            aria-expanded="${this._isOpen}"
+                            aria-haspopup="true"
+                            aria-label="메뉴"
+                            type="button"
+                        >
+                            ${this._icon ? `<span>${this._icon}</span>` : ''}
+                            ${this._label ? `<span>${this._label}</span>` : '⋮'}
+                        </button>
+
+                        <div
+                            class="sv-overflow-menu__dropdown"
+                            role="menu"
+                            ${this._isOpen ? '' : 'hidden'}
+                            aria-hidden="${!this._isOpen}"
+                        >
+                            ${this.renderMenuItems()}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderMenuItems() {
+                if (!this._items || this._items.length === 0) {
+                    return '<div class="sv-overflow-menu__item sv-overflow-menu__item--disabled">메뉴 항목이 없습니다</div>';
+                }
+
+                return this._items.map((item, index) => {
+                    if (item.type === 'divider') {
+                        return '<div class="sv-overflow-menu__divider" role="separator"></div>';
+                    }
+
+                    const itemClasses = [
+                        'sv-overflow-menu__item',
+                        item.disabled ? 'sv-overflow-menu__item--disabled' : '',
+                        item.danger ? 'sv-overflow-menu__item--danger' : ''
+                    ].filter(Boolean).join(' ');
+
+                    const disabledAttr = item.disabled ? 'disabled' : '';
+                    const ariaDisabled = item.disabled ? 'aria-disabled="true"' : '';
+
+                    return `
+                        <button
+                            class="${itemClasses}"
+                            ${disabledAttr}
+                            role="menuitem"
+                            ${ariaDisabled}
+                            data-item-index="${index}"
+                            type="button"
+                        >
+                            ${item.icon ? `<span>${item.icon}</span>` : ''}
+                            <span>${item.label || ''}</span>
+                            ${item.shortcut ? `<span style="margin-left: auto; font-size: 12px; color: #6b7280;">${item.shortcut}</span>` : ''}
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            setupEventListeners() {
+                const trigger = this.shadowRoot.querySelector('.sv-overflow-menu__trigger');
+                const menuItems = this.shadowRoot.querySelectorAll('.sv-overflow-menu__item');
+
+                if (trigger) {
+                    trigger.addEventListener('click', (e) => this.toggleMenu(e));
+                    trigger.addEventListener('keydown', (e) => this.handleTriggerKeydown(e));
+                }
+
+                menuItems.forEach((item, index) => {
+                    item.addEventListener('click', (e) => this.handleItemClick(e, index));
+                    item.addEventListener('keydown', (e) => this.handleItemKeydown(e, index));
+                });
+            }
+
+            toggleMenu(event) {
+                event.preventDefault();
+                this._isOpen = !this._isOpen;
+                this.render();
+                this.setupEventListeners();
+                
+                if (this._isOpen) {
+                    this.dispatchEvent(new CustomEvent('overflow-menu-open'));
+                    setTimeout(() => {
+                        const firstMenuItem = this.shadowRoot.querySelector('.sv-overflow-menu__item:not([disabled])');
+                        if (firstMenuItem) firstMenuItem.focus();
+                    }, 100);
+                } else {
+                    this.dispatchEvent(new CustomEvent('overflow-menu-close'));
+                }
+            }
+
+            handleItemClick(event, index) {
+                event.preventDefault();
+                const item = this._items[index];
+                if (!item || item.disabled) return;
+
+                if (item.onClick) {
+                    item.onClick();
+                }
+
+                this.dispatchEvent(new CustomEvent('overflow-menu-item-click', {
+                    detail: { item, index }
+                }));
+
+                this._isOpen = false;
+                this.render();
+                this.setupEventListeners();
+            }
+
+            handleTriggerKeydown(event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    this.toggleMenu(event);
+                } else if (event.key === 'ArrowDown' && !this._isOpen) {
+                    event.preventDefault();
+                    this.toggleMenu(event);
+                }
+            }
+
+            handleItemKeydown(event, index) {
+                const menuItems = Array.from(this.shadowRoot.querySelectorAll('.sv-overflow-menu__item:not([disabled])'));
+                const currentIndex = menuItems.findIndex(item => item.dataset.itemIndex === index.toString());
+                
+                switch (event.key) {
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault();
+                        this.handleItemClick(event, index);
+                        break;
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        const nextIndex = (currentIndex + 1) % menuItems.length;
+                        menuItems[nextIndex]?.focus();
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        const prevIndex = currentIndex === 0 ? menuItems.length - 1 : currentIndex - 1;
+                        menuItems[prevIndex]?.focus();
+                        break;
+                    case 'Escape':
+                        event.preventDefault();
+                        this._isOpen = false;
+                        this.render();
+                        this.setupEventListeners();
+                        this.shadowRoot.querySelector('.sv-overflow-menu__trigger')?.focus();
+                        break;
+                }
+            }
+
+            // Getters and setters
+            get items() { return this._items; }
+            set items(value) { this._items = Array.isArray(value) ? value : []; this.setAttribute('items', JSON.stringify(this._items)); }
+            get icon() { return this._icon; }
+            set icon(value) { this._icon = value; this.setAttribute('icon', value); }
+            get label() { return this._label; }
+            set label(value) { this._label = value; this.setAttribute('label', value); }
+            get isOpen() { return this._isOpen; }
+        }
+
+        customElements.define('sv-overflow-menu', OverflowMenuComponent);
+    </script>
+
+    <h2>OverflowMenu 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 메뉴</h3>
+    <sv-overflow-menu
+        items='[
+            {"id": "edit", "label": "편집", "icon": "✏️", "onClick": "console.log(\"편집\")"},
+            {"id": "delete", "label": "삭제", "icon": "🗑️", "danger": true, "onClick": "console.log(\"삭제\")"},
+            {"type": "divider"},
+            {"id": "share", "label": "공유", "icon": "📤", "onClick": "console.log(\"공유\")"}
+        ]'
+    ></sv-overflow-menu>
+
+    <h3>아이콘과 라벨이 있는 메뉴</h3>
+    <sv-overflow-menu
+        icon="⚙️"
+        label="설정"
+        items='[
+            {"id": "download", "label": "다운로드", "icon": "⬇️", "onClick": "console.log(\"다운로드\")"},
+            {"id": "print", "label": "인쇄", "icon": "🖨️", "shortcut": "Ctrl+P", "onClick": "console.log(\"인쇄\")"}
+        ]'
+    ></sv-overflow-menu>
+
+    <script>
+        document.addEventListener('overflow-menu-open', () => console.log('메뉴 열림'));
+        document.addEventListener('overflow-menu-close', () => console.log('메뉴 닫힘'));
+        document.addEventListener('overflow-menu-item-click', (e) => console.log('항목 클릭:', e.detail));
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진행률 표시 컴포넌트 - 웹 컴포넌트 방식</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <style>
+        /* 접근성용 css */
+        .blind {
+            display: block;
+            margin: 0;
+            position: absolute;
+            z-index: -1;
+            width: 1px;
+            height: 1px;
+            font-size: 1px;
+            line-height: 1px;
+            color: transparent;
+            border: none;
+            padding: 0;
+            overflow: hidden;
+            background: none;
+        }
+        
+        /* 웹 컴포넌트 스타일 */
+        progress-step-bar {
+            display: inline-flex;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <progress-step-bar 
+        total-steps="8" 
+        current-step="3"
+        aria-label="8단계 진행률">
+    </progress-step-bar>
+
+    <progress-step-bar 
+        total-steps="6" 
+        current-step="4"
+        aria-label="6단계 진행률">
+    </progress-step-bar>
+
+    <script>
+        class ProgressStepBar extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+            }
+            
+            connectedCallback() {
+                this.render();
+            }
+            
+            static get observedAttributes() {
+                return ['total-steps', 'current-step'];
+            }
+            
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.render();
+                }
+            }
+            
+            render() {
+                const totalSteps = parseInt(this.getAttribute('total-steps')) || 8;
+                const currentStep = parseInt(this.getAttribute('current-step')) || 1;
+                
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        .blind {
+                            display: block;
+                            margin: 0;
+                            position: absolute;
+                            z-index: -1;
+                            width: 1px;
+                            height: 1px;
+                            font-size: 1px;
+                            line-height: 1px;
+                            color: transparent;
+                            border: none;
+                            padding: 0;
+                            overflow: hidden;
+                            background: none;
+                        }
+                        .progress-bar-full-container {
+                            display: inline-flex;
+                            width: 100%;
+                            height: 8px;
+                            overflow: hidden;
+                            border-radius: 4px;
+                            position: relative;
+                            gap: 3px;
+                        }
+                        .step-indicator {
+                            flex: 1;
+                            height: 100%;
+                            background-color: var(--background-bg-gray);
+                            transition: background-color 0.3s ease;
+                            flex-shrink: 0;
+                        }
+                        .step-indicator.completed {
+                            background-color: var(--background-bg-brand_strong-same);
+                        }
+                        
+                        .progress-bar-full-container:focus {
+                            outline: 2px solid var(--border-border-brand);
+                            outline-offset: 2px;
+                        }
+                        
+                    </style>
+                    
+                    <div class="progress-bar-full-container"
+                         role="progressbar"
+                         aria-valuenow="${currentStep}"
+                         aria-valuemin="0"
+                         aria-valuemax="${totalSteps}"
+                         aria-label="${this.getAttribute('aria-label') || '진행률'}"
+                         tabindex="0">
+                                                
+                        ${this.generateStepIndicators(totalSteps, currentStep)}
+                        
+                        <span class="blind">${currentStep}/${totalSteps} 단계 완료</span>
+                    </div>
+                `;
+            }
+            
+            generateStepIndicators(totalSteps, currentStep) {
+                let indicators = '';
+                for (let i = 0; i < totalSteps; i++) {
+                    let className = 'step-indicator';
+                    if (i < currentStep) {
+                        className += ' completed';
+                    } else if (i === currentStep) {
+                        className += ' current';
+                    }
+                    indicators += `<div class="${className}"></div>`;
+                }
+                return indicators;
+            }
+            
+            // 외부에서 단계 변경 메서드
+            setCurrentStep(step) {
+                this.setAttribute('current-step', step);
+            }
+            
+            setTotalSteps(steps) {
+                this.setAttribute('total-steps', steps);
+            }
+        }
+        
+        // 웹 컴포넌트 등록
+        customElements.define('progress-step-bar', ProgressStepBar);
+    </script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Component</title>
+    <style>
+/* Card Component Styles */
+:root {
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --border-secondary: #e0e0e0;
+  --bg-canvas-white: #ffffff;
+  --bg-graylight: #f5f5f5;
+  --bg-brand: #e3f2fd;
+  --bg-white-elevated: #ffffff;
+  --text-tertiary: #666666;
+  --fg-tertiary: #666666;
+  --shadow-color: rgba(12, 17, 29, 0.06);
+}
+
+/* Base Card Styles */
+.card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: all 0.25s var(--ease);
+}
+
+/* SVG Border Animation */
+.card__border-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card__border-svg--selected {
+  stroke: #007bff;
+  stroke-width: 2;
+  fill: none;
+  animation: borderAnimation 0.5s ease-in-out;
+}
+
+.card__border-svg--disabled {
+  stroke: #ccc;
+  stroke-width: 2;
+  fill: none;
+}
+
+.card__border-path {
+  d: path("M 0 0 L 100% 0 L 100% 100% L 0 100% Z");
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawBorder 0.5s ease-in-out forwards;
+}
+
+@keyframes borderAnimation {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes drawBorder {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* Card Content */
+.card__content {
+  padding: var(--spacing-2xl);
+  position: relative;
+  z-index: 2;
+}
+
+.card__content-inner {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Card Actions */
+.card__actions {
+  padding: 0 var(--spacing-2xl);
+  display: flex;
+  align-items: center;
+  min-height: 55px;
+}
+
+.card__actions-default {
+  padding: 0;
+}
+
+.card__action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 55px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-tertiary);
+  transition: all 0.25s var(--ease);
+}
+
+.card__action-button:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.card__action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.card__action-button-label {
+  font-size: 16px;
+  font-weight: 300;
+}
+
+/* Variant Styles */
+.card--variant-outline {
+  border: 1px solid var(--border-secondary);
+  background-color: var(--bg-canvas-white);
+}
+
+.card--variant-solid {
+  border: none;
+}
+
+.card--variant-solid.card--color-gray {
+  background-color: var(--bg-graylight);
+}
+
+.card--variant-solid.card--color-blue {
+  background-color: var(--bg-brand);
+}
+
+.card--variant-solid.card--color-white-shadow {
+  background-color: var(--bg-white-elevated);
+  box-shadow: 0px 4px 16px 0px var(--shadow-color);
+}
+
+/* Type Styles */
+.card--type-list {
+  padding: var(--spacing-xl) var(--spacing-2xl);
+}
+
+.card--type-list.card--button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.card--button-content {
+  flex: 1;
+}
+
+.card--button-arrow {
+  font-size: 20px;
+  color: var(--text-tertiary);
+  margin-left: var(--spacing-sm);
+}
+
+/* Expandable Card */
+.card--type-expandable .card__expand-panel {
+  padding-top: var(--spacing-2xl);
+  border-top: 1px solid var(--border-secondary);
+  margin-top: var(--spacing-lg);
+}
+
+.card__expand-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.card__expand-icon {
+  margin-left: var(--spacing-xs);
+  color: var(--fg-tertiary);
+  transition: transform 0.25s var(--ease);
+  font-size: 16px;
+}
+
+.card__expand-button[aria-expanded="true"] .card__expand-icon {
+  transform: rotate(180deg);
+}
+
+/* Divider */
+.card__divider {
+  border: none;
+  height: 1px;
+  background-color: var(--border-secondary);
+  margin: 0;
+}
+
+/* Disabled State */
+.card--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.card--disabled .card__action-button {
+  cursor: not-allowed;
+}
+
+/* Hover Effects */
+.card--variant-outline:hover:not(.card--disabled) {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.card--variant-solid:hover:not(.card--disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Focus Styles */
+.card:focus-within {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.card__action-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card__content {
+    padding: var(--spacing-xl);
+  }
+  
+  .card__actions {
+    padding: 0 var(--spacing-xl);
+  }
+  
+  .card--type-list {
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .card__content {
+    padding: var(--spacing-lg);
+  }
+  
+  .card__actions {
+    padding: 0 var(--spacing-lg);
+  }
+  
+  .card--type-list {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+}
+
+/* Typography */
+.card h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.card h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.card p {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #666;
+}
+
+.card ul {
+  margin: var(--spacing-sm) 0;
+  padding-left: var(--spacing-lg);
+}
+
+.card li {
+  margin-bottom: var(--spacing-xs);
+  font-size: 16px;
+  line-height: 1.5;
+  color: #666;
+}
+    </style>
+</head>
+<body>
+    <!-- Basic Type Card -->
+    <div class="card card--type-basic card--variant-outline card--color-gray" role="region">
+        <!-- SVG Border Animation for selected state -->
+        <svg class="card__border-svg card__border-svg--selected" xmlns="http://www.w3.org/2000/svg">
+            <path class="card__border-path" />
+        </svg>
+
+        <div class="card__content">
+            <h3>카드 제목</h3>
+            <p>카드 내용이 여기에 들어갑니다. 다양한 정보를 표시할 수 있습니다.</p>
+        </div>
+
+        <!-- Basic 타입 액션 영역 -->
+        <hr class="card__divider">
+        <div class="card__actions card__actions-default">
+            <button type="button" class="card__action-button">
+                <span class="card__action-button-label">레이블</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- List Type Card -->
+    <div class="card card--type-list card--variant-outline card--color-gray" role="region">
+        <span class="card--button-content">
+            <h4>리스트 카드</h4>
+            <p>클릭 가능한 리스트 형태의 카드입니다.</p>
+        </span>
+        <div class="card--button-arrow">→</div>
+    </div>
+
+    <!-- List Type Card as Button -->
+    <button class="card card--type-list card--variant-outline card--color-gray card--button" type="button">
+        <span class="card--button-content">
+            <h4>버튼 카드</h4>
+            <p>버튼으로 동작하는 카드입니다.</p>
+        </span>
+        <div class="card--button-arrow">→</div>
+    </button>
+
+    <!-- Expandable Type Card -->
+    <div class="card card--type-expandable card--variant-outline card--color-gray" role="region">
+        <!-- SVG Border Animation for selected state -->
+        <svg class="card__border-svg card__border-svg--selected" xmlns="http://www.w3.org/2000/svg">
+            <path class="card__border-path" />
+        </svg>
+
+        <div class="card__content">
+            <div class="card__content-inner">
+                <h3>확장 가능한 카드</h3>
+                <p>내용을 펼치거나 접을 수 있는 카드입니다.</p>
+            </div>
+
+            <div class="card__expand-panel">
+                <p>펼쳐진 추가 내용이 여기에 표시됩니다.</p>
+                <ul>
+                    <li>추가 항목 1</li>
+                    <li>추가 항목 2</li>
+                    <li>추가 항목 3</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="card__divider">
+        <div class="card__actions card__actions-default">
+            <button type="button" class="card__action-button card__expand-button" aria-expanded="true" aria-controls="card-expand-panel">
+                <span class="card__action-button-label">접기</span>
+                <div class="card__expand-icon">▼</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Solid Variant Cards -->
+    <div class="card card--type-basic card--variant-solid card--color-blue">
+        <div class="card__content">
+            <h3>Solid Blue Card</h3>
+            <p>파란색 배경의 솔리드 카드입니다.</p>
+        </div>
+    </div>
+
+    <div class="card card--type-basic card--variant-solid card--color-white-shadow">
+        <div class="card__content">
+            <h3>White Shadow Card</h3>
+            <p>그림자가 있는 흰색 카드입니다.</p>
+        </div>
+    </div>
+
+    <!-- Disabled Card -->
+    <div class="card card--type-basic card--variant-outline card--color-gray card--disabled" aria-disabled="true">
+        <div class="card__content">
+            <h3>비활성화된 카드</h3>
+            <p>이 카드는 비활성화되어 있습니다.</p>
+        </div>
+    </div>
+</body>
+</html>

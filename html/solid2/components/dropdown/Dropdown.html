@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Component</title>
+    <style>
+/* Dropdown Component Styles */
+:root {
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xxs: 4px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-quaternary: #cccccc;
+  --text-placeholder-same: #999999;
+  --text-disabled-same: #cccccc;
+  --text-negative-same: #dc3545;
+  --text-brand: #007bff;
+  --fg-primary: #333333;
+  --fg-disabled: #cccccc;
+  --border-primary: #007bff;
+  --border-secondary: #e0e0e0;
+  --border-disabled: #f0f0f0;
+  --border-negative-same: #dc3545;
+  --border-brand: #007bff;
+  --border-brand-disabled: #e3f2fd;
+  --bg-white: #ffffff;
+  --bg-disabled: #f5f5f5;
+  --bg-dark-a10: rgba(0, 0, 0, 0.1);
+  --bg-selected: #e3f2fd;
+  --font-weight-r: 400;
+  --font-weight-m-m: 500;
+  --font-weight-sb-m: 500;
+  --font-weight-sb-b: 600;
+  --font-weight-b: 600;
+}
+
+/* Base dropdown styles */
+.dropdown {
+  position: relative;
+  text-align: left;
+}
+
+/* Backdrop */
+.dropdown__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 998;
+  background: transparent;
+}
+
+/* 레이블 */
+.dropdown__field-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* 버튼영역 */
+.dropdown__btn {
+  position: relative;
+}
+
+.dropdown__trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown__trigger--disabled {
+  cursor: not-allowed;
+}
+
+.dropdown__trigger--readonly {
+  cursor: default;
+}
+
+.dropdown__btn-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.dropdown__btn-icon {
+  width: 28px;
+  height: 28px;
+}
+
+/* btn Label styles */
+.dropdown__btn-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown__btn-label--placeholder {
+  color: var(--text-placeholder-same);
+  font-weight: var(--font-weight-r);
+}
+
+.dropdown__btn-label--placeholder.dropdown__btn-label--disabled {
+  color: var(--text-disabled-same);
+}
+
+.dropdown__btn-label:not(.dropdown__btn-label--placeholder) {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-m-m);
+}
+
+.dropdown__btn-label:not(.dropdown__btn-label--placeholder).dropdown__btn-label--disabled {
+  color: var(--text-disabled-same);
+}
+
+/* Arrow icon styles */
+.dropdown__arrow {
+  flex-shrink: 0;
+  transition: transform 200ms var(--ease);
+  color: var(--fg-primary);
+  width: 24px;
+  height: 24px;
+  margin-left: var(--spacing-md);
+}
+
+.dropdown__arrow--open {
+  transform: rotate(-180deg);
+}
+
+.dropdown__arrow--disabled,
+.dropdown__arrow--readonly {
+  color: var(--fg-disabled);
+}
+
+/* 안내 메세지 */
+.dropdown__tip {
+  margin-top: var(--spacing-md);
+  color: var(--text-quaternary);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.dropdown__tip--focused {
+  color: var(--text-brand);
+}
+
+.dropdown__tip--error {
+  color: var(--text-negative-same);
+}
+
+/* Type: Basic */
+.dropdown--basic .dropdown__btn-label {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.dropdown--basic .dropdown__field-label {
+  margin-bottom: var(--spacing-md);
+}
+
+.dropdown--basic .dropdown__field-label-text1 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.dropdown--basic .dropdown__field-label-text2 {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-quaternary);
+}
+
+.dropdown--basic .dropdown__trigger {
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+}
+
+.dropdown--basic .dropdown__trigger--disabled,
+.dropdown--basic .dropdown__trigger--readonly {
+  border-color: var(--border-disabled);
+  background-color: var(--bg-disabled);
+}
+
+/* variant */
+.dropdown--basic.dropdown--variant-box .dropdown__trigger {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
+}
+
+.dropdown--basic.dropdown--variant-line .dropdown__trigger {
+  border-bottom: 2px solid var(--border-primary);
+}
+
+.dropdown--basic.dropdown--variant-line .dropdown__trigger:before {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -2px;
+  left: 0px;
+  width: 0;
+  border: 2px solid transparent;
+  border-width: 0 0 2px 0;
+  transition: width 0.25s var(--ease);
+  pointer-events: none;
+}
+
+.dropdown--basic.dropdown--variant-line .dropdown__trigger--focused:before {
+  width: 100%;
+  border-color: var(--border-brand);
+}
+
+.dropdown--basic.dropdown--variant-line .dropdown__trigger--error:before {
+  width: 100%;
+  border-color: var(--border-negative-same);
+}
+
+/* Type: inline */
+.dropdown--inline .dropdown__field-label {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  max-width: 100%;
+  max-height: 100%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text-placeholder-same);
+  transition: 0.25s var(--ease);
+  z-index: 1;
+}
+
+.dropdown--inline .dropdown__field-label--disabled {
+  color: var(--text-disabled-same);
+}
+
+.dropdown--inline .dropdown__field-label--focused,
+.dropdown--inline .dropdown__field-label--filled {
+  top: var(--spacing-lg);
+  transform: translateY(0);
+  font-size: 14px;
+}
+
+.dropdown--inline .dropdown__field-label--focused {
+  color: var(--text-brand);
+}
+
+.dropdown--inline .dropdown__field-label--error {
+  color: var(--text-negative-same);
+}
+
+.dropdown--inline .dropdown__trigger {
+  padding-top: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+}
+
+.dropdown--inline .dropdown__trigger--disabled,
+.dropdown--inline .dropdown__trigger--readonly {
+  border-color: var(--border-disabled);
+  background-color: var(--bg-disabled);
+}
+
+.dropdown--inline .dropdown__btn-content {
+  padding-top: 20px;
+}
+
+.dropdown--inline .dropdown__btn-label {
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.dropdown--inline .dropdown__btn-label:not(.dropdown__btn-label--placeholder, .dropdown__btn-label--disabled) {
+  color: var(--text-secondary);
+}
+
+.dropdown--inline .dropdown__btn-label:not(.dropdown__btn-label--focused, .dropdown__btn-label--filled) {
+  color: transparent;
+}
+
+/* variant */
+.dropdown--inline.dropdown--variant-box .dropdown__field-label {
+  padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
+}
+
+.dropdown--inline.dropdown--variant-box .dropdown__trigger {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
+}
+
+.dropdown--inline.dropdown--variant-line .dropdown__trigger {
+  border-bottom: 2px solid var(--border-primary);
+}
+
+.dropdown--inline.dropdown--variant-line .dropdown__trigger:before {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -2px;
+  left: 0px;
+  width: 0;
+  border: 2px solid transparent;
+  border-width: 0 0 2px 0;
+  transition: width 0.25s var(--ease);
+  pointer-events: none;
+}
+
+.dropdown--inline.dropdown--variant-line .dropdown__trigger--focused:before {
+  width: 100%;
+  border-color: var(--border-brand);
+}
+
+.dropdown--inline.dropdown--variant-line .dropdown__trigger--error:before {
+  width: 100%;
+  border-color: var(--border-negative-same);
+}
+
+/* Type: text */
+.dropdown--variant-ghost {
+  display: inline-block;
+}
+
+.dropdown--variant-ghost .dropdown__trigger {
+  border-radius: var(--radius-xxs);
+  padding: var(--spacing-xs);
+}
+
+.dropdown--variant-ghost .dropdown__trigger:active {
+  background-color: var(--bg-dark-a10);
+}
+
+.dropdown--variant-ghost .dropdown__border-svg .dropdown__border-path {
+  stroke: var(--border-brand-disabled);
+}
+
+.dropdown--variant-ghost .dropdown__btn-content {
+  gap: var(--spacing-xs);
+}
+
+.dropdown--variant-ghost .dropdown__arrow {
+  margin-left: var(--spacing-xs);
+}
+
+/* size */
+.dropdown--variant-ghost.dropdown--size-xsmall .dropdown__btn-content {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.dropdown--variant-ghost.dropdown--size-xsmall .dropdown__arrow {
+  width: 14px;
+  height: 14px;
+}
+
+.dropdown--variant-ghost.dropdown--size-small .dropdown__btn-content {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.dropdown--variant-ghost.dropdown--size-small .dropdown__arrow {
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown--variant-ghost.dropdown--size-medium .dropdown__btn-content {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.dropdown--variant-ghost.dropdown--size-medium .dropdown__arrow {
+  width: 18px;
+  height: 18px;
+}
+
+.dropdown--variant-ghost.dropdown--size-large .dropdown__btn-content {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dropdown--variant-ghost.dropdown--size-large .dropdown__arrow {
+  width: 20px;
+  height: 20px;
+}
+
+.dropdown--variant-ghost.dropdown--size-xlarge .dropdown__btn-content {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dropdown--variant-ghost.dropdown--size-xlarge .dropdown__arrow {
+  width: 24px;
+  height: 24px;
+}
+
+.dropdown--variant-ghost .dropdown__btn-label--placeholder {
+  color: var(--text-placeholder-same);
+}
+
+.dropdown--variant-ghost .dropdown__btn-label--disabled {
+  color: var(--text-disabled-same);
+}
+
+.dropdown--variant-ghost .dropdown__btn-label--error {
+  color: var(--text-negative-same);
+}
+
+/* dropdown menu */
+.dropdown__menu {
+  position: fixed;
+  z-index: 999;
+  min-width: 200px;
+  max-height: 300px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.06);
+}
+
+.dropdown__menu-inner {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--spacing-xs) 0;
+}
+
+/* Option styles */
+.dropdown__option {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.5;
+  gap: var(--spacing-md);
+  white-space: nowrap;
+  text-align: left;
+}
+
+.dropdown__option--selected {
+  color: var(--text-brand);
+  font-weight: var(--font-weight-m-m);
+}
+
+.dropdown__option--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.dropdown__option-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.dropdown__option-label {
+  flex: 1;
+}
+
+.dropdown__option-check {
+  margin-left: auto;
+  width: 20px;
+  height: 20px;
+}
+
+/* SVG Border Animation */
+.dropdown__border-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dropdown__border-svg--button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dropdown__border-svg--selected {
+  stroke: var(--border-brand-disabled);
+  stroke-width: 2;
+  fill: none;
+}
+
+.dropdown__border-svg--error {
+  stroke: var(--border-negative-same);
+  stroke-width: 2;
+  fill: none;
+}
+
+.dropdown__border-svg--disabled {
+  stroke: var(--border-disabled);
+  stroke-width: 2;
+  fill: none;
+}
+
+.dropdown__border-path {
+  d: path("M 0 0 L 100% 0 L 100% 100% L 0 100% Z");
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawBorder 0.5s ease-in-out forwards;
+}
+
+@keyframes drawBorder {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Icon styles for demo */
+.icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-color: currentColor;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.icon-chevron-down {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E");
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Dropdown Component</h1>
+        
+        <!-- Basic Underline Dropdown -->
+        <div class="demo-section">
+            <h3>Basic Underline Dropdown</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Basic Underline (Default)</span>
+                <div class="dropdown dropdown--basic dropdown--variant-line">
+                    <div class="dropdown__btn">
+                        <label class="dropdown__field-label">
+                            <label class="dropdown__field-label-text1" for="dropdown-1">
+                                드롭다운 레이블
+                                <span class="dropdown__field-label-text2">(선택)</span>
+                            </label>
+                        </label>
+                        <button type="button" class="dropdown__trigger" id="dropdown-1" aria-expanded="false" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label dropdown__btn-label--placeholder">선택하세요</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow"></span>
+                        </button>
+                    </div>
+                    <div class="dropdown__tip">도움말 메시지가 여기에 표시됩니다.</div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Basic Underline (Focused)</span>
+                <div class="dropdown dropdown--basic dropdown--variant-line">
+                    <div class="dropdown__btn">
+                        <label class="dropdown__field-label dropdown__field-label--focused">
+                            <label class="dropdown__field-label-text1" for="dropdown-2">
+                                드롭다운 레이블
+                                <span class="dropdown__field-label-text2">(선택)</span>
+                            </label>
+                        </label>
+                        <button type="button" class="dropdown__trigger dropdown__trigger--focused" id="dropdown-2" aria-expanded="true" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label dropdown__btn-label--filled dropdown__btn-label--focused">선택된 값</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow dropdown__arrow--open"></span>
+                        </button>
+                    </div>
+                    <div class="dropdown__tip dropdown__tip--focused">포커스된 상태입니다.</div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Basic Underline (Error)</span>
+                <div class="dropdown dropdown--basic dropdown--variant-line">
+                    <div class="dropdown__btn">
+                        <label class="dropdown__field-label dropdown__field-label--error">
+                            <label class="dropdown__field-label-text1" for="dropdown-3">
+                                드롭다운 레이블
+                                <span class="dropdown__field-label-text2">(선택)</span>
+                            </label>
+                        </label>
+                        <button type="button" class="dropdown__trigger dropdown__trigger--error" id="dropdown-3" aria-expanded="false" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label dropdown__btn-label--error">에러 상태</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow"></span>
+                        </button>
+                    </div>
+                    <div class="dropdown__tip dropdown__tip--error">에러 메시지가 여기에 표시됩니다.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Basic Box Dropdown -->
+        <div class="demo-section">
+            <h3>Basic Box Dropdown</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Basic Box (Default)</span>
+                <div class="dropdown dropdown--basic dropdown--variant-box">
+                    <div class="dropdown__btn">
+                        <label class="dropdown__field-label">
+                            <label class="dropdown__field-label-text1" for="dropdown-4">
+                                드롭다운 레이블
+                                <span class="dropdown__field-label-text2">(선택)</span>
+                            </label>
+                        </label>
+                        <button type="button" class="dropdown__trigger" id="dropdown-4" aria-expanded="false" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label dropdown__btn-label--placeholder">선택하세요</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow"></span>
+                        </button>
+                    </div>
+                    <div class="dropdown__tip">박스 스타일의 드롭다운입니다.</div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Basic Box (Focused)</span>
+                <div class="dropdown dropdown--basic dropdown--variant-box">
+                    <div class="dropdown__btn">
+                        <label class="dropdown__field-label dropdown__field-label--focused">
+                            <label class="dropdown__field-label-text1" for="dropdown-5">
+                                드롭다운 레이블
+                                <span class="dropdown__field-label-text2">(선택)</span>
+                            </label>
+                        </label>
+                        <button type="button" class="dropdown__trigger dropdown__trigger--focused" id="dropdown-5" aria-expanded="true" aria-haspopup="true">
+                            <svg class="dropdown__border-svg dropdown__border-svg--button dropdown__border-svg--selected">
+                                <path class="dropdown__border-path"></path>
+                            </svg>
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label dropdown__btn-label--filled dropdown__btn-label--focused">선택된 값</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow dropdown__arrow--open"></span>
+                        </button>
+                    </div>
+                    <div class="dropdown__tip dropdown__tip--focused">포커스된 상태입니다.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inline Dropdown -->
+        <div class="demo-section">
+            <h3>Inline Dropdown</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Inline Underline (Default)</span>
+                <div class="dropdown dropdown--inline dropdown--variant-line">
+                    <div class="dropdown__btn">
+                        <label class="dropdown__field-label" for="dropdown-6">
+                            인라인 레이블
+                        </label>
+                        <button type="button" class="dropdown__trigger" id="dropdown-6" aria-expanded="false" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label dropdown__btn-label--placeholder">선택하세요</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Inline Underline (Focused)</span>
+                <div class="dropdown dropdown--inline dropdown--variant-line">
+                    <div class="dropdown__btn">
+                        <label class="dropdown__field-label dropdown__field-label--focused" for="dropdown-7">
+                            인라인 레이블
+                        </label>
+                        <button type="button" class="dropdown__trigger dropdown__trigger--focused" id="dropdown-7" aria-expanded="true" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label dropdown__btn-label--filled dropdown__btn-label--focused">선택된 값</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow dropdown__arrow--open"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ghost Dropdown -->
+        <div class="demo-section">
+            <h3>Ghost Dropdown</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Ghost Small</span>
+                <div class="dropdown dropdown--variant-ghost dropdown--size-small">
+                    <div class="dropdown__btn">
+                        <button type="button" class="dropdown__trigger" aria-expanded="false" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label">작은 크기</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Ghost Medium</span>
+                <div class="dropdown dropdown--variant-ghost dropdown--size-medium">
+                    <div class="dropdown__btn">
+                        <button type="button" class="dropdown__trigger" aria-expanded="false" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label">중간 크기</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Ghost Large</span>
+                <div class="dropdown dropdown--variant-ghost dropdown--size-large">
+                    <div class="dropdown__btn">
+                        <button type="button" class="dropdown__trigger" aria-expanded="false" aria-haspopup="true">
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label">큰 크기</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Ghost Large (Open)</span>
+                <div class="dropdown dropdown--variant-ghost dropdown--size-large">
+                    <div class="dropdown__btn">
+                        <button type="button" class="dropdown__trigger" aria-expanded="true" aria-haspopup="true">
+                            <svg class="dropdown__border-svg dropdown__border-svg--button dropdown__border-svg--selected">
+                                <path class="dropdown__border-path"></path>
+                            </svg>
+                            <span class="dropdown__btn-content">
+                                <span class="dropdown__btn-label">열린 상태</span>
+                            </span>
+                            <span class="icon icon-chevron-down dropdown__arrow dropdown__arrow--open"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                 <!-- Disabled States -->
+         <div class="demo-section">
+             <h3>Disabled States</h3>
+             
+             <div class="demo-row">
+                 <span class="demo-label">Disabled Basic</span>
+                 <div class="dropdown dropdown--basic dropdown--variant-line">
+                     <div class="dropdown__btn">
+                         <label class="dropdown__field-label dropdown__field-label--disabled">
+                             <label class="dropdown__field-label-text1" for="dropdown-8">
+                                 비활성화된 드롭다운
+                                 <span class="dropdown__field-label-text2">(선택)</span>
+                             </label>
+                         </label>
+                         <button type="button" class="dropdown__trigger dropdown__trigger--disabled" id="dropdown-8" aria-expanded="false" aria-haspopup="true" disabled>
+                             <span class="dropdown__btn-content">
+                                 <span class="dropdown__btn-label dropdown__btn-label--disabled">비활성화됨</span>
+                             </span>
+                             <span class="icon icon-chevron-down dropdown__arrow dropdown__arrow--disabled"></span>
+                         </button>
+                     </div>
+                 </div>
+             </div>
+             
+             <div class="demo-row">
+                 <span class="demo-label">Disabled Ghost</span>
+                 <div class="dropdown dropdown--variant-ghost dropdown--size-medium">
+                     <div class="dropdown__btn">
+                         <button type="button" class="dropdown__trigger" aria-expanded="false" aria-haspopup="true" disabled>
+                             <span class="dropdown__btn-content">
+                                 <span class="dropdown__btn-label dropdown__btn-label--disabled">비활성화됨</span>
+                             </span>
+                             <span class="icon icon-chevron-down dropdown__arrow dropdown__arrow--disabled"></span>
+                         </button>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         
+         <!-- Component Variants -->
+         <div class="demo-section">
+             <h3>Component Variants</h3>
+             
+             <div class="demo-row">
+                 <span class="demo-label">BasicDropdown (underline variant)</span>
+                 <div class="dropdown dropdown--basic dropdown--variant-line">
+                     <div class="dropdown__btn">
+                         <label class="dropdown__field-label">
+                             <label class="dropdown__field-label-text1" for="dropdown-9">
+                                 BasicDropdown
+                                 <span class="dropdown__field-label-text2">(선택)</span>
+                             </label>
+                         </label>
+                         <button type="button" class="dropdown__trigger" id="dropdown-9" aria-expanded="false" aria-haspopup="true">
+                             <span class="dropdown__btn-content">
+                                 <span class="dropdown__btn-label dropdown__btn-label--placeholder">선택하세요</span>
+                             </span>
+                             <span class="icon icon-chevron-down dropdown__arrow"></span>
+                         </button>
+                     </div>
+                     <div class="dropdown__tip">BasicDropdown은 underline, outline, line variant를 지원합니다.</div>
+                 </div>
+             </div>
+             
+             <div class="demo-row">
+                 <span class="demo-label">TextDropdown (ghost variant, medium size)</span>
+                 <div class="dropdown dropdown--variant-ghost dropdown--size-medium">
+                     <div class="dropdown__btn">
+                         <button type="button" class="dropdown__trigger" aria-expanded="false" aria-haspopup="true">
+                             <span class="dropdown__btn-content">
+                                 <span class="dropdown__btn-label">TextDropdown</span>
+                             </span>
+                             <span class="icon icon-chevron-down dropdown__arrow"></span>
+                         </button>
+                     </div>
+                 </div>
+                 <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                     TextDropdown은 ghost variant와 다양한 크기를 지원합니다.
+                 </div>
+             </div>
+         </div>
+    </div>
+</body>
+</html>

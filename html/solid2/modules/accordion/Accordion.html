@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#ffffff">
+    <title>Accordion Web Component</title>
+    <style>
+        /* CSS 변수 정의 */
+        :root {
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 48px;
+            --radius-xl: 12px;
+            --text-secondary: #666;
+            --text-disabled-same: #999;
+            --fg-quaternary: #999;
+            --fg-disabled: #ccc;
+            --border-secondary: #e0e0e0;
+            --border-disabled: #f0f0f0;
+            --bg-graylight: #f8f9fa;
+            --bg-disabled: #f5f5f5;
+        }
+
+        /* 웹컴포넌트 기본 스타일 */
+        accordion-list, accordion-item {
+            display: block;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+
+
+        /* 기본 레이아웃 */
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- Basic Accordion 컴포넌트 사용 예시 -->
+    <accordion-list variant="basic">
+        <accordion-item>
+            <div slot="icon">📋</div>
+            <div slot="title">첫 번째 아코디언</div>
+            <div slot="content">
+                <p>첫 번째 아코디언의 내용입니다. 여기에 상세한 정보를 표시할 수 있습니다.</p>
+            </div>
+        </accordion-item>
+
+        <accordion-item>
+            <div slot="icon">⚙️</div>
+            <div slot="title">두 번째 아코디언</div>
+            <div slot="content">
+                <p>두 번째 아코디언의 내용입니다. 설정이나 옵션 정보를 표시할 수 있습니다.</p>
+            </div>
+        </accordion-item>
+
+        <accordion-item>
+            <div slot="icon">📊</div>
+            <div slot="title">세 번째 아코디언</div>
+            <div slot="content">
+                <p>세 번째 아코디언의 내용입니다. 차트나 통계 정보를 표시할 수 있습니다.</p>
+            </div>
+        </accordion-item>
+    </accordion-list>
+
+    <!-- Solid Accordion 컴포넌트 사용 예시 -->
+    <accordion-list variant="solid" style="margin-top: 40px;">
+        <accordion-item>
+            <div slot="icon">🎨</div>
+            <div slot="title">Solid 스타일 아코디언</div>
+            <div slot="content">
+                <p>Solid 변형 스타일의 아코디언입니다. 배경색과 둥근 모서리를 가집니다.</p>
+            </div>
+        </accordion-item>
+    </accordion-list>
+
+    <script>
+        class AccordionItem extends HTMLElement {
+            constructor() {
+                super();
+                this.isOpen = false;
+                this.isDisabled = false;
+                this.destroyOnClose = false;
+                this.uniqueId = `accordion-${Math.random().toString(36).substring(2, 9)}`;
+                this.panelId = `${this.uniqueId}-panel`;
+                this.triggerId = `${this.uniqueId}-trigger`;
+                
+                this.attachShadow({ mode: 'open' });
+                this.render();
+                this.init();
+            }
+
+            render() {
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host {
+                            display: block;
+                            position: relative;
+                        }
+                        
+                        :host([variant="basic"]) {
+                            border-bottom: 1px solid #e0e0e0;
+                        }
+                        
+                        :host([variant="solid"]) {
+                            background-color: #f8f9fa;
+                            border-radius: 12px;
+                            margin-bottom: 24px;
+                        }
+                        
+                        .accordion-header {
+                            display: flex;
+                            align-items: center;
+                            width: 100%;
+                            padding: 32px;
+                            text-align: left;
+                            cursor: pointer;
+                            text-decoration: none;
+                            color: inherit;
+                            border: none;
+                            background: none;
+                            font-family: inherit;
+                            font-size: inherit;
+                            -webkit-tap-highlight-color: transparent;
+                            touch-action: manipulation;
+                            user-select: none;
+                        }
+                        
+                        .accordion-header:active {
+                            background-color: rgba(0, 0, 0, 0.05);
+                            transform: scale(0.98);
+                            transition: all 0.1s ease;
+                        }
+                        
+                        .accordion-title {
+                            display: flex;
+                            align-items: center;
+                            width: 100%;
+                            flex: 1;
+                            font-size: 18px;
+                            font-weight: 500;
+                            color: #666;
+                            word-break: break-all;
+                            flex-wrap: wrap;
+                        }
+                        
+                        ::slotted([slot="title"]) {
+                            font-size: 18px;
+                            font-weight: 500;
+                            color: #666;
+                        }
+                        
+                        .accordion-icon {
+                            flex-shrink: 0;
+                            margin-right: 16px;
+                            width: 28px;
+                            height: 28px;
+                        }
+                        
+                        ::slotted([slot="icon"]) {
+                            width: 28px;
+                            height: 28px;
+                            display: inline-block;
+                            font-size: 24px;
+                            line-height: 1;
+                        }
+                        
+                        .accordion-chevron {
+                            flex-shrink: 0;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #999;
+                            margin-left: 16px;
+                            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                            cursor: pointer;
+                            width: 20px;
+                            height: 20px;
+                        }
+                        
+                        .accordion-chevron.rotated {
+                            transform: rotate(180deg);
+                        }
+                        
+                        .accordion-panel {
+                            position: relative;
+                            display: none;
+                            overflow: hidden;
+                            transition: height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                        }
+                        
+                        .accordion-panel.open {
+                            display: block;
+                        }
+                        
+                        .accordion-content {
+                            padding: 16px 32px 48px;
+                        }
+                        
+                        ::slotted([slot="content"]) {
+                            margin: 0;
+                            line-height: 1.6;
+                        }
+                        
+                        ::slotted([slot="content"]) p {
+                            margin: 0 0 16px 0;
+                        }
+                        
+                        .chevron-down {
+                            width: 20px;
+                            height: 20px;
+                            border: solid #999;
+                            border-width: 0 2px 2px 0;
+                            display: inline-block;
+                            padding: 3px;
+                            transform: rotate(45deg);
+                        }
+                        
+                        .chevron-down.rotated {
+                            transform: rotate(-135deg);
+                        }
+                        
+
+                        
+                        @media (max-width: 768px) {
+                            .accordion-header {
+                                padding: 24px;
+                                min-height: 48px;
+                            }
+                            
+                            .accordion-title {
+                                font-size: 16px;
+                            }
+                            
+                            .accordion-chevron {
+                                min-width: 44px;
+                                min-height: 44px;
+                            }
+                            
+                            .accordion-content {
+                                padding: 20px 24px;
+                                font-size: 14px;
+                                line-height: 1.6;
+                            }
+                        }
+                        
+                        :host([disabled]) .accordion-header {
+                            background-color: #f5f5f5;
+                            cursor: not-allowed;
+                        }
+                        
+                        :host([disabled]) .accordion-title {
+                            color: #ccc;
+                        }
+                    </style>
+                    
+                    <button class="accordion-header" role="button" aria-expanded="false">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">
+                                <slot name="icon"></slot>
+                            </div>
+                            <div class="title-text">
+                                <slot name="title"></slot>
+                            </div>
+                        </div>
+                        <div class="accordion-chevron" title="상세보기">
+                            <div class="chevron-down"></div>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" role="region" aria-hidden="true">
+                        <div class="accordion-content">
+                            <slot name="content"></slot>
+                        </div>
+                    </div>
+                `;
+            }
+
+            init() {
+                this.header = this.shadowRoot.querySelector('.accordion-header');
+                this.panel = this.shadowRoot.querySelector('.accordion-panel');
+                this.icon = this.shadowRoot.querySelector('.accordion-chevron .chevron-down');
+                
+                // 부모 accordion-list의 variant를 가져와서 설정
+                const parentList = this.closest('accordion-list');
+                if (parentList) {
+                    const variant = parentList.getAttribute('variant') || 'basic';
+                    this.setAttribute('variant', variant);
+                }
+                
+                if (this.header && this.panel) {
+                    this.setupEventListeners();
+                    this.updateAttributes();
+                }
+            }
+
+            setupEventListeners() {
+                // 클릭 이벤트
+                this.header.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.toggle();
+                });
+
+                // 아이콘 클릭 이벤트 (헤더와 별도로 처리)
+                if (this.icon) {
+                    this.icon.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.toggle();
+                    });
+                }
+
+                // 모바일 터치 이벤트
+                this.setupTouchEvents();
+                
+                // 키보드 접근성
+                this.setupKeyboardEvents();
+            }
+
+            setupTouchEvents() {
+                let startY = 0;
+                let startTime = 0;
+                let isSwiping = false;
+
+                // 터치 시작
+                this.header.addEventListener('touchstart', (e) => {
+                    startY = e.touches[0].clientY;
+                    startTime = Date.now();
+                    isSwiping = false;
+                }, { passive: true });
+
+                // 터치 이동
+                this.header.addEventListener('touchmove', (e) => {
+                    if (!isSwiping) {
+                        const deltaY = Math.abs(e.touches[0].clientY - startY);
+                        if (deltaY > 10) {
+                            isSwiping = true;
+                        }
+                    }
+                }, { passive: true });
+
+                // 터치 종료
+                this.header.addEventListener('touchend', (e) => {
+                    const endTime = Date.now();
+                    const duration = endTime - startTime;
+                    
+                    // 빠른 탭 (300ms 이하) 또는 스와이프가 아닌 경우에만 토글
+                    if (duration < 300 && !isSwiping) {
+                        e.preventDefault();
+                        this.toggle();
+                    }
+                });
+
+                // 더블 탭으로 열기/닫기
+                let lastTap = 0;
+                this.header.addEventListener('touchend', (e) => {
+                    const currentTime = new Date().getTime();
+                    const tapLength = currentTime - lastTap;
+                    
+                    if (tapLength < 500 && tapLength > 0) {
+                        // 더블 탭 감지
+                        e.preventDefault();
+                        this.toggle();
+                    }
+                    lastTap = currentTime;
+                });
+            }
+
+            setupKeyboardEvents() {
+                this.header.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                        e.preventDefault();
+                        this.toggle();
+                    }
+                });
+            }
+
+            toggle() {
+                if (this.isDisabled) return;
+
+                this.isOpen = !this.isOpen;
+                this.updateState();
+                this.updateAttributes();
+                this.animatePanel();
+                
+                // 모바일 햅틱 피드백
+                this.triggerHapticFeedback();
+                
+                // 커스텀 이벤트 발생
+                this.dispatchEvent(new CustomEvent('accordionChange', {
+                    detail: { isOpen: this.isOpen }
+                }));
+            }
+
+            triggerHapticFeedback() {
+                // 모바일에서 햅틱 피드백 제공
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50); // 짧은 진동
+                }
+                
+                // iOS에서 햅틱 피드백
+                if (window.webkit && window.webkit.messageHandlers) {
+                    try {
+                        window.webkit.messageHandlers.hapticFeedback.postMessage('light');
+                    } catch (e) {
+                        // iOS 네이티브 앱이 아닌 경우 무시
+                    }
+                }
+            }
+
+            updateState() {
+                this.setAttribute('data-state', this.isOpen ? 'open' : 'closed');
+                
+                if (this.icon) {
+                    if (this.isOpen) {
+                        this.icon.classList.add('rotated');
+                    } else {
+                        this.icon.classList.remove('rotated');
+                    }
+                }
+
+                if (this.panel) {
+                    if (this.isOpen) {
+                        this.panel.classList.add('open');
+                    } else {
+                        this.panel.classList.remove('open');
+                    }
+                }
+            }
+
+            updateAttributes() {
+                if (this.header) {
+                    this.header.setAttribute('aria-expanded', this.isOpen);
+                    this.header.setAttribute('aria-controls', this.panelId);
+                    this.header.id = this.triggerId;
+                }
+
+                if (this.panel) {
+                    this.panel.id = this.panelId;
+                    this.panel.setAttribute('aria-labelledby', this.triggerId);
+                    this.panel.setAttribute('aria-hidden', !this.isOpen);
+                }
+            }
+
+            animatePanel() {
+                if (!this.panel) return;
+
+                if (this.isOpen) {
+                    this.slideDown();
+                } else {
+                    this.slideUp();
+                }
+            }
+
+            slideDown() {
+                this.panel.style.display = 'block';
+                this.panel.style.height = '0px';
+                this.panel.style.overflow = 'hidden';
+
+                requestAnimationFrame(() => {
+                    const height = this.panel.scrollHeight;
+                    this.panel.style.height = `${height}px`;
+                });
+
+                const cleanup = () => {
+                    this.panel.style.height = '';
+                    this.panel.style.overflow = '';
+                    this.panel.removeEventListener('transitionend', cleanup);
+                };
+
+                this.panel.addEventListener('transitionend', cleanup);
+            }
+
+            slideUp() {
+                const height = this.panel.scrollHeight;
+                this.panel.style.height = `${height}px`;
+                this.panel.style.overflow = 'hidden';
+
+                requestAnimationFrame(() => {
+                    this.panel.style.height = '0px';
+                });
+
+                const cleanup = () => {
+                    this.panel.style.display = 'none';
+                    this.panel.style.height = '';
+                    this.panel.style.overflow = '';
+                    this.panel.removeEventListener('transitionend', cleanup);
+                };
+
+                this.panel.addEventListener('transitionend', cleanup);
+            }
+
+            // 공개 메서드들
+            open() {
+                if (!this.isOpen) {
+                    this.toggle();
+                }
+            }
+
+            close() {
+                if (this.isOpen) {
+                    this.toggle();
+                }
+            }
+
+            setDisabled(disabled) {
+                this.isDisabled = disabled;
+                this.setAttribute('disabled', disabled);
+                this.header.setAttribute('aria-disabled', disabled);
+                
+                if (disabled) {
+                    this.header.style.cursor = 'not-allowed';
+                } else {
+                    this.header.style.cursor = 'pointer';
+                }
+            }
+        }
+
+        class AccordionList extends HTMLElement {
+            constructor() {
+                super();
+                this.items = [];
+                this.variant = 'basic';
+                this.disabled = false;
+                this.allowMultiple = false;
+                
+                this.attachShadow({ mode: 'open' });
+                this.render();
+                this.init();
+            }
+
+            render() {
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host {
+                            display: flex;
+                            flex-direction: column;
+                            width: 100%;
+                        }
+                        
+                        :host([variant="solid"]) ::slotted(accordion-item) {
+                            margin-bottom: 24px;
+                        }
+                        
+                        ::slotted(accordion-item) {
+                            display: block;
+                        }
+                    </style>
+                    <slot></slot>
+                `;
+            }
+
+            init() {
+                this.items = Array.from(this.querySelectorAll('accordion-item'));
+                this.variant = this.getAttribute('variant') || 'basic';
+                this.disabled = this.hasAttribute('disabled');
+                this.allowMultiple = this.hasAttribute('allow-multiple');
+                
+                this.setupAccordion();
+            }
+
+            setupAccordion() {
+                this.items.forEach((item, index) => {
+                    // 각 아이템에 value 속성 설정
+                    item.setAttribute('data-value', index.toString());
+                    
+                    // 아코디언 변경 이벤트 리스너
+                    item.addEventListener('accordionChange', (e) => {
+                        if (!this.allowMultiple && e.detail.isOpen) {
+                            // 단일 선택 모드일 때 다른 아이템들 닫기
+                            this.closeOtherItems(index);
+                        }
+                    });
+                });
+            }
+
+            closeOtherItems(openIndex) {
+                this.items.forEach((item, index) => {
+                    if (index !== openIndex) {
+                        if (item.isOpen) {
+                            item.close();
+                        }
+                    }
+                });
+            }
+
+            // 공개 메서드들
+            openItem(value) {
+                const item = this.items.find(item => item.getAttribute('data-value') === value.toString());
+                if (item) {
+                    item.open();
+                }
+            }
+
+            closeItem(value) {
+                const item = this.items.find(item => item.getAttribute('data-value') === value.toString());
+                if (item) {
+                    item.close();
+                }
+            }
+
+            isItemOpen(value) {
+                const item = this.items.find(item => item.getAttribute('data-value') === value.toString());
+                return item ? item.isOpen : false;
+            }
+
+            setDisabled(disabled) {
+                this.disabled = disabled;
+                this.items.forEach(item => {
+                    item.setDisabled(disabled);
+                });
+            }
+        }
+
+        // 커스텀 엘리먼트 등록
+        customElements.define('accordion-item', AccordionItem);
+        customElements.define('accordion-list', AccordionList);
+
+
+
+
+    </script>
+
+
+</body>
+</html>

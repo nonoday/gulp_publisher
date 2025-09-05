@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SegmentSwitch Component</title>
+    <style>
+/* SegmentSwitch Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --bg-gray: #f5f5f5;
+  --bg-white: #ffffff;
+  --text-primary: #333333;
+  --text-tertiary: #666666;
+  --font-family-digital-one: 'Digital One', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-weight-r: 400;
+  --font-weight-m-m: 500;
+  --font-size-body-m: 14px;
+  --font-size-body-l: 16px;
+  --font-size-detail-l: 12px;
+  --lineheight-body-m: 1.4;
+  --lineheight-body-l: 1.5;
+  --lineheight-detail-l: 1.3;
+  --letterspace-body-m: -0.01em;
+  --letterspace-body-l: -0.01em;
+  --letterspace-detail-l: 0em;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* SegmentSwitch Base */
+.segment-switch {
+  position: relative;
+  display: inline-flex;
+  font-family: var(--font-family-digital-one);
+  padding: var(--spacing-sm);
+  gap: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-gray);
+  transition: all 0.25s var(--ease);
+}
+
+/* Label element */
+.segment-switch__label {
+  z-index: 2;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: var(--radius-xs);
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+}
+
+.segment-switch__label__text {
+  color: var(--text-tertiary);
+  display: inline-flex;
+  font-weight: var(--font-weight-r);
+  white-space: nowrap;
+}
+
+.segment-switch__label--checked .segment-switch__label__text {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-m-m);
+}
+
+/* Thumb element */
+.segment-switch__thumb {
+  position: absolute;
+  z-index: 1;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--bg-white);
+  width: auto;
+  height: calc(100% - var(--spacing-sm) * 2);
+  margin-left: var(--spacing-sm);
+  border-radius: var(--radius-xs);
+  box-shadow: 0 4px 16px 0 rgba(12, 17, 29, 0.06);
+  transition: all 0.25s var(--ease);
+}
+
+.segment-switch[data-state="checked"] .segment-switch__thumb {
+  margin-left: calc(var(--spacing-sm) + var(--spacing-xs));
+}
+
+/* Icon element */
+.segment-switch__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Size Modifier - Large */
+.segment-switch--size-l .segment-switch__label {
+  min-height: 48px;
+  padding: var(--spacing-md);
+  gap: var(--spacing-xs);
+}
+
+.segment-switch--size-l .segment-switch__label__text {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-l);
+  letter-spacing: var(--letterspace-body-l);
+  line-height: var(--lineheight-body-l);
+}
+
+/* Size Modifier - Medium */
+.segment-switch--size-m .segment-switch__label {
+  min-height: 40px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--spacing-xs);
+}
+
+.segment-switch--size-m .segment-switch__label__text {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-l);
+  letter-spacing: var(--letterspace-body-l);
+  line-height: var(--lineheight-body-l);
+}
+
+/* Size Modifier - Small */
+.segment-switch--size-s .segment-switch__label {
+  min-height: 32px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  gap: var(--spacing-none);
+}
+
+.segment-switch--size-s .segment-switch__label__text {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-m);
+  letter-spacing: var(--letterspace-body-m);
+  line-height: var(--lineheight-body-m);
+}
+
+.segment-switch--size-s .segment-switch__icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Size Modifier - Extra Small */
+.segment-switch--size-xs {
+  border-radius: var(--radius-sm);
+}
+
+.segment-switch--size-xs .segment-switch__label {
+  min-height: 28px;
+  padding: var(--spacing-sm);
+  gap: var(--spacing-none);
+}
+
+.segment-switch--size-xs .segment-switch__label__text {
+  padding: var(--spacing-none) var(--spacing-xs);
+  font-size: var(--font-size-detail-l);
+  letter-spacing: var(--letterspace-detail-l);
+  line-height: var(--lineheight-detail-l);
+}
+
+.segment-switch--size-xs .segment-switch__icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  position: relative;
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* SegmentSwitch examples */
+.segment-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.segment-example {
+  min-width: 200px;
+}
+
+.segment-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Custom segment switch styles */
+.custom-segment-switch {
+  position: relative;
+  display: inline-flex;
+  font-family: var(--font-family-digital-one);
+  padding: var(--spacing-sm);
+  gap: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-gray);
+  transition: all 0.25s var(--ease);
+}
+
+.custom-segment-switch__label {
+  z-index: 2;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: var(--radius-xs);
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  min-height: 40px;
+}
+
+.custom-segment-switch__label__text {
+  color: var(--text-tertiary);
+  display: inline-flex;
+  font-weight: var(--font-weight-r);
+  white-space: nowrap;
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-l);
+  letter-spacing: var(--letterspace-body-l);
+  line-height: var(--lineheight-body-l);
+}
+
+.custom-segment-switch__label--checked .custom-segment-switch__label__text {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-m-m);
+}
+
+.custom-segment-switch__thumb {
+  position: absolute;
+  z-index: 1;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--bg-white);
+  width: auto;
+  height: calc(100% - var(--spacing-sm) * 2);
+  margin-left: var(--spacing-sm);
+  border-radius: var(--radius-xs);
+  box-shadow: 0 4px 16px 0 rgba(12, 17, 29, 0.06);
+  transition: all 0.25s var(--ease);
+}
+
+.custom-segment-switch[data-state="checked"] .custom-segment-switch__thumb {
+  margin-left: calc(var(--spacing-sm) + var(--spacing-xs));
+}
+
+/* Icon styles */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.icon--size-16 {
+  width: 16px;
+  height: 16px;
+}
+
+.icon--size-20 {
+  width: 20px;
+  height: 20px;
+}
+
+.icon--size-24 {
+  width: 24px;
+  height: 24px;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.interactive-demo .custom-segment-switch {
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .segment-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>SegmentSwitch Component</h1>
+        
+        <!-- Basic SegmentSwitch -->
+        <div class="demo-section">
+            <h3>Basic SegmentSwitch</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Medium Size (Default)</span>
+                <div class="segment-examples">
+                    <div class="segment-example">
+                        <div class="segment-example-label">Text Only</div>
+                        <div class="custom-segment-switch" id="basicSwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'basicSwitch', 0)">
+                                <span class="custom-segment-switch__label__text">옵션 1</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'basicSwitch', 1)">
+                                <span class="custom-segment-switch__label__text">옵션 2</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="basicSwitchThumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="segment-example">
+                        <div class="segment-example-label">With Icons</div>
+                        <div class="custom-segment-switch" id="iconSwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'iconSwitch', 0)">
+                                <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 12L5 10L9 14L19 4L21 6L9 18L3 12Z" fill="currentColor"/>
+                                </svg>
+                                <span class="custom-segment-switch__label__text">활성</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'iconSwitch', 1)">
+                                <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 18L18 6M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="custom-segment-switch__label__text">비활성</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="iconSwitchThumb"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Size Variants -->
+        <div class="demo-section">
+            <h3>Size Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Sizes</span>
+                <div class="segment-examples">
+                    <div class="segment-example">
+                        <div class="segment-example-label">Extra Small (xs)</div>
+                        <div class="custom-segment-switch" id="xsSwitch" style="border-radius: var(--radius-sm);">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'xsSwitch', 0)" style="min-height: 28px; padding: var(--spacing-sm); gap: var(--spacing-none);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-xs); font-size: var(--font-size-detail-l); letter-spacing: var(--letterspace-detail-l); line-height: var(--lineheight-detail-l);">ON</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'xsSwitch', 1)" style="min-height: 28px; padding: var(--spacing-sm); gap: var(--spacing-none);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-xs); font-size: var(--font-size-detail-l); letter-spacing: var(--letterspace-detail-l); line-height: var(--lineheight-detail-l);">OFF</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="xsSwitchThumb" style="height: calc(100% - var(--spacing-sm) * 2);"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="segment-example">
+                        <div class="segment-example-label">Small (s)</div>
+                        <div class="custom-segment-switch" id="sSwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'sSwitch', 0)" style="min-height: 32px; padding: var(--spacing-xs) var(--spacing-sm); gap: var(--spacing-none);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-sm); font-size: var(--font-size-body-m); letter-spacing: var(--letterspace-body-m); line-height: var(--lineheight-body-m);">켜기</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'sSwitch', 1)" style="min-height: 32px; padding: var(--spacing-xs) var(--spacing-sm); gap: var(--spacing-none);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-sm); font-size: var(--font-size-body-m); letter-spacing: var(--letterspace-body-m); line-height: var(--lineheight-body-m);">끄기</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="sSwitchThumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="segment-example">
+                        <div class="segment-example-label">Medium (m) - Default</div>
+                        <div class="custom-segment-switch" id="mSwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'mSwitch', 0)" style="min-height: 40px; padding: var(--spacing-sm) var(--spacing-md); gap: var(--spacing-xs);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-sm); font-size: var(--font-size-body-l); letter-spacing: var(--letterspace-body-l); line-height: var(--lineheight-body-l);">예</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'mSwitch', 1)" style="min-height: 40px; padding: var(--spacing-sm) var(--spacing-md); gap: var(--spacing-xs);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-sm); font-size: var(--font-size-body-l); letter-spacing: var(--letterspace-body-l); line-height: var(--lineheight-body-l);">아니오</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="mSwitchThumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="segment-example">
+                        <div class="segment-example-label">Large (l)</div>
+                        <div class="custom-segment-switch" id="lSwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'lSwitch', 0)" style="min-height: 48px; padding: var(--spacing-md); gap: var(--spacing-xs);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-sm); font-size: var(--font-size-body-l); letter-spacing: var(--letterspace-body-l); line-height: var(--lineheight-body-l);">동의함</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'lSwitch', 1)" style="min-height: 48px; padding: var(--spacing-md); gap: var(--spacing-xs);">
+                                <span class="custom-segment-switch__label__text" style="padding: var(--spacing-none) var(--spacing-sm); font-size: var(--font-size-body-l); letter-spacing: var(--letterspace-body-l); line-height: var(--lineheight-body-l);">동의안함</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="lSwitchThumb"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Variants -->
+        <div class="demo-section">
+            <h3>Content Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Content Types</span>
+                <div class="segment-examples">
+                    <div class="segment-example">
+                        <div class="segment-example-label">Icon Only</div>
+                        <div class="custom-segment-switch" id="iconOnlySwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'iconOnlySwitch', 0)">
+                                <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                                    <path d="M2 17L12 22L22 17" fill="currentColor"/>
+                                    <path d="M2 12L12 17L22 12" fill="currentColor"/>
+                                </svg>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'iconOnlySwitch', 1)">
+                                <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 3H5C3.89 3 3 3.89 3 5V19C3 20.11 3.89 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.89 20.11 3 19 3ZM19 19H5V5H19V19Z" fill="currentColor"/>
+                                </svg>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="iconOnlySwitchThumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="segment-example">
+                        <div class="segment-example-label">Mixed Content</div>
+                        <div class="custom-segment-switch" id="mixedSwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'mixedSwitch', 0)">
+                                <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                                </svg>
+                                <span class="custom-segment-switch__label__text">홈</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'mixedSwitch', 1)">
+                                <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                                </svg>
+                                <span class="custom-segment-switch__label__text">설정</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="mixedSwitchThumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="segment-example">
+                        <div class="segment-example-label">Long Text</div>
+                        <div class="custom-segment-switch" id="longTextSwitch">
+                            <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'longTextSwitch', 0)">
+                                <span class="custom-segment-switch__label__text">매우 긴 텍스트 옵션 1</span>
+                            </span>
+                            <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'longTextSwitch', 1)">
+                                <span class="custom-segment-switch__label__text">매우 긴 텍스트 옵션 2</span>
+                            </span>
+                            <div class="custom-segment-switch__thumb" id="longTextSwitchThumb"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">클릭하여 세그먼트 스위치 상태 변경</span>
+                <div class="custom-segment-switch" id="interactiveSwitch">
+                    <span class="custom-segment-switch__label custom-segment-switch__label--checked" onclick="toggleSegment(this, 'interactiveSwitch', 0)">
+                        <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                        </svg>
+                        <span class="custom-segment-switch__label__text">첫 번째</span>
+                    </span>
+                    <span class="custom-segment-switch__label" onclick="toggleSegment(this, 'interactiveSwitch', 1)">
+                        <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                        </svg>
+                        <span class="custom-segment-switch__label__text">두 번째</span>
+                    </span>
+                    <div class="custom-segment-switch__thumb" id="interactiveSwitchThumb"></div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="custom-segment-switch__label" onclick="changeSize('interactiveSwitch', 'xs')" style="margin: 5px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Extra Small</button>
+                    <button class="custom-segment-switch__label" onclick="changeSize('interactiveSwitch', 's')" style="margin: 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Small</button>
+                    <button class="custom-segment-switch__label" onclick="changeSize('interactiveSwitch', 'm')" style="margin: 5px; padding: 8px 16px; background: #ffc107; color: white; border: none; border-radius: 4px; cursor: pointer;">Medium</button>
+                    <button class="custom-segment-switch__label" onclick="changeSize('interactiveSwitch', 'l')" style="margin: 5px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Large</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 세그먼트 스위치 토글 함수
+        function toggleSegment(labelElement, switchId, index) {
+            const switchContainer = document.getElementById(switchId);
+            const labels = switchContainer.querySelectorAll('.custom-segment-switch__label');
+            const thumb = switchContainer.querySelector('.custom-segment-switch__thumb');
+            
+            // 모든 라벨의 checked 상태 제거
+            labels.forEach(label => {
+                label.classList.remove('custom-segment-switch__label--checked');
+            });
+            
+            // 클릭된 라벨을 checked 상태로 설정
+            labelElement.classList.add('custom-segment-switch__label--checked');
+            
+            // thumb 위치 업데이트
+            if (thumb) {
+                const labelWidth = labelElement.offsetWidth;
+                const labelLeft = labelElement.offsetLeft;
+                const containerLeft = switchContainer.offsetLeft;
+                
+                thumb.style.width = labelWidth + 'px';
+                thumb.style.left = (labelLeft - containerLeft + 4) + 'px';
+            }
+            
+            // 상태 변경 이벤트 발생
+            const isChecked = index === 1;
+            console.log(`세그먼트 스위치 상태 변경: ${isChecked ? 'ON' : 'OFF'}`);
+            
+            // data-state 속성 업데이트
+            switchContainer.setAttribute('data-state', isChecked ? 'checked' : 'unchecked');
+        }
+        
+        // 크기 변경 함수
+        function changeSize(switchId, size) {
+            const switchContainer = document.getElementById(switchId);
+            const labels = switchContainer.querySelectorAll('.custom-segment-switch__label');
+            const thumb = switchContainer.querySelector('.custom-segment-switch__thumb');
+            
+            // 기존 크기 클래스 제거
+            switchContainer.className = switchContainer.className.replace(/custom-segment-switch--size-[a-z]/g, '');
+            
+            // 새로운 크기 적용
+            switchContainer.classList.add(`custom-segment-switch--size-${size}`);
+            
+            // 크기별 스타일 적용
+            labels.forEach(label => {
+                const text = label.querySelector('.custom-segment-switch__label__text');
+                
+                switch (size) {
+                    case 'xs':
+                        label.style.minHeight = '28px';
+                        label.style.padding = 'var(--spacing-sm)';
+                        label.style.gap = 'var(--spacing-none)';
+                        if (text) {
+                            text.style.padding = 'var(--spacing-none) var(--spacing-xs)';
+                            text.style.fontSize = 'var(--font-size-detail-l)';
+                            text.style.letterSpacing = 'var(--letterspace-detail-l)';
+                            text.style.lineHeight = 'var(--lineheight-detail-l)';
+                        }
+                        break;
+                    case 's':
+                        label.style.minHeight = '32px';
+                        label.style.padding = 'var(--spacing-xs) var(--spacing-sm)';
+                        label.style.gap = 'var(--spacing-none)';
+                        if (text) {
+                            text.style.padding = 'var(--spacing-none) var(--spacing-sm)';
+                            text.style.fontSize = 'var(--font-size-body-m)';
+                            text.style.letterSpacing = 'var(--letterspace-body-m)';
+                            text.style.lineHeight = 'var(--lineheight-body-m)';
+                        }
+                        break;
+                    case 'm':
+                        label.style.minHeight = '40px';
+                        label.style.padding = 'var(--spacing-sm) var(--spacing-md)';
+                        label.style.gap = 'var(--spacing-xs)';
+                        if (text) {
+                            text.style.padding = 'var(--spacing-none) var(--spacing-sm)';
+                            text.style.fontSize = 'var(--font-size-body-l)';
+                            text.style.letterSpacing = 'var(--letterspace-body-l)';
+                            text.style.lineHeight = 'var(--lineheight-body-l)';
+                        }
+                        break;
+                    case 'l':
+                        label.style.minHeight = '48px';
+                        label.style.padding = 'var(--spacing-md)';
+                        label.style.gap = 'var(--spacing-xs)';
+                        if (text) {
+                            text.style.padding = 'var(--spacing-none) var(--spacing-sm)';
+                            text.style.fontSize = 'var(--font-size-body-l)';
+                            text.style.letterSpacing = 'var(--letterspace-body-l)';
+                            text.style.lineHeight = 'var(--lineheight-body-l)';
+                        }
+                        break;
+                }
+            });
+            
+            // thumb 크기 조정
+            if (thumb) {
+                switch (size) {
+                    case 'xs':
+                        thumb.style.height = 'calc(100% - var(--spacing-sm) * 2)';
+                        break;
+                    case 's':
+                    case 'm':
+                    case 'l':
+                        thumb.style.height = 'calc(100% - var(--spacing-sm) * 2)';
+                        break;
+                }
+            }
+            
+            console.log(`세그먼트 스위치 크기 변경: ${size}`);
+        }
+        
+        // 페이지 로드 시 모든 스위치의 thumb 위치 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            const switches = document.querySelectorAll('.custom-segment-switch');
+            switches.forEach(switchContainer => {
+                const checkedLabel = switchContainer.querySelector('.custom-segment-switch__label--checked');
+                const thumb = switchContainer.querySelector('.custom-segment-switch__thumb');
+                
+                if (checkedLabel && thumb) {
+                    const labelWidth = checkedLabel.offsetWidth;
+                    const labelLeft = checkedLabel.offsetLeft;
+                    const containerLeft = switchContainer.offsetLeft;
+                    
+                    thumb.style.width = labelWidth + 'px';
+                    thumb.style.left = (labelLeft - containerLeft + 4) + 'px';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

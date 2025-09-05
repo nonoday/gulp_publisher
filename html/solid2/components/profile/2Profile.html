@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Component</title>
+    <style>
+/* Profile Component Styles */
+:root {
+  --gray-200: #e5e7eb;
+  --bg-canvas-white: #ffffff;
+  --fg-secondary: #6b7280;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Profile Base */
+.profile {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.profile--button {
+  cursor: pointer;
+}
+
+.profile .base-badge--type-dot {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+}
+
+.profile__avatars {
+  cursor: pointer;
+}
+
+.profile__avatars-inner {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  gap: 1px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile__avatars-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Single avatar layout */
+.profile__avatars-inner[data-count="1"] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.profile__avatars-inner[data-count="1"] .profile__avatar {
+  align-items: flex-end;
+}
+
+.profile__avatars-inner[data-count="1"] .profile__avatar .icon {
+  width: 46px;
+  height: 51px;
+  margin-bottom: -2px;
+}
+
+/* Two avatars layout */
+.profile__avatars-inner[data-count="2"] {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+.profile__avatars-inner[data-count="2"] .profile__avatar .icon {
+  width: 22.76px;
+  height: 25.24px;
+}
+
+.profile__avatars-inner[data-count="2"] .profile__avatar:first-child {
+  justify-content: flex-end;
+}
+
+.profile__avatars-inner[data-count="2"] .profile__avatar:first-child .icon {
+  margin-right: 2.79px;
+}
+
+.profile__avatars-inner[data-count="2"] .profile__avatar:last-child {
+  justify-content: flex-start;
+}
+
+.profile__avatars-inner[data-count="2"] .profile__avatar:last-child .icon {
+  margin-left: 2.79px;
+}
+
+/* Three avatars layout */
+.profile__avatars-inner[data-count="3"] {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.profile__avatars-inner[data-count="3"] .profile__avatar .icon {
+  width: 17.01px;
+  height: 18.86px;
+}
+
+.profile__avatars-inner[data-count="3"] .profile__avatar:first-child {
+  justify-content: flex-end;
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+
+.profile__avatars-inner[data-count="3"] .profile__avatar:first-child .icon {
+  width: 22.76px;
+  height: 25.24px;
+  margin-right: 1.74px;
+}
+
+.profile__avatars-inner[data-count="3"] .profile__avatar:nth-child(2) {
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.profile__avatars-inner[data-count="3"] .profile__avatar:nth-child(2) .icon {
+  margin-left: 4.5px;
+  margin-bottom: 4.14px;
+}
+
+.profile__avatars-inner[data-count="3"] .profile__avatar:last-child {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.profile__avatars-inner[data-count="3"] .profile__avatar:last-child .icon {
+  margin-left: 4.5px;
+  margin-top: 3.88px;
+}
+
+/* Four avatars layout */
+.profile__avatars-inner[data-count="4"] {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar .icon {
+  width: 17.01px;
+  height: 18.86px;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(1),
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(2) {
+  align-items: flex-end;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(1) .icon,
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(2) .icon {
+  margin-bottom: 4.14px;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(3),
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(4) {
+  align-items: flex-start;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(3) .icon,
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(4) .icon {
+  margin-top: 3.88px;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(1),
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(3) {
+  justify-content: flex-end;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(1) .icon,
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(3) .icon {
+  margin-right: 4.49px;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(2),
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(4) {
+  justify-content: flex-start;
+}
+
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(2) .icon,
+.profile__avatars-inner[data-count="4"] .profile__avatar:nth-child(4) .icon {
+  margin-left: 4.5px;
+}
+
+.profile__avatar {
+  background: var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile__avatar .icon {
+  display: block;
+  max-width: 46px;
+  max-height: 51px;
+}
+
+.profile__edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: var(--bg-canvas-white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-secondary);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile__edit:hover {
+  background: #f3f4f6;
+}
+
+.profile__edit:active {
+  background: #e5e7eb;
+}
+
+.profile__alert {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.profile__alert .base-badge__indicator {
+  position: relative;
+  top: auto;
+  right: auto;
+}
+
+/* Badge styles */
+.base-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.base-badge--type-dot {
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border: 2px solid white;
+}
+
+.base-badge--type-number {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: #6b7280;
+  color: white;
+}
+
+.base-badge--color-gray {
+  background: #6b7280;
+  color: white;
+}
+
+.base-badge--color-red {
+  background: #ef4444;
+  color: white;
+}
+
+.base-badge--color-green {
+  background: #10b981;
+  color: white;
+}
+
+.base-badge--color-blue {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Icon styles */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.icon--size-16 {
+  width: 16px;
+  height: 16px;
+}
+
+.icon--size-24 {
+  width: 24px;
+  height: 24px;
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  position: relative;
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Profile examples */
+.profile-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.profile-example {
+  text-align: center;
+}
+
+.profile-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* Sample images */
+.sample-avatar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sample-avatar--user1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.sample-avatar--user2 {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.sample-avatar--user3 {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.sample-avatar--user4 {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.interactive-demo .profile {
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Profile Component</h1>
+        
+        <!-- Basic Profile -->
+        <div class="demo-section">
+            <h3>Basic Profile</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Single Avatar</span>
+                <div class="profile-examples">
+                    <div class="profile-example">
+                        <div class="profile-example-label">Default</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="1" role="img" aria-label="아바타(1명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-example">
+                        <div class="profile-example-label">With Edit Button</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="1" role="img" aria-label="아바타(1명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="profile__edit" aria-label="편집">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Multiple Avatars -->
+        <div class="demo-section">
+            <h3>Multiple Avatars</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Two Avatars</span>
+                <div class="profile-examples">
+                    <div class="profile-example">
+                        <div class="profile-example-label">Default</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="2" role="img" aria-label="아바타(2명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user2">U2</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-example">
+                        <div class="profile-example-label">With Alert Badge</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="2" role="img" aria-label="아바타(2명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user2">U2</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile__alert">
+                                <div class="base-badge base-badge--type-number base-badge--color-gray">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Three Avatars</span>
+                <div class="profile-examples">
+                    <div class="profile-example">
+                        <div class="profile-example-label">Default</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="3" role="img" aria-label="아바타(3명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user2">U2</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user3">U3</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-example">
+                        <div class="profile-example-label">With Dot Badge</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="3" role="img" aria-label="아바타(3명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user2">U2</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user3">U3</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="base-badge base-badge--type-dot" aria-label="새알림"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <span class="demo-label">Four Avatars</span>
+                <div class="profile-examples">
+                    <div class="profile-example">
+                        <div class="profile-example-label">Default</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="4" role="img" aria-label="아바타(4명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user2">U2</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user3">U3</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user4">U4</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-example">
+                        <div class="profile-example-label">With Edit & Alert</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="4" role="img" aria-label="아바타(4명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user2">U2</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user3">U3</div>
+                                    </div>
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user4">U4</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="profile__edit" aria-label="편집">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="profile__alert">
+                                <div class="base-badge base-badge--type-number base-badge--color-red">12</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Badge Variants -->
+        <div class="demo-section">
+            <h3>Badge Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Badge Colors</span>
+                <div class="profile-examples">
+                    <div class="profile-example">
+                        <div class="profile-example-label">Gray Badge</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="1" role="img" aria-label="아바타(1명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile__alert">
+                                <div class="base-badge base-badge--type-number base-badge--color-gray">5</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-example">
+                        <div class="profile-example-label">Red Badge</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="1" role="img" aria-label="아바타(1명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile__alert">
+                                <div class="base-badge base-badge--type-number base-badge--color-red">8</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-example">
+                        <div class="profile-example-label">Green Badge</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="1" role="img" aria-label="아바타(1명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile__alert">
+                                <div class="base-badge base-badge--type-number base-badge--color-green">2</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-example">
+                        <div class="profile-example-label">Blue Badge</div>
+                        <div class="profile">
+                            <div class="profile__avatars">
+                                <div class="profile__avatars-inner" data-count="1" role="img" aria-label="아바타(1명 참여중)">
+                                    <div class="profile__avatar">
+                                        <div class="sample-avatar sample-avatar--user1">U1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile__alert">
+                                <div class="base-badge base-badge--type-number base-badge--color-blue">15</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">클릭하여 아바타 개수 변경</span>
+                <div class="profile" id="interactiveProfile">
+                    <div class="profile__avatars">
+                        <div class="profile__avatars-inner" data-count="1" role="img" aria-label="아바타(1명 참여중)">
+                            <div class="profile__avatar">
+                                <div class="sample-avatar sample-avatar--user1">U1</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="profile__edit" aria-label="편집">
+                        <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div class="profile__alert">
+                        <div class="base-badge base-badge--type-number base-badge--color-gray">3</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="profile__edit" onclick="changeAvatarCount(1)" style="margin: 5px;">1명</button>
+                    <button class="profile__edit" onclick="changeAvatarCount(2)" style="margin: 5px;">2명</button>
+                    <button class="profile__edit" onclick="changeAvatarCount(3)" style="margin: 5px;">3명</button>
+                    <button class="profile__edit" onclick="changeAvatarCount(4)" style="margin: 5px;">4명</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 아바타 개수 변경 함수
+        function changeAvatarCount(count) {
+            const profile = document.getElementById('interactiveProfile');
+            const avatarsInner = profile.querySelector('.profile__avatars-inner');
+            const alertBadge = profile.querySelector('.profile__alert');
+            
+            // 기존 아바타 제거
+            avatarsInner.innerHTML = '';
+            
+            // 새로운 아바타 추가
+            for (let i = 0; i < count; i++) {
+                const avatar = document.createElement('div');
+                avatar.className = 'profile__avatar';
+                
+                const sampleAvatar = document.createElement('div');
+                sampleAvatar.className = `sample-avatar sample-avatar--user${i + 1}`;
+                sampleAvatar.textContent = `U${i + 1}`;
+                
+                avatar.appendChild(sampleAvatar);
+                avatarsInner.appendChild(avatar);
+            }
+            
+            // data-count 속성 업데이트
+            avatarsInner.setAttribute('data-count', count);
+            
+            // aria-label 업데이트
+            avatarsInner.setAttribute('aria-label', `아바타(${count}명 참여중)`);
+            
+            // 알림 배지 숫자 업데이트
+            if (alertBadge) {
+                const badge = alertBadge.querySelector('.base-badge');
+                if (badge) {
+                    badge.textContent = Math.floor(Math.random() * 20) + 1;
+                }
+            }
+        }
+        
+        // 편집 버튼 클릭 이벤트
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('.profile__edit')) {
+                const profile = event.target.closest('.profile');
+                const avatarsInner = profile.querySelector('.profile__avatars-inner');
+                const count = avatarsInner.getAttribute('data-count');
+                alert(`프로필 편집 (${count}명의 아바타)`);
+            }
+        });
+    </script>
+</body>
+</html>

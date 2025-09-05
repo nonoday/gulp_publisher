@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popover Web Component</title>
+    <style>
+        .sv-popover-wrapper {
+            display: inline-block;
+            position: relative;
+        }
+
+        .sv-popover {
+            position: fixed;
+            z-index: 1000;
+            max-width: 260px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            word-wrap: break-word;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sv-popover--color-primary {
+            background: #005df9;
+            color: #ffffff;
+        }
+
+        .sv-popover--color-gray {
+            background: #374151;
+            color: #ffffff;
+        }
+
+        .sv-popover__anchor {
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .sv-popover__arrow {
+            position: absolute;
+            width: 18px;
+            height: 8px;
+        }
+
+        .sv-popover__arrow svg {
+            display: inline-block;
+            vertical-align: top;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sv-popover__content {
+            position: relative;
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.4;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .sv-popover__content--wrap {
+            white-space: normal;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        /* 접근성을 위한 포커스 스타일 */
+        .sv-popover__anchor:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* 고대비 모드 지원 */
+        @media (prefers-contrast: high) {
+            .sv-popover {
+                border: 2px solid currentColor !important;
+            }
+        }
+
+        /* 모션 감소 지원 */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-popover {
+                transition: none;
+            }
+        }
+
+        /* 스크린 리더 전용 텍스트 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        class PopoverComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._placement = 'bottom-center';
+                this._content = '';
+                this._open = false;
+                this._autoClose = false;
+                this._color = 'primary';
+                this._isOpen = false;
+                this._popoverId = `popover-${Math.random().toString(36).substr(2, 9)}`;
+                this._autoCloseTimer = null;
+                this._anchorElement = null;
+                this._popoverElement = null;
+                this._arrowElement = null;
+                this._contentElement = null;
+            }
+
+            static get observedAttributes() {
+                return ['placement', 'content', 'open', 'auto-close', 'color'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+                this.setupGlobalEventListeners();
+            }
+
+            disconnectedCallback() {
+                this.removeGlobalEventListeners();
+                this.clearAutoCloseTimer();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'placement':
+                        this._placement = value || 'bottom-center';
+                        break;
+                    case 'content':
+                        this._content = value || '';
+                        break;
+                    case 'open':
+                        this._open = value === 'true' || value === '';
+                        this._isOpen = this._open;
+                        break;
+                    case 'auto-close':
+                        this._autoClose = value === 'true' || value === '';
+                        break;
+                    case 'color':
+                        this._color = value || 'primary';
+                        break;
+                }
+            }
+
+            render() {
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: inline-block; }
+                        .sv-popover-wrapper {
+                            display: inline-block;
+                            position: relative;
+                        }
+                        .sv-popover {
+                            position: fixed;
+                            z-index: 1000;
+                            max-width: 260px;
+                            padding: 8px 16px;
+                            border-radius: 4px;
+                            word-wrap: break-word;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        }
+                        .sv-popover--color-primary {
+                            background: #005df9;
+                            color: #ffffff;
+                        }
+                        .sv-popover--color-gray {
+                            background: #374151;
+                            color: #ffffff;
+                        }
+                        .sv-popover__anchor {
+                            display: inline-block;
+                            cursor: pointer;
+                        }
+                        .sv-popover__arrow {
+                            position: absolute;
+                            width: 18px;
+                            height: 8px;
+                        }
+                        .sv-popover__arrow svg {
+                            display: inline-block;
+                            vertical-align: top;
+                            width: 100%;
+                            height: 100%;
+                        }
+                        .sv-popover__content {
+                            position: relative;
+                            color: #ffffff;
+                            font-size: 14px;
+                            line-height: 1.4;
+                            font-weight: 500;
+                            white-space: nowrap;
+                        }
+                        .sv-popover__content--wrap {
+                            white-space: normal;
+                            word-wrap: break-word;
+                            word-break: break-word;
+                        }
+                        .sv-popover__anchor:focus-visible {
+                            outline: 2px solid #3b82f6;
+                            outline-offset: 2px;
+                            border-radius: 4px;
+                        }
+                        @media (prefers-contrast: high) {
+                            .sv-popover {
+                                border: 2px solid currentColor !important;
+                            }
+                        }
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-popover {
+                                transition: none;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="sv-popover-wrapper">
+                        <div
+                            class="sv-popover__anchor"
+                            role="button"
+                            aria-expanded="${this._isOpen}"
+                            aria-describedby="${this._isOpen ? this._popoverId : ''}"
+                            tabindex="0"
+                        >
+                            <slot></slot>
+                        </div>
+
+                        <div
+                            id="${this._popoverId}"
+                            class="sv-popover ${this.getPopoverClasses()}"
+                            role="tooltip"
+                            aria-hidden="${!this._isOpen}"
+                            ${this._isOpen ? '' : 'hidden'}
+                            style="${this.getPopoverStyles()}"
+                        >
+                            <div class="sv-popover__arrow ${this.getArrowClasses()}" style="${this.getArrowStyles()}">
+                                <svg width="18" height="8" viewBox="0 0 18 8" fill="none">
+                                    <path d="M9.76822 0.921865L14.7671 6.92055C15.3371 7.60453 16.1815 8 17.0718 8L0.928209 8C1.81855 8 2.66289 7.60453 3.23287 6.92055L8.23178 0.921865C8.63157 0.442111 9.36843 0.442111 9.76822 0.921865Z" fill="${this.getArrowFillColor()}"/>
+                                </svg>
+                            </div>
+                            <div class="sv-popover__content ${this.shouldWrapContent() ? 'sv-popover__content--wrap' : ''}">
+                                ${this._content}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                this._anchorElement = this.shadowRoot.querySelector('.sv-popover__anchor');
+                this._popoverElement = this.shadowRoot.querySelector('.sv-popover');
+                this._arrowElement = this.shadowRoot.querySelector('.sv-popover__arrow');
+                this._contentElement = this.shadowRoot.querySelector('.sv-popover__content');
+            }
+
+            getPopoverClasses() {
+                const classes = ['sv-popover'];
+                
+                if (this._placement) {
+                    classes.push(`sv-popover--placement-${this._placement}`);
+                }
+                
+                if (this._color) {
+                    classes.push(`sv-popover--color-${this._color}`);
+                }
+                
+                return classes.join(' ');
+            }
+
+            getArrowClasses() {
+                const classes = ['sv-popover__arrow'];
+                
+                if (this._placement) {
+                    classes.push(`sv-popover__arrow--placement-${this._placement}`);
+                }
+                
+                if (this._color) {
+                    classes.push(`sv-popover__arrow--color-${this._color}`);
+                }
+                
+                return classes.join(' ');
+            }
+
+            getPopoverStyles() {
+                const anchorRect = this._anchorElement?.getBoundingClientRect();
+                if (!anchorRect) return '';
+
+                const styles = this.calculatePosition(anchorRect);
+                return Object.entries(styles)
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join('; ');
+            }
+
+            getArrowStyles() {
+                const side = this._placement.split('-')[0];
+                const staticSide = {
+                    top: 'bottom',
+                    right: 'left',
+                    bottom: 'top',
+                    left: 'right'
+                }[side];
+
+                if (!staticSide) return '';
+
+                const transformOrigin = {
+                    top: '',
+                    right: '0 0',
+                    bottom: 'center 100%',
+                    left: '100% 0'
+                }[staticSide];
+
+                const transform = {
+                    top: 'translateY(-100%)',
+                    right: 'translateY(50%) rotate(90deg) translateX(-50%)',
+                    bottom: 'rotate(180deg)',
+                    left: 'translateY(50%) rotate(-90deg) translateX(50%)'
+                }[staticSide];
+
+                const arrowOffset = ['right', 'left'].includes(side) ? '-26px' : '0';
+
+                return `
+                    ${staticSide}: ${arrowOffset};
+                    transform-origin: ${transformOrigin};
+                    transform: ${transform};
+                `;
+            }
+
+            calculatePosition(anchorRect) {
+                const popoverWidth = 260; // max-width
+                const popoverHeight = 60; // 예상 높이
+                const offset = 16;
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+
+                let left, top;
+
+                switch (this._placement) {
+                    case 'top-center':
+                        left = anchorRect.left + (anchorRect.width / 2) - (popoverWidth / 2);
+                        top = anchorRect.top - popoverHeight - offset;
+                        break;
+                    case 'top-left':
+                        left = anchorRect.left;
+                        top = anchorRect.top - popoverHeight - offset;
+                        break;
+                    case 'top-right':
+                        left = anchorRect.right - popoverWidth;
+                        top = anchorRect.top - popoverHeight - offset;
+                        break;
+                    case 'bottom-center':
+                        left = anchorRect.left + (anchorRect.width / 2) - (popoverWidth / 2);
+                        top = anchorRect.bottom + offset;
+                        break;
+                    case 'bottom-left':
+                        left = anchorRect.left;
+                        top = anchorRect.bottom + offset;
+                        break;
+                    case 'bottom-right':
+                        left = anchorRect.right - popoverWidth;
+                        top = anchorRect.bottom + offset;
+                        break;
+                    case 'left-top':
+                        left = anchorRect.left - popoverWidth - offset;
+                        top = anchorRect.top;
+                        break;
+                    case 'left-middle':
+                        left = anchorRect.left - popoverWidth - offset;
+                        top = anchorRect.top + (anchorRect.height / 2) - (popoverHeight / 2);
+                        break;
+                    case 'left-bottom':
+                        left = anchorRect.left - popoverWidth - offset;
+                        top = anchorRect.bottom - popoverHeight;
+                        break;
+                    case 'right-top':
+                        left = anchorRect.right + offset;
+                        top = anchorRect.top;
+                        break;
+                    case 'right-middle':
+                        left = anchorRect.right + offset;
+                        top = anchorRect.top + (anchorRect.height / 2) - (popoverHeight / 2);
+                        break;
+                    case 'right-bottom':
+                        left = anchorRect.right + offset;
+                        top = anchorRect.bottom - popoverHeight;
+                        break;
+                    default:
+                        left = anchorRect.left + (anchorRect.width / 2) - (popoverWidth / 2);
+                        top = anchorRect.bottom + offset;
+                }
+
+                // 뷰포트 경계 체크
+                if (left < 8) left = 8;
+                if (left + popoverWidth > viewportWidth - 8) left = viewportWidth - popoverWidth - 8;
+                if (top < 8) top = 8;
+                if (top + popoverHeight > viewportHeight - 8) top = viewportHeight - popoverHeight - 8;
+
+                return {
+                    left: `${left}px`,
+                    top: `${top}px`
+                };
+            }
+
+            getArrowFillColor() {
+                return this._color === 'primary' ? '#005df9' : '#374151';
+            }
+
+            shouldWrapContent() {
+                if (!this._contentElement) return false;
+                
+                const maxWidth = 260;
+                const padding = 32; // 좌우 패딩
+                const availableWidth = maxWidth - padding;
+                
+                // 임시로 nowrap 상태에서 텍스트 너비 측정
+                const originalWhiteSpace = this._contentElement.style.whiteSpace;
+                this._contentElement.style.whiteSpace = 'nowrap';
+                const textWidth = this._contentElement.scrollWidth;
+                this._contentElement.style.whiteSpace = originalWhiteSpace;
+                
+                return textWidth > availableWidth;
+            }
+
+            setupAccessibility() {
+                if (this._anchorElement) {
+                    this._anchorElement.setAttribute('aria-expanded', this._isOpen.toString());
+                    if (this._isOpen) {
+                        this._anchorElement.setAttribute('aria-describedby', this._popoverId);
+                    } else {
+                        this._anchorElement.removeAttribute('aria-describedby');
+                    }
+                }
+
+                if (this._popoverElement) {
+                    this._popoverElement.setAttribute('aria-hidden', (!this._isOpen).toString());
+                    if (this._isOpen) {
+                        this._popoverElement.removeAttribute('hidden');
+                    } else {
+                        this._popoverElement.setAttribute('hidden', '');
+                    }
+                }
+            }
+
+            setupEventListeners() {
+                if (this._anchorElement) {
+                    this._anchorElement.addEventListener('click', (e) => this.handleAnchorClick(e));
+                    this._anchorElement.addEventListener('keydown', (e) => this.handleAnchorKeydown(e));
+                }
+            }
+
+            setupGlobalEventListeners() {
+                document.addEventListener('click', (e) => this.handleClickOutside(e));
+                document.addEventListener('keydown', (e) => this.handleEscapeKey(e));
+            }
+
+            removeGlobalEventListeners() {
+                document.removeEventListener('click', (e) => this.handleClickOutside(e));
+                document.removeEventListener('keydown', (e) => this.handleEscapeKey(e));
+            }
+
+            handleAnchorClick(event) {
+                event.preventDefault();
+                if (this._isOpen) {
+                    this.close();
+                } else {
+                    this.open();
+                }
+            }
+
+            handleAnchorKeydown(event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    this.handleAnchorClick(event);
+                }
+            }
+
+            handleClickOutside(event) {
+                if (this._isOpen && !this.contains(event.target)) {
+                    this.close();
+                }
+            }
+
+            handleEscapeKey(event) {
+                if (event.key === 'Escape' && this._isOpen) {
+                    this.close();
+                    this._anchorElement?.focus();
+                }
+            }
+
+            open() {
+                this._isOpen = true;
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+                
+                if (this._autoClose) {
+                    this.startAutoCloseTimer();
+                }
+
+                this.dispatchEvent(new CustomEvent('popover-open', {
+                    detail: { isOpen: true }
+                }));
+            }
+
+            close() {
+                this._isOpen = false;
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+                
+                this.clearAutoCloseTimer();
+
+                this.dispatchEvent(new CustomEvent('popover-close', {
+                    detail: { isOpen: false }
+                }));
+            }
+
+            startAutoCloseTimer() {
+                this.clearAutoCloseTimer();
+                if (typeof this._autoClose === 'number') {
+                    this._autoCloseTimer = setTimeout(() => {
+                        this.close();
+                    }, this._autoClose);
+                }
+            }
+
+            clearAutoCloseTimer() {
+                if (this._autoCloseTimer) {
+                    clearTimeout(this._autoCloseTimer);
+                    this._autoCloseTimer = null;
+                }
+            }
+
+            // Getters and setters
+            get placement() { return this._placement; }
+            set placement(value) { this._placement = value; this.setAttribute('placement', value); }
+            
+            get content() { return this._content; }
+            set content(value) { this._content = value; this.setAttribute('content', value); }
+            
+            get open() { return this._open; }
+            set open(value) { this._open = value; this.setAttribute('open', value); }
+            
+            get autoClose() { return this._autoClose; }
+            set autoClose(value) { this._autoClose = value; this.setAttribute('auto-close', value); }
+            
+            get color() { return this._color; }
+            set color(value) { this._color = value; this.setAttribute('color', value); }
+            
+            get isOpen() { return this._isOpen; }
+
+            // Public methods
+            show() { this.open(); }
+            hide() { this.close(); }
+            toggle() { this._isOpen ? this.close() : this.open(); }
+        }
+
+        customElements.define('sv-popover', PopoverComponent);
+    </script>
+
+    <h2>Popover 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 팝오버</h3>
+    <sv-popover content="이것은 기본 팝오버입니다.">
+        <button>클릭하세요</button>
+    </sv-popover>
+
+    <h3>위치별 팝오버</h3>
+    <div style="display: flex; gap: 20px; margin: 20px 0;">
+        <div>
+            <p>위쪽 중앙:</p>
+            <sv-popover placement="top-center" content="위쪽 중앙에 표시됩니다.">
+                <button>위쪽</button>
+            </sv-popover>
+        </div>
+        
+        <div>
+            <p>아래쪽 중앙:</p>
+            <sv-popover placement="bottom-center" content="아래쪽 중앙에 표시됩니다.">
+                <button>아래쪽</button>
+            </sv-popover>
+        </div>
+        
+        <div>
+            <p>왼쪽 중앙:</p>
+            <sv-popover placement="left-middle" content="왼쪽 중앙에 표시됩니다.">
+                <button>왼쪽</button>
+            </sv-popover>
+        </div>
+        
+        <div>
+            <p>오른쪽 중앙:</p>
+            <sv-popover placement="right-middle" content="오른쪽 중앙에 표시됩니다.">
+                <button>오른쪽</button>
+            </sv-popover>
+        </div>
+    </div>
+
+    <h3>색상별 팝오버</h3>
+    <div style="display: flex; gap: 20px; margin: 20px 0;">
+        <sv-popover color="primary" content="파란색 팝오버입니다.">
+            <button style="background: #005df9; color: white; border: none; padding: 8px 16px; border-radius: 4px;">Primary</button>
+        </sv-popover>
+        
+        <sv-popover color="gray" content="회색 팝오버입니다.">
+            <button style="background: #374151; color: white; border: none; padding: 8px 16px; border-radius: 4px;">Gray</button>
+        </sv-popover>
+    </div>
+
+    <h3>자동 닫힘 팝오버</h3>
+    <sv-popover auto-close="3000" content="3초 후 자동으로 닫힙니다.">
+        <button>자동 닫힘</button>
+    </sv-popover>
+
+    <h3>긴 텍스트 팝오버</h3>
+    <sv-popover content="이것은 매우 긴 텍스트를 포함한 팝오버입니다. 텍스트가 길어지면 자동으로 줄바꿈이 적용되어 가독성을 높입니다.">
+        <button>긴 텍스트</button>
+    </sv-popover>
+
+    <h3>접근성 테스트</h3>
+    <p>키보드로 탐색해보세요:</p>
+    <ul>
+        <li>Tab 키로 팝오버 트리거에 포커스</li>
+        <li>Enter/Space로 팝오버 열기/닫기</li>
+        <li>Escape 키로 팝오버 닫기</li>
+    </ul>
+
+    <sv-popover content="접근성 테스트 팝오버입니다. 스크린 리더가 이 내용을 읽을 수 있습니다.">
+        <button>접근성 테스트</button>
+    </sv-popover>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('popover-open', (e) => {
+            console.log('팝오버가 열렸습니다:', e.detail);
+        });
+
+        document.addEventListener('popover-close', (e) => {
+            console.log('팝오버가 닫혔습니다:', e.detail);
+        });
+
+        // 프로그래밍 방식으로 팝오버 제어
+        const popover = document.querySelector('sv-popover');
+        if (popover) {
+            // 5초 후 팝오버 열기
+            setTimeout(() => {
+                popover.show();
+            }, 5000);
+
+            // 팝오버 상태 확인
+            console.log('팝오버가 열려있나요?', popover.isOpen);
+        }
+
+        // 동적으로 콘텐츠 변경
+        const dynamicPopover = document.querySelector('sv-popover[content*="기본"]');
+        if (dynamicPopover) {
+            setTimeout(() => {
+                dynamicPopover.content = '콘텐츠가 동적으로 변경되었습니다!';
+            }, 2000);
+        }
+
+        // 접근성 테스트를 위한 포커스 이벤트
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'SV-POPOVER') {
+                console.log('팝오버에 포커스됨');
+            }
+        });
+
+        // 키보드 이벤트 테스트
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'SV-POPOVER') {
+                console.log('키보드 이벤트:', e.key);
+            }
+        });
+    </script>
+</body>
+</html>

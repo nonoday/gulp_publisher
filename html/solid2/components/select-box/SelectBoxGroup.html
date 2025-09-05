@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelectBoxGroup Web Component</title>
+    <style>
+        .sv-select-box-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .sv-select-box-group--orientation-horizontal {
+            flex-direction: row;
+        }
+
+        .sv-select-box-group--orientation-horizontal:not(.sv-select-box-group--has-many) .sv-select-box {
+            width: 100%;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .sv-select-box-group--orientation-horizontal.sv-select-box-group--has-many {
+            flex-wrap: wrap;
+        }
+
+        .sv-select-box-group--orientation-vertical {
+            flex-direction: column;
+        }
+
+        .sv-select-box-group--orientation-vertical .sv-select-box {
+            width: 100%;
+        }
+
+        .sv-select-box-group--orientation-vertical.sv-select-box-group--has-many {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .sv-select-box-group--disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* 접근성을 위한 포커스 스타일 */
+        .sv-select-box-group:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* 고대비 모드 지원 */
+        @media (prefers-contrast: high) {
+            .sv-select-box-group {
+                border: 1px solid currentColor;
+                padding: 8px;
+                border-radius: 8px;
+            }
+        }
+
+        /* 모션 감소 지원 */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-select-box-group {
+                transition: none;
+            }
+        }
+
+        /* 스크린 리더 전용 텍스트 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        class SelectBoxGroupComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._orientation = 'vertical';
+                this._multiple = false;
+                this._items = [];
+                this._labelKey = 'label';
+                this._valueKey = 'value';
+                this._disabled = false;
+                this._as = 'button';
+                this._value = null;
+                this._id = `select-box-group-${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            static get observedAttributes() {
+                return ['orientation', 'multiple', 'items', 'label-key', 'value-key', 'disabled', 'as', 'value'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'orientation':
+                        this._orientation = value || 'vertical';
+                        break;
+                    case 'multiple':
+                        this._multiple = value === 'true' || value === '';
+                        break;
+                    case 'items':
+                        try {
+                            this._items = value ? JSON.parse(value) : [];
+                        } catch (e) {
+                            this._items = [];
+                        }
+                        break;
+                    case 'label-key':
+                        this._labelKey = value || 'label';
+                        break;
+                    case 'value-key':
+                        this._valueKey = value || 'value';
+                        break;
+                    case 'disabled':
+                        this._disabled = value === 'true' || value === '';
+                        break;
+                    case 'as':
+                        this._as = value || 'button';
+                        break;
+                    case 'value':
+                        this._value = value;
+                        break;
+                }
+            }
+
+            render() {
+                const groupClasses = this.getGroupClasses();
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: block; }
+                        .sv-select-box-group {
+                            display: flex;
+                            gap: 16px;
+                        }
+                        .sv-select-box-group--orientation-horizontal {
+                            flex-direction: row;
+                        }
+                        .sv-select-box-group--orientation-horizontal:not(.sv-select-box-group--has-many) .sv-select-box {
+                            width: 100%;
+                            padding-left: 20px;
+                            padding-right: 20px;
+                        }
+                        .sv-select-box-group--orientation-horizontal.sv-select-box-group--has-many {
+                            flex-wrap: wrap;
+                        }
+                        .sv-select-box-group--orientation-vertical {
+                            flex-direction: column;
+                        }
+                        .sv-select-box-group--orientation-vertical .sv-select-box {
+                            width: 100%;
+                        }
+                        .sv-select-box-group--orientation-vertical.sv-select-box-group--has-many {
+                            max-height: 300px;
+                            overflow-y: auto;
+                        }
+                        .sv-select-box-group--disabled {
+                            pointer-events: none;
+                            opacity: 0.6;
+                        }
+                        .sv-select-box-group:focus-visible {
+                            outline: 2px solid #3b82f6;
+                            outline-offset: 2px;
+                        }
+                        @media (prefers-contrast: high) {
+                            .sv-select-box-group {
+                                border: 1px solid currentColor;
+                                padding: 8px;
+                                border-radius: 8px;
+                            }
+                        }
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-select-box-group {
+                                transition: none;
+                            }
+                        }
+                    </style>
+                    
+                    <div 
+                        class="sv-select-box-group ${groupClasses}"
+                        role="group"
+                        ${this._disabled ? 'aria-disabled="true"' : ''}
+                        ${this._multiple ? 'aria-multiselectable="true"' : ''}
+                        aria-labelledby="${this._id}-label"
+                        tabindex="0"
+                    >
+                        <span 
+                            id="${this._id}-label"
+                            class="sr-only"
+                        >
+                            ${this._items.length > 0 ? `${this._items.length}개 옵션 중 선택` : '선택 옵션'}
+                        </span>
+
+                        ${this._items.map(item => this.renderSelectBox(item)).join('')}
+                    </div>
+                `;
+            }
+
+            renderSelectBox(item) {
+                const value = this.getNestedValue(item, this._valueKey);
+                const label = this.getNestedValue(item, this._labelKey);
+                const selected = this.isSelected(item);
+                const disabled = this._disabled || item.disabled || false;
+                const showIndicator = item.showIndicator !== undefined ? item.showIndicator : this._multiple;
+                const as = item.as || this._as;
+
+                return `
+                    <sv-select-box
+                        value="${value}"
+                        label="${label}"
+                        selected="${selected}"
+                        disabled="${disabled}"
+                        show-indicator="${showIndicator}"
+                        as="${as}"
+                        data-item-index="${this._items.indexOf(item)}"
+                    ></sv-select-box>
+                `;
+            }
+
+            getNestedValue(obj, path) {
+                return path.split('.').reduce((current, key) => {
+                    return current && current[key] !== undefined ? current[key] : undefined;
+                }, obj);
+            }
+
+            isSelected(item) {
+                const value = this.getNestedValue(item, this._valueKey);
+                const selectedValues = Array.isArray(this._value) ? this._value : [this._value];
+                return selectedValues.includes(value);
+            }
+
+            getGroupClasses() {
+                const classes = ['sv-select-box-group'];
+                
+                if (this._orientation) {
+                    classes.push(`sv-select-box-group--orientation-${this._orientation}`);
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-select-box-group--disabled');
+                }
+                
+                if (this._items.length >= (this._multiple ? 4 : 5)) {
+                    classes.push('sv-select-box-group--has-many');
+                }
+                
+                return classes.join(' ');
+            }
+
+            setupAccessibility() {
+                const group = this.shadowRoot.querySelector('.sv-select-box-group');
+                
+                if (group) {
+                    if (this._disabled) {
+                        group.setAttribute('aria-disabled', 'true');
+                    }
+                    
+                    if (this._multiple) {
+                        group.setAttribute('aria-multiselectable', 'true');
+                    }
+                }
+            }
+
+            setupEventListeners() {
+                const group = this.shadowRoot.querySelector('.sv-select-box-group');
+                
+                if (group) {
+                    group.addEventListener('keydown', (e) => this.handleGroupKeydown(e));
+                }
+
+                // SelectBox 클릭 이벤트 리스너
+                this.addEventListener('select-box-click', (e) => this.handleSelectBoxClick(e));
+            }
+
+            handleGroupKeydown(event) {
+                if (this._disabled) return;
+                
+                const selectBoxes = this.shadowRoot.querySelectorAll('sv-select-box');
+                const currentIndex = Array.from(selectBoxes).findIndex(box => 
+                    box.shadowRoot.querySelector('.sv-select-box') === document.activeElement
+                );
+
+                switch (event.key) {
+                    case 'ArrowDown':
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        if (currentIndex < selectBoxes.length - 1) {
+                            selectBoxes[currentIndex + 1].shadowRoot.querySelector('.sv-select-box').focus();
+                        }
+                        break;
+                    case 'ArrowUp':
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        if (currentIndex > 0) {
+                            selectBoxes[currentIndex - 1].shadowRoot.querySelector('.sv-select-box').focus();
+                        }
+                        break;
+                    case 'Home':
+                        event.preventDefault();
+                        if (selectBoxes.length > 0) {
+                            selectBoxes[0].shadowRoot.querySelector('.sv-select-box').focus();
+                        }
+                        break;
+                    case 'End':
+                        event.preventDefault();
+                        if (selectBoxes.length > 0) {
+                            selectBoxes[selectBoxes.length - 1].shadowRoot.querySelector('.sv-select-box').focus();
+                        }
+                        break;
+                }
+            }
+
+            handleSelectBoxClick(event) {
+                if (this._disabled) return;
+
+                const selectBox = event.target;
+                const value = selectBox.value;
+                const itemIndex = parseInt(selectBox.getAttribute('data-item-index'));
+                const item = this._items[itemIndex];
+
+                let updatedValue;
+
+                if (this._multiple) {
+                    // 여러개 선택 가능하면 선택된 값을 넣거나 삭제
+                    const array = Array.isArray(this._value) ? [...this._value] : [];
+                    const index = array.findIndex(v => value === v);
+                    if (index === -1) {
+                        array.push(value);
+                    } else {
+                        array.splice(index, 1);
+                    }
+                    updatedValue = [...array];
+                } else {
+                    // 단일 선택이면 같은 값 클릭시 선택 해제, 다른 값 클릭시 선택
+                    updatedValue = value;
+                }
+
+                this._value = updatedValue;
+                this.setAttribute('value', JSON.stringify(updatedValue));
+
+                // 모든 SelectBox 상태 업데이트
+                this.updateSelectBoxStates();
+
+                // 이벤트 발생
+                this.dispatchEvent(new CustomEvent('select-box-group-change', {
+                    detail: { value: updatedValue }
+                }));
+
+                this.dispatchEvent(new CustomEvent('change', {
+                    detail: { value: updatedValue }
+                }));
+
+                this.dispatchEvent(new CustomEvent('item-click', {
+                    detail: { value: value, event: event }
+                }));
+            }
+
+            updateSelectBoxStates() {
+                const selectBoxes = this.shadowRoot.querySelectorAll('sv-select-box');
+                
+                selectBoxes.forEach((selectBox, index) => {
+                    const item = this._items[index];
+                    if (item) {
+                        const isSelected = this.isSelected(item);
+                        selectBox.selected = isSelected;
+                    }
+                });
+            }
+
+            // Getters and setters
+            get orientation() { return this._orientation; }
+            set orientation(value) { this._orientation = value; this.setAttribute('orientation', value); }
+            
+            get multiple() { return this._multiple; }
+            set multiple(value) { this._multiple = value === 'true' || value === ''; this.setAttribute('multiple', value); }
+            
+            get items() { return this._items; }
+            set items(value) { this._items = Array.isArray(value) ? value : []; this.setAttribute('items', JSON.stringify(this._items)); }
+            
+            get labelKey() { return this._labelKey; }
+            set labelKey(value) { this._labelKey = value; this.setAttribute('label-key', value); }
+            
+            get valueKey() { return this._valueKey; }
+            set valueKey(value) { this._valueKey = value; this.setAttribute('value-key', value); }
+            
+            get disabled() { return this._disabled; }
+            set disabled(value) { this._disabled = value === 'true' || value === ''; this.setAttribute('disabled', value); }
+            
+            get as() { return this._as; }
+            set as(value) { this._as = value; this.setAttribute('as', value); }
+            
+            get value() { return this._value; }
+            set value(value) { this._value = value; this.setAttribute('value', JSON.stringify(value)); this.updateSelectBoxStates(); }
+        }
+
+        customElements.define('sv-select-box-group', SelectBoxGroupComponent);
+    </script>
+
+    <h2>SelectBoxGroup 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 SelectBoxGroup (수직 정렬)</h3>
+    <sv-select-box-group
+        name="basic"
+        items='[
+            {"value": "option1", "label": "옵션 1"},
+            {"value": "option2", "label": "옵션 2"},
+            {"value": "option3", "label": "옵션 3"}
+        ]'
+    ></sv-select-box-group>
+
+    <h3>수평 정렬 SelectBoxGroup</h3>
+    <sv-select-box-group
+        name="horizontal"
+        orientation="horizontal"
+        items='[
+            {"value": "left", "label": "왼쪽"},
+            {"value": "center", "label": "중앙"},
+            {"value": "right", "label": "오른쪽"}
+        ]'
+    ></sv-select-box-group>
+
+    <h3>다중 선택 SelectBoxGroup</h3>
+    <sv-select-box-group
+        name="multiple"
+        multiple="true"
+        items='[
+            {"value": "red", "label": "빨강", "showIndicator": true},
+            {"value": "green", "label": "초록", "showIndicator": true},
+            {"value": "blue", "label": "파랑", "showIndicator": true},
+            {"value": "yellow", "label": "노랑", "showIndicator": true}
+        ]'
+    ></sv-select-box-group>
+
+    <h3>많은 옵션이 있는 SelectBoxGroup (스크롤)</h3>
+    <sv-select-box-group
+        name="many-options"
+        orientation="vertical"
+        items='[
+            {"value": "item1", "label": "아이템 1"},
+            {"value": "item2", "label": "아이템 2"},
+            {"value": "item3", "label": "아이템 3"},
+            {"value": "item4", "label": "아이템 4"},
+            {"value": "item5", "label": "아이템 5"},
+            {"value": "item6", "label": "아이템 6"},
+            {"value": "item7", "label": "아이템 7"},
+            {"value": "item8", "label": "아이템 8"}
+        ]'
+    ></sv-select-box-group>
+
+    <h3>비활성화된 SelectBoxGroup</h3>
+    <sv-select-box-group
+        name="disabled"
+        disabled="true"
+        items='[
+            {"value": "disabled1", "label": "비활성화 1"},
+            {"value": "disabled2", "label": "비활성화 2"}
+        ]'
+    ></sv-select-box-group>
+
+    <h3>접근성을 위한 라벨이 있는 SelectBoxGroup</h3>
+    <div>
+        <label id="group-label">선호하는 색상을 선택하세요:</label>
+        <sv-select-box-group
+            name="accessible"
+            multiple="true"
+            aria-labelledby="group-label"
+            items='[
+                {"value": "red", "label": "빨강", "showIndicator": true},
+                {"value": "green", "label": "초록", "showIndicator": true},
+                {"value": "blue", "label": "파랑", "showIndicator": true}
+            ]'
+        ></sv-select-box-group>
+    </div>
+
+    <h3>접근성 테스트</h3>
+    <p>키보드로 탐색해보세요:</p>
+    <ul>
+        <li>Tab 키로 SelectBoxGroup에 포커스</li>
+        <li>화살표 키로 옵션 간 이동</li>
+        <li>Home/End 키로 첫/마지막 옵션으로 이동</li>
+        <li>Enter/Space로 옵션 선택</li>
+        <li>스크린 리더가 그룹과 옵션을 읽음</li>
+    </ul>
+
+    <div style="margin: 20px 0;">
+        <label id="test-label">테스트용 SelectBoxGroup:</label>
+        <sv-select-box-group
+            name="test"
+            multiple="true"
+            aria-labelledby="test-label"
+            items='[
+                {"value": "test1", "label": "테스트 1", "showIndicator": true},
+                {"value": "test2", "label": "테스트 2", "showIndicator": true},
+                {"value": "test3", "label": "테스트 3", "showIndicator": true}
+            ]'
+        ></sv-select-box-group>
+    </div>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('select-box-group-change', (e) => {
+            console.log('SelectBoxGroup 변경됨:', e.detail);
+        });
+
+        document.addEventListener('change', (e) => {
+            console.log('change 이벤트 발생:', e.detail);
+        });
+
+        document.addEventListener('item-click', (e) => {
+            console.log('아이템 클릭됨:', e.detail);
+        });
+
+        // 프로그래밍 방식으로 SelectBoxGroup 제어
+        const selectBoxGroup = document.querySelector('sv-select-box-group[name="basic"]');
+        if (selectBoxGroup) {
+            // 동적으로 속성 변경
+            setTimeout(() => {
+                selectBoxGroup.value = 'option2';
+                selectBoxGroup.orientation = 'horizontal';
+            }, 3000);
+
+            // SelectBoxGroup 상태 확인
+            console.log('SelectBoxGroup 정보:', {
+                orientation: selectBoxGroup.orientation,
+                multiple: selectBoxGroup.multiple,
+                items: selectBoxGroup.items,
+                value: selectBoxGroup.value
+            });
+        }
+
+        // 접근성 테스트를 위한 포커스 이벤트
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'SV-SELECT-BOX-GROUP') {
+                console.log('SelectBoxGroup에 포커스됨');
+            }
+        });
+
+        // 키보드 이벤트 테스트
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'SV-SELECT-BOX-GROUP') {
+                console.log('키보드 이벤트:', e.key);
+            }
+        });
+
+        // 동적 SelectBoxGroup 생성 예시
+        function createDynamicSelectBoxGroup() {
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <h4>동적으로 생성된 SelectBoxGroup</h4>
+                <sv-select-box-group
+                    name="dynamic"
+                    multiple="true"
+                    items='[
+                        {"value": "dynamic1", "label": "동적 1", "showIndicator": true},
+                        {"value": "dynamic2", "label": "동적 2", "showIndicator": true}
+                    ]'
+                ></sv-select-box-group>
+            `;
+            document.body.appendChild(container);
+        }
+
+        // 5초 후 동적 SelectBoxGroup 생성
+        setTimeout(createDynamicSelectBoxGroup, 5000);
+
+        // 폼 제출 테스트
+        function testFormSubmission() {
+            const form = document.createElement('form');
+            form.innerHTML = `
+                <h4>폼 제출 테스트</h4>
+                <label>선호하는 옵션을 선택하세요:</label>
+                <sv-select-box-group
+                    name="form-test"
+                    multiple="true"
+                    items='[
+                        {"value": "yes", "label": "예", "showIndicator": true},
+                        {"value": "no", "label": "아니오", "showIndicator": true}
+                    ]'
+                    required
+                ></sv-select-box-group>
+                <button type="submit">제출</button>
+            `;
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const selectBoxGroup = form.querySelector('sv-select-box-group');
+                console.log('폼 제출됨, 선택된 값:', selectBoxGroup.value);
+            });
+            
+            document.body.appendChild(form);
+        }
+
+        // 7초 후 폼 테스트 생성
+        setTimeout(testFormSubmission, 7000);
+
+        // 상태 변경 테스트
+        function testStateChanges() {
+            const groups = document.querySelectorAll('sv-select-box-group');
+            groups.forEach((group, index) => {
+                setTimeout(() => {
+                    if (group.multiple) {
+                        group.value = ['test1', 'test2'];
+                    } else {
+                        group.value = 'test1';
+                    }
+                    console.log(`그룹 ${index + 1} 상태 변경:`, group.value);
+                }, (index + 1) * 1000);
+            });
+        }
+
+        // 10초 후 상태 변경 테스트
+        setTimeout(testStateChanges, 10000);
+    </script>
+</body>
+</html>

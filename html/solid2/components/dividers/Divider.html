@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divider Component</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <script src="../../../../script/components/dividers/divider-component.js"></script>
+
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Divider Component</h1>
+        
+        <!-- Type별 예시 -->
+        <h2>Type별 예시</h2>
+        <h3>Basic Type (1px)</h3>
+        <divider-component type="basic" orientation="horizontal"></divider-component>
+        <p>기본 구분선 (1px 두께)</p>
+        
+        <h3>Group Type (10px)</h3>
+        <divider-component type="group" orientation="horizontal"></divider-component>
+        <p>그룹 구분선 (10px 두께)</p>
+        
+        <!-- Orientation별 예시 -->
+        <h2>Orientation별 예시</h2>
+        <h3>Horizontal (수평)</h3>
+        <divider-component type="basic" orientation="horizontal" color="accent"></divider-component>
+        <p>수평 구분선</p>
+        
+        <h3>Vertical (수직)</h3>
+        <div class="vertical-demo">
+            <span>왼쪽</span>
+            <divider-component type="basic" orientation="vertical" color="accent" class="demo-divider"></divider-component>
+            <span>오른쪽</span>
+        </div>
+        
+        <!-- Color별 예시 -->
+        <h2>Color별 예시</h2>
+        <h3>Accent Color</h3>
+        <divider-component type="basic" orientation="horizontal" color="accent"></divider-component>
+        <p>강조 색상 구분선</p>
+        
+        <h3>Secondary Color</h3>
+        <divider-component type="basic" orientation="horizontal" color="secondary"></divider-component>
+        <p>보조 색상 구분선</p>
+        
+        <h3>Tertiary Color</h3>
+        <divider-component type="basic" orientation="horizontal" color="tertiary"></divider-component>
+        <p>3차 색상 구분선</p>
+        
+        <h3>Brand Color</h3>
+        <divider-component type="basic" orientation="horizontal" color="brand"></divider-component>
+        <p>브랜드 색상 구분선</p>
+        
+        <!-- Size별 예시 -->
+        <h2>Size별 예시</h2>
+        <h3>Inset Size</h3>
+        <divider-component type="basic" orientation="horizontal" color="accent" size="inset"></divider-component>
+        <p>여백이 있는 구분선</p>
+        
+        <!-- 조합 예시 -->
+        <h2>조합 예시</h2>
+        <h3>Group + Accent + Inset</h3>
+        <divider-component type="group" orientation="horizontal" color="accent" size="inset"></divider-component>
+        <p>그룹 + 강조 + 여백 조합</p>
+        
+        <h3>Basic + Brand + Vertical</h3>
+        <div class="vertical-demo">
+            <span>왼쪽</span>
+            <divider-component type="basic" orientation="vertical" color="brand" class="demo-divider"></divider-component>
+            <span>오른쪽</span>
+        </div>
+        
+        <!-- 실제 사용 예시 -->
+        <h2>실제 사용 예시</h2>
+        <div style="padding: 20px; background: var(--bg-canvas-gray-light);">
+            <h4>섹션 제목</h4>
+            <p>섹션 내용입니다.</p>
+            <divider-component type="basic" orientation="horizontal" color="secondary"></divider-component>
+            <h4>다음 섹션</h4>
+            <p>다음 섹션 내용입니다.</p>
+        </div>
+        
+        <divider-component type="group" orientation="horizontal" color="secondary"></divider-component>
+        <divider-component type="group" orientation="horizontal" color="accent"></divider-component>
+        <divider-component type="group" orientation="horizontal" color="tertiary"></divider-component>
+        <divider-component type="group" orientation="horizontal" color="brand"></divider-component>
+        
+
+    </div>
+</body>
+</html>

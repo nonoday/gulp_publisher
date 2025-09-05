@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Badge 컴포넌트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        h1 {
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .example {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .example h3 {
+            margin: 0 0 12px 0;
+            color: #374151;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Badge 컴포넌트</h1>
+        
+        <div class="example">
+            <h3>기본 Text Badge</h3>
+            <badge-component type="solid" color="blue" text="Text Badge"></badge-component>
+        </div>
+        
+        <div class="example">
+            <h3>다양한 스타일 조합</h3>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <badge-component type="solid" color="blue" text="Blue Solid"></badge-component>
+                <badge-component type="solid" color="red" text="Red Solid"></badge-component>
+                <badge-component type="solid" color="gray" text="Gray Solid"></badge-component>
+                <badge-component type="tint" color="blue" text="Blue Tint"></badge-component>
+                <badge-component type="tint" color="red" text="Red Tint"></badge-component>
+                <badge-component type="tint" color="gray" text="Gray Tint"></badge-component>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>슬롯을 사용한 커스텀 텍스트</h3>
+            <badge-component type="tint" color="blue">
+                커스텀 텍스트 배지
+            </badge-component>
+        </div>
+    </div>
+
+    <script src="../../../components/badge-component.js"></script>
+</body>
+</html>

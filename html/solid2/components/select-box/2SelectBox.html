@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelectBox Component</title>
+    <style>
+/* SelectBox Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --border-primary: #666666;
+  --border-disabled: #e5e5e5;
+  --border-brand-disabled: #cccccc;
+  --bg-disabled: #f5f5f5;
+  --text-primary: #333333;
+  --text-disabled-same: #999999;
+  --text-brand: #007bff;
+  --text-brand-disabled: #cccccc;
+  --font-weight-r: 400;
+  --font-weight-m-m: 500;
+  --font-size-body-m: 14px;
+  --lineheight-body-m: 1.4;
+  --letterspace-body-m: -0.01em;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* SelectBox Base */
+.select-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-primary);
+  cursor: pointer;
+  font-weight: var(--font-weight-r);
+  letter-spacing: var(--letterspace-body-m);
+  gap: var(--spacing-md);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+  padding: var(--radius-md) var(--radius-xl);
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+  border-radius: var(--radius-md);
+  transition: all 0.2s var(--ease);
+  background: transparent;
+  min-height: 44px;
+}
+
+.select-box:hover:not(.select-box--disabled) {
+  border-color: var(--text-brand);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+}
+
+.select-box:active:not(.select-box--disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 123, 255, 0.1);
+}
+
+/* Disabled state */
+.select-box--disabled {
+  border-color: var(--border-disabled);
+  background-color: var(--bg-disabled);
+  color: var(--text-disabled-same);
+  cursor: not-allowed;
+}
+
+.select-box--disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Selected state */
+.select-box--selected {
+  font-weight: var(--font-weight-m-m);
+  color: var(--text-brand);
+  border-color: var(--text-brand);
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.select-box--selected.select-box--disabled {
+  color: var(--text-brand-disabled);
+  border-color: var(--border-brand-disabled);
+  background-color: var(--bg-disabled);
+}
+
+/* Disabled + Selected state */
+.select-box--selected.select-box--disabled::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
+  border: 2px solid var(--border-brand-disabled);
+  box-sizing: border-box;
+  pointer-events: none;
+  border-radius: var(--radius-md);
+}
+
+/* Icon styles */
+.select-box__icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* With indicator modifier */
+.select-box--with-indicator {
+  justify-content: space-between;
+  min-width: 120px;
+}
+
+/* Elements */
+.select-box__label {
+  display: block;
+  white-space: nowrap;
+}
+
+.select-box__indicator {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* SVG Border Animation */
+.select-box__border-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.select-box__border-svg--selected {
+  opacity: 1;
+}
+
+.select-box__border-svg--disabled {
+  opacity: 0.5;
+}
+
+.select-box__border-path {
+  fill: none;
+  stroke: var(--text-brand);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawBorder 0.6s var(--ease) forwards;
+}
+
+.select-box--disabled .select-box__border-path {
+  stroke: var(--text-brand-disabled);
+}
+
+@keyframes drawBorder {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  position: relative;
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* SelectBox examples */
+.select-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.select-example {
+  min-width: 200px;
+}
+
+.select-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Custom select box styles */
+.custom-select-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-primary);
+  cursor: pointer;
+  font-weight: var(--font-weight-r);
+  letter-spacing: var(--letterspace-body-m);
+  gap: var(--spacing-md);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+  padding: var(--radius-md) var(--radius-xl);
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+  border-radius: var(--radius-md);
+  transition: all 0.2s var(--ease);
+  background: transparent;
+  min-height: 44px;
+}
+
+.custom-select-box:hover:not(.custom-select-box--disabled) {
+  border-color: var(--text-brand);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+}
+
+.custom-select-box:active:not(.custom-select-box--disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 123, 255, 0.1);
+}
+
+.custom-select-box--disabled {
+  border-color: var(--border-disabled);
+  background-color: var(--bg-disabled);
+  color: var(--text-disabled-same);
+  cursor: not-allowed;
+}
+
+.custom-select-box--disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.custom-select-box--selected {
+  font-weight: var(--font-weight-m-m);
+  color: var(--text-brand);
+  border-color: var(--text-brand);
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.custom-select-box--selected.custom-select-box--disabled {
+  color: var(--text-brand-disabled);
+  border-color: var(--border-brand-disabled);
+  background-color: var(--bg-disabled);
+}
+
+.custom-select-box--selected.custom-select-box--disabled::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
+  border: 2px solid var(--border-brand-disabled);
+  box-sizing: border-box;
+  pointer-events: none;
+  border-radius: var(--radius-md);
+}
+
+.custom-select-box--with-indicator {
+  justify-content: space-between;
+  min-width: 120px;
+}
+
+.custom-select-box__label {
+  display: block;
+  white-space: nowrap;
+}
+
+.custom-select-box__indicator {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.custom-select-box__icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* Icon styles */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.icon--size-24 {
+  width: 24px;
+  height: 24px;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.interactive-demo .custom-select-box {
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .select-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>SelectBox Component</h1>
+        
+        <!-- Basic SelectBox -->
+        <div class="demo-section">
+            <h3>Basic SelectBox</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Default State</span>
+                <div class="select-examples">
+                    <div class="select-example">
+                        <div class="select-example-label">Basic SelectBox</div>
+                        <div class="custom-select-box" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">옵션 선택</span>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">With Label</div>
+                        <div class="custom-select-box" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">사용자 정의 라벨</span>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Long Text</div>
+                        <div class="custom-select-box" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">매우 긴 텍스트가 포함된 옵션</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- State Variants -->
+        <div class="demo-section">
+            <h3>State Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different States</span>
+                <div class="select-examples">
+                    <div class="select-example">
+                        <div class="select-example-label">Default</div>
+                        <div class="custom-select-box" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">기본 상태</span>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Selected</div>
+                        <div class="custom-select-box custom-select-box--selected" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">선택된 상태</span>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Disabled</div>
+                        <div class="custom-select-box custom-select-box--disabled" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">비활성화된 상태</span>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Selected + Disabled</div>
+                        <div class="custom-select-box custom-select-box--selected custom-select-box--disabled" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">선택됨 + 비활성화</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Indicator Variants -->
+        <div class="demo-section">
+            <h3>Indicator Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">With Indicators</span>
+                <div class="select-examples">
+                    <div class="select-example">
+                        <div class="select-example-label">Unchecked</div>
+                        <div class="custom-select-box custom-select-box--with-indicator" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">체크 안됨</span>
+                            <div class="custom-select-box__indicator">
+                                <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Checked</div>
+                        <div class="custom-select-box custom-select-box--selected custom-select-box--with-indicator" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">체크됨</span>
+                            <div class="custom-select-box__indicator">
+                                <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Disabled Unchecked</div>
+                        <div class="custom-select-box custom-select-box--disabled custom-select-box--with-indicator" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">비활성화 체크 안됨</span>
+                            <div class="custom-select-box__indicator">
+                                <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="#cccccc" stroke-width="2" fill="none"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Disabled Checked</div>
+                        <div class="custom-select-box custom-select-box--selected custom-select-box--disabled custom-select-box--with-indicator" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">비활성화 체크됨</span>
+                            <div class="custom-select-box__indicator">
+                                <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="#cccccc" stroke-width="2" fill="none"/>
+                                    <path d="M9 12L11 14L15 10" stroke="#cccccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Variants -->
+        <div class="demo-section">
+            <h3>Content Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Content Types</span>
+                <div class="select-examples">
+                    <div class="select-example">
+                        <div class="select-example-label">Text Only</div>
+                        <div class="custom-select-box" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">텍스트만</span>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">With Icon</div>
+                        <div class="custom-select-box custom-select-box--with-indicator" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">아이콘 포함</span>
+                            <div class="custom-select-box__indicator">
+                                <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="select-example">
+                        <div class="select-example-label">Custom Content</div>
+                        <div class="custom-select-box" onclick="toggleSelect(this)">
+                            <span class="custom-select-box__label">사용자 정의 내용</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">클릭하여 SelectBox 상태 변경</span>
+                <div class="custom-select-box custom-select-box--with-indicator" id="interactiveSelectBox" onclick="toggleSelect(this)">
+                    <span class="custom-select-box__label">인터랙티브 데모</span>
+                    <div class="custom-select-box__indicator">
+                        <svg class="icon icon--size-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="custom-select-box" onclick="toggleDisabled()" style="margin: 5px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">비활성화 토글</button>
+                    <button class="custom-select-box" onclick="toggleIndicator()" style="margin: 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">인디케이터 토글</button>
+                    <button class="custom-select-box" onclick="changeLabel()" style="margin: 5px; padding: 8px 16px; background: #ffc107; color: white; border: none; border-radius: 4px; cursor: pointer;">라벨 변경</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SelectBox 토글 함수
+        function toggleSelect(selectBox) {
+            if (selectBox.classList.contains('custom-select-box--disabled')) {
+                return; // 비활성화된 상태면 클릭 무시
+            }
+            
+            const isSelected = selectBox.classList.contains('custom-select-box--selected');
+            
+            if (isSelected) {
+                selectBox.classList.remove('custom-select-box--selected');
+                // 체크 표시 제거
+                const indicator = selectBox.querySelector('.custom-select-box__indicator svg');
+                if (indicator) {
+                    indicator.innerHTML = '<rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>';
+                }
+            } else {
+                selectBox.classList.add('custom-select-box--selected');
+                // 체크 표시 추가
+                const indicator = selectBox.querySelector('.custom-select-box__indicator svg');
+                if (indicator) {
+                    indicator.innerHTML = '<rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+                }
+            }
+            
+            console.log(`SelectBox 상태 변경: ${isSelected ? '선택 해제' : '선택'}`);
+        }
+        
+        // 비활성화 토글 함수
+        function toggleDisabled() {
+            const selectBox = document.getElementById('interactiveSelectBox');
+            const isDisabled = selectBox.classList.contains('custom-select-box--disabled');
+            
+            if (isDisabled) {
+                selectBox.classList.remove('custom-select-box--disabled');
+                selectBox.onclick = function() { toggleSelect(this); };
+            } else {
+                selectBox.classList.add('custom-select-box--disabled');
+                selectBox.onclick = null;
+            }
+            
+            console.log(`SelectBox 비활성화 상태: ${!isDisabled ? '비활성화' : '활성화'}`);
+        }
+        
+        // 인디케이터 토글 함수
+        function toggleIndicator() {
+            const selectBox = document.getElementById('interactiveSelectBox');
+            const hasIndicator = selectBox.classList.contains('custom-select-box--with-indicator');
+            
+            if (hasIndicator) {
+                selectBox.classList.remove('custom-select-box--with-indicator');
+                const indicator = selectBox.querySelector('.custom-select-box__indicator');
+                if (indicator) {
+                    indicator.style.display = 'none';
+                }
+            } else {
+                selectBox.classList.add('custom-select-box--with-indicator');
+                const indicator = selectBox.querySelector('.custom-select-box__indicator');
+                if (indicator) {
+                    indicator.style.display = 'flex';
+                }
+            }
+            
+            console.log(`SelectBox 인디케이터 상태: ${!hasIndicator ? '표시' : '숨김'}`);
+        }
+        
+        // 라벨 변경 함수
+        function changeLabel() {
+            const selectBox = document.getElementById('interactiveSelectBox');
+            const label = selectBox.querySelector('.custom-select-box__label');
+            const labels = [
+                '인터랙티브 데모',
+                '라벨이 변경됨',
+                '다시 원래대로',
+                '사용자 정의 텍스트',
+                '동적 라벨 변경'
+            ];
+            
+            const currentIndex = labels.indexOf(label.textContent);
+            const nextIndex = (currentIndex + 1) % labels.length;
+            label.textContent = labels[nextIndex];
+            
+            console.log(`SelectBox 라벨 변경: ${labels[nextIndex]}`);
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SelectBox 컴포넌트가 로드되었습니다.');
+        });
+    </script>
+</body>
+</html>

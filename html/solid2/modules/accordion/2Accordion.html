@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accordion Components</title>
+    <style>
+        /* CSS 변수 정의 */
+        :root {
+            --font-size-title-s: 18px;
+            --lineheight-title-s: 1.4;
+            --letterspace-title-s: -0.02em;
+            --text-secondary: #666666;
+            --text-disabled-same: #999999;
+            --fg-quaternary: #cccccc;
+            --fg-disabled: #999999;
+            --bg-graylight: #f8f9fa;
+            --bg-disabled: #f5f5f5;
+            --border-secondary: #e0e0e0;
+            --border-disabled: #cccccc;
+            --spacing-md: 8px;
+            --spacing-xl: 16px;
+            --spacing-2xl: 20px;
+            --spacing-3xl: 24px;
+            --radius-xl: 12px;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-em-fade-in: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-em-fade-out: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 기본 스타일 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "OneShinhan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.5;
+            background-color: #f5f5f5;
+        }
+
+        /* Accordion 컴포넌트 스타일 */
+        .accordion {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .accordion--variant-solid .accordion-item + .accordion-item {
+            margin-top: var(--spacing-xl);
+        }
+
+        /* Accordion Item */
+        .accordion-item {
+            position: relative;
+        }
+
+        .accordion-item__header {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: var(--spacing-2xl);
+            text-align: left;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        .accordion-item__header:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .accordion-item__title {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            flex: 1;
+            font-size: var(--font-size-title-s);
+            line-height: var(--lineheight-title-s);
+            letter-spacing: var(--letterspace-title-s);
+            font-weight: 500;
+            color: var(--text-secondary);
+            word-break: break-all;
+            flex-wrap: wrap;
+        }
+
+        .accordion-item__title-icon {
+            flex-shrink: 0;
+            margin-right: var(--spacing-md);
+        }
+
+        .accordion-item__icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--fg-quaternary);
+            margin-left: var(--spacing-md);
+            transition: transform 0.25s var(--ease);
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 아이콘 SVG 스타일 */
+        .accordion-item__icon svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.25s var(--ease);
+        }
+
+        /* State modifiers */
+        .accordion-item--open .accordion-item__icon svg {
+            transform: rotate(180deg);
+        }
+
+        /* Variant styles */
+        .accordion-item--variant-basic.accordion-item--divider {
+            border-bottom: 1px solid var(--border-secondary);
+        }
+
+        .accordion-item--variant-solid {
+            background-color: var(--bg-graylight);
+            border-radius: var(--radius-xl);
+        }
+
+        .accordion-item--disabled {
+            border-color: var(--border-disabled);
+        }
+
+        .accordion-item--disabled .accordion-item__header {
+            background-color: var(--bg-disabled);
+            cursor: not-allowed;
+        }
+
+        .accordion-item--disabled .accordion-item__title {
+            color: var(--text-disabled-same);
+        }
+
+        .accordion-item--disabled .accordion-item__icon {
+            color: var(--fg-disabled);
+        }
+
+        /* Accordion Panel */
+        .accordion-panel {
+            position: relative;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s var(--ease);
+        }
+
+        .accordion-panel--open {
+            max-height: 1000px;
+        }
+
+        .accordion-panel__content {
+            padding: var(--spacing-md) var(--spacing-2xl) var(--spacing-3xl);
+        }
+
+        /* 데모용 스타일 */
+        .demo-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .demo-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #333;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .demo-subtitle {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 20px 0 15px 0;
+            color: #555;
+        }
+
+        .demo-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        /* 체브론 아이콘 */
+        .chevron-down {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* 샘플 콘텐츠 */
+        .sample-content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+
+        .sample-content h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .sample-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 버튼 스타일 */
+        .button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* 상태 표시 */
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .status-open {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-closed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 style="text-align: center; margin-bottom: 40px; color: #333;">Accordion 컴포넌트 데모</h1>
+        
+        <!-- 기본 Accordion 데모 -->
+        <div class="demo-section">
+            <div class="demo-title">기본 Accordion (Basic Variant)</div>
+            <div class="demo-description">
+                기본적인 아코디언 컴포넌트입니다. 각 아이템을 클릭하면 펼치거나 접을 수 있습니다.
+            </div>
+            
+            <div class="accordion accordion--variant-basic">
+                <div class="accordion-item accordion-item--variant-basic accordion-item--divider" data-state="closed">
+                    <button class="accordion-item__header" role="button" aria-expanded="false">
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-text">아코디언 아이템 1</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>아코디언 콘텐츠 1</h4>
+                                <p>이것은 첫 번째 아코디언 아이템의 콘텐츠입니다. 여기에 다양한 정보나 폼 요소들을 배치할 수 있습니다.</p>
+                                <button class="button">액션 버튼</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item accordion-item--variant-basic accordion-item--divider" data-state="closed">
+                    <button class="accordion-item__header" role="button" aria-expanded="false">
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-text">아코디언 아이템 2</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>아코디언 콘텐츠 2</h4>
+                                <p>두 번째 아코디언 아이템의 콘텐츠입니다. 긴 텍스트나 복잡한 레이아웃도 지원합니다.</p>
+                                <ul>
+                                    <li>리스트 아이템 1</li>
+                                    <li>리스트 아이템 2</li>
+                                    <li>리스트 아이템 3</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item accordion-item--variant-basic accordion-item--divider" data-state="closed">
+                    <button class="accordion-item__header" role="button" aria-expanded="false">
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-text">아코디언 아이템 3</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>아코디언 콘텐츠 3</h4>
+                                <p>세 번째 아코디언 아이템의 콘텐츠입니다. 폼 요소나 테이블 등 다양한 컴포넌트를 포함할 수 있습니다.</p>
+                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                    <input type="text" placeholder="입력 필드" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <button class="button">제출</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Solid Variant Accordion 데모 -->
+        <div class="demo-section">
+            <div class="demo-title">Solid Variant Accordion</div>
+            <div class="demo-description">
+                Solid 스타일의 아코디언입니다. 각 아이템이 카드 형태로 표시되며 구분선이 없습니다.
+            </div>
+            
+            <div class="accordion accordion--variant-solid">
+                <div class="accordion-item accordion-item--variant-solid" data-state="closed">
+                    <button class="accordion-item__header" role="button" aria-expanded="false">
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-text">Solid 스타일 아이템 1</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>Solid 스타일 콘텐츠</h4>
+                                <p>이 아이템은 solid 스타일로 표시됩니다. 배경색과 둥근 모서리가 적용되어 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item accordion-item--variant-solid" data-state="closed">
+                    <button class="accordion-item__header" role="button" aria-expanded="false">
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-text">Solid 스타일 아이템 2</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>Solid 스타일 콘텐츠 2</h4>
+                                <p>Solid 스타일은 각 아이템 사이에 간격이 있어 더 깔끔한 느낌을 줍니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 비활성화된 Accordion 데모 -->
+        <div class="demo-section">
+            <div class="demo-title">비활성화된 Accordion</div>
+            <div class="demo-description">
+                disabled 상태의 아코디언 아이템입니다. 클릭할 수 없고 시각적으로도 구분됩니다.
+            </div>
+            
+            <div class="accordion accordion--variant-basic">
+                <div class="accordion-item accordion-item--variant-basic accordion-item--divider accordion-item--disabled" data-state="closed" data-disabled="true">
+                    <button class="accordion-item__header" role="button" aria-expanded="false" aria-disabled="true" disabled>
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-text">비활성화된 아이템</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>비활성화된 콘텐츠</h4>
+                                <p>이 아이템은 비활성화되어 있어 클릭할 수 없습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제목에 아이콘이 있는 Accordion 데모 -->
+        <div class="demo-section">
+            <div class="demo-title">제목에 아이콘이 있는 Accordion</div>
+            <div class="demo-description">
+                제목 앞에 아이콘이 포함된 아코디언 아이템입니다.
+            </div>
+            
+            <div class="accordion accordion--variant-basic">
+                <div class="accordion-item accordion-item--variant-basic accordion-item--divider" data-state="closed">
+                    <button class="accordion-item__header" role="button" aria-expanded="false">
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-icon">📱</div>
+                            <div class="accordion-item__title-text">모바일 설정</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>모바일 설정</h4>
+                                <p>모바일 기기 관련 설정을 관리할 수 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item accordion-item--variant-basic accordion-item--divider" data-state="closed">
+                    <button class="accordion-item__header" role="button" aria-expanded="false">
+                        <div class="accordion-item__title">
+                            <div class="accordion-item__title-icon">🔒</div>
+                            <div class="accordion-item__title-text">보안 설정</div>
+                        </div>
+                        <div class="accordion-item__icon" title="아코디언 상세보기">
+                            <svg class="chevron-down" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="accordion-panel" data-state="closed">
+                        <div class="accordion-panel__content">
+                            <div class="sample-content">
+                                <h4>보안 설정</h4>
+                                <p>계정 보안 및 개인정보 보호 설정을 관리합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS 클래스 설명 -->
+        <div class="demo-section">
+            <div class="demo-title">CSS 클래스 설명</div>
+            
+            <div class="demo-subtitle">기본 클래스</div>
+            <div class="code-block">
+.accordion                    /* 아코디언 컨테이너 */
+.accordion-item             /* 아코디언 아이템 */
+.accordion-item__header     /* 아이템 헤더 */
+.accordion-item__title      /* 아이템 제목 */
+.accordion-item__icon       /* 아이템 아이콘 */
+.accordion-panel            /* 아코디언 패널 */
+.accordion-panel__content   /* 패널 콘텐츠 */
+            </div>
+            
+            <div class="demo-subtitle">변형 클래스</div>
+            <div class="code-block">
+.accordion--variant-basic   /* 기본 스타일 */
+.accordion--variant-solid   /* 솔리드 스타일 */
+            </div>
+            
+            <div class="demo-subtitle">상태 클래스</div>
+            <div class="code-block">
+.accordion-item--open       /* 열린 상태 */
+.accordion-item--disabled   /* 비활성화 상태 */
+.accordion-item--divider    /* 구분선 표시 */
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 아코디언 기능 구현
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-item__header');
+                const panel = item.querySelector('.accordion-panel');
+                const icon = item.querySelector('.accordion-item__icon svg');
+                
+                // 비활성화된 아이템은 건너뛰기
+                if (item.classList.contains('accordion-item--disabled')) {
+                    return;
+                }
+                
+                header.addEventListener('click', function() {
+                    const isOpen = item.getAttribute('data-state') === 'open';
+                    
+                    // 다른 열린 아이템들 닫기 (single accordion 동작)
+                    if (!isOpen) {
+                        accordionItems.forEach(otherItem => {
+                            if (otherItem !== item && otherItem.getAttribute('data-state') === 'open') {
+                                otherItem.setAttribute('data-state', 'closed');
+                                otherItem.querySelector('.accordion-panel').setAttribute('data-state', 'closed');
+                                otherItem.classList.remove('accordion-item--open');
+                            }
+                        });
+                    }
+                    
+                    // 현재 아이템 토글
+                    const newState = isOpen ? 'closed' : 'open';
+                    item.setAttribute('data-state', newState);
+                    panel.setAttribute('data-state', newState);
+                    
+                    if (newState === 'open') {
+                        item.classList.add('accordion-item--open');
+                    } else {
+                        item.classList.remove('accordion-item--open');
+                    }
+                    
+                    // ARIA 속성 업데이트
+                    header.setAttribute('aria-expanded', newState === 'open');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

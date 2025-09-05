@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Popup 웹컴포넌트</title>
+    <style>
+        
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-link { background: none; color: #007bff; text-decoration: underline; }
+        
+        .overflow-scroll {
+            overflow: hidden;
+        }
+        
+        /* 모달이 열렸을 때 body-wrap 스타일 */
+        .body-wrap.overflow-scroll {
+            overflow: hidden;
+        }
+
+        /* 커스텀 Footer 스타일 */
+        .custom-footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .complex-footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-left, .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-link {
+            padding: 5px 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .btn-link:hover {
+            text-decoration: none;
+            color: #0056b3;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="../../../../images/web/new_css/components.css">
+</head>
+<body>
+    <div class="body-wrap">
+        <h1>Modal Popup 웹컴포넌트 데모</h1>
+        
+        <!-- 기본 모달 -->
+        <div class="demo-section">
+            <h3>기본 모달</h3>
+            <button class="btn-primary" onclick="openBasicModal()">기본 모달 열기</button>
+            
+            <modal-popup id="basicModal" title="기본 모달" error="에러가 발생했습니다">
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-danger">취소</button>
+                        <button class="btn-primary">확인</button>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+        
+        <!-- 중앙 정렬 모달 -->
+        <div class="demo-section">
+            <h3>중앙 정렬 모달</h3>
+            <button class="btn-success" onclick="openCenterModal()">중앙 정렬 모달 열기</button>
+            
+            <modal-popup id="centerModal" title="중앙 정렬 모달" all-center>
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-primary">확인</button>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+        
+        
+        <!-- 아이콘 -->
+        <div class="demo-section">
+            <h3>기본 아이콘 모달</h3>
+            <button class="btn-danger" onclick="openErrorIconModal()">기본 아이콘 모달 열기</button>
+            
+            <modal-popup id="errorIconModal" title="에러 발생" error="시스템 오류가 발생했습니다" icon >
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-danger">닫기</button>
+                        <button class="btn-primary">재시도</button>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+
+        <!-- 아이콘 모달 -->
+        <div class="demo-section">
+            <h3>아이콘 모달</h3>
+            <button class="btn-warning" onclick="openIconModal()">아이콘 모달 열기</button>
+            
+            <modal-popup id="iconModal" title="아이콘 모달" icon icon-type="icon-type01">
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-primary">확인</button>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+        
+        <!-- 에러 아이콘 모달 -->
+        <div class="demo-section">
+            <h3>에러 아이콘 모달</h3>
+            <button class="btn-danger" onclick="openErrorIconModal()">에러 아이콘 모달 열기</button>
+            
+            <modal-popup id="errorIconModal" title="에러 발생" error="시스템 오류가 발생했습니다" icon icon-type="icon-error">
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-danger">닫기</button>
+                        <button class="btn-primary">재시도</button>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+        
+        <!-- 동적 설정 모달 -->
+        <div class="demo-section">
+            <h3>동적 설정 모달</h3>
+            <button class="btn-primary" onclick="openDynamicModal()">동적 설정 모달 열기</button>
+            
+            <modal-popup id="dynamicModal">
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-danger">취소</button>
+                        <button class="btn-success">저장</button>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+
+        <!-- 커스텀 Footer 모달 -->
+        <div class="demo-section">
+            <h3>커스텀 Footer 모달</h3>
+            <button class="btn-warning" onclick="openCustomFooterModal()">커스텀 Footer 모달 열기</button>
+            
+            <modal-popup id="customFooterModal" title="커스텀 Footer" footer footer-type="footer-type01">
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-primary">확인</button>
+                    </div>
+                </div>
+                <div slot="footer">
+                    <div class="custom-footer-content">
+                        <label>
+                            <input type="checkbox" id="agreeTerms"> 이용약관에 동의합니다
+                        </label>
+                        <button class="btn-success">상세보기</button>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+
+        <!-- 복합 Footer 모달 -->
+        <div class="demo-section">
+            <h3>복합 Footer 모달</h3>
+            <button class="btn-info" onclick="openComplexFooterModal()">복합 Footer 모달 열기</button>
+            
+            <modal-popup id="complexFooterModal" title="복합 Footer" footer footer-type="footer-type02">
+                <div slot="buttons">
+                    <div class="modal-box-button-group">
+                        <button class="btn-danger">취소</button>
+                        <button class="btn-primary">확인</button>
+                    </div>
+                </div>
+                <div slot="footer">
+                    <div class="complex-footer-content">
+                        <div class="footer-left">
+                            <label>
+                                <input type="checkbox" id="rememberChoice"> 선택을 기억하기
+                            </label>
+                        </div>
+                        <div class="footer-right">
+                            <button class="btn-link">도움말</button>
+                            <button class="btn-link">문의하기</button>
+                        </div>
+                    </div>
+                </div>
+            </modal-popup>
+        </div>
+    </div>
+
+    <script src="../../../script/modules/popup/modal-popup.js"></script>
+    <script>
+        // 기본 모달 열기
+        function openBasicModal() {
+            const modal = document.getElementById('basicModal');
+            modal.open();
+            
+            // 모달이 열린 후 버튼 이벤트 확인
+            setTimeout(() => {
+                const buttons = modal.getSlotButtons();
+                console.log('기본 모달 버튼들:', buttons.map(b => b.textContent));
+            }, 100);
+        }
+        
+        // 중앙 정렬 모달 열기
+        function openCenterModal() {
+            const modal = document.getElementById('centerModal');
+            modal.open();
+        }
+        
+        // 아이콘 모달 열기
+        function openIconModal() {
+            const modal = document.getElementById('iconModal');
+            modal.open();
+        }
+        
+        // 에러 아이콘 모달 열기
+        function openErrorIconModal() {
+            const modal = document.getElementById('errorIconModal');
+            modal.open();
+        }
+        
+        // 동적 설정 모달 열기
+        function openDynamicModal() {
+            const modal = document.getElementById('dynamicModal');
+            
+            // 동적으로 속성 설정
+            modal.setTitle('동적으로 설정된 제목');
+            modal.setError('동적으로 설정된 에러 메시지');
+            modal.setAllCenter(true);
+            modal.setIcon(true);
+            modal.setIconType('icon-type01');
+            
+            modal.open();
+            
+            // 모달이 열린 후 버튼 이벤트 확인
+            setTimeout(() => {
+                const buttons = modal.getSlotButtons();
+                console.log('동적 모달 버튼들:', buttons.map(b => b.textContent));
+            }, 100);
+        }
+
+        // 커스텀 Footer 모달 열기
+        function openCustomFooterModal() {
+            const modal = document.getElementById('customFooterModal');
+            modal.open();
+        }
+
+        // 복합 Footer 모달 열기
+        function openComplexFooterModal() {
+            const modal = document.getElementById('complexFooterModal');
+            modal.open();
+        }
+        
+        // 페이지 로드 후 버튼 이벤트 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 모든 모달의 버튼에 이벤트 처리
+            const modals = document.querySelectorAll('modal-popup');
+            modals.forEach(modal => {
+                // 웹컴포넌트의 메서드를 사용하여 slot의 버튼들 찾기
+                const buttons = modal.getSlotButtons();
+                console.log(`모달 ${modal.id}에서 찾은 버튼들:`, buttons.length);
+                
+                buttons.forEach(button => {
+                    console.log(`버튼 이벤트 등록: ${button.textContent}`);
+                    modal.handleButtonClick(button, function(e) {
+                        console.log('=== 버튼 클릭 이벤트 ===');
+                        console.log('클릭된 버튼:', button.textContent);
+                        console.log('버튼 클래스:', button.className);
+                        console.log('모달 ID:', modal.id);
+                        console.log('이벤트 객체:', e);
+                        console.log('========================');
+                        
+                        // 여기에 추가 로직을 넣을 수 있습니다
+                        // 예: API 호출, 데이터 처리 등
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

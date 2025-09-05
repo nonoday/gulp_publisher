@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Web Component</title>
+    <style>
+        /* 기본 아이콘 스타일 */
+        .sv-icon {
+            fill: currentColor;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .sv-icon--custom {
+            /* 커스텀 아이콘을 위한 컨테이너 스타일 */
+        }
+
+        .sv-icon--custom svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+
+        .sv-icon--url {
+            /* SVG URL 파일을 위한 스타일 */
+            object-fit: contain;
+        }
+
+        .sv-icon--slot {
+            /* 슬롯 인라인 SVG를 위한 스타일 */
+        }
+
+        .sv-icon--slot svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+
+        /* 접근성을 위한 포커스 스타일 */
+        .sv-icon:focus-visible {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        /* 고대비 모드 지원 */
+        @media (prefers-contrast: high) {
+            .sv-icon {
+                filter: contrast(1.5);
+            }
+        }
+
+        /* 모션 감소 지원 */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-icon {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 웹컴포넌트 정의 -->
+    <script>
+        class IconComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._name = '';
+                this._customIcon = '';
+                this._svgUrl = '';
+                this._size = 24;
+                this._width = null;
+                this._height = null;
+                this._fixedSize = true;
+                this._ariaLabel = '';
+                this._ariaLabelledby = '';
+                this._ariaDescribedby = '';
+                this._role = '';
+                this._tabindex = null;
+            }
+
+            static get observedAttributes() {
+                return ['name', 'custom-icon', 'svg-url', 'size', 'width', 'height', 'fixed-size', 'aria-label', 'aria-labelledby', 'aria-describedby', 'role', 'tabindex'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'name':
+                        this._name = value || '';
+                        break;
+                    case 'custom-icon':
+                        this._customIcon = value || '';
+                        break;
+                    case 'svg-url':
+                        this._svgUrl = value || '';
+                        break;
+                    case 'size':
+                        this._size = value ? (isNaN(value) ? value : parseInt(value)) : 24;
+                        break;
+                    case 'width':
+                        this._width = value ? (isNaN(value) ? value : parseInt(value)) : null;
+                        break;
+                    case 'height':
+                        this._height = value ? (isNaN(value) ? value : parseInt(value)) : null;
+                        break;
+                    case 'fixed-size':
+                        this._fixedSize = value === 'true' || value === '';
+                        break;
+                    case 'aria-label':
+                        this._ariaLabel = value || '';
+                        break;
+                    case 'aria-labelledby':
+                        this._ariaLabelledby = value || '';
+                        break;
+                    case 'aria-describedby':
+                        this._ariaDescribedby = value || '';
+                        break;
+                    case 'role':
+                        this._role = value || '';
+                        break;
+                    case 'tabindex':
+                        this._tabindex = value ? (isNaN(value) ? value : parseInt(value)) : null;
+                        break;
+                }
+            }
+
+            render() {
+                const iconType = this.getIconType();
+                const iconStyle = this.getIconStyle();
+                const iconClasses = this.getIconClasses(iconType);
+                const accessibilityAttributes = this.getAccessibilityAttributes();
+                
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host {
+                            display: inline-block;
+                        }
+                        
+                        .sv-icon {
+                            fill: currentColor;
+                            display: inline-block;
+                            vertical-align: top;
+                        }
+
+                        .sv-icon--custom {
+                            /* 커스텀 아이콘을 위한 컨테이너 스타일 */
+                        }
+
+                        .sv-icon--custom svg {
+                            width: 100%;
+                            height: 100%;
+                            fill: currentColor;
+                            display: block;
+                        }
+
+                        .sv-icon--url {
+                            /* SVG URL 파일을 위한 스타일 */
+                            object-fit: contain;
+                        }
+
+                        .sv-icon--slot {
+                            /* 슬롯 인라인 SVG를 위한 스타일 */
+                        }
+
+                        .sv-icon--slot svg {
+                            width: 100%;
+                            height: 100%;
+                            fill: currentColor;
+                            display: block;
+                        }
+
+                        /* 접근성을 위한 포커스 스타일 */
+                        .sv-icon:focus-visible {
+                            outline: 2px solid #007bff;
+                            outline-offset: 2px;
+                            border-radius: 2px;
+                        }
+
+                        /* 고대비 모드 지원 */
+                        @media (prefers-contrast: high) {
+                            .sv-icon {
+                                filter: contrast(1.5);
+                            }
+                        }
+
+                        /* 모션 감소 지원 */
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-icon {
+                                transition: none;
+                            }
+                        }
+                    </style>
+                    
+                    ${this.renderIconContent(iconType, iconClasses, iconStyle, accessibilityAttributes)}
+                `;
+            }
+
+            getIconType() {
+                if (this._customIcon) {
+                    return 'custom';
+                }
+                if (this._svgUrl) {
+                    return 'url';
+                }
+                if (this._name) {
+                    return 'name';
+                }
+                return 'default';
+            }
+
+            getIconStyle() {
+                if (!this._fixedSize || (!this._size && !this._width && !this._height)) {
+                    return {};
+                }
+
+                const iconStyle = {};
+
+                if (this._size) {
+                    const sizeValue = typeof this._size === 'number' ? `${this._size}px` : this._size;
+                    iconStyle.width = sizeValue;
+                    iconStyle.height = sizeValue;
+                }
+
+                if (this._width) {
+                    iconStyle.width = typeof this._width === 'number' ? `${this._width}px` : this._width;
+                }
+
+                if (this._height) {
+                    iconStyle.height = typeof this._height === 'number' ? `${this._height}px` : this._height;
+                }
+
+                return iconStyle;
+            }
+
+            getIconClasses(iconType) {
+                const classes = ['sv-icon'];
+                
+                if (iconType !== 'default') {
+                    classes.push(`sv-icon--${iconType}`);
+                }
+                
+                if (this._name) {
+                    classes.push(`sv-icon--${this._name}`);
+                }
+                
+                return classes.join(' ');
+            }
+
+            getAccessibilityAttributes() {
+                const attributes = {};
+                
+                if (this._ariaLabel) {
+                    attributes['aria-label'] = this._ariaLabel;
+                }
+                
+                if (this._ariaLabelledby) {
+                    attributes['aria-labelledby'] = this._ariaLabelledby;
+                }
+                
+                if (this._ariaDescribedby) {
+                    attributes['aria-describedby'] = this._ariaDescribedby;
+                }
+                
+                if (this._role) {
+                    attributes.role = this._role;
+                } else {
+                    // 기본적으로 아이콘은 장식적이므로 aria-hidden="true" 설정
+                    attributes['aria-hidden'] = 'true';
+                }
+                
+                if (this._tabindex !== null) {
+                    attributes.tabindex = this._tabindex;
+                }
+                
+                return attributes;
+            }
+
+            renderIconContent(iconType, iconClasses, iconStyle, accessibilityAttributes) {
+                const styleString = Object.entries(iconStyle)
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join('; ');
+
+                const attributesString = Object.entries(accessibilityAttributes)
+                    .map(([key, value]) => `${key}="${value}"`)
+                    .join(' ');
+
+                switch (iconType) {
+                    case 'custom':
+                        return `
+                            <div class="${iconClasses}" style="${styleString}" ${attributesString}>
+                                ${this._customIcon}
+                            </div>
+                        `;
+                    
+                    case 'url':
+                        return `
+                            <img 
+                                src="${this._svgUrl}" 
+                                class="${iconClasses}" 
+                                style="${styleString}" 
+                                alt=""
+                                ${attributesString}
+                            />
+                        `;
+                    
+                    case 'name':
+                        const symbolId = `#icon-${this._name}`;
+                        return `
+                            <svg 
+                                class="${iconClasses}" 
+                                style="${styleString}" 
+                                ${attributesString}
+                            >
+                                <use href="${symbolId}" />
+                            </svg>
+                        `;
+                    
+                    default:
+                        return `
+                            <div class="${iconClasses}" style="${styleString}" ${attributesString}>
+                                <!-- 기본 아이콘 -->
+                            </div>
+                        `;
+                }
+            }
+
+            setupAccessibility() {
+                const icon = this.shadowRoot.querySelector('.sv-icon, svg, img');
+                
+                if (icon) {
+                    // 접근성 속성 설정
+                    Object.entries(this.getAccessibilityAttributes()).forEach(([key, value]) => {
+                        icon.setAttribute(key, value);
+                    });
+
+                    // 키보드 포커스 지원 (tabindex가 설정된 경우)
+                    if (this._tabindex !== null) {
+                        icon.setAttribute('tabindex', this._tabindex);
+                        
+                        // 키보드 이벤트 리스너 추가
+                        icon.addEventListener('keydown', (e) => this.handleKeydown(e));
+                    }
+                }
+            }
+
+            handleKeydown(event) {
+                // Enter나 Space 키로 아이콘 활성화
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    this.dispatchEvent(new CustomEvent('icon-activate', {
+                        detail: { 
+                            name: this._name,
+                            type: this.getIconType()
+                        },
+                        bubbles: true,
+                        composed: true
+                    }));
+                }
+            }
+
+            // Getters and setters
+            get name() {
+                return this._name;
+            }
+
+            set name(value) {
+                this._name = value;
+                this.setAttribute('name', value);
+            }
+
+            get customIcon() {
+                return this._customIcon;
+            }
+
+            set customIcon(value) {
+                this._customIcon = value;
+                this.setAttribute('custom-icon', value);
+            }
+
+            get svgUrl() {
+                return this._svgUrl;
+            }
+
+            set svgUrl(value) {
+                this._svgUrl = value;
+                this.setAttribute('svg-url', value);
+            }
+
+            get size() {
+                return this._size;
+            }
+
+            set size(value) {
+                this._size = value;
+                this.setAttribute('size', value);
+            }
+
+            get width() {
+                return this._width;
+            }
+
+            set width(value) {
+                this._width = value;
+                this.setAttribute('width', value);
+            }
+
+            get height() {
+                return this._height;
+            }
+
+            set height(value) {
+                this._height = value;
+                this.setAttribute('height', value);
+            }
+
+            get fixedSize() {
+                return this._fixedSize;
+            }
+
+            set fixedSize(value) {
+                this._fixedSize = value;
+                this.setAttribute('fixed-size', value);
+            }
+
+            get ariaLabel() {
+                return this._ariaLabel;
+            }
+
+            set ariaLabel(value) {
+                this._ariaLabel = value;
+                this.setAttribute('aria-label', value);
+            }
+
+            get role() {
+                return this._role;
+            }
+
+            set role(value) {
+                this._role = value;
+                this.setAttribute('role', value);
+            }
+
+            get tabindex() {
+                return this._tabindex;
+            }
+
+            set tabindex(value) {
+                this._tabindex = value;
+                this.setAttribute('tabindex', value);
+            }
+        }
+
+        // 웹컴포넌트 등록
+        customElements.define('sv-icon', IconComponent);
+    </script>
+
+    <!-- 사용 예시 -->
+    <h2>Icon 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 아이콘 (SVG sprite)</h3>
+    <p>기본 아이콘: <sv-icon name="check-checked" size="24"></sv-icon></p>
+    <p>큰 아이콘: <sv-icon name="chevron-down" size="32"></sv-icon></p>
+    <p>작은 아이콘: <sv-icon name="close" size="16"></sv-icon></p>
+    
+    <h3>커스텀 아이콘 (HTML string)</h3>
+    <sv-icon 
+        custom-icon='<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2"/></svg>'
+        size="24"
+    ></sv-icon>
+    
+    <h3>SVG URL 아이콘</h3>
+    <sv-icon 
+        svg-url="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTEyIDJsMy4wOSA5LjI2TDIyIDkuMjdsLTcgNi44NyAxLjY0IDcuODhMMTIgMTdsLTQuNjQgNC44OEw5LjM2IDE2LjE0TDIgOS4yN2w2LjkxLS4wMUwxMiAyeiIgZmlsbD0iY3VycmVudENvbG9yIi8+PC9zdmc+"
+        size="24"
+    ></sv-icon>
+    
+    <h3>접근성 테스트</h3>
+    <p>포커스 가능한 아이콘 (Tab 키로 포커스):</p>
+    <sv-icon 
+        name="info" 
+        size="24" 
+        tabindex="0" 
+        aria-label="정보 아이콘"
+        role="button"
+    ></sv-icon>
+    
+    <p>설명이 있는 아이콘:</p>
+    <div id="icon-description">이 아이콘은 경고를 나타냅니다.</div>
+    <sv-icon 
+        name="warning" 
+        size="24" 
+        aria-describedby="icon-description"
+        role="img"
+    ></sv-icon>
+    
+    <h3>크기 조절</h3>
+    <p>고정 크기 (24x24): <sv-icon name="edit" size="24" fixed-size="true"></sv-icon></p>
+    <p>가변 크기: <sv-icon name="share" width="32" height="16" fixed-size="false"></sv-icon></p>
+    <p>퍼센트 크기: <sv-icon name="delete" size="2em"></sv-icon></p>
+    
+    <h3>색상 테스트</h3>
+    <p style="color: red;">빨간색 아이콘: <sv-icon name="close" size="24"></sv-icon></p>
+    <p style="color: blue;">파란색 아이콘: <sv-icon name="info" size="24"></sv-icon></p>
+    <p style="color: green;">초록색 아이콘: <sv-icon name="check-checked" size="24"></sv-icon></p>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('icon-activate', (e) => {
+            if (e.target.tagName === 'SV-ICON') {
+                console.log('아이콘 활성화:', e.detail);
+            }
+        });
+
+        // 프로그래밍 방식으로 아이콘 제어
+        const icon = document.querySelector('sv-icon[name="check-checked"]');
+        if (icon) {
+            // 3초 후 크기 변경
+            setTimeout(() => {
+                icon.size = 48;
+            }, 3000);
+        }
+
+        // 접근성 테스트를 위한 포커스 이벤트
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'SV-ICON') {
+                console.log('아이콘에 포커스됨:', e.target.name);
+            }
+        });
+    </script>
+</body>
+</html>

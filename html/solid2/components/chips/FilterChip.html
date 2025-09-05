@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilterChip Component</title>
+    <style>
+/* FilterChip Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --text-secondary: #666666;
+  --text-primary: #333333;
+  --text-brand: #007bff;
+  --border-primary: #e0e0e0;
+  --border-brand: #007bff;
+  --bg-brand: #007bff;
+  --font-weight-r: 400;
+  --font-weight-m-m: 500;
+  --font-size-body-m: 14px;
+  --lineheight-body-m: 1.4;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Filter Chip Base */
+.filter-chip {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  min-height: 36px;
+  gap: var(--spacing-none);
+  padding: var(--spacing-none) var(--spacing-lg);
+  border-radius: 18px;
+  border: 1px solid;
+  border-color: var(--border-primary);
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-r);
+  line-height: var(--lineheight-body-m);
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+}
+
+.filter-chip--selected {
+  color: var(--text-primary);
+  background-color: var(--bg-brand);
+  font-weight: var(--font-weight-m-m);
+}
+
+/* Icon element */
+.filter-chip__icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.filter-chip__custom-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Label element */
+.filter-chip__label {
+  flex-shrink: 0;
+  padding: var(--spacing-none) var(--spacing-sm);
+}
+
+/* Number element */
+.filter-chip__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-none);
+  padding-right: var(--spacing-sm);
+  color: var(--text-brand);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-m-m);
+  line-height: var(--lineheight-body-m);
+}
+
+.filter-chip--selected .filter-chip__number {
+  color: var(--text-brand);
+}
+
+/* Chevron element */
+.filter-chip__chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 0.2s var(--ease);
+}
+
+/* SVG Border Animation */
+.filter-chip__border-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.filter-chip__border-path {
+  fill: none;
+  stroke: var(--border-brand);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Custom Filter Chip styles */
+.custom-filter-chip {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  min-height: 36px;
+  gap: var(--spacing-none);
+  padding: var(--spacing-none) var(--spacing-lg);
+  border-radius: 18px;
+  border: 1px solid;
+  border-color: var(--border-primary);
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-r);
+  line-height: var(--lineheight-body-m);
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+  margin: 8px;
+}
+
+.custom-filter-chip--selected {
+  color: var(--text-primary);
+  background-color: var(--bg-brand);
+  font-weight: var(--font-weight-m-m);
+}
+
+.custom-filter-chip__icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.custom-filter-chip__label {
+  flex-shrink: 0;
+  padding: var(--spacing-none) var(--spacing-sm);
+}
+
+.custom-filter-chip__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-none);
+  padding-right: var(--spacing-sm);
+  color: var(--text-brand);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-m-m);
+  line-height: var(--lineheight-body-m);
+}
+
+.custom-filter-chip--selected .custom-filter-chip__number {
+  color: var(--text-brand);
+}
+
+.custom-filter-chip__chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 0.2s var(--ease);
+}
+
+/* Icon styles */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.icon--size-16 {
+  width: 16px;
+  height: 16px;
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* Chip examples */
+.chip-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.chip-example {
+  min-width: 200px;
+  text-align: center;
+}
+
+.chip-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Control buttons */
+.control-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-button {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s var(--ease);
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.control-button:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.control-button--toggle {
+  background: rgba(0, 123, 255, 0.8);
+  border-color: rgba(0, 123, 255, 0.9);
+}
+
+.control-button--reset {
+  background: rgba(108, 117, 125, 0.8);
+  border-color: rgba(108, 117, 125, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chip-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>FilterChip Component</h1>
+        
+        <!-- Basic FilterChip -->
+        <div class="demo-section">
+            <h3>Basic FilterChip</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Default State</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Unselected</div>
+                        <div class="custom-filter-chip">
+                            <span class="custom-filter-chip__label">필터 옵션</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Selected</div>
+                        <div class="custom-filter-chip custom-filter-chip--selected">
+                            <span class="custom-filter-chip__label">선택된 필터</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- With Icons -->
+        <div class="demo-section">
+            <h3>With Icons</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Chips with Icons</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Icon + Unselected</div>
+                        <div class="custom-filter-chip">
+                            <svg class="custom-filter-chip__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                            </svg>
+                            <span class="custom-filter-chip__label">정보 필터</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Icon + Selected</div>
+                        <div class="custom-filter-chip custom-filter-chip--selected">
+                            <svg class="custom-filter-chip__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span class="custom-filter-chip__label">성공 필터</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- With Numbers -->
+        <div class="demo-section">
+            <h3>With Numbers</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Chips with Number Labels</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Number + Unselected</div>
+                        <div class="custom-filter-chip">
+                            <span class="custom-filter-chip__label">카테고리</span>
+                            <span class="custom-filter-chip__number">15</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Number + Selected</div>
+                        <div class="custom-filter-chip custom-filter-chip--selected">
+                            <span class="custom-filter-chip__label">태그</span>
+                            <span class="custom-filter-chip__number">8</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">실시간으로 FilterChip 상태 변경</span>
+                
+                <div class="control-buttons">
+                    <button class="control-button control-button--toggle" onclick="toggleSelected()">선택 상태 토글</button>
+                    <button class="control-button control-button--reset" onclick="resetChip()">초기화</button>
+                </div>
+                
+                <div id="demoChip" class="custom-filter-chip">
+                    <svg class="custom-filter-chip__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                    </svg>
+                    <span class="custom-filter-chip__label">인터랙티브 필터</span>
+                    <span class="custom-filter-chip__number">5</span>
+                    <span class="custom-filter-chip__chevron">
+                        <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Combined Examples -->
+        <div class="demo-section">
+            <h3>Combined Examples</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">복합 상태 조합</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Icon + Number + Selected</div>
+                        <div class="custom-filter-chip custom-filter-chip--selected">
+                            <svg class="custom-filter-chip__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="custom-filter-chip__label">경고</span>
+                            <span class="custom-filter-chip__number">12</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Icon + Selected</div>
+                        <div class="custom-filter-chip custom-filter-chip--selected">
+                            <svg class="custom-filter-chip__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                            </svg>
+                            <span class="custom-filter-chip__label">정보</span>
+                            <span class="custom-filter-chip__chevron">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데모 칩 상태 변수
+        let isSelected = false;
+        
+        // DOM 요소
+        const demoChip = document.getElementById('demoChip');
+        
+        // 선택 상태 토글 함수
+        function toggleSelected() {
+            isSelected = !isSelected;
+            updateChip();
+        }
+        
+        // 칩 초기화 함수
+        function resetChip() {
+            isSelected = false;
+            updateChip();
+        }
+        
+        // 칩 상태 업데이트 함수
+        function updateChip() {
+            if (isSelected) {
+                demoChip.classList.add('custom-filter-chip--selected');
+            } else {
+                demoChip.classList.remove('custom-filter-chip--selected');
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('FilterChip 컴포넌트가 로드되었습니다.');
+            updateChip();
+        });
+    </script>
+</body>
+</html>

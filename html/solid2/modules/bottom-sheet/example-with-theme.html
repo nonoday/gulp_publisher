@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BottomActionContainer 테마 지원 예시</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            transition: background-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .theme-toggle button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .demo-section {
+            background: #2d2d2d;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .demo-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        body[data-theme="dark"] .demo-title {
+            color: #ffffff;
+        }
+
+        .demo-description {
+            margin-bottom: 16px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        body[data-theme="dark"] .demo-description {
+            color: #cccccc;
+        }
+
+        .controls {
+            margin-bottom: 16px;
+        }
+
+        button {
+            padding: 8px 16px;
+            margin-right: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] button {
+            background: #444;
+            color: white;
+            border-color: #666;
+        }
+
+        button:hover {
+            background: #f0f0f0;
+        }
+
+        body[data-theme="dark"] button:hover {
+            background: #555;
+        }
+
+        button.primary {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        button.primary:hover {
+            background: #0056b3;
+        }
+
+        button.secondary {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background: #545b62;
+        }
+
+        .content-area {
+            height: 400px;
+            background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .content-area {
+            background: linear-gradient(to bottom, #1a237e, #0d47a1);
+            color: #90caf9;
+        }
+
+        /* 스크롤을 위한 더미 콘텐츠 */
+        .dummy-content {
+            height: 1000px;
+            background: linear-gradient(to bottom, #f3e5f5, #e1bee7);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7b1fa2;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .dummy-content {
+            background: linear-gradient(to bottom, #4a148c, #6a1b9a);
+            color: #ce93d8;
+        }
+
+        .theme-info {
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        body[data-theme="dark"] .theme-info {
+            background: #1a237e;
+            border-left-color: #90caf9;
+        }
+
+        .theme-info h3 {
+            margin: 0 0 8px 0;
+            color: #1976d2;
+        }
+
+        body[data-theme="dark"] .theme-info h3 {
+            color: #90caf9;
+        }
+
+        .theme-info p {
+            margin: 0;
+            color: #1565c0;
+        }
+
+        body[data-theme="dark"] .theme-info p {
+            color: #64b5f6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 테마 토글 버튼 -->
+    <div class="theme-toggle">
+        <button onclick="toggleTheme()">🌙 다크모드</button>
+    </div>
+
+    <h1>BottomActionContainer 테마 지원 예시</h1>
+
+    <!-- 테마 정보 -->
+    <div class="theme-info">
+        <h3>🎨 테마 시스템</h3>
+        <p>이 예시는 SCSS 변수들을 CSS 변수로 변환하여 다크모드와 라이트모드를 모두 지원합니다. 
+        <code>data-theme="dark"</code> 속성을 통해 테마를 전환할 수 있습니다.</p>
+    </div>
+
+    <!-- 기본 사용법 -->
+    <div class="demo-section">
+        <div class="demo-title">기본 사용법</div>
+        <div class="demo-description">
+            기본적인 BottomActionContainer 사용 예시입니다. 하단에 고정되어 액션 버튼들을 표시합니다.
+            테마가 변경되면 자동으로 색상이 업데이트됩니다.
+        </div>
+        <div class="content-area">
+            메인 콘텐츠 영역
+        </div>
+        
+        <bottom-action-container>
+            <button type="button" class="primary">확인</button>
+            <button type="button" class="secondary">취소</button>
+        </bottom-action-container>
+    </div>
+
+    <!-- scroll-dim 속성 사용 -->
+    <div class="demo-section">
+        <div class="demo-title">scroll-dim 속성 사용</div>
+        <div class="demo-description">
+            scroll-dim="true"로 설정하면 상단에 gradient 효과가 적용되어 스크롤 딤 처리가 됩니다.
+            다크모드에서는 어두운 색상으로 자동 변경됩니다.
+        </div>
+        <div class="controls">
+            <button onclick="toggleScrollDim()">scroll-dim 토글</button>
+            <button onclick="showContainer()">컨테이너 보이기</button>
+            <button onclick="hideContainer()">컨테이너 숨기기</button>
+        </div>
+        <div class="dummy-content">
+            스크롤을 위한 더미 콘텐츠
+        </div>
+        
+        <bottom-action-container id="scrollDimContainer" scroll-dim="true">
+            <button type="button" class="primary">저장</button>
+            <button type="button" class="secondary">임시저장</button>
+            <button type="button" class="secondary">삭제</button>
+        </bottom-action-container>
+    </div>
+
+    <!-- 동적 생성 예시 -->
+    <div class="demo-section">
+        <div class="demo-title">동적 생성 예시</div>
+        <div class="demo-description">
+            JavaScript를 통해 동적으로 BottomActionContainer를 생성하고 제어하는 예시입니다.
+            생성된 컨테이너도 현재 테마에 맞게 자동으로 스타일이 적용됩니다.
+        </div>
+        <div class="controls">
+            <button onclick="createDynamicContainer()">동적 컨테이너 생성</button>
+            <button onclick="removeDynamicContainer()">동적 컨테이너 제거</button>
+        </div>
+        <div class="content-area">
+            동적 컨테이너가 여기에 생성됩니다
+        </div>
+    </div>
+
+    <!-- 웹컴포넌트 스크립트 로드 -->
+    <script src="./BottomActionContainer.js"></script>
+    
+    <script>
+        // 테마 관리
+        let currentTheme = 'light';
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+            
+            const button = document.querySelector('.theme-toggle button');
+            if (currentTheme === 'dark') {
+                button.textContent = '☀️ 라이트모드';
+                button.style.background = '#ff9800';
+            } else {
+                button.textContent = '🌙 다크모드';
+                button.style.background = '#007bff';
+            }
+            
+            console.log(`테마가 ${currentTheme}로 변경되었습니다.`);
+        }
+
+        // scroll-dim 토글 함수
+        function toggleScrollDim() {
+            const container = document.getElementById('scrollDimContainer');
+            const currentValue = container.getAttribute('scroll-dim');
+            const newValue = currentValue === 'true' ? 'false' : 'true';
+            container.setAttribute('scroll-dim', newValue);
+            
+            console.log(`scroll-dim이 ${newValue}로 변경되었습니다.`);
+        }
+
+        // 컨테이너 보이기
+        function showContainer() {
+            const container = document.getElementById('scrollDimContainer');
+            container.show();
+            console.log('컨테이너가 보이게 되었습니다.');
+        }
+
+        // 컨테이너 숨기기
+        function hideContainer() {
+            const container = document.getElementById('scrollDimContainer');
+            container.hide();
+            console.log('컨테이너가 숨겨졌습니다.');
+        }
+
+        // 동적 컨테이너 생성
+        function createDynamicContainer() {
+            const contentArea = document.querySelector('.demo-section:last-child .content-area');
+            
+            // 기존 동적 컨테이너가 있다면 제거
+            const existingContainer = document.getElementById('dynamicContainer');
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+
+            // 새로운 컨테이너 생성
+            const container = document.createElement('bottom-action-container');
+            container.id = 'dynamicContainer';
+            container.setAttribute('scroll-dim', 'true');
+            
+            // 버튼들 추가
+            container.innerHTML = `
+                <button type="button" class="primary">동적 생성된 버튼</button>
+                <button type="button" class="secondary">테스트</button>
+            `;
+            
+            // body에 추가
+            document.body.appendChild(container);
+            
+            console.log('동적 컨테이너가 생성되었습니다.');
+        }
+
+        // 동적 컨테이너 제거
+        function removeDynamicContainer() {
+            const container = document.getElementById('dynamicContainer');
+            if (container) {
+                container.remove();
+                console.log('동적 컨테이너가 제거되었습니다.');
+            }
+        }
+
+        // 페이지 로드 완료 시 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('BottomActionContainer 테마 지원 예시 페이지가 로드되었습니다.');
+            console.log('사용 가능한 메서드들:');
+            console.log('- setScrollDim(value): scroll-dim 속성 설정');
+            console.log('- getScrollDim(): scroll-dim 속성 값 반환');
+            console.log('- show(): 컨테이너 표시');
+            console.log('- hide(): 컨테이너 숨김');
+            console.log('- 테마 토글: 우상단 버튼 클릭');
+            
+            // 초기 테마 설정
+            document.body.setAttribute('data-theme', 'light');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label Web Component</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+        }
+        .blind {
+            display: block;
+            margin: 0;
+            position: absolute;
+            z-index: -1;
+            width: 1px;
+            height: 1px;
+            font-size: 1px;
+            line-height: 1px;
+            color: transparent;
+            border: none;
+            padding: 0;
+            overflow: hidden;
+            background: none;
+        }
+        .progress-loading {
+            position: relative;
+            width: 100%;
+            height: 8px;
+            background-color: #F0F4FA;
+        }
+        .progress-loading-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, #C2D3FF 0%, #EBF0FF 50%, #C2D3FF 100%);
+            height: 100%;
+            animation: progressLoading 3s infinite;
+            animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        @keyframes progressLoading {
+            0% {
+                width: 0%;
+                opacity: 0;
+                clip-path: inset(0 0 0 0);
+            }
+            20% {
+                width: 100%;
+                opacity: 1;
+                clip-path: inset(0 0 0 0);
+            }
+            58% {
+                width: 100%;
+                opacity: 1;
+                clip-path: inset(0 0 0 0);
+            }
+            60% {
+                width: 100%;
+                opacity: 0.5;
+                clip-path: inset(0 0 0 10%);
+            }
+            100% {
+                width: 100%;
+                opacity: 0;
+                clip-path: inset(0 0 0 100%);
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="progress-loading">
+    <div class="progress-loading-bar">
+        <span class="blind">로딩중</span>
+    </div>
+</div>
+</body>
+</html>

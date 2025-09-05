@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Component</title>
+    <style>
+/* List Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 4px;
+  --radius-xxs: 2px;
+  --text-secondary: #333333;
+  --text-quaternary: #666666;
+  --text-ondark-primary-same: #ffffff;
+  --palette-old-blue-800: #1e40af;
+  --font-weight-300: 300;
+  --font-weight-500: 500;
+  --font-size-title-s: 16px;
+  --font-size-body-s: 12px;
+  --lineheight-title-s: 1.5;
+  --lineheight-body-s: 1.3;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* List Base */
+.list {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--spacing-md);
+  padding: var(--spacing-none);
+}
+
+.list__icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Item Element */
+.list__item {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  flex: 1;
+  gap: var(--spacing-md);
+}
+
+/* Item Inner Element */
+.list__item_inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  flex: 1;
+  gap: var(--spacing-md);
+  padding: var(--spacing-none);
+}
+
+.list__item_inner + .list__texts {
+  flex: initial;
+}
+
+.list__texts-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.list__texts-wrap .list__texts {
+  &.direction-h {
+    flex: 1;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  &.list__text--right {
+    flex: none;
+    align-items: center;
+  }
+}
+
+/* Control Element */
+.list__control {
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* Labels Element */
+.list__labels {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.list__label {
+  flex-shrink: 0;
+  background-color: var(--palette-old-blue-800);
+  color: var(--text-ondark-primary-same);
+  border-radius: var(--radius-xxs);
+  padding: 2px 6px;
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-500);
+}
+
+/* Texts Element */
+.list__texts {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.list__texts .list__text:nth-child(1) {
+  flex: 1;
+}
+
+.list__texts.direction-v {
+  .list__text--right {
+    flex: 1;
+    width: 100%;
+    text-align: right;
+  }
+
+  .list__text {
+    &.direction-v {
+      width: 100%;
+    }
+  }
+}
+
+/* Text Element */
+.list__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs) var(--spacing-md);
+  text-align: left;
+  word-break: break-word;
+}
+
+/* Text Main Element */
+.list__text__main {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-title-s);
+  font-weight: var(--font-weight-500);
+  line-height: var(--lineheight-title-s);
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Text Sub Element */
+.list__text__sub {
+  flex-shrink: 0;
+  color: var(--text-quaternary);
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-s);
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Text Align Right */
+.list__text--right {
+  align-items: flex-end;
+}
+
+.list__text--right.direction-h {
+  justify-content: flex-end;
+}
+
+.list__text--right .list__text__main {
+  text-align: right;
+}
+
+.list__text--right .list__text__sub {
+  text-align: right;
+}
+
+/* Vertical Align Center */
+.list.align-center {
+  align-items: center;
+}
+
+.list .align-center {
+  align-items: center;
+}
+
+/* Direction Horizontal */
+.direction-h {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+/* Direction Vertical */
+.direction-v {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Direction Vertical Reverse */
+.direction-v-r {
+  flex-direction: column-reverse;
+}
+
+/* Direction Horizontal Reverse */
+.direction-h-r {
+  flex-direction: row-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+/* Text Side Inline */
+.sidetxt {
+  display: block;
+}
+
+.sidetxt.list__text--right {
+  text-align: right;
+}
+
+.sidetxt.list__text--right > *:not(:empty) {
+  flex-shrink: initial;
+  padding-right: var(--spacing-none);
+}
+
+.sidetxt > *:not(:empty) {
+  display: inline;
+  padding-right: var(--spacing-md);
+}
+
+.sidetxt > *:not(:empty):last-child {
+  padding-right: var(--spacing-none);
+}
+
+/* Text Multiline */
+.list.multiline {
+  white-space: pre-wrap;
+}
+
+.list.multiline .sidetxt *:not(:empty) {
+  display: inline-flex;
+  padding-right: var(--spacing-none);
+}
+
+.list.multiline .list__text {
+  display: flex;
+}
+
+.list.multiline .list__text__main {
+  white-space: pre-wrap;
+}
+
+.list.multiline .list__text__sub {
+  white-space: pre-wrap;
+}
+
+/* Custom List styles */
+.custom-list {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  margin: 16px 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.2s var(--ease);
+}
+
+.custom-list:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.custom-list__icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.custom-list__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.custom-list__item {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  flex: 1;
+  gap: var(--spacing-md);
+}
+
+.custom-list__item_inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  flex: 1;
+  gap: var(--spacing-md);
+  padding: var(--spacing-none);
+}
+
+.custom-list__texts-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.custom-list__texts {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.custom-list__texts.direction-h {
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.custom-list__texts.list__text--right {
+  flex: none;
+  align-items: center;
+}
+
+.custom-list__texts.direction-v {
+  .custom-list__text--right {
+    flex: 1;
+    width: 100%;
+    text-align: right;
+  }
+
+  .custom-list__text {
+    &.direction-v {
+      width: 100%;
+    }
+  }
+}
+
+.custom-list__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs) var(--spacing-md);
+  text-align: left;
+  word-break: break-word;
+}
+
+.custom-list__text__main {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-title-s);
+  font-weight: var(--font-weight-500);
+  line-height: var(--lineheight-title-s);
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.custom-list__text__sub {
+  flex-shrink: 0;
+  color: var(--text-quaternary);
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-s);
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.custom-list__text--right {
+  align-items: flex-end;
+}
+
+.custom-list__text--right.direction-h {
+  justify-content: flex-end;
+}
+
+.custom-list__text--right .custom-list__text__main {
+  text-align: right;
+}
+
+.custom-list__text--right .custom-list__text__sub {
+  text-align: right;
+}
+
+.custom-list__control {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.custom-list__labels {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.custom-list__label {
+  flex-shrink: 0;
+  background-color: var(--palette-old-blue-800);
+  color: var(--text-ondark-primary-same);
+  border-radius: var(--radius-xxs);
+  padding: 2px 6px;
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-500);
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* List examples */
+.list-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.list-example {
+  min-width: 400px;
+  flex: 1;
+}
+
+.list-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Control buttons */
+.control-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-button {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s var(--ease);
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.control-button:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.control-button--align {
+  background: rgba(0, 123, 255, 0.8);
+  border-color: rgba(0, 123, 255, 0.9);
+}
+
+.control-button--direction {
+  background: rgba(16, 185, 129, 0.8);
+  border-color: rgba(16, 185, 129, 0.9);
+}
+
+.control-button--label {
+  background: rgba(245, 158, 11, 0.8);
+  border-color: rgba(245, 158, 11, 0.9);
+}
+
+.control-button--reset {
+  background: rgba(108, 117, 125, 0.8);
+  border-color: rgba(108, 117, 125, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .list-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-button {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .list-example {
+    min-width: 100%;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>List Component</h1>
+        
+        <!-- Basic List -->
+        <div class="demo-section">
+            <h3>Basic List</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Centered Alignment</span>
+                <div class="list-examples">
+                    <div class="list-example">
+                        <div class="list-example-label">Simple Text</div>
+                        <div class="custom-list align-center">
+                            <div class="custom-list__item direction-h">
+                                <div class="custom-list__item_inner align-center">
+                                    <div class="custom-list__texts align-center">
+                                        <div class="custom-list__text direction-h">
+                                            <span class="custom-list__text__main">메인 텍스트</span>
+                                            <span class="custom-list__text__sub">서브 텍스트</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-list__texts align-center">
+                                    <div class="custom-list__text custom-list__text--right direction-h">
+                                        <span class="custom-list__text__main">오른쪽 메인</span>
+                                        <span class="custom-list__text__sub">오른쪽 서브</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-example">
+                        <div class="list-example-label">With Icons</div>
+                        <div class="custom-list align-center">
+                            <div class="custom-list__item direction-h">
+                                <div class="custom-list__item_inner align-center">
+                                    <div class="custom-list__icon">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                        </svg>
+                                    </div>
+                                    <div class="custom-list__texts align-center">
+                                        <div class="custom-list__text direction-h">
+                                            <span class="custom-list__text__main">아이콘과 함께</span>
+                                            <span class="custom-list__text__sub">정보 아이콘</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-list__icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Aligned List -->
+        <div class="demo-section">
+            <h3>Top Aligned List</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Multiline Layout</span>
+                <div class="list-examples">
+                    <div class="list-example">
+                        <div class="list-example-label">Basic Top Aligned</div>
+                        <div class="custom-list multiline">
+                            <div class="custom-list__item">
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__texts">
+                                        <div class="custom-list__text direction-h">
+                                            <span class="custom-list__text__main">상단 정렬 메인</span>
+                                            <span class="custom-list__text__sub">상단 정렬 서브</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__texts direction-v">
+                                        <div class="custom-list__text direction-v">
+                                            <span class="custom-list__text__main">오른쪽 메인</span>
+                                            <span class="custom-list__text__sub">오른쪽 서브</span>
+                                        </div>
+                                        <div class="custom-list__text custom-list__text--right direction-v">
+                                            <span class="custom-list__text__main">추가 정보</span>
+                                            <span class="custom-list__text__sub">상세 내용</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-example">
+                        <div class="list-example-label">With Controls</div>
+                        <div class="custom-list multiline">
+                            <div class="custom-list__control">
+                                <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">편집</button>
+                            </div>
+                            <div class="custom-list__item">
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__texts">
+                                        <div class="custom-list__text direction-h">
+                                            <span class="custom-list__text__main">컨트롤과 함께</span>
+                                            <span class="custom-list__text__sub">편집 버튼 포함</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-list__control">
+                                <button style="padding: 4px 8px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Centered Label List -->
+        <div class="demo-section">
+            <h3>Centered Label List</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">With Labels</span>
+                <div class="list-examples">
+                    <div class="list-example">
+                        <div class="list-example-label">Column Label</div>
+                        <div class="custom-list align-center">
+                            <div class="custom-list__item direction-h align-center">
+                                <div class="custom-list__item_inner direction-v">
+                                    <div class="custom-list__labels">
+                                        <span class="custom-list__label">NEW</span>
+                                    </div>
+                                    <div class="custom-list__texts-wrap direction-h">
+                                        <div class="custom-list__texts direction-h">
+                                            <div class="custom-list__text direction-h">
+                                                <span class="custom-list__text__main">라벨이 있는 리스트</span>
+                                                <span class="custom-list__text__sub">컬럼 방향 라벨</span>
+                                            </div>
+                                        </div>
+                                        <div class="custom-list__texts custom-list__text--right">
+                                            <div class="custom-list__text direction-h">
+                                                <span class="custom-list__text__main">오른쪽 텍스트</span>
+                                                <span class="custom-list__text__sub">추가 정보</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-example">
+                        <div class="list-example-label">Row Label</div>
+                        <div class="custom-list align-center">
+                            <div class="custom-list__item direction-h align-center">
+                                <div class="custom-list__item_inner direction-v">
+                                    <div class="custom-list__texts-wrap direction-h">
+                                        <div class="custom-list__texts direction-h">
+                                            <div class="custom-list__text direction-h">
+                                                <div class="custom-list__labels">
+                                                    <span class="custom-list__label">HOT</span>
+                                                </div>
+                                                <span class="custom-list__text__main">라벨이 있는 리스트</span>
+                                                <span class="custom-list__text__sub">로우 방향 라벨</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Aligned Label List -->
+        <div class="demo-section">
+            <h3>Top Aligned Label List</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Complex Layout</span>
+                <div class="list-examples">
+                    <div class="list-example">
+                        <div class="list-example-label">Full Featured</div>
+                        <div class="custom-list multiline">
+                            <div class="custom-list__item">
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__labels">
+                                        <span class="custom-list__label">FEATURED</span>
+                                        <span class="custom-list__text__sub">추가 설명</span>
+                                    </div>
+                                </div>
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__texts direction-v">
+                                        <div class="custom-list__text direction-v">
+                                            <span class="custom-list__text__main">복잡한 레이아웃</span>
+                                            <span class="custom-list__text__sub">여러 요소 포함</span>
+                                        </div>
+                                        <div class="custom-list__text custom-list__text--right direction-v">
+                                            <span class="custom-list__text__main">오른쪽 정보</span>
+                                            <span class="custom-list__text__sub">상세 내용</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-example">
+                        <div class="list-example-label">With Icons and Controls</div>
+                        <div class="custom-list multiline">
+                            <div class="custom-list__control">
+                                <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">승인</button>
+                            </div>
+                            <div class="custom-list__item">
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__labels">
+                                        <span class="custom-list__label">PENDING</span>
+                                    </div>
+                                    <div class="custom-list__icon">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                        </svg>
+                                    </div>
+                                    <div class="custom-list__texts">
+                                        <div class="custom-list__text direction-h">
+                                            <span class="custom-list__text__main">승인 대기 중</span>
+                                            <span class="custom-list__text__sub">관리자 검토 필요</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Direction Variants -->
+        <div class="demo-section">
+            <h3>Direction Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Text Direction Options</span>
+                <div class="list-examples">
+                    <div class="list-example">
+                        <div class="list-example-label">Row Direction</div>
+                        <div class="custom-list align-center">
+                            <div class="custom-list__item direction-h">
+                                <div class="custom-list__item_inner align-center">
+                                    <div class="custom-list__texts align-center">
+                                        <div class="custom-list__text direction-h">
+                                            <span class="custom-list__text__main">가로 방향</span>
+                                            <span class="custom-list__text__sub">메인과 서브가 같은 줄</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-example">
+                        <div class="list-example-label">Column Direction</div>
+                        <div class="custom-list align-center">
+                            <div class="custom-list__item direction-h">
+                                <div class="custom-list__item_inner align-center">
+                                    <div class="custom-list__texts align-center">
+                                        <div class="custom-list__text direction-v">
+                                            <span class="custom-list__text__main">세로 방향</span>
+                                            <span class="custom-list__text__sub">메인과 서브가 다른 줄</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">실시간으로 List 상태 변경</span>
+                
+                <div class="control-buttons">
+                    <button class="control-button control-button--align" onclick="toggleAlign()">정렬 변경</button>
+                    <button class="control-button control-button--direction" onclick="toggleDirection()">방향 변경</button>
+                    <button class="control-button control-button--label" onclick="toggleLabel()">라벨 토글</button>
+                    <button class="control-button control-button--reset" onclick="resetList()">초기화</button>
+                </div>
+                
+                <div id="demoList" class="custom-list align-center">
+                    <div class="custom-list__item direction-h">
+                        <div class="custom-list__item_inner align-center">
+                            <div id="demoLabel" class="custom-list__labels" style="display: none;">
+                                <span class="custom-list__label">DEMO</span>
+                            </div>
+                            <div class="custom-list__texts-wrap direction-h">
+                                <div class="custom-list__texts direction-h">
+                                    <div id="demoText" class="custom-list__text direction-h">
+                                        <span class="custom-list__text__main">인터랙티브 리스트</span>
+                                        <span class="custom-list__text__sub">실시간 변경 가능</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Combined Examples -->
+        <div class="demo-section">
+            <h3>Combined Examples</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">복합 상태 조합</span>
+                <div class="list-examples">
+                    <div class="list-example">
+                        <div class="list-example-label">Complex Layout</div>
+                        <div class="custom-list multiline">
+                            <div class="custom-list__control">
+                                <button style="padding: 4px 8px; background: #6f42c1; color: white; border: none; border-radius: 4px; cursor: pointer;">설정</button>
+                            </div>
+                            <div class="custom-list__icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="custom-list__item">
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__labels">
+                                        <span class="custom-list__label">WARNING</span>
+                                    </div>
+                                    <div class="custom-list__texts">
+                                        <div class="custom-list__text direction-v">
+                                            <span class="custom-list__text__main">주의가 필요한 항목</span>
+                                            <span class="custom-list__text__sub">자세한 내용을 확인하세요</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-list__item_inner">
+                                    <div class="custom-list__texts direction-v">
+                                        <div class="custom-list__text custom-list__text--right direction-v">
+                                            <span class="custom-list__text__main">우선순위: 높음</span>
+                                            <span class="custom-list__text__sub">즉시 처리 필요</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="list-example">
+                        <div class="list-example-label">Simple Info</div>
+                        <div class="custom-list align-center">
+                            <div class="custom-list__item direction-h">
+                                <div class="custom-list__item_inner align-center">
+                                    <div class="custom-list__texts align-center">
+                                        <div class="custom-list__text direction-h">
+                                            <span class="custom-list__text__main">간단한 정보</span>
+                                            <span class="custom-list__text__sub">기본적인 리스트 아이템</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-list__texts align-center">
+                                    <div class="custom-list__text custom-list__text--right direction-h">
+                                        <span class="custom-list__text__main">상태: 정상</span>
+                                        <span class="custom-list__text__sub">모든 시스템 정상</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데모 리스트 상태 변수
+        let currentAlign = 'center';
+        let currentDirection = 'h';
+        let showLabel = false;
+        
+        // DOM 요소
+        const demoList = document.getElementById('demoList');
+        const demoLabel = document.getElementById('demoLabel');
+        const demoText = document.getElementById('demoText');
+        
+        // 정렬 변경 함수
+        function toggleAlign() {
+            currentAlign = currentAlign === 'center' ? 'top' : 'center';
+            updateList();
+        }
+        
+        // 방향 변경 함수
+        function toggleDirection() {
+            currentDirection = currentDirection === 'h' ? 'v' : 'h';
+            updateList();
+        }
+        
+        // 라벨 토글 함수
+        function toggleLabel() {
+            showLabel = !showLabel;
+            updateList();
+        }
+        
+        // 리스트 초기화 함수
+        function resetList() {
+            currentAlign = 'center';
+            currentDirection = 'h';
+            showLabel = false;
+            updateList();
+        }
+        
+        // 리스트 상태 업데이트 함수
+        function updateList() {
+            // 기존 클래스 제거
+            demoList.className = 'custom-list';
+            
+            // 새로운 클래스 추가
+            if (currentAlign === 'center') {
+                demoList.classList.add('align-center');
+            } else {
+                demoList.classList.add('multiline');
+            }
+            
+            // 방향 변경
+            demoText.className = 'custom-list__text';
+            demoText.classList.add(`direction-${currentDirection}`);
+            
+            // 라벨 표시/숨김
+            if (showLabel) {
+                demoLabel.style.display = 'flex';
+            } else {
+                demoLabel.style.display = 'none';
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('List 컴포넌트가 로드되었습니다.');
+            updateList();
+        });
+    </script>
+</body>
+</html>

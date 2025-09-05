@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelectBox Web Component</title>
+    <style>
+        .sv-select-box {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            gap: 16px;
+            color: #111827;
+            padding: 12px 20px;
+            font-size: 14px;
+            line-height: 1.4;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .sv-select-box:hover:not(.sv-select-box--disabled) {
+            border-color: #005df9;
+            background-color: #f8fafc;
+        }
+
+        .sv-select-box--disabled {
+            border-color: #d1d5db;
+            background-color: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .sv-select-box--selected {
+            font-weight: 500;
+            color: #005df9;
+            border-color: #005df9;
+            background-color: #f0f9ff;
+        }
+
+        .sv-select-box--selected.sv-select-box--disabled {
+            color: #93c5fd;
+        }
+
+        .sv-select-box--selected.sv-select-box--disabled:after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            bottom: -1px;
+            left: -1px;
+            right: -1px;
+            border: 2px solid #93c5fd;
+            box-sizing: border-box;
+            pointer-events: none;
+            border-radius: 12px;
+        }
+
+        .sv-select-box__icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sv-select-box--with-indicator {
+            justify-content: space-between;
+        }
+
+        .sv-select-box__label {
+            display: block;
+        }
+
+        .sv-select-box__indicator {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .sv-select-box__border-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sv-select-box__border-path {
+            fill: none;
+            stroke: #005df9;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sv-select-box__border-svg--disabled .sv-select-box__border-path {
+            stroke: #93c5fd;
+        }
+
+        /* 접근성을 위한 포커스 스타일 */
+        .sv-select-box:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* 고대비 모드 지원 */
+        @media (prefers-contrast: high) {
+            .sv-select-box {
+                border: 2px solid currentColor !important;
+            }
+            .sv-select-box--selected {
+                border: 3px solid currentColor !important;
+            }
+        }
+
+        /* 모션 감소 지원 */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-select-box {
+                transition: none;
+            }
+        }
+
+        /* 스크린 리더 전용 텍스트 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        class SelectBoxComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._value = null;
+                this._label = '';
+                this._selected = false;
+                this._disabled = false;
+                this._showIndicator = false;
+                this._as = 'button';
+                this._id = `select-box-${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            static get observedAttributes() {
+                return ['value', 'label', 'selected', 'disabled', 'show-indicator', 'as'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'value':
+                        this._value = value;
+                        break;
+                    case 'label':
+                        this._label = value || '';
+                        break;
+                    case 'selected':
+                        this._selected = value === 'true' || value === '';
+                        break;
+                    case 'disabled':
+                        this._disabled = value === 'true' || value === '';
+                        break;
+                    case 'show-indicator':
+                        this._showIndicator = value === 'true' || value === '';
+                        break;
+                    case 'as':
+                        this._as = value || 'button';
+                        break;
+                }
+            }
+
+            render() {
+                const selectBoxClasses = this.getSelectBoxClasses();
+                const svgAnimationClasses = this.getSvgAnimationClasses();
+                const indicatorIconName = this.getIndicatorIconName();
+                const tagName = this._as === 'button' ? 'button' : 'div';
+                const buttonAttrs = this._as === 'button' ? 'type="button"' : '';
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: inline-block; }
+                        .sv-select-box {
+                            position: relative;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            border: 1px solid #ccc;
+                            cursor: pointer;
+                            font-weight: 400;
+                            letter-spacing: -0.01em;
+                            gap: 16px;
+                            color: #111827;
+                            padding: 12px 20px;
+                            font-size: 14px;
+                            line-height: 1.4;
+                            border-radius: 12px;
+                            transition: all 0.2s ease;
+                            user-select: none;
+                        }
+                        .sv-select-box:hover:not(.sv-select-box--disabled) {
+                            border-color: #005df9;
+                            background-color: #f8fafc;
+                        }
+                        .sv-select-box--disabled {
+                            border-color: #d1d5db;
+                            background-color: #f3f4f6;
+                            color: #9ca3af;
+                            cursor: not-allowed;
+                        }
+                        .sv-select-box--selected {
+                            font-weight: 500;
+                            color: #005df9;
+                            border-color: #005df9;
+                            background-color: #f0f9ff;
+                        }
+                        .sv-select-box--selected.sv-select-box--disabled {
+                            color: #93c5fd;
+                        }
+                        .sv-select-box--selected.sv-select-box--disabled:after {
+                            content: '';
+                            position: absolute;
+                            top: -1px;
+                            bottom: -1px;
+                            left: -1px;
+                            right: -1px;
+                            border: 2px solid #93c5fd;
+                            box-sizing: border-box;
+                            pointer-events: none;
+                            border-radius: 12px;
+                        }
+                        .sv-select-box__icon {
+                            width: 24px;
+                            height: 24px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                        .sv-select-box--with-indicator {
+                            justify-content: space-between;
+                        }
+                        .sv-select-box__label {
+                            display: block;
+                        }
+                        .sv-select-box__indicator {
+                            flex-shrink: 0;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            position: relative;
+                            z-index: 10;
+                        }
+                        .sv-select-box__border-svg {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            pointer-events: none;
+                            z-index: 1;
+                        }
+                        .sv-select-box__border-path {
+                            fill: none;
+                            stroke: #005df9;
+                            stroke-width: 2;
+                            stroke-linecap: round;
+                            stroke-linejoin: round;
+                        }
+                        .sv-select-box__border-svg--disabled .sv-select-box__border-path {
+                            stroke: #93c5fd;
+                        }
+                        .sv-select-box:focus-visible {
+                            outline: 2px solid #3b82f6;
+                            outline-offset: 2px;
+                        }
+                        @media (prefers-contrast: high) {
+                            .sv-select-box {
+                                border: 2px solid currentColor !important;
+                            }
+                            .sv-select-box--selected {
+                                border: 3px solid currentColor !important;
+                            }
+                        }
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-select-box {
+                                transition: none;
+                            }
+                        }
+                    </style>
+                    
+                    <${tagName}
+                        class="sv-select-box ${selectBoxClasses}"
+                        ${buttonAttrs}
+                        ${this._disabled ? 'disabled' : ''}
+                        role="button"
+                        tabindex="${this._disabled ? '-1' : '0'}"
+                        aria-pressed="${this._selected}"
+                        aria-disabled="${this._disabled}"
+                        ${this._label ? `aria-label="${this._label}"` : ''}
+                        data-value="${this._value}"
+                    >
+                        ${this._selected ? `
+                            <svg class="sv-select-box__border-svg ${svgAnimationClasses}">
+                                <path class="sv-select-box__border-path" d="M12,2 A10,10 0 0,1 22,12 A10,10 0 0,1 12,22 A10,10 0 0,1 2,12 A10,10 0 0,1 12,2"></path>
+                            </svg>
+                        ` : ''}
+
+                        <span class="sv-select-box__label">${this._label}</span>
+
+                        ${this._showIndicator ? `
+                            <div class="sv-select-box__indicator">
+                                <span class="sv-select-box__icon">${this.getIconEmoji(indicatorIconName)}</span>
+                            </div>
+                        ` : ''}
+                    </${tagName}>
+                `;
+            }
+
+            getSelectBoxClasses() {
+                const classes = ['sv-select-box'];
+                
+                if (this._selected) {
+                    classes.push('sv-select-box--selected');
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-select-box--disabled');
+                }
+                
+                if (this._showIndicator) {
+                    classes.push('sv-select-box--with-indicator');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getSvgAnimationClasses() {
+                const classes = ['sv-select-box__border-svg'];
+                
+                if (this._selected) {
+                    classes.push('sv-select-box__border-svg--selected');
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-select-box__border-svg--disabled');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getIndicatorIconName() {
+                if (this._selected) {
+                    if (this._disabled) {
+                        return 'check-checked-disabled';
+                    } else {
+                        return 'check-checked';
+                    }
+                } else {
+                    if (this._disabled) {
+                        return 'check-unchecked-disabled';
+                    } else {
+                        return 'check-unchecked';
+                    }
+                }
+            }
+
+            getIconEmoji(iconName) {
+                // 아이콘 이름을 이모지로 변환 (실제 구현에서는 SVG나 아이콘 폰트 사용)
+                const iconMap = {
+                    'check-checked': '✓',
+                    'check-unchecked': '○',
+                    'check-checked-disabled': '✓',
+                    'check-unchecked-disabled': '○'
+                };
+                return iconMap[iconName] || '●';
+            }
+
+            setupAccessibility() {
+                const selectBox = this.shadowRoot.querySelector('.sv-select-box');
+                
+                if (selectBox) {
+                    selectBox.setAttribute('aria-pressed', this._selected.toString());
+                    selectBox.setAttribute('aria-disabled', this._disabled.toString());
+                    
+                    if (this._label) {
+                        selectBox.setAttribute('aria-label', this._label);
+                    }
+                }
+            }
+
+            setupEventListeners() {
+                const selectBox = this.shadowRoot.querySelector('.sv-select-box');
+                
+                if (selectBox) {
+                    selectBox.addEventListener('click', (e) => this.handleClick(e));
+                    selectBox.addEventListener('keydown', (e) => this.handleKeydown(e));
+                }
+            }
+
+            handleClick(event) {
+                if (this._disabled) return;
+                
+                this.dispatchEvent(new CustomEvent('select-box-click', {
+                    detail: { value: this._value, event: event }
+                }));
+            }
+
+            handleKeydown(event) {
+                if (this._disabled) return;
+                
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    this.handleClick(event);
+                }
+            }
+
+            // Getters and setters
+            get value() { return this._value; }
+            set value(value) { this._value = value; this.setAttribute('value', value); }
+            
+            get label() { return this._label; }
+            set label(value) { this._label = value; this.setAttribute('label', value); }
+            
+            get selected() { return this._selected; }
+            set selected(value) { this._selected = value === 'true' || value === ''; this.setAttribute('selected', value); }
+            
+            get disabled() { return this._disabled; }
+            set disabled(value) { this._disabled = value === 'true' || value === ''; this.setAttribute('disabled', value); }
+            
+            get showIndicator() { return this._showIndicator; }
+            set showIndicator(value) { this._showIndicator = value === 'true' || value === ''; this.setAttribute('show-indicator', value); }
+            
+            get as() { return this._as; }
+            set as(value) { this._as = value; this.setAttribute('as', value); }
+        }
+
+        customElements.define('sv-select-box', SelectBoxComponent);
+    </script>
+
+    <h2>SelectBox 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 SelectBox</h3>
+    <sv-select-box
+        value="option1"
+        label="옵션 1"
+    ></sv-select-box>
+
+    <h3>선택된 SelectBox</h3>
+    <sv-select-box
+        value="option2"
+        label="옵션 2"
+        selected="true"
+    ></sv-select-box>
+
+    <h3>인디케이터가 있는 SelectBox</h3>
+    <sv-select-box
+        value="option3"
+        label="옵션 3"
+        show-indicator="true"
+    ></sv-select-box>
+
+    <h3>비활성화된 SelectBox</h3>
+    <sv-select-box
+        value="option4"
+        label="옵션 4"
+        disabled="true"
+    ></sv-select-box>
+
+    <h3>선택된 비활성화 SelectBox</h3>
+    <sv-select-box
+        value="option5"
+        label="옵션 5"
+        selected="true"
+        disabled="true"
+        show-indicator="true"
+    ></sv-select-box>
+
+    <h3>div로 렌더링되는 SelectBox</h3>
+    <sv-select-box
+        value="option6"
+        label="옵션 6"
+        as="div"
+    ></sv-select-box>
+
+    <h3>접근성 테스트</h3>
+    <p>키보드로 탐색해보세요:</p>
+    <ul>
+        <li>Tab 키로 SelectBox에 포커스</li>
+        <li>Enter/Space로 클릭 이벤트 발생</li>
+        <li>스크린 리더가 상태와 라벨을 읽음</li>
+    </ul>
+
+    <div style="margin: 20px 0;">
+        <label id="test-label">테스트용 SelectBox:</label>
+        <sv-select-box
+            value="test"
+            label="테스트 옵션"
+            show-indicator="true"
+            aria-labelledby="test-label"
+        ></sv-select-box>
+    </div>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('select-box-click', (e) => {
+            console.log('SelectBox 클릭됨:', e.detail);
+        });
+
+        // 프로그래밍 방식으로 SelectBox 제어
+        const selectBox = document.querySelector('sv-select-box[value="option1"]');
+        if (selectBox) {
+            // 동적으로 속성 변경
+            setTimeout(() => {
+                selectBox.selected = true;
+                selectBox.showIndicator = true;
+            }, 3000);
+
+            // SelectBox 상태 확인
+            console.log('SelectBox 정보:', {
+                value: selectBox.value,
+                label: selectBox.label,
+                selected: selectBox.selected,
+                disabled: selectBox.disabled,
+                showIndicator: selectBox.showIndicator
+            });
+        }
+
+        // 접근성 테스트를 위한 포커스 이벤트
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'SV-SELECT-BOX') {
+                console.log('SelectBox에 포커스됨');
+            }
+        });
+
+        // 키보드 이벤트 테스트
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'SV-SELECT-BOX') {
+                console.log('키보드 이벤트:', e.key);
+            }
+        });
+
+        // 동적 SelectBox 생성 예시
+        function createDynamicSelectBox() {
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <h4>동적으로 생성된 SelectBox</h4>
+                <sv-select-box
+                    value="dynamic"
+                    label="동적 옵션"
+                    show-indicator="true"
+                ></sv-select-box>
+            `;
+            document.body.appendChild(container);
+        }
+
+        // 5초 후 동적 SelectBox 생성
+        setTimeout(createDynamicSelectBox, 5000);
+    </script>
+</body>
+</html>

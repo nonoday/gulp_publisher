@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SegmentSwitch Web Component</title>
+    <style>
+        .sv-segment-switch {
+            position: relative;
+            display: inline-flex;
+            font-family: "Digital One", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 8px;
+            gap: 4px;
+            border-radius: 12px;
+            background-color: #f3f4f6;
+            transition: all 0.25s ease;
+        }
+
+        .sv-segment-switch__label {
+            z-index: 2;
+            display: flex;
+            flex-shrink: 0;
+            align-items: center;
+            border-radius: 8px;
+            gap: 4px;
+            padding: 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .sv-segment-switch__label__text {
+            color: #9ca3af;
+            display: inline-flex;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .sv-segment-switch__label--checked .sv-segment-switch__label__text {
+            color: #111827;
+            font-weight: 500;
+        }
+
+        .sv-segment-switch__thumb {
+            position: absolute;
+            z-index: 1;
+            top: 8px;
+            left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background-color: #ffffff;
+            width: auto;
+            height: calc(100% - 16px);
+            margin-left: 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px 0 rgba(12, 17, 29, 0.06);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .sv-segment-switch__icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Size Modifiers */
+        .sv-segment-switch--size-l .sv-segment-switch__label {
+            min-height: 48px;
+            padding: 16px;
+            gap: 4px;
+        }
+
+        .sv-segment-switch--size-l .sv-segment-switch__label__text {
+            padding: 0 8px;
+            font-size: 16px;
+            letter-spacing: -0.01em;
+            line-height: 1.5;
+        }
+
+        .sv-segment-switch--size-m .sv-segment-switch__label {
+            min-height: 40px;
+            padding: 8px 16px;
+            gap: 4px;
+        }
+
+        .sv-segment-switch--size-m .sv-segment-switch__label__text {
+            padding: 0 8px;
+            font-size: 16px;
+            letter-spacing: -0.01em;
+            line-height: 1.5;
+        }
+
+        .sv-segment-switch--size-s .sv-segment-switch__label {
+            min-height: 32px;
+            padding: 4px 8px;
+            gap: 0;
+        }
+
+        .sv-segment-switch--size-s .sv-segment-switch__label__text {
+            padding: 0 8px;
+            font-size: 14px;
+            letter-spacing: -0.01em;
+            line-height: 1.4;
+        }
+
+        .sv-segment-switch--size-s .sv-segment-switch__icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sv-segment-switch--size-xs {
+            border-radius: 8px;
+        }
+
+        .sv-segment-switch--size-xs .sv-segment-switch__label {
+            min-height: 28px;
+            padding: 8px;
+            gap: 0;
+        }
+
+        .sv-segment-switch--size-xs .sv-segment-switch__label__text {
+            padding: 0 4px;
+            font-size: 12px;
+            letter-spacing: 0;
+            line-height: 1.3;
+        }
+
+        .sv-segment-switch--size-xs .sv-segment-switch__icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 접근성을 위한 포커스 스타일 */
+        .sv-segment-switch__label:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        /* 고대비 모드 지원 */
+        @media (prefers-contrast: high) {
+            .sv-segment-switch {
+                border: 2px solid currentColor;
+            }
+            .sv-segment-switch__thumb {
+                border: 2px solid currentColor;
+            }
+        }
+
+        /* 모션 감소 지원 */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-segment-switch,
+            .sv-segment-switch__thumb,
+            .sv-segment-switch__label {
+                transition: none;
+            }
+        }
+
+        /* 스크린 리더 전용 텍스트 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        class SegmentSwitchComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._labels = [];
+                this._icons = [];
+                this._size = 'medium';
+                this._name = '';
+                this._value = false;
+                this._id = `segment-switch-${Math.random().toString(36).substr(2, 9)}`;
+                this._labelRefs = [];
+                this._widths = [];
+            }
+
+            static get observedAttributes() {
+                return ['labels', 'icons', 'size', 'name', 'value'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+                this.setLabelWidth();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                    this.setLabelWidth();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'labels':
+                        try {
+                            this._labels = value ? JSON.parse(value) : [];
+                        } catch (e) {
+                            this._labels = [];
+                        }
+                        break;
+                    case 'icons':
+                        try {
+                            this._icons = value ? JSON.parse(value) : [];
+                        } catch (e) {
+                            this._icons = [];
+                        }
+                        break;
+                    case 'size':
+                        this._size = value || 'medium';
+                        break;
+                    case 'name':
+                        this._name = value || '';
+                        break;
+                    case 'value':
+                        this._value = value === 'true' || value === '';
+                        break;
+                }
+            }
+
+            render() {
+                const switchClasses = this.getSwitchClasses();
+                const selectedIndex = this._value ? 1 : 0;
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: inline-block; }
+                        .sv-segment-switch {
+                            position: relative;
+                            display: inline-flex;
+                            font-family: "Digital One", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                            padding: 8px;
+                            gap: 4px;
+                            border-radius: 12px;
+                            background-color: #f3f4f6;
+                            transition: all 0.25s ease;
+                        }
+                        .sv-segment-switch__label {
+                            z-index: 2;
+                            display: flex;
+                            flex-shrink: 0;
+                            align-items: center;
+                            border-radius: 8px;
+                            gap: 4px;
+                            padding: 16px;
+                            cursor: pointer;
+                            user-select: none;
+                            transition: all 0.2s ease;
+                        }
+                        .sv-segment-switch__label__text {
+                            color: #9ca3af;
+                            display: inline-flex;
+                            font-weight: 400;
+                            white-space: nowrap;
+                        }
+                        .sv-segment-switch__label--checked .sv-segment-switch__label__text {
+                            color: #111827;
+                            font-weight: 500;
+                        }
+                        .sv-segment-switch__thumb {
+                            position: absolute;
+                            z-index: 1;
+                            top: 8px;
+                            left: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-shrink: 0;
+                            background-color: #ffffff;
+                            width: auto;
+                            height: calc(100% - 16px);
+                            margin-left: 8px;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 16px 0 rgba(12, 17, 29, 0.06);
+                            transition: all 0.2s ease-in-out;
+                        }
+                        .sv-segment-switch__icon {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-shrink: 0;
+                        }
+                        .sv-segment-switch--size-l .sv-segment-switch__label {
+                            min-height: 48px;
+                            padding: 16px;
+                            gap: 4px;
+                        }
+                        .sv-segment-switch--size-l .sv-segment-switch__label__text {
+                            padding: 0 8px;
+                            font-size: 16px;
+                            letter-spacing: -0.01em;
+                            line-height: 1.5;
+                        }
+                        .sv-segment-switch--size-m .sv-segment-switch__label {
+                            min-height: 40px;
+                            padding: 8px 16px;
+                            gap: 4px;
+                        }
+                        .sv-segment-switch--size-m .sv-segment-switch__label__text {
+                            padding: 0 8px;
+                            font-size: 16px;
+                            letter-spacing: -0.01em;
+                            line-height: 1.5;
+                        }
+                        .sv-segment-switch--size-s .sv-segment-switch__label {
+                            min-height: 32px;
+                            padding: 4px 8px;
+                            gap: 0;
+                        }
+                        .sv-segment-switch--size-s .sv-segment-switch__label__text {
+                            padding: 0 8px;
+                            font-size: 14px;
+                            letter-spacing: -0.01em;
+                            line-height: 1.4;
+                        }
+                        .sv-segment-switch--size-s .sv-segment-switch__icon {
+                            width: 20px;
+                            height: 20px;
+                        }
+                        .sv-segment-switch--size-xs {
+                            border-radius: 8px;
+                        }
+                        .sv-segment-switch--size-xs .sv-segment-switch__label {
+                            min-height: 28px;
+                            padding: 8px;
+                            gap: 0;
+                        }
+                        .sv-segment-switch--size-xs .sv-segment-switch__label__text {
+                            padding: 0 4px;
+                            font-size: 12px;
+                            letter-spacing: 0;
+                            line-height: 1.3;
+                        }
+                        .sv-segment-switch--size-xs .sv-segment-switch__icon {
+                            width: 16px;
+                            height: 16px;
+                        }
+                        .sv-segment-switch__label:focus-visible {
+                            outline: 2px solid #3b82f6;
+                            outline-offset: 2px;
+                            border-radius: 8px;
+                        }
+                        @media (prefers-contrast: high) {
+                            .sv-segment-switch {
+                                border: 2px solid currentColor;
+                            }
+                            .sv-segment-switch__thumb {
+                                border: 2px solid currentColor;
+                            }
+                        }
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-segment-switch,
+                            .sv-segment-switch__thumb,
+                            .sv-segment-switch__label {
+                                transition: none;
+                            }
+                        }
+                    </style>
+                    
+                    <div 
+                        class="sv-segment-switch ${switchClasses}"
+                        role="switch"
+                        aria-checked="${this._value}"
+                        aria-labelledby="${this._id}-label"
+                        tabindex="0"
+                        ${this._name ? `aria-label="세그먼트 스위치: ${this._labels.join(' 또는 ')}"` : ''}
+                    >
+                        <span 
+                            id="${this._id}-label"
+                            class="sr-only"
+                        >
+                            ${this._labels.length > 0 ? this._labels.join(' 또는 ') : '스위치'}
+                        </span>
+
+                        ${Array(2).fill(null).map((_, i) => this.renderLabel(i, selectedIndex)).join('')}
+
+                        <div 
+                            class="sv-segment-switch__thumb"
+                            style="${this.getThumbStyles(selectedIndex)}"
+                        ></div>
+                    </div>
+                `;
+
+                // 라벨 참조 저장
+                this._labelRefs = this.shadowRoot.querySelectorAll('.sv-segment-switch__label');
+            }
+
+            renderLabel(index, selectedIndex) {
+                const label = this._labels[index] || '';
+                const icon = this._icons[index] || '';
+                const isChecked = index === selectedIndex;
+                const labelClasses = this.getLabelClasses(index, selectedIndex);
+
+                return `
+                    <span 
+                        class="sv-segment-switch__label ${labelClasses}"
+                        data-index="${index}"
+                        role="button"
+                        tabindex="${isChecked ? '0' : '-1'}"
+                        aria-pressed="${isChecked}"
+                        ${label ? `aria-label="${label}"` : ''}
+                    >
+                        ${icon ? `<span class="sv-segment-switch__icon">${this.getIconEmoji(icon)}</span>` : ''}
+                        ${label ? `<span class="sv-segment-switch__label__text">${label}</span>` : ''}
+                    </span>
+                `;
+            }
+
+            getIconEmoji(iconName) {
+                // 아이콘 이름을 이모지로 변환 (실제 구현에서는 SVG나 아이콘 폰트 사용)
+                const iconMap = {
+                    'check': '✓',
+                    'close': '✕',
+                    'edit': '✏️',
+                    'delete': '🗑️',
+                    'add': '➕',
+                    'remove': '➖',
+                    'play': '▶️',
+                    'pause': '⏸️',
+                    'stop': '⏹️',
+                    'settings': '⚙️',
+                    'home': '🏠',
+                    'search': '🔍',
+                    'user': '👤',
+                    'notification': '🔔',
+                    'star': '⭐',
+                    'heart': '❤️',
+                    'like': '👍',
+                    'dislike': '👎'
+                };
+                return iconMap[iconName] || '●';
+            }
+
+            getSwitchClasses() {
+                const classes = ['sv-segment-switch'];
+                
+                if (this._size) {
+                    classes.push(`sv-segment-switch--size-${this._size}`);
+                }
+                
+                return classes.join(' ');
+            }
+
+            getLabelClasses(index, selectedIndex) {
+                const classes = ['sv-segment-switch__label'];
+                
+                if (index === selectedIndex) {
+                    classes.push('sv-segment-switch__label--checked');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getThumbStyles(selectedIndex) {
+                if (this._widths.length < 2) {
+                    return '';
+                }
+
+                const left = selectedIndex === 0 ? '8px' : `${this._widths[0] + 8}px`;
+                const width = `${this._widths[selectedIndex]}px`;
+
+                return `left: ${left}; width: ${width};`;
+            }
+
+            setLabelWidth() {
+                // DOM이 렌더링된 후 라벨 너비 계산
+                setTimeout(() => {
+                    this._labelRefs.forEach((label, index) => {
+                        if (label) {
+                            const rect = label.getBoundingClientRect();
+                            this._widths[index] = rect.width;
+                        }
+                    });
+                    
+                    // thumb 스타일 업데이트
+                    this.updateThumbStyles();
+                }, 0);
+            }
+
+            updateThumbStyles() {
+                const thumb = this.shadowRoot.querySelector('.sv-segment-switch__thumb');
+                if (thumb) {
+                    const selectedIndex = this._value ? 1 : 0;
+                    thumb.style.cssText = this.getThumbStyles(selectedIndex);
+                }
+            }
+
+            setupAccessibility() {
+                const switchElement = this.shadowRoot.querySelector('.sv-segment-switch');
+                const labels = this.shadowRoot.querySelectorAll('.sv-segment-switch__label');
+                
+                if (switchElement) {
+                    switchElement.setAttribute('aria-checked', this._value.toString());
+                    
+                    if (this._labels.length > 0) {
+                        const labelText = this._labels.join(' 또는 ');
+                        switchElement.setAttribute('aria-label', `세그먼트 스위치: ${labelText}`);
+                    }
+                }
+                
+                labels.forEach((label, index) => {
+                    const isChecked = index === (this._value ? 1 : 0);
+                    label.setAttribute('aria-pressed', isChecked.toString());
+                    label.setAttribute('tabindex', isChecked ? '0' : '-1');
+                });
+            }
+
+            setupEventListeners() {
+                const switchElement = this.shadowRoot.querySelector('.sv-segment-switch');
+                const labels = this.shadowRoot.querySelectorAll('.sv-segment-switch__label');
+                
+                if (switchElement) {
+                    switchElement.addEventListener('keydown', (e) => this.handleSwitchKeydown(e));
+                }
+                
+                labels.forEach((label, index) => {
+                    label.addEventListener('click', (e) => this.handleLabelClick(e, index));
+                    label.addEventListener('keydown', (e) => this.handleLabelKeydown(e, index));
+                });
+            }
+
+            handleSwitchKeydown(event) {
+                switch (event.key) {
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault();
+                        this.toggleValue();
+                        break;
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        if (this._value) {
+                            this._value = false;
+                            this.updateSwitch();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        if (!this._value) {
+                            this._value = true;
+                            this.updateSwitch();
+                        }
+                        break;
+                }
+            }
+
+            handleLabelClick(event, index) {
+                const newValue = index === 1;
+                if (this._value !== newValue) {
+                    this._value = newValue;
+                    this.updateSwitch();
+                }
+            }
+
+            handleLabelKeydown(event, index) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    this.handleLabelClick(event, index);
+                }
+            }
+
+            toggleValue() {
+                this._value = !this._value;
+                this.updateSwitch();
+            }
+
+            updateSwitch() {
+                // 속성 업데이트
+                this.setAttribute('value', this._value.toString());
+                
+                // 라벨 상태 업데이트
+                this.updateLabelStates();
+                
+                // thumb 스타일 업데이트
+                this.updateThumbStyles();
+                
+                // 접근성 속성 업데이트
+                this.setupAccessibility();
+                
+                // 이벤트 발생
+                this.dispatchEvent(new CustomEvent('segment-switch-change', {
+                    detail: { value: this._value }
+                }));
+
+                // change 이벤트도 발생
+                this.dispatchEvent(new CustomEvent('change', {
+                    detail: { value: this._value }
+                }));
+            }
+
+            updateLabelStates() {
+                const labels = this.shadowRoot.querySelectorAll('.sv-segment-switch__label');
+                const selectedIndex = this._value ? 1 : 0;
+                
+                labels.forEach((label, index) => {
+                    const isChecked = index === selectedIndex;
+                    
+                    // 클래스 업데이트
+                    if (isChecked) {
+                        label.classList.add('sv-segment-switch__label--checked');
+                    } else {
+                        label.classList.remove('sv-segment-switch__label--checked');
+                    }
+                    
+                    // tabindex 업데이트
+                    label.setAttribute('tabindex', isChecked ? '0' : '-1');
+                });
+            }
+
+            // Getters and setters
+            get labels() { return this._labels; }
+            set labels(value) { this._labels = Array.isArray(value) ? value : []; this.setAttribute('labels', JSON.stringify(this._labels)); }
+            
+            get icons() { return this._icons; }
+            set icons(value) { this._icons = Array.isArray(value) ? value : []; this.setAttribute('icons', JSON.stringify(this._icons)); }
+            
+            get size() { return this._size; }
+            set size(value) { this._size = value; this.setAttribute('size', value); }
+            
+            get name() { return this._name; }
+            set name(value) { this._name = value; this.setAttribute('name', value); }
+            
+            get value() { return this._value; }
+            set value(value) { this._value = value === 'true' || value === ''; this.setAttribute('value', value); this.updateSwitch(); }
+        }
+
+        customElements.define('sv-segment-switch', SegmentSwitchComponent);
+    </script>
+
+    <h2>SegmentSwitch 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 세그먼트 스위치</h3>
+    <sv-segment-switch
+        name="basic"
+        labels='["켜기", "끄기"]'
+    ></sv-segment-switch>
+
+    <h3>아이콘이 있는 세그먼트 스위치</h3>
+    <sv-segment-switch
+        name="with-icons"
+        labels='["편집", "삭제"]'
+        icons='["edit", "delete"]'
+    ></sv-segment-switch>
+
+    <h3>다양한 크기의 세그먼트 스위치</h3>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div>
+            <label>Extra Small:</label>
+            <sv-segment-switch
+                name="xs"
+                size="xs"
+                labels='["A", "B"]'
+            ></sv-segment-switch>
+        </div>
+        
+        <div>
+            <label>Small:</label>
+            <sv-segment-switch
+                name="s"
+                size="s"
+                labels='["ON", "OFF"]'
+            ></sv-segment-switch>
+        </div>
+        
+        <div>
+            <label>Medium:</label>
+            <sv-segment-switch
+                name="m"
+                size="m"
+                labels='["예", "아니오"]'
+            ></sv-segment-switch>
+        </div>
+        
+        <div>
+            <label>Large:</label>
+            <sv-segment-switch
+                name="l"
+                size="l"
+                labels='["시작", "정지"]'
+                icons='["play", "stop"]'
+            ></sv-segment-switch>
+        </div>
+    </div>
+
+    <h3>접근성을 위한 라벨이 있는 세그먼트 스위치</h3>
+    <div>
+        <label id="switch-label">알림 설정:</label>
+        <sv-segment-switch
+            name="notifications"
+            labels='["켜기", "끄기"]'
+            icons='["notification", "close"]'
+            aria-labelledby="switch-label"
+        ></sv-segment-switch>
+    </div>
+
+    <h3>접근성 테스트</h3>
+    <p>키보드로 탐색해보세요:</p>
+    <ul>
+        <li>Tab 키로 세그먼트 스위치에 포커스</li>
+        <li>화살표 키로 옵션 간 이동</li>
+        <li>Enter/Space로 토글</li>
+        <li>스크린 리더가 상태와 옵션을 읽음</li>
+    </ul>
+
+    <div style="margin: 20px 0;">
+        <label id="test-label">테스트용 세그먼트 스위치:</label>
+        <sv-segment-switch
+            name="test"
+            labels='["테스트 1", "테스트 2"]'
+            icons='["check", "close"]'
+        ></sv-segment-switch>
+    </div>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('segment-switch-change', (e) => {
+            console.log('세그먼트 스위치 변경됨:', e.detail);
+        });
+
+        document.addEventListener('change', (e) => {
+            console.log('change 이벤트 발생:', e.detail);
+        });
+
+        // 프로그래밍 방식으로 세그먼트 스위치 제어
+        const segmentSwitch = document.querySelector('sv-segment-switch[name="basic"]');
+        if (segmentSwitch) {
+            // 동적으로 속성 변경
+            setTimeout(() => {
+                segmentSwitch.value = true;
+                segmentSwitch.size = 'large';
+            }, 3000);
+
+            // 세그먼트 스위치 상태 확인
+            console.log('세그먼트 스위치 정보:', {
+                labels: segmentSwitch.labels,
+                icons: segmentSwitch.icons,
+                size: segmentSwitch.size,
+                value: segmentSwitch.value
+            });
+        }
+
+        // 접근성 테스트를 위한 포커스 이벤트
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'SV-SEGMENT-SWITCH') {
+                console.log('세그먼트 스위치에 포커스됨');
+            }
+        });
+
+        // 키보드 이벤트 테스트
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'SV-SEGMENT-SWITCH') {
+                console.log('키보드 이벤트:', e.key);
+            }
+        });
+
+        // 동적 세그먼트 스위치 생성 예시
+        function createDynamicSegmentSwitch() {
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <h4>동적으로 생성된 세그먼트 스위치</h4>
+                <sv-segment-switch
+                    name="dynamic"
+                    labels='["동적 1", "동적 2"]'
+                    size="medium"
+                ></sv-segment-switch>
+            `;
+            document.body.appendChild(container);
+        }
+
+        // 5초 후 동적 세그먼트 스위치 생성
+        setTimeout(createDynamicSegmentSwitch, 5000);
+
+        // 폼 제출 테스트
+        function testFormSubmission() {
+            const form = document.createElement('form');
+            form.innerHTML = `
+                <h4>폼 제출 테스트</h4>
+                <label>동의하시나요?</label>
+                <sv-segment-switch
+                    name="form-test"
+                    labels='["예", "아니오"]'
+                    required
+                ></sv-segment-switch>
+                <button type="submit">제출</button>
+            `;
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const segmentSwitch = form.querySelector('sv-segment-switch');
+                console.log('폼 제출됨, 선택된 값:', segmentSwitch.value);
+            });
+            
+            document.body.appendChild(form);
+        }
+
+        // 7초 후 폼 테스트 생성
+        setTimeout(testFormSubmission, 7000);
+
+        // 상태 변경 테스트
+        function testStateChanges() {
+            const switches = document.querySelectorAll('sv-segment-switch');
+            switches.forEach((sw, index) => {
+                setTimeout(() => {
+                    sw.value = !sw.value;
+                    console.log(`스위치 ${index + 1} 상태 변경:`, sw.value);
+                }, (index + 1) * 1000);
+            });
+        }
+
+        // 10초 후 상태 변경 테스트
+        setTimeout(testStateChanges, 10000);
+    </script>
+</body>
+</html>

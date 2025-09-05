@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadioGroup Web Component</title>
+    <style>
+        .sv-radio-group {
+            display: flex;
+            width: 100%;
+        }
+
+        .sv-radio-group__item-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .sv-radio-group--orientation-vertical {
+            flex-direction: column;
+            gap: 24px 0;
+        }
+
+        .sv-radio-group--orientation-horizontal {
+            flex-direction: row;
+            gap: 24px 0;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .sv-radio-group--orientation-horizontal .sv-radio-group__item-container {
+            width: 50%;
+        }
+
+        .sv-radio-group--orientation-horizontal.sv-radio-group--align-right .sv-radio-item__label {
+            flex-direction: row-reverse;
+        }
+
+        .sv-radio-group--align-left .sv-radio-group__item-container {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .sv-radio-group--align-right .sv-radio-group__item-container {
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .sv-radio-group--disabled {
+            pointer-events: none;
+        }
+
+        .sv-radio-item {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            background-color: transparent;
+            flex-shrink: 0;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .sv-radio-item:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            border-radius: 50%;
+        }
+
+        .sv-radio-item[data-disabled] {
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .sv-radio-item[data-disabled][data-state="checked"] {
+            background-color: #f3f4f6;
+            border-color: #93c5fd;
+        }
+
+        .sv-radio-item[data-state="checked"] {
+            border-color: #005df9;
+        }
+
+        .sv-radio-item__indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            animation: svRadioScale 0.25s ease normal forwards 1;
+            background-color: #005df9;
+        }
+
+        .sv-radio-item__indicator[data-disabled] {
+            background-color: #93c5fd;
+        }
+
+        .sv-radio-item__label {
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            margin-left: 8px;
+        }
+
+        .sv-radio-item[data-state="checked"] .sv-radio-item__label {
+            transform: scale(1);
+        }
+
+        .sv-radio-item--disabled .sv-radio-item__label {
+            color: #9ca3af;
+        }
+
+        .sv-radio-item--disabled {
+            cursor: not-allowed;
+        }
+
+        /* 애니메이션 */
+        @keyframes svRadioScale {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* 접근성을 위한 포커스 스타일 */
+        .sv-radio-item:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* 고대비 모드 지원 */
+        @media (prefers-contrast: high) {
+            .sv-radio-item {
+                border: 2px solid currentColor !important;
+            }
+            .sv-radio-item__indicator {
+                border: 2px solid currentColor !important;
+            }
+        }
+
+        /* 모션 감소 지원 */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-radio-item {
+                transition: none;
+            }
+            .sv-radio-item__indicator {
+                animation: none;
+            }
+        }
+
+        /* 스크린 리더 전용 텍스트 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        class RadioGroupComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._items = [];
+                this._orientation = 'vertical';
+                this._align = 'left';
+                this._disabled = false;
+                this._valueKey = 'value';
+                this._labelKey = 'label';
+                this._ariaLabelledby = '';
+                this._name = '';
+                this._value = null;
+                this._id = `radio-group-${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            static get observedAttributes() {
+                return ['items', 'orientation', 'align', 'disabled', 'value-key', 'label-key', 'aria-labelledby', 'name', 'value'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'items':
+                        try {
+                            this._items = value ? JSON.parse(value) : [];
+                        } catch (e) {
+                            this._items = [];
+                        }
+                        break;
+                    case 'orientation':
+                        this._orientation = value || 'vertical';
+                        break;
+                    case 'align':
+                        this._align = value || 'left';
+                        break;
+                    case 'disabled':
+                        this._disabled = value === 'true' || value === '';
+                        break;
+                    case 'value-key':
+                        this._valueKey = value || 'value';
+                        break;
+                    case 'label-key':
+                        this._labelKey = value || 'label';
+                        break;
+                    case 'aria-labelledby':
+                        this._ariaLabelledby = value || '';
+                        break;
+                    case 'name':
+                        this._name = value || '';
+                        break;
+                    case 'value':
+                        this._value = value;
+                        break;
+                }
+            }
+
+            render() {
+                const normalizedItems = this.normalizeItems();
+                const radioGroupClasses = this.getRadioGroupClasses();
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: block; width: 100%; }
+                        .sv-radio-group {
+                            display: flex;
+                            width: 100%;
+                        }
+                        .sv-radio-group__item-container {
+                            display: flex;
+                            align-items: flex-start;
+                            gap: 16px;
+                        }
+                        .sv-radio-group--orientation-vertical {
+                            flex-direction: column;
+                            gap: 24px 0;
+                        }
+                        .sv-radio-group--orientation-horizontal {
+                            flex-direction: row;
+                            gap: 24px 0;
+                            flex-wrap: wrap;
+                            width: 100%;
+                        }
+                        .sv-radio-group--orientation-horizontal .sv-radio-group__item-container {
+                            width: 50%;
+                        }
+                        .sv-radio-group--orientation-horizontal.sv-radio-group--align-right .sv-radio-item__label {
+                            flex-direction: row-reverse;
+                        }
+                        .sv-radio-group--align-left .sv-radio-group__item-container {
+                            flex-direction: row;
+                            align-items: center;
+                        }
+                        .sv-radio-group--align-right .sv-radio-group__item-container {
+                            flex-direction: row-reverse;
+                            align-items: center;
+                            justify-content: flex-end;
+                        }
+                        .sv-radio-group--disabled {
+                            pointer-events: none;
+                        }
+                        .sv-radio-item {
+                            position: relative;
+                            overflow: hidden;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 24px;
+                            height: 24px;
+                            border-radius: 50%;
+                            border: 1px solid #ccc;
+                            background-color: transparent;
+                            flex-shrink: 0;
+                            outline: none;
+                            cursor: pointer;
+                            transition: all 0.2s ease-in-out;
+                        }
+                        .sv-radio-item:focus-visible {
+                            outline: 2px solid #3b82f6;
+                            outline-offset: 2px;
+                        }
+                        .sv-radio-item[data-disabled] {
+                            background-color: #f3f4f6;
+                            border-color: #d1d5db;
+                            cursor: not-allowed;
+                        }
+                        .sv-radio-item[data-disabled][data-state="checked"] {
+                            background-color: #f3f4f6;
+                            border-color: #93c5fd;
+                        }
+                        .sv-radio-item[data-state="checked"] {
+                            border-color: #005df9;
+                        }
+                        .sv-radio-item__indicator {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 14px;
+                            height: 14px;
+                            flex-shrink: 0;
+                            border-radius: 50%;
+                            animation: svRadioScale 0.25s ease normal forwards 1;
+                            background-color: #005df9;
+                        }
+                        .sv-radio-item__indicator[data-disabled] {
+                            background-color: #93c5fd;
+                        }
+                        .sv-radio-item__label {
+                            color: #6b7280;
+                            font-size: 14px;
+                            font-weight: 500;
+                            cursor: pointer;
+                            user-select: none;
+                            margin-left: 8px;
+                        }
+                        .sv-radio-item[data-state="checked"] .sv-radio-item__label {
+                            transform: scale(1);
+                        }
+                        .sv-radio-item--disabled .sv-radio-item__label {
+                            color: #9ca3af;
+                        }
+                        .sv-radio-item--disabled {
+                            cursor: not-allowed;
+                        }
+                        @keyframes svRadioScale {
+                            0% { transform: scale(0); }
+                            100% { transform: scale(1); }
+                        }
+                        @media (prefers-contrast: high) {
+                            .sv-radio-item {
+                                border: 2px solid currentColor !important;
+                            }
+                            .sv-radio-item__indicator {
+                                border: 2px solid currentColor !important;
+                            }
+                        }
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-radio-item {
+                                transition: none;
+                            }
+                            .sv-radio-item__indicator {
+                                animation: none;
+                            }
+                        }
+                    </style>
+                    
+                    <div 
+                        class="sv-radio-group ${radioGroupClasses}"
+                        role="radiogroup"
+                        ${this._ariaLabelledby ? `aria-labelledby="${this._ariaLabelledby}"` : ''}
+                        ${this._disabled ? 'aria-disabled="true"' : ''}
+                    >
+                        ${normalizedItems.map(item => this.renderRadioItem(item)).join('')}
+                    </div>
+                `;
+            }
+
+            normalizeItems() {
+                if (!this._items || this._items.length === 0) {
+                    return [];
+                }
+
+                return this._items.map(item => {
+                    if (item === null || item === undefined) {
+                        return {
+                            id: `${this._id}:null`,
+                            value: undefined,
+                            label: undefined,
+                            disabled: false
+                        };
+                    }
+
+                    if (typeof item === 'string' || typeof item === 'number' || typeof item === 'bigint') {
+                        return {
+                            id: `${this._id}:${item}`,
+                            value: String(item),
+                            label: String(item),
+                            disabled: false
+                        };
+                    }
+
+                    const value = this.getNestedValue(item, this._valueKey);
+                    const label = this.getNestedValue(item, this._labelKey);
+                    const disabled = item.disabled || false;
+
+                    return {
+                        ...item,
+                        value,
+                        label,
+                        disabled,
+                        id: `${this._id}:${value}`
+                    };
+                });
+            }
+
+            getNestedValue(obj, path) {
+                return path.split('.').reduce((current, key) => {
+                    return current && current[key] !== undefined ? current[key] : undefined;
+                }, obj);
+            }
+
+            renderRadioItem(item) {
+                const isChecked = this._value === item.value;
+                const isDisabled = this._disabled || item.disabled;
+                const itemContainerClasses = this.getItemContainerClasses(item);
+
+                return `
+                    <div class="sv-radio-group__item-container ${itemContainerClasses}">
+                        <input
+                            type="radio"
+                            id="${item.id}"
+                            name="${this._name || this._id}"
+                            value="${item.value}"
+                            ${isChecked ? 'checked' : ''}
+                            ${isDisabled ? 'disabled' : ''}
+                            class="sr-only"
+                        />
+                        <div
+                            class="sv-radio-item ${isDisabled ? 'sv-radio-item--disabled' : ''}"
+                            data-state="${isChecked ? 'checked' : 'unchecked'}"
+                            ${isDisabled ? 'data-disabled' : ''}
+                            role="radio"
+                            aria-checked="${isChecked}"
+                            aria-disabled="${isDisabled}"
+                            tabindex="${isDisabled ? '-1' : '0'}"
+                            data-value="${item.value}"
+                        >
+                            ${isChecked ? '<div class="sv-radio-item__indicator" data-disabled="' + isDisabled + '"></div>' : ''}
+                        </div>
+
+                        <div class="sv-radio-item__label">
+                            <label for="${item.id}" ${isDisabled ? 'class="sv-radio-item--disabled"' : ''}>
+                                ${item.label || item.value || ''}
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getRadioGroupClasses() {
+                const classes = ['sv-radio-group'];
+                
+                if (this._orientation) {
+                    classes.push(`sv-radio-group--orientation-${this._orientation}`);
+                }
+                
+                if (this._align) {
+                    classes.push(`sv-radio-group--align-${this._align}`);
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-radio-group--disabled');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getItemContainerClasses(item) {
+                const classes = ['sv-radio-group__item-container'];
+                
+                if (this._disabled || item.disabled) {
+                    classes.push('sv-radio-item--disabled');
+                }
+                
+                if (item.class) {
+                    classes.push(item.class);
+                }
+                
+                return classes.join(' ');
+            }
+
+            setupAccessibility() {
+                const radioGroup = this.shadowRoot.querySelector('.sv-radio-group');
+                const radioItems = this.shadowRoot.querySelectorAll('.sv-radio-item');
+                
+                if (radioGroup) {
+                    if (this._ariaLabelledby) {
+                        radioGroup.setAttribute('aria-labelledby', this._ariaLabelledby);
+                    }
+                    
+                    if (this._disabled) {
+                        radioGroup.setAttribute('aria-disabled', 'true');
+                    }
+                }
+                
+                radioItems.forEach(item => {
+                    const isChecked = item.getAttribute('data-state') === 'checked';
+                    const isDisabled = item.hasAttribute('data-disabled');
+                    
+                    item.setAttribute('aria-checked', isChecked.toString());
+                    item.setAttribute('aria-disabled', isDisabled.toString());
+                });
+            }
+
+            setupEventListeners() {
+                const radioItems = this.shadowRoot.querySelectorAll('.sv-radio-item');
+                
+                radioItems.forEach(item => {
+                    item.addEventListener('click', (e) => this.handleRadioClick(e, item));
+                    item.addEventListener('keydown', (e) => this.handleRadioKeydown(e, item));
+                });
+            }
+
+            handleRadioClick(event, radioItem) {
+                if (this._disabled || radioItem.hasAttribute('data-disabled')) {
+                    return;
+                }
+
+                const value = radioItem.getAttribute('data-value');
+                this._value = value;
+                
+                // 모든 라디오 버튼 상태 업데이트
+                this.updateRadioStates();
+                
+                // 이벤트 발생
+                this.dispatchEvent(new CustomEvent('radio-group-change', {
+                    detail: { value: this._value }
+                }));
+
+                // change 이벤트도 발생
+                this.dispatchEvent(new CustomEvent('change', {
+                    detail: { value: this._value }
+                }));
+            }
+
+            handleRadioKeydown(event, radioItem) {
+                if (this._disabled || radioItem.hasAttribute('data-disabled')) {
+                    return;
+                }
+
+                const radioItems = Array.from(this.shadowRoot.querySelectorAll('.sv-radio-item:not([data-disabled])'));
+                const currentIndex = radioItems.indexOf(radioItem);
+
+                switch (event.key) {
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault();
+                        this.handleRadioClick(event, radioItem);
+                        break;
+                    case 'ArrowDown':
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        const nextIndex = (currentIndex + 1) % radioItems.length;
+                        radioItems[nextIndex].focus();
+                        break;
+                    case 'ArrowUp':
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        const prevIndex = currentIndex === 0 ? radioItems.length - 1 : currentIndex - 1;
+                        radioItems[prevIndex].focus();
+                        break;
+                }
+            }
+
+            updateRadioStates() {
+                const radioItems = this.shadowRoot.querySelectorAll('.sv-radio-item');
+                const hiddenInputs = this.shadowRoot.querySelectorAll('input[type="radio"]');
+                
+                radioItems.forEach((item, index) => {
+                    const value = item.getAttribute('data-value');
+                    const isChecked = this._value === value;
+                    const indicator = item.querySelector('.sv-radio-item__indicator');
+                    
+                    // 상태 업데이트
+                    item.setAttribute('data-state', isChecked ? 'checked' : 'unchecked');
+                    item.setAttribute('aria-checked', isChecked.toString());
+                    
+                    // 인디케이터 표시/숨김
+                    if (isChecked) {
+                        if (!indicator) {
+                            const newIndicator = document.createElement('div');
+                            newIndicator.className = 'sv-radio-item__indicator';
+                            newIndicator.setAttribute('data-disabled', item.hasAttribute('data-disabled'));
+                            item.appendChild(newIndicator);
+                        }
+                    } else {
+                        if (indicator) {
+                            indicator.remove();
+                        }
+                    }
+                    
+                    // 숨겨진 input 업데이트
+                    if (hiddenInputs[index]) {
+                        hiddenInputs[index].checked = isChecked;
+                    }
+                });
+            }
+
+            // Getters and setters
+            get items() { return this._items; }
+            set items(value) { this._items = Array.isArray(value) ? value : []; this.setAttribute('items', JSON.stringify(this._items)); }
+            
+            get orientation() { return this._orientation; }
+            set orientation(value) { this._orientation = value; this.setAttribute('orientation', value); }
+            
+            get align() { return this._align; }
+            set align(value) { this._align = value; this.setAttribute('align', value); }
+            
+            get disabled() { return this._disabled; }
+            set disabled(value) { this._disabled = value === 'true' || value === ''; this.setAttribute('disabled', value); }
+            
+            get valueKey() { return this._valueKey; }
+            set valueKey(value) { this._valueKey = value; this.setAttribute('value-key', value); }
+            
+            get labelKey() { return this._labelKey; }
+            set labelKey(value) { this._labelKey = value; this.setAttribute('label-key', value); }
+            
+            get ariaLabelledby() { return this._ariaLabelledby; }
+            set ariaLabelledby(value) { this._ariaLabelledby = value; this.setAttribute('aria-labelledby', value); }
+            
+            get name() { return this._name; }
+            set name(value) { this._name = value; this.setAttribute('name', value); }
+            
+            get value() { return this._value; }
+            set value(value) { this._value = value; this.setAttribute('value', value); this.updateRadioStates(); }
+        }
+
+        customElements.define('sv-radio-group', RadioGroupComponent);
+    </script>
+
+    <h2>RadioGroup 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 라디오 그룹</h3>
+    <sv-radio-group
+        name="basic"
+        items='["옵션 1", "옵션 2", "옵션 3"]'
+    ></sv-radio-group>
+
+    <h3>객체 배열을 사용한 라디오 그룹</h3>
+    <sv-radio-group
+        name="objects"
+        items='[
+            {"value": "option1", "label": "첫 번째 옵션", "disabled": false},
+            {"value": "option2", "label": "두 번째 옵션", "disabled": false},
+            {"value": "option3", "label": "세 번째 옵션", "disabled": true}
+        ]'
+        value-key="value"
+        label-key="label"
+    ></sv-radio-group>
+
+    <h3>수평 정렬 라디오 그룹</h3>
+    <sv-radio-group
+        name="horizontal"
+        orientation="horizontal"
+        items='["왼쪽", "오른쪽"]'
+    ></sv-radio-group>
+
+    <h3>오른쪽 정렬 라디오 그룹</h3>
+    <sv-radio-group
+        name="right-align"
+        align="right"
+        items='["라벨이 오른쪽", "라벨이 오른쪽"]'
+    ></sv-radio-group>
+
+    <h3>비활성화된 라디오 그룹</h3>
+    <sv-radio-group
+        name="disabled"
+        disabled="true"
+        items='["비활성화됨", "비활성화됨"]'
+    ></sv3-radio-group>
+
+    <h3>접근성을 위한 라벨이 있는 라디오 그룹</h3>
+    <div>
+        <label id="accessibility-label">선호하는 프로그래밍 언어를 선택하세요:</label>
+        <sv-radio-group
+            name="programming"
+            aria-labelledby="accessibility-label"
+            items='[
+                {"value": "javascript", "label": "JavaScript"},
+                {"value": "python", "label": "Python"},
+                {"value": "java", "label": "Java"},
+                {"value": "cpp", "label": "C++"}
+            ]'
+        ></sv-radio-group>
+    </div>
+
+    <h3>접근성 테스트</h3>
+    <p>키보드로 탐색해보세요:</p>
+    <ul>
+        <li>Tab 키로 라디오 그룹에 포커스</li>
+        <li>화살표 키로 옵션 간 이동</li>
+        <li>Enter/Space로 선택</li>
+        <li>스크린 리더가 그룹과 옵션을 읽음</li>
+    </ul>
+
+    <div style="margin: 20px 0;">
+        <label id="test-label">테스트용 라디오 그룹:</label>
+        <sv-radio-group
+            name="test"
+            aria-labelledby="test-label"
+            items='["테스트 1", "테스트 2", "테스트 3"]'
+        ></sv-radio-group>
+    </div>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('radio-group-change', (e) => {
+            console.log('라디오 그룹 변경됨:', e.detail);
+        });
+
+        document.addEventListener('change', (e) => {
+            console.log('change 이벤트 발생:', e.detail);
+        });
+
+        // 프로그래밍 방식으로 라디오 그룹 제어
+        const radioGroup = document.querySelector('sv-radio-group[name="basic"]');
+        if (radioGroup) {
+            // 동적으로 속성 변경
+            setTimeout(() => {
+                radioGroup.value = '옵션 2';
+                radioGroup.disabled = true;
+            }, 3000);
+
+            // 라디오 그룹 상태 확인
+            console.log('라디오 그룹 정보:', {
+                items: radioGroup.items,
+                orientation: radioGroup.orientation,
+                align: radioGroup.align,
+                disabled: radioGroup.disabled,
+                value: radioGroup.value
+            });
+        }
+
+        // 접근성 테스트를 위한 포커스 이벤트
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'SV-RADIO-GROUP') {
+                console.log('라디오 그룹에 포커스됨');
+            }
+        });
+
+        // 키보드 이벤트 테스트
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'SV-RADIO-GROUP') {
+                console.log('키보드 이벤트:', e.key);
+            }
+        });
+
+        // 동적 라디오 그룹 생성 예시
+        function createDynamicRadioGroup() {
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <h4>동적으로 생성된 라디오 그룹</h4>
+                <sv-radio-group
+                    name="dynamic"
+                    items='["동적 옵션 1", "동적 옵션 2"]'
+                    orientation="horizontal"
+                ></sv-radio-group>
+            `;
+            document.body.appendChild(container);
+        }
+
+        // 5초 후 동적 라디오 그룹 생성
+        setTimeout(createDynamicRadioGroup, 5000);
+
+        // 폼 제출 테스트
+        function testFormSubmission() {
+            const form = document.createElement('form');
+            form.innerHTML = `
+                <h4>폼 제출 테스트</h4>
+                <sv-radio-group
+                    name="form-test"
+                    items='["예", "아니오"]'
+                    required
+                ></sv-radio-group>
+                <button type="submit">제출</button>
+            `;
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const radioGroup = form.querySelector('sv-radio-group');
+                console.log('폼 제출됨, 선택된 값:', radioGroup.value);
+            });
+            
+            document.body.appendChild(form);
+        }
+
+        // 7초 후 폼 테스트 생성
+        setTimeout(testFormSubmission, 7000);
+    </script>
+</body>
+</html>

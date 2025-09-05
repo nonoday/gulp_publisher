@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdowns Web Component</title>
+    <style>
+        /* 기본 스타일 */
+        .sv-dropdown {
+            position: relative;
+            text-align: left;
+        }
+
+        .sv-dropdown__field-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .sv-dropdown__field-label-text1 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .sv-dropdown__field-label-text2 {
+            font-size: 12px;
+            font-weight: 300;
+            color: #999;
+        }
+
+        .sv-dropdown__btn {
+            position: relative;
+        }
+
+        .sv-dropdown__trigger {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            text-align: left;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .sv-dropdown__trigger:focus-visible {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+
+        .sv-dropdown__trigger--disabled {
+            cursor: not-allowed;
+            border-color: #ddd;
+            background-color: #f5f5f5;
+        }
+
+        .sv-dropdown__trigger--readonly {
+            cursor: default;
+        }
+
+        .sv-dropdown__trigger--error {
+            border-color: #dc3545;
+        }
+
+        .sv-dropdown__trigger--focused {
+            border-color: #007bff;
+        }
+
+        .sv-dropdown__btn-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .sv-dropdown__btn-icon {
+            width: 28px;
+            height: 28px;
+        }
+
+        .sv-dropdown__btn-label {
+            flex: 1;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .sv-dropdown__btn-label--placeholder {
+            color: #999;
+            font-weight: 400;
+        }
+
+        .sv-dropdown__btn-label--disabled {
+            color: #999;
+        }
+
+        .sv-dropdown__btn-label--error {
+            color: #dc3545;
+        }
+
+        .sv-dropdown__arrow {
+            flex-shrink: 0;
+            transition: transform 200ms ease;
+            color: #333;
+            width: 24px;
+            height: 24px;
+            margin-left: 16px;
+        }
+
+        .sv-dropdown__arrow--open {
+            transform: rotate(180deg);
+        }
+
+        .sv-dropdown__arrow--disabled,
+        .sv-dropdown__arrow--readonly {
+            color: #999;
+        }
+
+        .sv-dropdown__tip {
+            margin-top: 16px;
+            color: #999;
+            font-size: 12px;
+            font-weight: 300;
+        }
+
+        .sv-dropdown__tip--focused {
+            color: #007bff;
+        }
+
+        .sv-dropdown__tip--error {
+            color: #dc3545;
+        }
+
+        .sv-dropdown__menu {
+            position: fixed;
+            z-index: 999;
+            min-width: 200px;
+            max-height: 300px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.06);
+        }
+
+        .sv-dropdown__menu-inner {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .sv-dropdown__option {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #333;
+            font-size: 16px;
+            font-weight: 300;
+            gap: 16px;
+            white-space: nowrap;
+            text-align: left;
+            border: none;
+            background: transparent;
+            outline: none;
+        }
+
+        .sv-dropdown__option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .sv-dropdown__option:focus-visible {
+            outline: 2px solid #007bff;
+            outline-offset: -2px;
+        }
+
+        .sv-dropdown__option--selected {
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .sv-dropdown__option--disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .sv-dropdown__option--focused {
+            background-color: #e3f2fd;
+        }
+
+        .sv-dropdown__option-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sv-dropdown__option-label {
+            flex: 1;
+        }
+
+        .sv-dropdown__option-check {
+            margin-left: auto;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Type variants */
+        .sv-dropdown--type-basic .sv-dropdown__trigger {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .sv-dropdown--type-inline .sv-dropdown__trigger {
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        .sv-dropdown--type-text .sv-dropdown__trigger {
+            border-radius: 4px;
+            padding: 8px;
+            border: none;
+            background: transparent;
+        }
+
+        .sv-dropdown--type-text .sv-dropdown__trigger:active {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Size variants for text type */
+        .sv-dropdown--size-xs .sv-dropdown__btn-content {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .sv-dropdown--size-sm .sv-dropdown__btn-content {
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .sv-dropdown--size-md .sv-dropdown__btn-content {
+            font-size: 18px;
+            font-weight: 700;
+            color: #666;
+        }
+
+        .sv-dropdown--size-lg .sv-dropdown__btn-content {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .sv-dropdown--size-xl .sv-dropdown__btn-content {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .sv-dropdown__trigger {
+                border-color: #000 !important;
+            }
+            
+            .sv-dropdown__option {
+                border-bottom: 1px solid #000;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-dropdown__arrow {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 웹컴포넌트 정의 -->
+    <script>
+        class DropdownsComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._modelValue = null;
+                this._options = [];
+                this._placeholder = '선택하세요';
+                this._label = null;
+                this._subLabel = null;
+                this._tip = null;
+                this._disabled = false;
+                this._readonly = false;
+                this._error = false;
+                this._type = 'basic';
+                this._variant = 'box';
+                this._size = 'md';
+                this._showMenu = true;
+                this._positioning = undefined;
+                this._ariaLabel = '';
+                this._ariaLabelledby = '';
+                this._ariaDescribedby = '';
+                
+                this._isOpen = false;
+                this._focusedIndex = -1;
+                this._triggerId = `dropdown-trigger-${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            static get observedAttributes() {
+                return ['model-value', 'options', 'placeholder', 'label', 'sub-label', 'tip', 'disabled', 'readonly', 'error', 'type', 'variant', 'size', 'show-menu', 'positioning', 'aria-label', 'aria-labelledby', 'aria-describedby'];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'model-value':
+                        this._modelValue = value;
+                        break;
+                    case 'options':
+                        try {
+                            this._options = JSON.parse(value) || [];
+                        } catch {
+                            this._options = [];
+                        }
+                        break;
+                    case 'placeholder':
+                        this._placeholder = value || '선택하세요';
+                        break;
+                    case 'label':
+                        this._label = value;
+                        break;
+                    case 'sub-label':
+                        this._subLabel = value;
+                        break;
+                    case 'tip':
+                        this._tip = value;
+                        break;
+                    case 'disabled':
+                        this._disabled = value === 'true' || value === '';
+                        break;
+                    case 'readonly':
+                        this._readonly = value === 'true' || value === '';
+                        break;
+                    case 'error':
+                        this._error = value === 'true' || value === '';
+                        break;
+                    case 'type':
+                        this._type = value || 'basic';
+                        break;
+                    case 'variant':
+                        this._variant = value || 'box';
+                        break;
+                    case 'size':
+                        this._size = value || 'md';
+                        break;
+                    case 'show-menu':
+                        this._showMenu = value !== 'false';
+                        break;
+                    case 'positioning':
+                        this._positioning = value;
+                        break;
+                    case 'aria-label':
+                        this._ariaLabel = value || '';
+                        break;
+                    case 'aria-labelledby':
+                        this._ariaLabelledby = value || '';
+                        break;
+                    case 'aria-describedby':
+                        this._ariaDescribedby = value || '';
+                        break;
+                }
+            }
+
+            render() {
+                const wrapperClasses = this.getWrapperClasses();
+                const triggerClasses = this.getTriggerClasses();
+                const fieldLabelClasses = this.getFieldLabelClasses();
+                const btnLabelClasses = this.getBtnLabelClasses();
+                const arrowClasses = this.getArrowClasses();
+                const tipClasses = this.getTipClasses();
+                
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host {
+                            display: block;
+                        }
+                        
+                        .sv-dropdown {
+                            position: relative;
+                            text-align: left;
+                        }
+
+                        .sv-dropdown__field-label {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            margin-bottom: 16px;
+                        }
+
+                        .sv-dropdown__field-label-text1 {
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #666;
+                        }
+
+                        .sv-dropdown__field-label-text2 {
+                            font-size: 12px;
+                            font-weight: 300;
+                            color: #999;
+                        }
+
+                        .sv-dropdown__btn {
+                            position: relative;
+                        }
+
+                        .sv-dropdown__trigger {
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            width: 100%;
+                            text-align: left;
+                            border: 1px solid #ccc;
+                            border-radius: 8px;
+                            padding: 16px;
+                            background: white;
+                            cursor: pointer;
+                            outline: none;
+                        }
+
+                        .sv-dropdown__trigger:focus-visible {
+                            outline: 2px solid #007bff;
+                            outline-offset: 2px;
+                        }
+
+                        .sv-dropdown__trigger--disabled {
+                            cursor: not-allowed;
+                            border-color: #ddd;
+                            background-color: #f5f5f5;
+                        }
+
+                        .sv-dropdown__trigger--readonly {
+                            cursor: default;
+                        }
+
+                        .sv-dropdown__trigger--error {
+                            border-color: #dc3545;
+                        }
+
+                        .sv-dropdown__trigger--focused {
+                            border-color: #007bff;
+                        }
+
+                        .sv-dropdown__btn-content {
+                            display: flex;
+                            align-items: center;
+                            gap: 16px;
+                            width: 100%;
+                        }
+
+                        .sv-dropdown__btn-icon {
+                            width: 28px;
+                            height: 28px;
+                        }
+
+                        .sv-dropdown__btn-label {
+                            flex: 1;
+                            font-size: 16px;
+                            color: #333;
+                        }
+
+                        .sv-dropdown__btn-label--placeholder {
+                            color: #999;
+                            font-weight: 400;
+                        }
+
+                        .sv-dropdown__btn-label--disabled {
+                            color: #999;
+                        }
+
+                        .sv-dropdown__btn-label--error {
+                            color: #dc3545;
+                        }
+
+                        .sv-dropdown__arrow {
+                            flex-shrink: 0;
+                            transition: transform 200ms ease;
+                            color: #333;
+                            width: 24px;
+                            height: 24px;
+                            margin-left: 16px;
+                        }
+
+                        .sv-dropdown__arrow--open {
+                            transform: rotate(180deg);
+                        }
+
+                        .sv-dropdown__arrow--disabled,
+                        .sv-dropdown__arrow--readonly {
+                            color: #999;
+                        }
+
+                        .sv-dropdown__tip {
+                            margin-top: 16px;
+                            color: #999;
+                            font-size: 12px;
+                            font-weight: 300;
+                        }
+
+                        .sv-dropdown__tip--focused {
+                            color: #007bff;
+                        }
+
+                        .sv-dropdown__tip--error {
+                            color: #dc3545;
+                        }
+
+                        .sv-dropdown__menu {
+                            position: fixed;
+                            z-index: 999;
+                            min-width: 200px;
+                            max-height: 300px;
+                            background: white;
+                            border: 1px solid #ccc;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.06);
+                        }
+
+                        .sv-dropdown__menu-inner {
+                            max-height: 300px;
+                            overflow-y: auto;
+                            padding: 8px 0;
+                        }
+
+                        .sv-dropdown__option {
+                            display: flex;
+                            width: 100%;
+                            align-items: center;
+                            padding: 8px 16px;
+                            cursor: pointer;
+                            color: #333;
+                            font-size: 16px;
+                            font-weight: 300;
+                            gap: 16px;
+                            white-space: nowrap;
+                            text-align: left;
+                            border: none;
+                            background: transparent;
+                            outline: none;
+                        }
+
+                        .sv-dropdown__option:hover {
+                            background-color: #f8f9fa;
+                        }
+
+                        .sv-dropdown__option:focus-visible {
+                            outline: 2px solid #007bff;
+                            outline-offset: -2px;
+                        }
+
+                        .sv-dropdown__option--selected {
+                            color: #007bff;
+                            font-weight: 500;
+                        }
+
+                        .sv-dropdown__option--disabled {
+                            opacity: 0.4;
+                            cursor: not-allowed;
+                            pointer-events: none;
+                        }
+
+                        .sv-dropdown__option--focused {
+                            background-color: #e3f2fd;
+                        }
+
+                        .sv-dropdown__option-icon {
+                            width: 20px;
+                            height: 20px;
+                        }
+
+                        .sv-dropdown__option-label {
+                            flex: 1;
+                        }
+
+                        .sv-dropdown__option-check {
+                            margin-left: auto;
+                            width: 20px;
+                            height: 20px;
+                        }
+
+                        /* Type variants */
+                        .sv-dropdown--type-basic .sv-dropdown__trigger {
+                            padding-top: 20px;
+                            padding-bottom: 20px;
+                        }
+
+                        .sv-dropdown--type-inline .sv-dropdown__trigger {
+                            padding-top: 16px;
+                            padding-bottom: 16px;
+                        }
+
+                        .sv-dropdown--type-text .sv-dropdown__trigger {
+                            border-radius: 4px;
+                            padding: 8px;
+                            border: none;
+                            background: transparent;
+                        }
+
+                        .sv-dropdown--type-text .sv-dropdown__trigger:active {
+                            background-color: rgba(0, 0, 0, 0.1);
+                        }
+
+                        /* Size variants for text type */
+                        .sv-dropdown--size-xs .sv-dropdown__btn-content {
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #666;
+                        }
+
+                        .sv-dropdown--size-sm .sv-dropdown__btn-content {
+                            font-size: 16px;
+                            font-weight: 500;
+                            color: #666;
+                        }
+
+                        .sv-dropdown--size-md .sv-dropdown__btn-content {
+                            font-size: 18px;
+                            font-weight: 700;
+                            color: #666;
+                        }
+
+                        .sv-dropdown--size-lg .sv-dropdown__btn-content {
+                            font-size: 20px;
+                            font-weight: 700;
+                            color: #333;
+                        }
+
+                        .sv-dropdown--size-xl .sv-dropdown__btn-content {
+                            font-size: 24px;
+                            font-weight: 700;
+                            color: #333;
+                        }
+
+                        /* High contrast mode support */
+                        @media (prefers-contrast: high) {
+                            .sv-dropdown__trigger {
+                                border-color: #000 !important;
+                            }
+                            
+                            .sv-dropdown__option {
+                                border-bottom: 1px solid #000;
+                            }
+                        }
+
+                        /* Reduced motion support */
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-dropdown__arrow {
+                                transition: none;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="${wrapperClasses}">
+                        <div class="sv-dropdown__btn">
+                            ${this._label && this._type !== 'text' ? `
+                                <label class="${fieldLabelClasses}">
+                                    <label class="sv-dropdown__field-label-text1" for="${this._triggerId}">
+                                        ${this._label}
+                                        ${this._subLabel ? `<span class="sv-dropdown__field-label-text2">${this._subLabel}</span>` : ''}
+                                    </label>
+                                </label>
+                            ` : ''}
+
+                            <button
+                                id="${this._triggerId}"
+                                type="button"
+                                class="${triggerClasses}"
+                                ${this._disabled ? 'disabled' : ''}
+                                aria-expanded="${this._isOpen}"
+                                aria-haspopup="listbox"
+                                aria-label="${this._ariaLabel || '드롭다운 메뉴'}"
+                                ${this._ariaLabelledby ? `aria-labelledby="${this._ariaLabelledby}"` : ''}
+                                ${this._ariaDescribedby ? `aria-describedby="${this._ariaDescribedby}"` : ''}
+                            >
+                                <span class="sv-dropdown__btn-content">
+                                    ${this.getSelectedOptionIcon() ? `<span class="sv-dropdown__btn-icon">${this.getSelectedOptionIcon()}</span>` : ''}
+                                    <span class="${btnLabelClasses}">
+                                        ${this.getDisplayValue() || this._placeholder}
+                                    </span>
+                                </span>
+
+                                <span class="${arrowClasses}">
+                                    ▼
+                                </span>
+                            </button>
+
+                            ${this._isOpen && this._showMenu ? `
+                                <div class="sv-dropdown__menu" role="listbox" aria-labelledby="${this._triggerId}">
+                                    <div class="sv-dropdown__menu-inner">
+                                        ${this._options.map((option, index) => `
+                                            <button
+                                                type="button"
+                                                class="${this.getOptionClasses(option, index)}"
+                                                role="option"
+                                                aria-selected="${option.value === this._modelValue}"
+                                                ${option.disabled ? 'disabled' : ''}
+                                                data-index="${index}"
+                                            >
+                                                ${option.icon ? `<span class="sv-dropdown__option-icon">${option.icon}</span>` : ''}
+                                                <div class="sv-dropdown__option-label">${option.label}</div>
+                                                ${option.value === this._modelValue ? `<span class="sv-dropdown__option-check">✓</span>` : ''}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${this._tip && this._type !== 'text' ? `
+                            <div class="${tipClasses}">
+                                ${this._tip}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            getWrapperClasses() {
+                const classes = ['sv-dropdown'];
+                
+                if (this._type) {
+                    classes.push(`sv-dropdown--type-${this._type}`);
+                }
+                
+                if (this._type !== 'text' && this._variant) {
+                    classes.push(`sv-dropdown--variant-${this._variant}`);
+                }
+                
+                if (this._type === 'text' && this._size) {
+                    classes.push(`sv-dropdown--size-${this._size}`);
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-dropdown--disabled');
+                }
+                
+                if (this._readonly) {
+                    classes.push('sv-dropdown--readonly');
+                }
+                
+                if (this._error) {
+                    classes.push('sv-dropdown--error');
+                }
+                
+                if (this._isOpen) {
+                    classes.push('sv-dropdown--open');
+                }
+                
+                if (this.getDisplayValue()) {
+                    classes.push('sv-dropdown--filled');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getTriggerClasses() {
+                const classes = ['sv-dropdown__trigger'];
+                
+                if (this._disabled) {
+                    classes.push('sv-dropdown__trigger--disabled');
+                }
+                
+                if (this._readonly) {
+                    classes.push('sv-dropdown__trigger--readonly');
+                }
+                
+                if (this._error) {
+                    classes.push('sv-dropdown__trigger--error');
+                }
+                
+                if (this.getDisplayValue()) {
+                    classes.push('sv-dropdown__trigger--filled');
+                }
+                
+                if (this._isOpen) {
+                    classes.push('sv-dropdown__trigger--focused');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getFieldLabelClasses() {
+                const classes = ['sv-dropdown__field-label'];
+                
+                if (this._isOpen) {
+                    classes.push('sv-dropdown__field-label--focused');
+                }
+                
+                if (this.getDisplayValue()) {
+                    classes.push('sv-dropdown__field-label--filled');
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-dropdown__field-label--disabled');
+                }
+                
+                if (this._readonly) {
+                    classes.push('sv-dropdown__field-label--readonly');
+                }
+                
+                if (this._error) {
+                    classes.push('sv-dropdown__field-label--error');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getBtnLabelClasses() {
+                const classes = ['sv-dropdown__btn-label'];
+                
+                if (!this.getDisplayValue()) {
+                    classes.push('sv-dropdown__btn-label--placeholder');
+                }
+                
+                if (this._error) {
+                    classes.push('sv-dropdown__btn-label--error');
+                }
+                
+                if (this.getDisplayValue()) {
+                    classes.push('sv-dropdown__btn-label--filled');
+                }
+                
+                if (this._isOpen) {
+                    classes.push('sv-dropdown__btn-label--focused');
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-dropdown__btn-label--disabled');
+                }
+                
+                if (this._readonly) {
+                    classes.push('sv-dropdown__btn-label--readonly');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getArrowClasses() {
+                const classes = ['sv-dropdown__arrow'];
+                
+                if (this._isOpen) {
+                    classes.push('sv-dropdown__arrow--open');
+                }
+                
+                if (this._disabled) {
+                    classes.push('sv-dropdown__arrow--disabled');
+                }
+                
+                if (this._readonly) {
+                    classes.push('sv-dropdown__arrow--readonly');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getTipClasses() {
+                const classes = ['sv-dropdown__tip'];
+                
+                if (this._isOpen) {
+                    classes.push('sv-dropdown__tip--focused');
+                }
+                
+                if (this._error) {
+                    classes.push('sv-dropdown__tip--error');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getOptionClasses(option, index) {
+                const classes = ['sv-dropdown__option'];
+                
+                if (option.value === this._modelValue) {
+                    classes.push('sv-dropdown__option--selected');
+                }
+                
+                if (option.disabled) {
+                    classes.push('sv-dropdown__option--disabled');
+                }
+                
+                if (index === this._focusedIndex) {
+                    classes.push('sv-dropdown__option--focused');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getDisplayValue() {
+                const selectedOption = this._options.find(option => option.value === this._modelValue);
+                return selectedOption?.label || '';
+            }
+
+            getSelectedOptionIcon() {
+                const selectedOption = this._options.find(option => option.value === this._modelValue);
+                return selectedOption?.icon || null;
+            }
+
+            setupAccessibility() {
+                const trigger = this.shadowRoot.querySelector('button');
+                const menu = this.shadowRoot.querySelector('.sv-dropdown__menu');
+                
+                if (trigger) {
+                    // 키보드 포커스 지원
+                    trigger.setAttribute('tabindex', '0');
+                }
+                
+                if (menu) {
+                    // 메뉴 접근성 설정
+                    menu.setAttribute('role', 'listbox');
+                    menu.setAttribute('aria-labelledby', this._triggerId);
+                }
+            }
+
+            setupEventListeners() {
+                const trigger = this.shadowRoot.querySelector('button');
+                const menu = this.shadowRoot.querySelector('.sv-dropdown__menu');
+                
+                if (trigger) {
+                    trigger.addEventListener('click', (e) => this.handleButtonClick(e));
+                    trigger.addEventListener('keydown', (e) => this.handleTriggerKeydown(e));
+                }
+                
+                if (menu) {
+                    // 옵션 클릭 이벤트
+                    const options = menu.querySelectorAll('.sv-dropdown__option');
+                    options.forEach((option, index) => {
+                        option.addEventListener('click', () => this.selectOption(this._options[index]));
+                        option.addEventListener('mouseenter', () => this.setFocusedIndex(index));
+                        option.addEventListener('keydown', (e) => this.handleOptionKeydown(e, index));
+                    });
+                }
+                
+                // 외부 클릭 감지
+                document.addEventListener('click', (e) => this.handleOutsideClick(e));
+            }
+
+            handleButtonClick(event) {
+                if (this._disabled || this._readonly) return;
+                
+                this.toggleDropdown();
+                this.dispatchEvent(new CustomEvent('click', {
+                    detail: { event },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+
+            toggleDropdown() {
+                if (this._disabled || this._readonly) return;
+                
+                if (this._isOpen) {
+                    this.closeDropdown();
+                } else {
+                    this.openDropdown();
+                }
+            }
+
+            openDropdown() {
+                if (this._disabled || this._readonly) return;
+                
+                this._isOpen = true;
+                const firstAvailableIndex = this._options.findIndex(option => !option.disabled);
+                this._focusedIndex = firstAvailableIndex >= 0 ? firstAvailableIndex : 0;
+                
+                this.dispatchEvent(new CustomEvent('open', {
+                    bubbles: true,
+                    composed: true
+                }));
+                
+                this.render();
+            }
+
+            closeDropdown() {
+                this._isOpen = false;
+                this._focusedIndex = -1;
+                
+                this.dispatchEvent(new CustomEvent('close', {
+                    bubbles: true,
+                    composed: true
+                }));
+                
+                this.render();
+            }
+
+            selectOption(option) {
+                if (option.disabled) return;
+                
+                this._modelValue = option.value;
+                this.setAttribute('model-value', option.value);
+                
+                this.dispatchEvent(new CustomEvent('update:modelValue', {
+                    detail: { value: option.value },
+                    bubbles: true,
+                    composed: true
+                }));
+                
+                this.dispatchEvent(new CustomEvent('change', {
+                    detail: { value: option.value, option },
+                    bubbles: true,
+                    composed: true
+                }));
+                
+                this.closeDropdown();
+            }
+
+            setFocusedIndex(index) {
+                if (this._options[index]?.disabled) return;
+                this._focusedIndex = index;
+                this.render();
+            }
+
+            handleTriggerKeydown(event) {
+                if (!this._showMenu) return;
+                
+                switch (event.key) {
+                    case 'Enter':
+                    case ' ':
+                    case 'ArrowDown':
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        this.openDropdown();
+                        break;
+                    case 'Escape':
+                        if (this._isOpen) {
+                            event.preventDefault();
+                            this.closeDropdown();
+                        }
+                        break;
+                }
+            }
+
+            handleOptionKeydown(event, index) {
+                switch (event.key) {
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault();
+                        this.selectOption(this._options[index]);
+                        break;
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        this.setFocusedIndex((index + 1) % this._options.length);
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        this.setFocusedIndex(index === 0 ? this._options.length - 1 : index - 1);
+                        break;
+                    case 'Escape':
+                        event.preventDefault();
+                        this.closeDropdown();
+                        break;
+                }
+            }
+
+            handleOutsideClick(event) {
+                if (!this._isOpen) return;
+                
+                const target = event.target;
+                if (!this.shadowRoot.contains(target)) {
+                    this.closeDropdown();
+                }
+            }
+
+            // Getters and setters
+            get modelValue() {
+                return this._modelValue;
+            }
+
+            set modelValue(value) {
+                this._modelValue = value;
+                this.setAttribute('model-value', value);
+            }
+
+            get options() {
+                return this._options;
+            }
+
+            set options(value) {
+                this._options = value;
+                this.setAttribute('options', JSON.stringify(value));
+            }
+
+            get disabled() {
+                return this._disabled;
+            }
+
+            set disabled(value) {
+                this._disabled = value;
+                this.setAttribute('disabled', value);
+            }
+
+            get readonly() {
+                return this._readonly;
+            }
+
+            set readonly(value) {
+                this._readonly = value;
+                this.setAttribute('readonly', value);
+            }
+
+            get error() {
+                return this._error;
+            }
+
+            set error(value) {
+                this._error = value;
+                this.setAttribute('error', value);
+            }
+
+            get type() {
+                return this._type;
+            }
+
+            set type(value) {
+                this._type = value;
+                this.setAttribute('type', value);
+            }
+        }
+
+        // 웹컴포넌트 등록
+        customElements.define('sv-dropdowns', DropdownsComponent);
+    </script>
+
+    <!-- 사용 예시 -->
+    <h2>Dropdowns 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 드롭다운</h3>
+    <sv-dropdowns 
+        label="기본 드롭다운" 
+        placeholder="옵션을 선택하세요"
+        options='[{"label":"옵션 1","value":"1"},{"label":"옵션 2","value":"2"},{"label":"옵션 3","value":"3"}]'
+    ></sv-dropdowns>
+    
+    <h3>인라인 드롭다운</h3>
+    <sv-dropdowns 
+        type="inline"
+        variant="line"
+        label="인라인 드롭다운"
+        placeholder="선택하세요"
+        options='[{"label":"선택 1","value":"a"},{"label":"선택 2","value":"b"}]'
+    ></sv-dropdowns>
+    
+    <h3>텍스트 드롭다운</h3>
+    <sv-dropdowns 
+        type="text"
+        size="lg"
+        placeholder="텍스트 드롭다운"
+        options='[{"label":"텍스트 1","value":"x"},{"label":"텍스트 2","value":"y"}]'
+    ></sv-dropdowns>
+    
+    <h3>에러 상태 드롭다운</h3>
+    <sv-dropdowns 
+        label="에러 상태"
+        error="true"
+        tip="에러가 발생했습니다"
+        options='[{"label":"옵션 A","value":"A"},{"label":"옵션 B","value":"B"}]'
+    ></sv-dropdowns>
+    
+    <h3>비활성화된 드롭다운</h3>
+    <sv-dropdowns 
+        label="비활성화"
+        disabled="true"
+        options='[{"label":"사용할 수 없음","value":"disabled"}]'
+    ></sv-dropdowns>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('change', (e) => {
+            if (e.target.tagName === 'SV-DROPDOWNS') {
+                console.log('드롭다운 값 변경:', e.detail.value);
+            }
+        });
+
+        document.addEventListener('open', (e) => {
+            if (e.target.tagName === 'SV-DROPDOWNS') {
+                console.log('드롭다운 열림');
+            }
+        });
+
+        document.addEventListener('close', (e) => {
+            if (e.target.tagName === 'SV-DROPDOWNS') {
+                console.log('드롭다운 닫힘');
+            }
+        });
+
+        // 프로그래밍 방식으로 드롭다운 제어
+        const dropdown = document.querySelector('sv-dropdowns');
+        if (dropdown) {
+            // 3초 후 옵션 설정
+            setTimeout(() => {
+                dropdown.options = [
+                    { label: '동적 옵션 1', value: 'dynamic1' },
+                    { label: '동적 옵션 2', value: 'dynamic2' }
+                ];
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

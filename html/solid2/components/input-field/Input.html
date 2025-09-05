@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Web Component</title>
+    <style>
+        /* 기본 입력 필드 스타일 */
+        .sv-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sv-input-wrapper.is-disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .sv-input__label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .sv-input__required {
+            color: #dc3545;
+        }
+
+        .sv-input__wrapper {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .sv-input__prepend {
+            margin-right: -1px;
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #666;
+            text-align: center;
+            white-space: nowrap;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .sv-input__append {
+            margin-left: -1px;
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #666;
+            text-align: center;
+            white-space: nowrap;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .sv-input {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #333;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            appearance: none;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            outline: none;
+        }
+
+        .sv-input:focus {
+            color: #333;
+            background-color: white;
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .sv-input:focus-visible {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+
+        .sv-input::placeholder {
+            color: #999;
+            opacity: 1;
+        }
+
+        .sv-input:disabled {
+            background-color: #f5f5f5;
+            border-color: #ddd;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        /* Size modifiers */
+        .sv-input--sm {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .sv-input--lg {
+            padding: 16px 20px;
+            font-size: 18px;
+        }
+
+        /* State modifiers */
+        .sv-input--invalid {
+            border-color: #dc3545;
+        }
+
+        .sv-input--invalid:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .sv-input--valid {
+            border-color: #28a745;
+        }
+
+        .sv-input--valid:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        /* Input group styling */
+        .sv-input__wrapper .sv-input:not(:only-child) {
+            border-radius: 0;
+        }
+
+        .sv-input__wrapper .sv-input:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .sv-input__wrapper .sv-input:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .sv-input__help {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .sv-input__error {
+            font-size: 12px;
+            color: #dc3545;
+            margin-top: 8px;
+        }
+
+        .sv-input__hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .sv-input {
+                border-color: #000 !important;
+            }
+            
+            .sv-input:focus {
+                border-color: #000 !important;
+                box-shadow: 0 0 0 2px #000 !important;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .sv-input {
+                transition: none;
+            }
+        }
+
+        /* Focus visible support for older browsers */
+        .sv-input:focus:not(:focus-visible) {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 웹컴포넌트 정의 -->
+    <script>
+        class InputComponent extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._id = '';
+                this._label = '';
+                this._modelValue = '';
+                this._type = 'text';
+                this._size = 'md';
+                this._state = 'default';
+                this._disabled = false;
+                this._readonly = false;
+                this._required = false;
+                this._placeholder = '';
+                this._hint = '';
+                this._errorMessage = '';
+                this._prependContent = '';
+                this._appendContent = '';
+                this._ariaLabel = '';
+                this._ariaLabelledby = '';
+                this._ariaDescribedby = '';
+                this._ariaInvalid = '';
+                this._ariaRequired = '';
+                this._ariaReadonly = '';
+                this._tabindex = null;
+                this._autocomplete = '';
+                this._spellcheck = null;
+                this._maxlength = null;
+                this._minlength = null;
+                this._pattern = '';
+                this._inputMode = '';
+                
+                this._isFocused = false;
+                this._inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            static get observedAttributes() {
+                return [
+                    'id', 'label', 'model-value', 'type', 'size', 'state', 'disabled', 'readonly', 'required',
+                    'placeholder', 'hint', 'error-message', 'prepend', 'append', 'aria-label', 'aria-labelledby',
+                    'aria-describedby', 'aria-invalid', 'aria-required', 'aria-readonly', 'tabindex', 'autocomplete',
+                    'spellcheck', 'maxlength', 'minlength', 'pattern', 'inputmode'
+                ];
+            }
+
+            connectedCallback() {
+                this.render();
+                this.setupAccessibility();
+                this.setupEventListeners();
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.updateAttribute(name, newValue);
+                    this.render();
+                    this.setupAccessibility();
+                }
+            }
+
+            updateAttribute(name, value) {
+                switch (name) {
+                    case 'id':
+                        this._id = value || this._inputId;
+                        break;
+                    case 'label':
+                        this._label = value || '';
+                        break;
+                    case 'model-value':
+                        this._modelValue = value || '';
+                        break;
+                    case 'type':
+                        this._type = value || 'text';
+                        break;
+                    case 'size':
+                        this._size = value || 'md';
+                        break;
+                    case 'state':
+                        this._state = value || 'default';
+                        break;
+                    case 'disabled':
+                        this._disabled = value === 'true' || value === '';
+                        break;
+                    case 'readonly':
+                        this._readonly = value === 'true' || value === '';
+                        break;
+                    case 'required':
+                        this._required = value === 'true' || value === '';
+                        break;
+                    case 'placeholder':
+                        this._placeholder = value || '';
+                        break;
+                    case 'hint':
+                        this._hint = value || '';
+                        break;
+                    case 'error-message':
+                        this._errorMessage = value || '';
+                        break;
+                    case 'prepend':
+                        this._prependContent = value || '';
+                        break;
+                    case 'append':
+                        this._appendContent = value || '';
+                        break;
+                    case 'aria-label':
+                        this._ariaLabel = value || '';
+                        break;
+                    case 'aria-labelledby':
+                        this._ariaLabelledby = value || '';
+                        break;
+                    case 'aria-describedby':
+                        this._ariaDescribedby = value || '';
+                        break;
+                    case 'aria-invalid':
+                        this._ariaInvalid = value || '';
+                        break;
+                    case 'aria-required':
+                        this._ariaRequired = value || '';
+                        break;
+                    case 'aria-readonly':
+                        this._ariaReadonly = value || '';
+                        break;
+                    case 'tabindex':
+                        this._tabindex = value ? (isNaN(value) ? value : parseInt(value)) : null;
+                        break;
+                    case 'autocomplete':
+                        this._autocomplete = value || '';
+                        break;
+                    case 'spellcheck':
+                        this._spellcheck = value === 'true' ? true : (value === 'false' ? false : null);
+                        break;
+                    case 'maxlength':
+                        this._maxlength = value ? (isNaN(value) ? value : parseInt(value)) : null;
+                        break;
+                    case 'minlength':
+                        this._minlength = value ? (isNaN(value) ? value : parseInt(value)) : null;
+                        break;
+                    case 'pattern':
+                        this._pattern = value || '';
+                        break;
+                    case 'inputmode':
+                        this._inputMode = value || '';
+                        break;
+                }
+            }
+
+            render() {
+                const wrapperClasses = this.getWrapperClasses();
+                const inputClasses = this.getInputClasses();
+                const accessibilityAttributes = this.getAccessibilityAttributes();
+                
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host {
+                            display: block;
+                        }
+                        
+                        .sv-input-wrapper {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 8px;
+                        }
+
+                        .sv-input-wrapper.is-disabled {
+                            opacity: 0.6;
+                            pointer-events: none;
+                        }
+
+                        .sv-input__label {
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #333;
+                            margin-bottom: 8px;
+                        }
+
+                        .sv-input__required {
+                            color: #dc3545;
+                        }
+
+                        .sv-input__wrapper {
+                            position: relative;
+                            display: flex;
+                            align-items: stretch;
+                            width: 100%;
+                        }
+
+                        .sv-input__prepend {
+                            margin-right: -1px;
+                            display: flex;
+                            align-items: center;
+                            padding: 12px 16px;
+                            font-size: 16px;
+                            font-weight: 400;
+                            line-height: 1.5;
+                            color: #666;
+                            text-align: center;
+                            white-space: nowrap;
+                            background-color: #f8f9fa;
+                            border: 1px solid #ccc;
+                            border-radius: 8px;
+                            border-top-right-radius: 0;
+                            border-bottom-right-radius: 0;
+                        }
+
+                        .sv-input__append {
+                            margin-left: -1px;
+                            display: flex;
+                            align-items: center;
+                            padding: 12px 16px;
+                            font-size: 16px;
+                            font-weight: 400;
+                            line-height: 1.5;
+                            color: #666;
+                            text-align: center;
+                            white-space: nowrap;
+                            background-color: #f8f9fa;
+                            border: 1px solid #ccc;
+                            border-radius: 8px;
+                            border-top-left-radius: 0;
+                            border-bottom-left-radius: 0;
+                        }
+
+                        .sv-input {
+                            display: block;
+                            width: 100%;
+                            padding: 12px 16px;
+                            font-size: 16px;
+                            font-weight: 400;
+                            line-height: 1.5;
+                            color: #333;
+                            background-color: white;
+                            border: 1px solid #ccc;
+                            border-radius: 8px;
+                            appearance: none;
+                            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                            outline: none;
+                        }
+
+                        .sv-input:focus {
+                            color: #333;
+                            background-color: white;
+                            border-color: #007bff;
+                            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                        }
+
+                        .sv-input:focus-visible {
+                            outline: 2px solid #007bff;
+                            outline-offset: 2px;
+                        }
+
+                        .sv-input::placeholder {
+                            color: #999;
+                            opacity: 1;
+                        }
+
+                        .sv-input:disabled {
+                            background-color: #f5f5f5;
+                            border-color: #ddd;
+                            color: #999;
+                            cursor: not-allowed;
+                        }
+
+                        /* Size modifiers */
+                        .sv-input--sm {
+                            padding: 8px 12px;
+                            font-size: 14px;
+                        }
+
+                        .sv-input--lg {
+                            padding: 16px 20px;
+                            font-size: 18px;
+                        }
+
+                        /* State modifiers */
+                        .sv-input--invalid {
+                            border-color: #dc3545;
+                        }
+
+                        .sv-input--invalid:focus {
+                            border-color: #dc3545;
+                            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+                        }
+
+                        .sv-input--valid {
+                            border-color: #28a745;
+                        }
+
+                        .sv-input--valid:focus {
+                            border-color: #28a745;
+                            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+                        }
+
+                        /* Input group styling */
+                        .sv-input__wrapper .sv-input:not(:only-child) {
+                            border-radius: 0;
+                        }
+
+                        .sv-input__wrapper .sv-input:first-child {
+                            border-top-left-radius: 8px;
+                            border-bottom-left-radius: 8px;
+                        }
+
+                        .sv-input__wrapper .sv-input:last-child {
+                            border-top-right-radius: 8px;
+                            border-bottom-right-radius: 8px;
+                        }
+
+                        .sv-input__help {
+                            font-size: 12px;
+                            color: #666;
+                            margin-top: 8px;
+                        }
+
+                        .sv-input__error {
+                            font-size: 12px;
+                            color: #dc3545;
+                            margin-top: 8px;
+                        }
+
+                        .sv-input__hint {
+                            font-size: 12px;
+                            color: #666;
+                            margin-top: 8px;
+                        }
+
+                        /* High contrast mode support */
+                        @media (prefers-contrast: high) {
+                            .sv-input {
+                                border-color: #000 !important;
+                            }
+                            
+                            .sv-input:focus {
+                                border-color: #000 !important;
+                                box-shadow: 0 0 0 2px #000 !important;
+                            }
+                        }
+
+                        /* Reduced motion support */
+                        @media (prefers-reduced-motion: reduce) {
+                            .sv-input {
+                                transition: none;
+                            }
+                        }
+
+                        /* Focus visible support for older browsers */
+                        .sv-input:focus:not(:focus-visible) {
+                            outline: none;
+                            box-shadow: none;
+                        }
+                    </style>
+                    
+                    <div class="${wrapperClasses}">
+                        ${this._label ? `
+                            <label for="${this._id}" class="sv-input__label">
+                                ${this._label}
+                                ${this._required ? '<span class="sv-input__required">*</span>' : ''}
+                            </label>
+                        ` : ''}
+
+                        <div class="sv-input__wrapper">
+                            ${this._prependContent ? `
+                                <div class="sv-input__prepend">
+                                    ${this._prependContent}
+                                </div>
+                            ` : ''}
+
+                            <input
+                                id="${this._id}"
+                                class="${inputClasses}"
+                                type="${this._type}"
+                                value="${this._modelValue}"
+                                placeholder="${this._placeholder}"
+                                ${this._disabled ? 'disabled' : ''}
+                                ${this._readonly ? 'readonly' : ''}
+                                ${this._required ? 'required' : ''}
+                                ${this._autocomplete ? `autocomplete="${this._autocomplete}"` : ''}
+                                ${this._spellcheck !== null ? `spellcheck="${this._spellcheck}"` : ''}
+                                ${this._maxlength ? `maxlength="${this._maxlength}"` : ''}
+                                ${this._minlength ? `minlength="${this._minlength}"` : ''}
+                                ${this._pattern ? `pattern="${this._pattern}"` : ''}
+                                ${this._inputMode ? `inputmode="${this._inputMode}"` : ''}
+                                ${this._tabindex !== null ? `tabindex="${this._tabindex}"` : ''}
+                                ${accessibilityAttributes}
+                            />
+
+                            ${this._appendContent ? `
+                                <div class="sv-input__append">
+                                    ${this._appendContent}
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${this._errorMessage || this._hint ? `
+                            <div class="sv-input__help">
+                                ${this._errorMessage ? `
+                                    <span class="sv-input__error">
+                                        ${this._errorMessage}
+                                    </span>
+                                ` : `
+                                    <span class="sv-input__hint">
+                                        ${this._hint}
+                                    </span>
+                                `}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            getWrapperClasses() {
+                const classes = ['sv-input-wrapper'];
+                
+                if (this._disabled) {
+                    classes.push('is-disabled');
+                }
+                
+                return classes.join(' ');
+            }
+
+            getInputClasses() {
+                const classes = ['sv-input'];
+                
+                if (this._size) {
+                    if (this._size === 'sm') {
+                        classes.push('sv-input--sm');
+                    } else if (this._size === 'lg') {
+                        classes.push('sv-input--lg');
+                    }
+                }
+                
+                if (this._state) {
+                    if (this._state === 'invalid') {
+                        classes.push('sv-input--invalid');
+                    } else if (this._state === 'valid') {
+                        classes.push('sv-input--valid');
+                    }
+                }
+                
+                return classes.join(' ');
+            }
+
+            getAccessibilityAttributes() {
+                const attributes = [];
+                
+                if (this._ariaLabel) {
+                    attributes.push(`aria-label="${this._ariaLabel}"`);
+                }
+                
+                if (this._ariaLabelledby) {
+                    attributes.push(`aria-labelledby="${this._ariaLabelledby}"`);
+                }
+                
+                if (this._ariaDescribedby) {
+                    attributes.push(`aria-describedby="${this._ariaDescribedby}"`);
+                }
+                
+                if (this._ariaInvalid) {
+                    attributes.push(`aria-invalid="${this._ariaInvalid}"`);
+                } else if (this._state === 'invalid') {
+                    attributes.push('aria-invalid="true"');
+                }
+                
+                if (this._ariaRequired) {
+                    attributes.push(`aria-required="${this._ariaRequired}"`);
+                } else if (this._required) {
+                    attributes.push('aria-required="true"');
+                }
+                
+                if (this._ariaReadonly) {
+                    attributes.push(`aria-readonly="${this._ariaReadonly}"`);
+                } else if (this._readonly) {
+                    attributes.push('aria-readonly="true"');
+                }
+                
+                return attributes.join(' ');
+            }
+
+            setupAccessibility() {
+                const input = this.shadowRoot.querySelector('input');
+                
+                if (input) {
+                    // 접근성 속성 설정
+                    if (this._ariaLabel) {
+                        input.setAttribute('aria-label', this._ariaLabel);
+                    }
+                    
+                    if (this._ariaLabelledby) {
+                        input.setAttribute('aria-labelledby', this._ariaLabelledby);
+                    }
+                    
+                    if (this._ariaDescribedby) {
+                        input.setAttribute('aria-describedby', this._ariaDescribedby);
+                    }
+                    
+                    // 상태에 따른 aria-invalid 설정
+                    if (this._state === 'invalid') {
+                        input.setAttribute('aria-invalid', 'true');
+                    } else if (this._state === 'valid') {
+                        input.setAttribute('aria-invalid', 'false');
+                    }
+                    
+                    // required 상태에 따른 aria-required 설정
+                    if (this._required) {
+                        input.setAttribute('aria-required', 'true');
+                    }
+                    
+                    // readonly 상태에 따른 aria-readonly 설정
+                    if (this._readonly) {
+                        input.setAttribute('aria-readonly', 'true');
+                    }
+                }
+            }
+
+            setupEventListeners() {
+                const input = this.shadowRoot.querySelector('input');
+                
+                if (input) {
+                    input.addEventListener('input', (e) => this.handleInput(e));
+                    input.addEventListener('change', (e) => this.handleChange(e));
+                    input.addEventListener('focus', (e) => this.handleFocus(e));
+                    input.addEventListener('blur', (e) => this.handleBlur(e));
+                    input.addEventListener('keydown', (e) => this.handleKeydown(e));
+                }
+            }
+
+            handleInput(event) {
+                const target = event.target;
+                const value = this._type === 'number' ? Number(target.value) : target.value;
+                
+                this._modelValue = value;
+                this.setAttribute('model-value', value);
+                
+                this.dispatchEvent(new CustomEvent('update:modelValue', {
+                    detail: { value },
+                    bubbles: true,
+                    composed: true
+                }));
+                
+                this.dispatchEvent(new CustomEvent('input', {
+                    detail: { event },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+
+            handleChange(event) {
+                this.dispatchEvent(new CustomEvent('change', {
+                    detail: { event },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+
+            handleFocus(event) {
+                this._isFocused = true;
+                this.dispatchEvent(new CustomEvent('focus', {
+                    detail: { event },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+
+            handleBlur(event) {
+                this._isFocused = false;
+                this.dispatchEvent(new CustomEvent('blur', {
+                    detail: { event },
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+
+            handleKeydown(event) {
+                // Enter 키로 폼 제출 시뮬레이션
+                if (event.key === 'Enter') {
+                    this.dispatchEvent(new CustomEvent('submit', {
+                        detail: { event },
+                        bubbles: true,
+                        composed: true
+                    }));
+                }
+            }
+
+            // Getters and setters
+            get value() {
+                return this._modelValue;
+            }
+
+            set value(value) {
+                this._modelValue = value;
+                this.setAttribute('model-value', value);
+            }
+
+            get disabled() {
+                return this._disabled;
+            }
+
+            set disabled(value) {
+                this._disabled = value;
+                this.setAttribute('disabled', value);
+            }
+
+            get readonly() {
+                return this._readonly;
+            }
+
+            set readonly(value) {
+                this._readonly = value;
+                this.setAttribute('readonly', value);
+            }
+
+            get required() {
+                return this._required;
+            }
+
+            set required(value) {
+                this._required = value;
+                this.setAttribute('required', value);
+            }
+
+            get state() {
+                return this._state;
+            }
+
+            set state(value) {
+                this._state = value;
+                this.setAttribute('state', value);
+            }
+
+            get size() {
+                return this._size;
+            }
+
+            set size(value) {
+                this._size = value;
+                this.setAttribute('size', value);
+            }
+
+            get type() {
+                return this._type;
+            }
+
+            set type(value) {
+                this._type = value;
+                this.setAttribute('type', value);
+            }
+
+            get placeholder() {
+                return this._placeholder;
+            }
+
+            set placeholder(value) {
+                this._placeholder = value;
+                this.setAttribute('placeholder', value);
+            }
+
+            get hint() {
+                return this._hint;
+            }
+
+            set hint(value) {
+                this._hint = value;
+                this.setAttribute('hint', value);
+            }
+
+            get errorMessage() {
+                return this._errorMessage;
+            }
+
+            set errorMessage(value) {
+                this._errorMessage = value;
+                this.setAttribute('error-message', value);
+            }
+
+            // 접근성 관련 getter/setter
+            get ariaLabel() {
+                return this._ariaLabel;
+            }
+
+            set ariaLabel(value) {
+                this._ariaLabel = value;
+                this.setAttribute('aria-label', value);
+            }
+
+            get ariaInvalid() {
+                return this._ariaInvalid;
+            }
+
+            set ariaInvalid(value) {
+                this._ariaInvalid = value;
+                this.setAttribute('aria-invalid', value);
+            }
+
+            get ariaRequired() {
+                return this._ariaRequired;
+            }
+
+            set ariaRequired(value) {
+                this._ariaRequired = value;
+                this.setAttribute('aria-required', value);
+            }
+
+            get ariaReadonly() {
+                return this._ariaReadonly;
+            }
+
+            set ariaReadonly(value) {
+                this._ariaReadonly = value;
+                this.setAttribute('aria-readonly', value);
+            }
+        }
+
+        // 웹컴포넌트 등록
+        customElements.define('sv-input', InputComponent);
+    </script>
+
+    <!-- 사용 예시 -->
+    <h2>Input 웹컴포넌트 사용 예시</h2>
+    
+    <h3>기본 입력 필드</h3>
+    <sv-input 
+        label="이름"
+        placeholder="이름을 입력하세요"
+        required="true"
+    ></sv-input>
+    
+    <h3>크기별 입력 필드</h3>
+    <p>작은 크기: <sv-input size="sm" placeholder="작은 입력 필드"></sv-input></p>
+    <p>기본 크기: <sv-input size="md" placeholder="기본 입력 필드"></sv-input></p>
+    <p>큰 크기: <sv-input size="lg" placeholder="큰 입력 필드"></sv-input></p>
+    
+    <h3>상태별 입력 필드</h3>
+    <p>유효한 입력: <sv-input state="valid" placeholder="유효한 입력" hint="올바르게 입력되었습니다"></sv-input></p>
+    <p>잘못된 입력: <sv-input state="invalid" placeholder="잘못된 입력" error-message="올바르지 않은 형식입니다"></sv-input></p>
+    
+    <h3>입력 타입별</h3>
+    <p>이메일: <sv-input type="email" placeholder="이메일을 입력하세요"></sv-input></p>
+    <p>비밀번호: <sv-input type="password" placeholder="비밀번호를 입력하세요"></sv-input></p>
+    <p>숫자: <sv-input type="number" placeholder="숫자를 입력하세요"></sv-input></p>
+    <p>전화번호: <sv-input type="tel" placeholder="전화번호를 입력하세요" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"></sv-input></p>
+    
+    <h3>접근성 테스트</h3>
+    <p>ARIA 라벨이 있는 입력 필드:</p>
+    <sv-input 
+        aria-label="검색어 입력"
+        placeholder="검색어를 입력하세요"
+        type="search"
+    ></sv-input>
+    
+    <p>설명이 있는 입력 필드:</p>
+    <div id="input-description">이 필드는 사용자 ID를 입력하는 곳입니다. 영문과 숫자만 사용 가능합니다.</div>
+    <sv-input 
+        label="사용자 ID"
+        placeholder="사용자 ID를 입력하세요"
+        aria-describedby="input-description"
+        pattern="[A-Za-z0-9]+"
+    ></sv-input>
+    
+    <h3>입력 그룹</h3>
+    <p>접두사가 있는 입력 필드:</p>
+    <sv-input 
+        label="가격"
+        prepend="₩"
+        type="number"
+        placeholder="가격을 입력하세요"
+    ></sv-input>
+    
+    <p>접미사가 있는 입력 필드:</p>
+    <sv-input 
+        label="무게"
+        append="kg"
+        type="number"
+        placeholder="무게를 입력하세요"
+    ></sv-input>
+    
+    <h3>고급 속성</h3>
+    <p>자동완성: <sv-input autocomplete="name" placeholder="이름"></sv-input></p>
+    <p>맞춤법 검사: <sv-input spellcheck="true" placeholder="맞춤법 검사 활성화"></sv-input></p>
+    <p>최대 길이: <sv-input maxlength="10" placeholder="최대 10자"></sv-input></p>
+    <p>입력 모드: <sv-input inputmode="numeric" placeholder="숫자만 입력"></sv-input></p>
+    
+    <h3>비활성화된 입력 필드</h3>
+    <sv-input 
+        label="비활성화된 필드"
+        value="수정할 수 없음"
+        disabled="true"
+    ></sv-input>
+    
+    <h3>읽기 전용 입력 필드</h3>
+    <sv-input 
+        label="읽기 전용 필드"
+        value="읽기만 가능"
+        readonly="true"
+    ></sv-input>
+
+    <script>
+        // 이벤트 리스너 예시
+        document.addEventListener('update:modelValue', (e) => {
+            if (e.target.tagName === 'SV-INPUT') {
+                console.log('입력 값 변경:', e.detail.value);
+            }
+        });
+
+        document.addEventListener('input', (e) => {
+            if (e.target.tagName === 'SV-INPUT') {
+                console.log('입력 이벤트 발생');
+            }
+        });
+
+        document.addEventListener('focus', (e) => {
+            if (e.target.tagName === 'SV-INPUT') {
+                console.log('입력 필드 포커스');
+            }
+        });
+
+        document.addEventListener('blur', (e) => {
+            if (e.target.tagName === 'SV-INPUT') {
+                console.log('입력 필드 포커스 해제');
+            }
+        });
+
+        document.addEventListener('submit', (e) => {
+            if (e.target.tagName === 'SV-INPUT') {
+                console.log('Enter 키 입력');
+            }
+        });
+
+        // 프로그래밍 방식으로 입력 필드 제어
+        const input = document.querySelector('sv-input[label="이름"]');
+        if (input) {
+            // 3초 후 값 설정
+            setTimeout(() => {
+                input.value = '홍길동';
+            }, 3000);
+        }
+
+        // 접근성 테스트를 위한 포커스 이벤트
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'SV-INPUT') {
+                console.log('입력 필드에 포커스됨');
+            }
+        });
+    </script>
+</body>
+</html>

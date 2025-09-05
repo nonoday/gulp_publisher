@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadioGroup Component</title>
+    <style>
+/* RadioGroup Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --border-primary-strong-same: #666666;
+  --border-brand: #007bff;
+  --border-brand-disabled: #cccccc;
+  --border-disabled: #e5e5e5;
+  --bg-disabled: #f5f5f5;
+  --bg-brand-selected_disabled: #cccccc;
+  --fg-brand-same: #007bff;
+  --text-secondary: #666666;
+  --text-disabled-same: #999999;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --font-size-body-m: 14px;
+  --line-height-body-m: 1.4;
+  --font-weight-500: 500;
+}
+
+/* RadioGroup Base */
+.radio-group {
+  display: flex;
+  width: 100%;
+}
+
+.radio-group__item-container {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+/* Orientation modifiers */
+.radio-group--orientation-vertical {
+  flex-direction: column;
+  gap: var(--spacing-lg) var(--spacing-none);
+}
+
+.radio-group--orientation-horizontal {
+  flex-direction: row;
+  gap: var(--spacing-lg) var(--spacing-none);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.radio-group--orientation-horizontal .radio-group__item-container {
+  width: 50%;
+}
+
+.radio-group--orientation-horizontal.radio-group--align-right .radio-item__label {
+  flex-direction: row-reverse;
+}
+
+/* Alignment modifiers */
+.radio-group--align-left .radio-group__item-container {
+  flex-direction: row;
+  align-items: center;
+}
+
+.radio-group--align-right .radio-group__item-container {
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Disabled state */
+.radio-group--disabled {
+  pointer-events: none;
+}
+
+/* Radio Item */
+.radio-item {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-primary-strong-same);
+  background-color: transparent;
+  flex-shrink: 0;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.radio-item:focus-visible {
+  outline: 2px solid var(--fg-brand-same);
+  outline-offset: 2px;
+}
+
+.radio-item[data-disabled] {
+  background-color: var(--bg-disabled);
+  border-color: var(--border-disabled);
+  cursor: not-allowed;
+}
+
+.radio-item[data-disabled][data-state="checked"] {
+  background-color: var(--bg-disabled);
+  border-color: var(--border-brand-disabled);
+}
+
+.radio-item[data-state="checked"] {
+  border-color: var(--border-brand);
+}
+
+/* Indicator element */
+.radio-item__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  animation: radioScale 0.25s var(--ease) normal forwards 1;
+  background-color: var(--fg-brand-same);
+}
+
+.radio-item__indicator[data-disabled] {
+  background-color: var(--bg-brand-selected_disabled);
+}
+
+/* Label element */
+.radio-item__label {
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-m);
+  line-height: var(--line-height-body-m);
+  font-weight: var(--font-weight-500);
+  cursor: pointer;
+  user-select: none;
+}
+
+.radio-item[data-state="checked"] .radio-item__label {
+  transform: scale(1);
+}
+
+.radio-item--disabled .radio-item__label {
+  color: var(--text-disabled-same);
+}
+
+/* State modifiers */
+.radio-item--disabled {
+  cursor: not-allowed;
+}
+
+/* Animation */
+@keyframes radioScale {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  position: relative;
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Radio group examples */
+.radio-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.radio-example {
+  min-width: 200px;
+}
+
+.radio-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Custom radio button styles */
+.custom-radio {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-primary-strong-same);
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-right: 8px;
+}
+
+.custom-radio:hover {
+  border-color: var(--border-brand);
+}
+
+.custom-radio.checked {
+  border-color: var(--border-brand);
+}
+
+.custom-radio.checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background-color: var(--fg-brand-same);
+  border-radius: 50%;
+  animation: radioScale 0.25s var(--ease) normal forwards 1;
+}
+
+.custom-radio.disabled {
+  background-color: var(--bg-disabled);
+  border-color: var(--border-disabled);
+  cursor: not-allowed;
+}
+
+.custom-radio.disabled.checked::after {
+  background-color: var(--bg-brand-selected_disabled);
+}
+
+/* Radio item container */
+.radio-item-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.radio-item-container--horizontal {
+  display: inline-block;
+  width: 50%;
+  margin-bottom: 8px;
+}
+
+.radio-item-container--right {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.radio-item-container--right .custom-radio {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+/* Label styles */
+.radio-label {
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.radio-label.disabled {
+  color: var(--text-disabled-same);
+  cursor: not-allowed;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.interactive-demo .radio-group {
+  margin: 0 auto;
+  max-width: 400px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .radio-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+  
+  .radio-item-container--horizontal {
+    width: 100%;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>RadioGroup Component</h1>
+        
+        <!-- Basic RadioGroup -->
+        <div class="demo-section">
+            <h3>Basic RadioGroup</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Vertical Orientation (Default)</span>
+                <div class="radio-examples">
+                    <div class="radio-example">
+                        <div class="radio-example-label">Basic RadioGroup</div>
+                        <div class="radio-group radio-group--orientation-vertical radio-group--align-left">
+                            <div class="radio-group__item-container">
+                                <input type="radio" id="radio1" name="basic" class="custom-radio" checked>
+                                <label for="radio1" class="radio-label">옵션 1</label>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <input type="radio" id="radio2" name="basic" class="custom-radio">
+                                <label for="radio2" class="radio-label">옵션 2</label>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <input type="radio" id="radio3" name="basic" class="custom-radio">
+                                <label for="radio3" class="radio-label">옵션 3</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="radio-example">
+                        <div class="radio-example-label">With Custom Styling</div>
+                        <div class="radio-group radio-group--orientation-vertical radio-group--align-left">
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio checked" onclick="toggleRadio(this, 'custom1')"></div>
+                                <span class="radio-label">사용자 정의 스타일 1</span>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'custom2')"></div>
+                                <span class="radio-label">사용자 정의 스타일 2</span>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'custom3')"></div>
+                                <span class="radio-label">사용자 정의 스타일 3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Orientation Variants -->
+        <div class="demo-section">
+            <h3>Orientation Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Horizontal Orientation</span>
+                <div class="radio-examples">
+                    <div class="radio-example">
+                        <div class="radio-example-label">Left Aligned</div>
+                        <div class="radio-group radio-group--orientation-horizontal radio-group--align-left">
+                            <div class="radio-group__item-container radio-item-container--horizontal">
+                                <div class="custom-radio checked" onclick="toggleRadio(this, 'h1')"></div>
+                                <span class="radio-label">가로 정렬 1</span>
+                            </div>
+                            <div class="radio-group__item-container radio-item-container--horizontal">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'h2')"></div>
+                                <span class="radio-label">가로 정렬 2</span>
+                            </div>
+                            <div class="radio-group__item-container radio-item-container--horizontal">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'h3')"></div>
+                                <span class="radio-label">가로 정렬 3</span>
+                            </div>
+                            <div class="radio-group__item-container radio-item-container--horizontal">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'h4')"></div>
+                                <span class="radio-label">가로 정렬 4</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="radio-example">
+                        <div class="radio-example-label">Right Aligned</div>
+                        <div class="radio-group radio-group--orientation-horizontal radio-group--align-right">
+                            <div class="radio-group__item-container radio-item-container--horizontal radio-item-container--right">
+                                <div class="custom-radio checked" onclick="toggleRadio(this, 'hr1')"></div>
+                                <span class="radio-label">우측 정렬 1</span>
+                            </div>
+                            <div class="radio-group__item-container radio-item-container--horizontal radio-item-container--right">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'hr2')"></div>
+                                <span class="radio-label">우측 정렬 2</span>
+                            </div>
+                            <div class="radio-group__item-container radio-item-container--horizontal radio-item-container--right">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'hr3')"></span>
+                                <span class="radio-label">우측 정렬 3</span>
+                            </div>
+                            <div class="radio-group__item-container radio-item-container--horizontal radio-item-container--right">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'hr4')"></div>
+                                <span class="radio-label">우측 정렬 4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alignment Variants -->
+        <div class="demo-section">
+            <h3>Alignment Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Alignments</span>
+                <div class="radio-examples">
+                    <div class="radio-example">
+                        <div class="radio-example-label">Left Aligned (Default)</div>
+                        <div class="radio-group radio-group--orientation-vertical radio-group--align-left">
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio checked" onclick="toggleRadio(this, 'left1')"></div>
+                                <span class="radio-label">왼쪽 정렬 옵션 1</span>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'left2')"></div>
+                                <span class="radio-label">왼쪽 정렬 옵션 2</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="radio-example">
+                        <div class="radio-example-label">Right Aligned</div>
+                        <div class="radio-group radio-group--orientation-vertical radio-group--align-right">
+                            <div class="radio-group__item-container radio-item-container--right">
+                                <div class="custom-radio checked" onclick="toggleRadio(this, 'right1')"></div>
+                                <span class="radio-label">오른쪽 정렬 옵션 1</span>
+                            </div>
+                            <div class="radio-group__item-container radio-item-container--right">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'right2')"></div>
+                                <span class="radio-label">오른쪽 정렬 옵션 2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Disabled States -->
+        <div class="demo-section">
+            <h3>Disabled States</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Disabled RadioGroup</span>
+                <div class="radio-examples">
+                    <div class="radio-example">
+                        <div class="radio-example-label">All Disabled</div>
+                        <div class="radio-group radio-group--orientation-vertical radio-group--align-left radio-group--disabled">
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio checked disabled" onclick="toggleRadio(this, 'disabled1')"></div>
+                                <span class="radio-label disabled">비활성화된 옵션 1</span>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio disabled" onclick="toggleRadio(this, 'disabled2')"></div>
+                                <span class="radio-label disabled">비활성화된 옵션 2</span>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio disabled" onclick="toggleRadio(this, 'disabled3')"></div>
+                                <span class="radio-label disabled">비활성화된 옵션 3</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="radio-example">
+                        <div class="radio-example-label">Mixed States</div>
+                        <div class="radio-group radio-group--orientation-vertical radio-group--align-left">
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio checked" onclick="toggleRadio(this, 'mixed1')"></div>
+                                <span class="radio-label">활성화된 옵션 1</span>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio disabled" onclick="toggleRadio(this, 'mixed2')"></div>
+                                <span class="radio-label disabled">비활성화된 옵션 2</span>
+                            </div>
+                            <div class="radio-group__item-container">
+                                <div class="custom-radio" onclick="toggleRadio(this, 'mixed3')"></div>
+                                <span class="radio-label">활성화된 옵션 3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">클릭하여 라디오 버튼 상태 변경</span>
+                <div class="radio-group" id="interactiveRadioGroup">
+                    <div class="radio-group__item-container">
+                        <div class="custom-radio checked" onclick="toggleRadio(this, 'demo1')"></div>
+                        <span class="radio-label">데모 옵션 1</span>
+                    </div>
+                    <div class="radio-group__item-container">
+                        <div class="custom-radio" onclick="toggleRadio(this, 'demo2')"></div>
+                        <span class="radio-label">데모 옵션 2</span>
+                    </div>
+                    <div class="radio-group__item-container">
+                        <div class="custom-radio" onclick="toggleRadio(this, 'demo3')"></div>
+                        <span class="radio-label">데모 옵션 3</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="custom-radio" onclick="changeOrientation()" style="margin: 5px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">방향 변경</button>
+                    <button class="custom-radio" onclick="changeAlignment()" style="margin: 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">정렬 변경</button>
+                    <button class="custom-radio" onclick="toggleDisabled()" style="margin: 5px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">비활성화 토글</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 라디오 버튼 토글 함수
+        function toggleRadio(radioElement, groupId) {
+            // 같은 그룹의 다른 라디오 버튼들 찾기
+            const container = radioElement.closest('.radio-group');
+            const radioButtons = container.querySelectorAll('.custom-radio');
+            
+            // 모든 라디오 버튼의 checked 상태 제거
+            radioButtons.forEach(radio => {
+                radio.classList.remove('checked');
+            });
+            
+            // 클릭된 라디오 버튼을 checked 상태로 설정
+            radioElement.classList.add('checked');
+            
+            console.log(`선택된 옵션: ${groupId}`);
+        }
+        
+        // 방향 변경 함수
+        function changeOrientation() {
+            const radioGroup = document.getElementById('interactiveRadioGroup');
+            const currentOrientation = radioGroup.classList.contains('radio-group--orientation-horizontal');
+            
+            if (currentOrientation) {
+                radioGroup.classList.remove('radio-group--orientation-horizontal');
+                radioGroup.classList.add('radio-group--orientation-vertical');
+                radioGroup.querySelectorAll('.radio-group__item-container').forEach(container => {
+                    container.classList.remove('radio-item-container--horizontal');
+                });
+            } else {
+                radioGroup.classList.remove('radio-group--orientation-vertical');
+                radioGroup.classList.add('radio-group--orientation-horizontal');
+                radioGroup.querySelectorAll('.radio-group__item-container').forEach(container => {
+                    container.classList.add('radio-item-container--horizontal');
+                });
+            }
+        }
+        
+        // 정렬 변경 함수
+        function changeAlignment() {
+            const radioGroup = document.getElementById('interactiveRadioGroup');
+            const currentAlignment = radioGroup.classList.contains('radio-group--align-right');
+            
+            if (currentAlignment) {
+                radioGroup.classList.remove('radio-group--align-right');
+                radioGroup.classList.add('radio-group--align-left');
+                radioGroup.querySelectorAll('.radio-group__item-container').forEach(container => {
+                    container.classList.remove('radio-item-container--right');
+                });
+            } else {
+                radioGroup.classList.remove('radio-group--align-left');
+                radioGroup.classList.add('radio-group--align-right');
+                radioGroup.querySelectorAll('.radio-group__item-container').forEach(container => {
+                    container.classList.add('radio-item-container--right');
+                });
+            }
+        }
+        
+        // 비활성화 토글 함수
+        function toggleDisabled() {
+            const radioGroup = document.getElementById('interactiveRadioGroup');
+            const isDisabled = radioGroup.classList.contains('radio-group--disabled');
+            
+            if (isDisabled) {
+                radioGroup.classList.remove('radio-group--disabled');
+                radioGroup.querySelectorAll('.custom-radio').forEach(radio => {
+                    radio.classList.remove('disabled');
+                });
+                radioGroup.querySelectorAll('.radio-label').forEach(label => {
+                    label.classList.remove('disabled');
+                });
+            } else {
+                radioGroup.classList.add('radio-group--disabled');
+                radioGroup.querySelectorAll('.custom-radio').forEach(radio => {
+                    radio.classList.add('disabled');
+                });
+                radioGroup.querySelectorAll('.radio-label').forEach(label => {
+                    label.classList.add('disabled');
+                });
+            }
+        }
+        
+        // HTML input 라디오 버튼 이벤트
+        document.addEventListener('change', function(event) {
+            if (event.target.type === 'radio') {
+                console.log(`선택된 옵션: ${event.target.id}`);
+            }
+        });
+    </script>
+</body>
+</html>

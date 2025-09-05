@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chip 컴포넌트</title>
+    <link rel="stylesheet" href="../../../components/chip-component.css">
+    <script src="../../../components/chip-component.js"></script>
+</head>
+<body>
+    <h1>Chip 컴포넌트 데모</h1>
+    
+    <h2>Basic Chip 컴포넌트</h2>
+    
+    <!-- 기본 chip -->
+    <basic-chip label="기본 텍스트"></basic-chip>
+    
+    <!-- solid 타입 chip -->
+    <basic-chip type="solid" label="Solid 타입"></basic-chip>
+    
+    <!-- line 타입 chip -->
+    <basic-chip type="line" label="Line 타입"></basic-chip>
+    
+    <!-- selected 상태 chip -->
+    <basic-chip selected="true" label="선택된 상태"></basic-chip>
+    
+    <!-- 아이콘이 있는 chip -->
+    <basic-chip icon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggMUM0LjEzNDAxIDEgMSA0LjEzNDAxIDEgOEMxIDExLjg2NiA0LjEzNDAxIDE1IDggMTVDMTEuODY2IDE1IDE1IDExLjg2NiAxNSA4QzE1IDQuMTM0MDEgMTEuODY2IDEgOCAxWk04IDEzQzUuMjM4NTc4IDEzIDMgMTAuNzYxNDIgMyA4QzMgNS4yMzg1NzggNS4yMzg1NzggMyA4IDNDMTAuNzYxNDIgMyAxMyA1LjIzODU3OCAxMyA4QzEzIDEwLjc2MTQyIDEwLjc2MTQyIDEzIDggMTNaIiBmaWxsPSIjMDA3YmZmIi8+Cjwvc3ZnPgo=" label="아이콘 포함"></basic-chip>
+    
+    <!-- 숫자가 있는 chip -->
+    <basic-chip number="3" label="숫자 포함"></basic-chip>
+    
+    <!-- 상태가 있는 chip -->
+    <basic-chip status="신규상품" label="상태 포함"></basic-chip>
+    
+    <!-- 모든 옵션이 있는 chip -->
+    <basic-chip type="solid" selected="true" icon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggMUM0LjEzNDAxIDEgMSA0LjEzNDAxIDEgOEMxIDExLjg2NiA0LjEzNDAxIDE1IDggMTVDMTEuODY2IDE1IDE1IDExLjg2NiAxNSA4QzE1IDQuMTM0MDEgMTEuODY2IDEgOCAxWk04IDEzQzUuMjM4NTc4IDEzIDMgMTAuNzYxNDIgMyA4QzMgNS4yMzg1NzggNS4yMzg1NzggMyA4IDNDMTAuNzYxNDIgMyAxMyA1LjIzODU3OCAxMyA4QzEzIDEwLjc2MTQyIDEwLjc2MTQyIDEzIDggMTNaIiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPgo=" number="5" status="인기상품" label="모든 옵션"></basic-chip>
+    
+    <h2>Basic Chips 컴포넌트</h2>
+    
+    <!-- 기본 chips 그룹 -->
+    <basic-chips background="primary">
+        <basic-chip label="칩 1"></basic-chip>
+        <basic-chip label="칩 2"></basic-chip>
+        <basic-chip label="칩 3"></basic-chip>
+        <basic-chip label="칩 4"></basic-chip>
+        <basic-chip label="칩 5"></basic-chip>
+        <basic-chip label="칩 6"></basic-chip>
+    </basic-chips>
+    
+    <!-- secondary 배경 chips 그룹 -->
+    <basic-chips background="secondary">
+        <basic-chip type="solid" label="Solid 칩"></basic-chip>
+        <basic-chip type="line" label="Line 칩"></basic-chip>
+        <basic-chip selected="true" label="선택된 칩"></basic-chip>
+        <basic-chip number="10" label="숫자 칩"></basic-chip>
+    </basic-chips>
+    
+    <script>
+        // 동적으로 chip 속성 변경 예제
+        setTimeout(() => {
+            const chips = document.querySelectorAll('basic-chip');
+            chips.forEach((chip, index) => {
+                if (index % 2 === 0) {
+                    chip.setAttribute('selected', 'true');
+                }
+            });
+        }, 2000);
+        
+        // 배경 변경 예제
+        setTimeout(() => {
+            const chipsGroups = document.querySelectorAll('basic-chips');
+            chipsGroups.forEach((group, index) => {
+                if (index === 0) {
+                    group.setAttribute('background', 'secondary');
+                }
+            });
+        }, 3000);
+    </script>
+</body>
+</html>
+

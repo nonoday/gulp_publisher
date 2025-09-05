@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge 컴포넌트 데모</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        h1 {
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #374151;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .badge-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .badge-label {
+            font-size: 14px;
+            color: #6b7280;
+            min-width: 80px;
+        }
+        
+        .code-example {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        .usage-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Badge 컴포넌트 데모</h1>
+        
+        <div class="section">
+            <h2>Solid 타입</h2>
+            <div class="badge-grid">
+                <div class="badge-item">
+                    <span class="badge-label">Blue:</span>
+                    <badge-component type="solid" color="blue" text="Solid Blue"></badge-component>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-label">Red:</span>
+                    <badge-component type="solid" color="red" text="Solid Red"></badge-component>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-label">Gray:</span>
+                    <badge-component type="solid" color="gray" text="Solid Gray"></badge-component>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Tint 타입</h2>
+            <div class="badge-grid">
+                <div class="badge-item">
+                    <span class="badge-label">Blue:</span>
+                    <badge-component type="tint" color="blue" text="Tint Blue"></badge-component>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-label">Red:</span>
+                    <badge-component type="tint" color="red" text="Tint Red"></badge-component>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-label">Gray:</span>
+                    <badge-component type="tint" color="gray" text="Tint Gray"></badge-component>
+                </div>
+            </div>
+        </div>
+        
+        <div class="usage-section">
+            <h2>사용법</h2>
+            <div class="code-example">
+&lt;!-- 기본 사용법 --&gt;
+&lt;badge-component type="solid" color="blue" text="Badge"&gt;&lt;/badge-component&gt;
+
+&lt;!-- 슬롯 사용법 --&gt;
+&lt;badge-component type="tint" color="red"&gt;
+    커스텀 텍스트
+&lt;/badge-component&gt;
+
+&lt;!-- 속성 설명 --&gt;
+&lt;!-- type: "solid" | "tint" (기본값: "solid") --&gt;
+&lt;!-- color: "blue" | "red" | "gray" (기본값: "blue") --&gt;
+&lt;!-- text: 배지 텍스트 (기본값: "Badge") --&gt;
+            </div>
+        </div>
+    </div>
+
+    <script src="../../../components/badge-component.js"></script>
+</body>
+</html>

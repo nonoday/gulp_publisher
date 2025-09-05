@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tooltip 웹 컴포넌트 예시</title>
+    <link rel="stylesheet" href="sample.css">
+</head>
+<body>
+    <h1>Tooltip 웹 컴포넌트</h1>
+    
+    <!-- 기본 사용법 -->
+    <tooltip-component text="기본 툴팁 텍스트입니다."></tooltip-component>
+    
+    <br><br>
+    
+    <!-- 위치 옵션 사용 -->
+    <tooltip-component text="상단 왼쪽에 표시되는 툴팁" position="top-left"></tooltip-component>
+    
+    <br><br>
+    
+    <tooltip-component text="상단 중앙에 표시되는 툴팁" position="top-center"></tooltip-component>
+    
+    <br><br>
+    
+    <tooltip-component text="하단 오른쪽에 표시되는 툴팁" position="bottom-right"></tooltip-component>
+    
+    <br><br>
+    
+    <!-- 여러 개 사용 -->
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <tooltip-component text="왼쪽 상단" position="left-top"></tooltip-component>
+        <tooltip-component text="오른쪽 중앙" position="right-middle"></tooltip-component>
+        <tooltip-component text="하단 중앙" position="bottom-center"></tooltip-component>
+    </div>
+
+    <!-- JavaScript 파일 연결 -->
+    <script src="tooltip.js"></script>
+    
+</body>
+</html>

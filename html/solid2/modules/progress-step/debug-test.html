@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>에러 해결 테스트</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>NotSupportedError 해결 테스트</h1>
+    
+    <div class="test-section">
+        <h2>1. 기본 테스트</h2>
+        <horizontal-progress-step size="small">
+            <horizontal-progress-step-item status="completed" step="1" title="테스트 1" date="2024.01.01"></horizontal-progress-step-item>
+            <horizontal-progress-step-item status="active" step="2" title="테스트 2" date="2024.01.02"></horizontal-progress-step-item>
+        </horizontal-progress-step>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 아이콘 테스트</h2>
+        <horizontal-progress-step size="large">
+            <horizontal-progress-step-item status="check" step="" title="체크" date="2024.01.01"></horizontal-progress-step-item>
+            <horizontal-progress-step-item status="error" step="" title="에러" date="2024.01.02"></horizontal-progress-step-item>
+        </horizontal-progress-step>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Number 상태 테스트</h2>
+        <horizontal-progress-step size="small">
+            <horizontal-progress-step-item status="number" step="1" title="1단계" date="시작"></horizontal-progress-step-item>
+            <horizontal-progress-step-item status="number" step="2" title="2단계" date="진행"></horizontal-progress-step-item>
+        </horizontal-progress-step>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. 상태 확인</h2>
+        <div id="status"></div>
+    </div>
+    
+    <script>
+        // 에러 핸들링
+        window.addEventListener('error', function(e) {
+            console.error('전역 에러:', e.error);
+            console.error('에러 메시지:', e.message);
+            console.error('파일:', e.filename);
+            console.error('라인:', e.lineno);
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML += `<p class="error">❌ 에러 발생: ${e.message}</p>`;
+        });
+        
+        // Promise 에러 핸들링
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Promise 에러:', e.reason);
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML += `<p class="error">❌ Promise 에러: ${e.reason}</p>`;
+        });
+    </script>
+    
+    <script src="horizontal-progress-step.js" onload="console.log('✅ JS 파일 로드 완료')" onerror="console.error('❌ JS 파일 로드 실패')"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDiv = document.getElementById('status');
+            
+            // 웹 컴포넌트 지원 확인
+            if ('customElements' in window) {
+                statusDiv.innerHTML += '<p class="success">✅ 웹 컴포넌트 지원됨</p>';
+            } else {
+                statusDiv.innerHTML += '<p class="error">❌ 웹 컴포넌트 지원 안됨</p>';
+            }
+            
+            // 커스텀 엘리먼트 등록 확인
+            if (customElements.get('horizontal-progress-step')) {
+                statusDiv.innerHTML += '<p class="success">✅ horizontal-progress-step 등록됨</p>';
+            } else {
+                statusDiv.innerHTML += '<p class="error">❌ horizontal-progress-step 등록 안됨</p>';
+            }
+            
+            if (customElements.get('horizontal-progress-step-item')) {
+                statusDiv.innerHTML += '<p class="success">✅ horizontal-progress-step-item 등록됨</p>';
+            } else {
+                statusDiv.innerHTML += '<p class="error">❌ horizontal-progress-step-item 등록 안됨</p>';
+            }
+            
+            // 실제 엘리먼트 확인
+            const progressSteps = document.querySelectorAll('horizontal-progress-step');
+            statusDiv.innerHTML += `<p class="info">찾은 progress-step 개수: ${progressSteps.length}</p>`;
+            
+            progressSteps.forEach((step, index) => {
+                statusDiv.innerHTML += `<p class="info">Progress step ${index}: ${step.tagName}, className: ${step.className}</p>`;
+            });
+            
+            // 3초 후 최종 상태 확인
+            setTimeout(() => {
+                statusDiv.innerHTML += '<p class="success">✅ 3초 후 에러 없음 - 문제 해결됨!</p>';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

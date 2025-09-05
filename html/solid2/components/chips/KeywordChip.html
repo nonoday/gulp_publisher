@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeywordChip Component</title>
+    <style>
+/* KeywordChip Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --text-decrease: #10b981;
+  --text-increase-same: #ef4444;
+  --text-secondary: #666666;
+  --fg-quaternary: #999999;
+  --bg-decrease: rgba(16, 185, 129, 0.1);
+  --bg-increase: rgba(239, 68, 68, 0.1);
+  --bg-gray: #f5f5f5;
+  --border-decrease: #10b981;
+  --border-increase-same: #ef4444;
+  --border-secondary: #e0e0e0;
+  --font-weight-r: 400;
+  --font-size-body-m: 14px;
+  --font-size-body-s: 12px;
+  --lineheight-body-m: 1.4;
+  --lineheight-body-s: 1.3;
+  --letterspace-body-m: -0.01em;
+  --letterspace-body-s: 0em;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Keyword Chip Base */
+.keyword-chip {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.keyword-chip__btn {
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-none);
+  border-radius: 18px;
+  border: 0;
+  background: none;
+  font-weight: var(--font-weight-r);
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+  position: relative;
+}
+
+/* Size variants */
+.keyword-chip--size-m .keyword-chip__btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+  letter-spacing: var(--letterspace-body-m);
+  height: 36px;
+}
+
+.keyword-chip--size-m.keyword-chip--deletable .keyword-chip__btn {
+  padding-right: calc(var(--spacing-lg) + 16px);
+}
+
+.keyword-chip--size-m.keyword-chip--deletable .keyword-chip__delete {
+  right: var(--spacing-lg);
+}
+
+.keyword-chip--size-s .keyword-chip__btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-body-s);
+  line-height: var(--lineheight-body-s);
+  letter-spacing: var(--letterspace-body-s);
+  height: 32px;
+}
+
+.keyword-chip--size-s.keyword-chip--deletable .keyword-chip__btn {
+  padding-right: calc(var(--spacing-md) + 16px);
+}
+
+.keyword-chip--size-s.keyword-chip--deletable .keyword-chip__delete {
+  right: var(--spacing-md);
+}
+
+/* Variant and color combinations */
+.keyword-chip--variant-solid .keyword-chip__btn {
+  border: 0;
+}
+
+.keyword-chip--variant-solid.keyword-chip--color-blue .keyword-chip__btn {
+  color: var(--text-decrease);
+  background-color: var(--bg-decrease);
+}
+
+.keyword-chip--variant-solid.keyword-chip--color-red .keyword-chip__btn {
+  color: var(--text-increase-same);
+  background-color: var(--bg-increase);
+}
+
+.keyword-chip--variant-solid.keyword-chip--color-gray .keyword-chip__btn {
+  color: var(--text-secondary);
+  background-color: var(--bg-gray);
+}
+
+.keyword-chip--variant-outline .keyword-chip__btn {
+  border: 1px solid;
+  background-color: transparent;
+}
+
+.keyword-chip--variant-outline.keyword-chip--color-blue .keyword-chip__btn {
+  border-color: var(--border-decrease);
+  color: var(--text-decrease);
+}
+
+.keyword-chip--variant-outline.keyword-chip--color-red .keyword-chip__btn {
+  border-color: var(--border-increase-same);
+  color: var(--text-increase-same);
+}
+
+.keyword-chip--variant-outline.keyword-chip--color-gray .keyword-chip__btn {
+  border-color: var(--border-secondary);
+  color: var(--text-secondary);
+}
+
+/* Label element */
+.keyword-chip__label {
+  flex-shrink: 0;
+  padding: var(--spacing-none) var(--spacing-sm);
+}
+
+/* Delete element */
+.keyword-chip__delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: currentColor;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  color: var(--fg-quaternary);
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Custom Keyword Chip styles */
+.custom-keyword-chip {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin: 8px;
+}
+
+.custom-keyword-chip__btn {
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-none);
+  border-radius: 18px;
+  border: 0;
+  background: none;
+  font-weight: var(--font-weight-r);
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+}
+
+.custom-keyword-chip--size-m .custom-keyword-chip__btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+  letter-spacing: var(--letterspace-body-m);
+  height: 36px;
+}
+
+.custom-keyword-chip--size-m.custom-keyword-chip--deletable .custom-keyword-chip__btn {
+  padding-right: calc(var(--spacing-lg) + 16px);
+}
+
+.custom-keyword-chip--size-m.custom-keyword-chip--deletable .custom-keyword-chip__delete {
+  right: var(--spacing-lg);
+}
+
+.custom-keyword-chip--size-s .custom-keyword-chip__btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-body-s);
+  line-height: var(--lineheight-body-s);
+  letter-spacing: var(--letterspace-body-s);
+  height: 32px;
+}
+
+.custom-keyword-chip--size-s.custom-keyword-chip--deletable .custom-keyword-chip__btn {
+  padding-right: calc(var(--spacing-md) + 16px);
+}
+
+.custom-keyword-chip--size-s.custom-keyword-chip--deletable .custom-keyword-chip__delete {
+  right: var(--spacing-md);
+}
+
+.custom-keyword-chip--variant-solid .custom-keyword-chip__btn {
+  border: 0;
+}
+
+.custom-keyword-chip--variant-solid.custom-keyword-chip--color-blue .custom-keyword-chip__btn {
+  color: var(--text-decrease);
+  background-color: var(--bg-decrease);
+}
+
+.custom-keyword-chip--variant-solid.custom-keyword-chip--color-red .custom-keyword-chip__btn {
+  color: var(--text-increase-same);
+  background-color: var(--bg-increase);
+}
+
+.custom-keyword-chip--variant-solid.custom-keyword-chip--color-gray .custom-keyword-chip__btn {
+  color: var(--text-secondary);
+  background-color: var(--bg-gray);
+}
+
+.custom-keyword-chip--variant-outline .custom-keyword-chip__btn {
+  border: 1px solid;
+  background-color: transparent;
+}
+
+.custom-keyword-chip--variant-outline.custom-keyword-chip--color-blue .custom-keyword-chip__btn {
+  border-color: var(--border-decrease);
+  color: var(--text-decrease);
+}
+
+.custom-keyword-chip--variant-outline.custom-keyword-chip--color-red .custom-keyword-chip__btn {
+  border-color: var(--border-increase-same);
+  color: var(--text-increase-same);
+}
+
+.custom-keyword-chip--variant-outline.custom-keyword-chip--color-gray .custom-keyword-chip__btn {
+  border-color: var(--border-secondary);
+  color: var(--text-secondary);
+}
+
+.custom-keyword-chip__label {
+  flex-shrink: 0;
+  padding: var(--spacing-none) var(--spacing-sm);
+}
+
+.custom-keyword-chip__delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: currentColor;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  color: var(--fg-quaternary);
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+  width: 16px;
+  height: 16px;
+}
+
+.custom-keyword-chip__delete:hover {
+  color: var(--text-secondary);
+}
+
+/* Icon styles */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.icon--size-16 {
+  width: 16px;
+  height: 16px;
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* Chip examples */
+.chip-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.chip-example {
+  min-width: 200px;
+  text-align: center;
+}
+
+.chip-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Control buttons */
+.control-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-button {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s var(--ease);
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.control-button:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.control-button--variant {
+  background: rgba(0, 123, 255, 0.8);
+  border-color: rgba(0, 123, 255, 0.9);
+}
+
+.control-button--color {
+  background: rgba(16, 185, 129, 0.8);
+  border-color: rgba(16, 185, 129, 0.9);
+}
+
+.control-button--size {
+  background: rgba(245, 158, 11, 0.8);
+  border-color: rgba(245, 158, 11, 0.9);
+}
+
+.control-button--deletable {
+  background: rgba(239, 68, 68, 0.8);
+  border-color: rgba(239, 68, 68, 0.9);
+}
+
+.control-button--reset {
+  background: rgba(108, 117, 125, 0.8);
+  border-color: rgba(108, 117, 125, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chip-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>KeywordChip Component</h1>
+        
+        <!-- Basic KeywordChip -->
+        <div class="demo-section">
+            <h3>Basic KeywordChip</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Variant Variants</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Solid Variant</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-blue">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">기본 칩</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Outline Variant</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-outline custom-keyword-chip--color-blue">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">아웃라인 칩</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Color Variants -->
+        <div class="demo-section">
+            <h3>Color Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Colors</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Blue Color</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-blue">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">파란색 칩</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Red Color</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-red">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">빨간색 칩</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Gray Color</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-gray">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">회색 칩</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Size Variants -->
+        <div class="demo-section">
+            <h3>Size Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Sizes</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Medium Size</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-blue">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">중간 크기</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Small Size</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-s custom-keyword-chip--variant-solid custom-keyword-chip--color-blue">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">작은 크기</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Deletable Variants -->
+        <div class="demo-section">
+            <h3>Deletable Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Chips with Delete Button</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Solid + Deletable</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-blue custom-keyword-chip--deletable">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">삭제 가능</span>
+                            </button>
+                            <button class="custom-keyword-chip__delete">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Outline + Deletable</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-outline custom-keyword-chip--color-red custom-keyword-chip--deletable">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">아웃라인 삭제</span>
+                            </button>
+                            <button class="custom-keyword-chip__delete">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">실시간으로 KeywordChip 상태 변경</span>
+                
+                <div class="control-buttons">
+                    <button class="control-button control-button--variant" onclick="toggleVariant()">Variant 토글</button>
+                    <button class="control-button control-button--color" onclick="toggleColor()">색상 변경</button>
+                    <button class="control-button control-button--size" onclick="toggleSize()">크기 변경</button>
+                    <button class="control-button control-button--deletable" onclick="toggleDeletable()">삭제 버튼 토글</button>
+                    <button class="control-button control-button--reset" onclick="resetChip()">초기화</button>
+                </div>
+                
+                <div id="demoChip" class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-blue">
+                    <button class="custom-keyword-chip__btn">
+                        <span class="custom-keyword-chip__label">인터랙티브 칩</span>
+                    </button>
+                    <button class="custom-keyword-chip__delete" style="display: none;">
+                        <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Combined Examples -->
+        <div class="demo-section">
+            <h3>Combined Examples</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">복합 상태 조합</span>
+                <div class="chip-examples">
+                    <div class="chip-example">
+                        <div class="chip-example-label">Solid + Blue + Medium + Deletable</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-m custom-keyword-chip--variant-solid custom-keyword-chip--color-blue custom-keyword-chip--deletable">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">완전한 조합</span>
+                            </button>
+                            <button class="custom-keyword-chip__delete">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chip-example">
+                        <div class="chip-example-label">Outline + Red + Small + Deletable</div>
+                        <div class="custom-keyword-chip custom-keyword-chip--size-s custom-keyword-chip--variant-outline custom-keyword-chip--color-red custom-keyword-chip--deletable">
+                            <button class="custom-keyword-chip__btn">
+                                <span class="custom-keyword-chip__label">작은 빨간색</span>
+                            </button>
+                            <button class="custom-keyword-chip__delete">
+                                <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데모 칩 상태 변수
+        let currentVariant = 'solid';
+        let currentColor = 'blue';
+        let currentSize = 'm';
+        let isDeletable = false;
+        
+        // DOM 요소
+        const demoChip = document.getElementById('demoChip');
+        const deleteButton = demoChip.querySelector('.custom-keyword-chip__delete');
+        
+        // Variant 토글 함수
+        function toggleVariant() {
+            currentVariant = currentVariant === 'solid' ? 'outline' : 'solid';
+            updateChip();
+        }
+        
+        // 색상 변경 함수
+        function toggleColor() {
+            const colors = ['blue', 'red', 'gray'];
+            const currentIndex = colors.indexOf(currentColor);
+            currentColor = colors[(currentIndex + 1) % colors.length];
+            updateChip();
+        }
+        
+        // 크기 변경 함수
+        function toggleSize() {
+            currentSize = currentSize === 'm' ? 's' : 'm';
+            updateChip();
+        }
+        
+        // 삭제 버튼 토글 함수
+        function toggleDeletable() {
+            isDeletable = !isDeletable;
+            updateChip();
+        }
+        
+        // 칩 초기화 함수
+        function resetChip() {
+            currentVariant = 'solid';
+            currentColor = 'blue';
+            currentSize = 'm';
+            isDeletable = false;
+            updateChip();
+        }
+        
+        // 칩 상태 업데이트 함수
+        function updateChip() {
+            // 기존 클래스 제거
+            demoChip.className = 'custom-keyword-chip';
+            
+            // 새로운 클래스 추가
+            demoChip.classList.add(`custom-keyword-chip--size-${currentSize}`);
+            demoChip.classList.add(`custom-keyword-chip--variant-${currentVariant}`);
+            demoChip.classList.add(`custom-keyword-chip--color-${currentColor}`);
+            
+            if (isDeletable) {
+                demoChip.classList.add('custom-keyword-chip--deletable');
+                deleteButton.style.display = 'flex';
+            } else {
+                demoChip.classList.remove('custom-keyword-chip--deletable');
+                deleteButton.style.display = 'none';
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('KeywordChip 컴포넌트가 로드되었습니다.');
+            updateChip();
+        });
+    </script>
+</body>
+</html>
