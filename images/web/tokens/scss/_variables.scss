@@ -1,0 +1,643 @@
+// CSS 변수를 SCSS 변수로 변환
+// 이 파일은 tokens/css 폴더의 CSS 파일들에서 자동으로 생성됩니다.
+
+// Font Family
+$font-family-digital-one: var(--font-family-digital-one);
+$font-family-pretendard: var(--font-family-pretendard);
+
+// Basic Colors
+$white: var(--white);
+$gray-50: var(--gray-50);
+$gray-100: var(--gray-100);
+$gray-200: var(--gray-200);
+$gray-300: var(--gray-300);
+$gray-400: var(--gray-400);
+$gray-500: var(--gray-500);
+$gray-600: var(--gray-600);
+$gray-700: var(--gray-700);
+$gray-800: var(--gray-800);
+$gray-900: var(--gray-900);
+$gray-950: var(--gray-950);
+$black: var(--black);
+
+// Brand Colors
+$brand-100: var(--brand-100);
+$brand-200: var(--brand-200);
+$brand-300: var(--brand-300);
+$brand-400: var(--brand-400);
+$brand-500: var(--brand-500);
+$opacity-brand500-25: var(--opacity-brand500-25);
+$brand-600: var(--brand-600);
+$brand-700: var(--brand-700);
+$brand-800: var(--brand-800);
+$brand-900: var(--brand-900);
+
+// New Palette - Red
+$palette-new-red-50: var(--palette-new-red-50);
+$palette-new-red-100: var(--palette-new-red-100);
+$palette-new-red-200: var(--palette-new-red-200);
+$palette-new-red-300: var(--palette-new-red-300);
+$palette-new-red-400: var(--palette-new-red-400);
+$palette-new-red-500: var(--palette-new-red-500);
+$palette-new-red-600: var(--palette-new-red-600);
+$palette-new-red-700: var(--palette-new-red-700);
+$palette-new-red-800: var(--palette-new-red-800);
+$palette-new-red-900: var(--palette-new-red-900);
+$palette-new-red-1000: var(--palette-new-red-1000);
+
+// New Palette - Orange
+$palette-new-orange-50: var(--palette-new-orange-50);
+$palette-new-orange-100: var(--palette-new-orange-100);
+$palette-new-orange-200: var(--palette-new-orange-200);
+$palette-new-orange-300: var(--palette-new-orange-300);
+$palette-new-orange-400: var(--palette-new-orange-400);
+$palette-new-orange-500: var(--palette-new-orange-500);
+$palette-new-orange-600: var(--palette-new-orange-600);
+$palette-new-orange-700: var(--palette-new-orange-700);
+$palette-new-orange-800: var(--palette-new-orange-800);
+$palette-new-orange-900: var(--palette-new-orange-900);
+$palette-new-orange-1000: var(--palette-new-orange-1000);
+
+// New Palette - Yellow
+$palette-new-yellow-50: var(--palette-new-yellow-50);
+$palette-new-yellow-100: var(--palette-new-yellow-100);
+$palette-new-yellow-200: var(--palette-new-yellow-200);
+$palette-new-yellow-300: var(--palette-new-yellow-300);
+$palette-new-yellow-400: var(--palette-new-yellow-400);
+$palette-new-yellow-500: var(--palette-new-yellow-500);
+$palette-new-yellow-600: var(--palette-new-yellow-600);
+$palette-new-yellow-700: var(--palette-new-yellow-700);
+$palette-new-yellow-800: var(--palette-new-yellow-800);
+$palette-new-yellow-900: var(--palette-new-yellow-900);
+$palette-new-yellow-1000: var(--palette-new-yellow-1000);
+
+// New Palette - Celery
+$palette-new-celery-50: var(--palette-new-celery-50);
+$palette-new-celery-100: var(--palette-new-celery-100);
+$palette-new-celery-200: var(--palette-new-celery-200);
+$palette-new-celery-300: var(--palette-new-celery-300);
+$palette-new-celery-400: var(--palette-new-celery-400);
+$palette-new-celery-500: var(--palette-new-celery-500);
+$palette-new-celery-600: var(--palette-new-celery-600);
+$palette-new-celery-700: var(--palette-new-celery-700);
+$palette-new-celery-800: var(--palette-new-celery-800);
+$palette-new-celery-900: var(--palette-new-celery-900);
+$palette-new-celery-1000: var(--palette-new-celery-1000);
+
+// New Palette - Olive
+$palette-new-olive-50: var(--palette-new-olive-50);
+$palette-new-olive-100: var(--palette-new-olive-100);
+$palette-new-olive-200: var(--palette-new-olive-200);
+$palette-new-olive-300: var(--palette-new-olive-300);
+$palette-new-olive-400: var(--palette-new-olive-400);
+$palette-new-olive-500: var(--palette-new-olive-500);
+$palette-new-olive-600: var(--palette-new-olive-600);
+$palette-new-olive-700: var(--palette-new-olive-700);
+$palette-new-olive-800: var(--palette-new-olive-800);
+$palette-new-olive-900: var(--palette-new-olive-900);
+$palette-new-olive-1000: var(--palette-new-olive-1000);
+
+// New Palette - Green
+$palette-new-green-50: var(--palette-new-green-50);
+$palette-new-green-100: var(--palette-new-green-100);
+$palette-new-green-200: var(--palette-new-green-200);
+$palette-new-green-300: var(--palette-new-green-300);
+$palette-new-green-400: var(--palette-new-green-400);
+$palette-new-green-500: var(--palette-new-green-500);
+$palette-new-green-600: var(--palette-new-green-600);
+$palette-new-green-700: var(--palette-new-green-700);
+$palette-new-green-800: var(--palette-new-green-800);
+$palette-new-green-900: var(--palette-new-green-900);
+$palette-new-green-1000: var(--palette-new-green-1000);
+
+// New Palette - Cyan
+$palette-new-cyan-50: var(--palette-new-cyan-50);
+$palette-new-cyan-100: var(--palette-new-cyan-100);
+$palette-new-cyan-200: var(--palette-new-cyan-200);
+$palette-new-cyan-300: var(--palette-new-cyan-300);
+$palette-new-cyan-400: var(--palette-new-cyan-400);
+$palette-new-cyan-500: var(--palette-new-cyan-500);
+$palette-new-cyan-600: var(--palette-new-cyan-600);
+$palette-new-cyan-700: var(--palette-new-cyan-700);
+$palette-new-cyan-800: var(--palette-new-cyan-800);
+$palette-new-cyan-900: var(--palette-new-cyan-900);
+$palette-new-cyan-1000: var(--palette-new-cyan-1000);
+
+// New Palette - Blue
+$palette-new-blue-50: var(--palette-new-blue-50);
+$palette-new-blue-100: var(--palette-new-blue-100);
+$palette-new-blue-200: var(--palette-new-blue-200);
+$palette-new-blue-300: var(--palette-new-blue-300);
+$palette-new-blue-400: var(--palette-new-blue-400);
+$palette-new-blue-500: var(--palette-new-blue-500);
+$palette-new-blue-600: var(--palette-new-blue-600);
+$palette-new-blue-700: var(--palette-new-blue-700);
+$palette-new-blue-800: var(--palette-new-blue-800);
+$palette-new-blue-900: var(--palette-new-blue-900);
+$palette-new-blue-1000: var(--palette-new-blue-1000);
+
+// New Palette - Indigo
+$palette-new-indigo-50: var(--palette-new-indigo-50);
+$palette-new-indigo-100: var(--palette-new-indigo-100);
+$palette-new-indigo-200: var(--palette-new-indigo-200);
+$palette-new-indigo-300: var(--palette-new-indigo-300);
+$palette-new-indigo-400: var(--palette-new-indigo-400);
+$palette-new-indigo-500: var(--palette-new-indigo-500);
+$palette-new-indigo-600: var(--palette-new-indigo-600);
+$palette-new-indigo-700: var(--palette-new-indigo-700);
+$palette-new-indigo-800: var(--palette-new-indigo-800);
+$palette-new-indigo-900: var(--palette-new-indigo-900);
+$palette-new-indigo-1000: var(--palette-new-indigo-1000);
+
+// New Palette - Purple
+$palette-new-purple-50: var(--palette-new-purple-50);
+$palette-new-purple-100: var(--palette-new-purple-100);
+$palette-new-purple-200: var(--palette-new-purple-200);
+$palette-new-purple-300: var(--palette-new-purple-300);
+$palette-new-purple-400: var(--palette-new-purple-400);
+$palette-new-purple-500: var(--palette-new-purple-500);
+$palette-new-purple-600: var(--palette-new-purple-600);
+$palette-new-purple-700: var(--palette-new-purple-700);
+$palette-new-purple-800: var(--palette-new-purple-800);
+$palette-new-purple-900: var(--palette-new-purple-900);
+$palette-new-purple-1000: var(--palette-new-purple-1000);
+
+// New Palette - Magenta
+$palette-new-magenta-50: var(--palette-new-magenta-50);
+$palette-new-magenta-100: var(--palette-new-magenta-100);
+$palette-new-magenta-200: var(--palette-new-magenta-200);
+$palette-new-magenta-300: var(--palette-new-magenta-300);
+$palette-new-magenta-400: var(--palette-new-magenta-400);
+$palette-new-magenta-500: var(--palette-new-magenta-500);
+$palette-new-magenta-600: var(--palette-new-magenta-600);
+$palette-new-magenta-700: var(--palette-new-magenta-700);
+$palette-new-magenta-800: var(--palette-new-magenta-800);
+$palette-new-magenta-900: var(--palette-new-magenta-900);
+$palette-new-magenta-1000: var(--palette-new-magenta-1000);
+
+// New Palette - Seafoam
+$palette-new-seaform-seafoam-50: var(--palette-new-seaform-seafoam-50);
+$palette-new-seaform-seafoam-100: var(--palette-new-seaform-seafoam-100);
+$palette-new-seaform-seafoam-200: var(--palette-new-seaform-seafoam-200);
+$palette-new-seaform-seafoam-300: var(--palette-new-seaform-seafoam-300);
+$palette-new-seaform-seafoam-400: var(--palette-new-seaform-seafoam-400);
+$palette-new-seaform-seafoam-500: var(--palette-new-seaform-seafoam-500);
+$palette-new-seaform-seafoam-600: var(--palette-new-seaform-seafoam-600);
+$palette-new-seaform-seafoam-700: var(--palette-new-seaform-seafoam-700);
+$palette-new-seaform-seafoam-800: var(--palette-new-seaform-seafoam-800);
+$palette-new-seaform-seafoam-900: var(--palette-new-seaform-seafoam-900);
+$palette-new-seaform-seafoam-1000: var(--palette-new-seaform-seafoam-1000);
+
+// New Palette - Brown
+$palette-new-brown-50: var(--palette-new-brown-50);
+$palette-new-brown-100: var(--palette-new-brown-100);
+$palette-new-brown-200: var(--palette-new-brown-200);
+$palette-new-brown-300: var(--palette-new-brown-300);
+$palette-new-brown-400: var(--palette-new-brown-400);
+$palette-new-brown-500: var(--palette-new-brown-500);
+$palette-new-brown-600: var(--palette-new-brown-600);
+$palette-new-brown-700: var(--palette-new-brown-700);
+$palette-new-brown-800: var(--palette-new-brown-800);
+$palette-new-brown-900: var(--palette-new-brown-900);
+$palette-new-brown-1000: var(--palette-new-brown-1000);
+
+// New Palette - Fushia
+$palette-new-fushia-50: var(--palette-new-fushia-50);
+$palette-new-fushia-100: var(--palette-new-fushia-100);
+$palette-new-fushia-200: var(--palette-new-fushia-200);
+$palette-new-fushia-300: var(--palette-new-fushia-300);
+$palette-new-fushia-400: var(--palette-new-fushia-400);
+$palette-new-fushia-500: var(--palette-new-fushia-500);
+$palette-new-fushia-600: var(--palette-new-fushia-600);
+$palette-new-fushia-700: var(--palette-new-fushia-700);
+$palette-new-fushia-800: var(--palette-new-fushia-800);
+$palette-new-fushia-900: var(--palette-new-fushia-900);
+$palette-new-fushia-1000: var(--palette-new-fushia-1000);
+
+// New Palette - Monotone
+$palette-new-monotone-50: var(--palette-new-monotone-50);
+$palette-new-monotone-100: var(--palette-new-monotone-100);
+$palette-new-monotone-200: var(--palette-new-monotone-200);
+$palette-new-monotone-300: var(--palette-new-monotone-300);
+$palette-new-monotone-400: var(--palette-new-monotone-400);
+$palette-new-monotone-500: var(--palette-new-monotone-500);
+$palette-new-monotone-600: var(--palette-new-monotone-600);
+$palette-new-monotone-700: var(--palette-new-monotone-700);
+$palette-new-monotone-800: var(--palette-new-monotone-800);
+$palette-new-monotone-900: var(--palette-new-monotone-900);
+$palette-new-monotone-1000: var(--palette-new-monotone-1000);
+
+// Old Palette - Red
+$palette-old-red-50: var(--palette-old-red-50);
+$palette-old-red-100: var(--palette-old-red-100);
+$palette-old-red-red200: var(--palette-old-red-red200);
+$palette-old-red-300: var(--palette-old-red-300);
+$palette-old-red-400: var(--palette-old-red-400);
+$palette-old-red-500: var(--palette-old-red-500);
+$palette-old-red-600: var(--palette-old-red-600);
+$palette-old-red-700: var(--palette-old-red-700);
+$palette-old-red-800: var(--palette-old-red-800);
+$palette-old-red-800-30: var(--palette-old-red-800-30);
+$palette-old-red-900: var(--palette-old-red-900);
+$palette-old-red-1000: var(--palette-old-red-1000);
+
+// Old Palette - Orange
+$palette-old-orange-50: var(--palette-old-orange-50);
+$palette-old-orange-100: var(--palette-old-orange-100);
+$palette-old-orange-200: var(--palette-old-orange-200);
+$palette-old-orange-300: var(--palette-old-orange-300);
+$palette-old-orange-400: var(--palette-old-orange-400);
+$palette-old-orange-500: var(--palette-old-orange-500);
+$palette-old-orange-600: var(--palette-old-orange-600);
+$palette-old-orange-700: var(--palette-old-orange-700);
+$palette-old-orange-700-30: var(--palette-old-orange-700-30);
+$palette-old-orange-800: var(--palette-old-orange-800);
+$palette-old-orange-900: var(--palette-old-orange-900);
+$palette-old-orange-1000: var(--palette-old-orange-1000);
+
+// Old Palette - Yellow
+$palette-old-yellow-50: var(--palette-old-yellow-50);
+$palette-old-yellow-100: var(--palette-old-yellow-100);
+$palette-old-yellow-200: var(--palette-old-yellow-200);
+$palette-old-yellow-300: var(--palette-old-yellow-300);
+$palette-old-yellow-400: var(--palette-old-yellow-400);
+$palette-old-yellow-500: var(--palette-old-yellow-500);
+$palette-old-yellow-600: var(--palette-old-yellow-600);
+$palette-old-yellow-700: var(--palette-old-yellow-700);
+$palette-old-yellow-800: var(--palette-old-yellow-800);
+$palette-old-yellow-900: var(--palette-old-yellow-900);
+$palette-old-yellow-1000: var(--palette-old-yellow-1000);
+
+// Old Palette - Celery
+$palette-old-celery-50: var(--palette-old-celery-50);
+$palette-old-celery-100: var(--palette-old-celery-100);
+$palette-old-celery-200: var(--palette-old-celery-200);
+$palette-old-celery-300: var(--palette-old-celery-300);
+$palette-old-celery-400: var(--palette-old-celery-400);
+$palette-old-celery-500: var(--palette-old-celery-500);
+$palette-old-celery-600: var(--palette-old-celery-600);
+$palette-old-celery-700: var(--palette-old-celery-700);
+$palette-old-celery-800: var(--palette-old-celery-800);
+$palette-old-celery-900: var(--palette-old-celery-900);
+$palette-old-celery-1000: var(--palette-old-celery-1000);
+
+// Old Palette - Cyan
+$palette-old-cyan-50: var(--palette-old-cyan-50);
+$palette-old-cyan-100: var(--palette-old-cyan-100);
+$palette-old-cyan-200: var(--palette-old-cyan-200);
+$palette-old-cyan-300: var(--palette-old-cyan-300);
+$palette-old-cyan-400: var(--palette-old-cyan-400);
+$palette-old-cyan-500: var(--palette-old-cyan-500);
+$palette-old-cyan-600: var(--palette-old-cyan-600);
+$palette-old-cyan-700: var(--palette-old-cyan-700);
+$palette-old-cyan-800: var(--palette-old-cyan-800);
+$palette-old-cyan-900: var(--palette-old-cyan-900);
+$palette-old-cyan-1000: var(--palette-old-cyan-1000);
+
+// Old Palette - Blue
+$palette-old-blue-50: var(--palette-old-blue-50);
+$palette-old-blue-100: var(--palette-old-blue-100);
+$palette-old-blue-200: var(--palette-old-blue-200);
+$palette-old-blue-300: var(--palette-old-blue-300);
+$palette-old-blue-400: var(--palette-old-blue-400);
+$palette-old-blue-500: var(--palette-old-blue-500);
+$palette-old-blue-600: var(--palette-old-blue-600);
+$palette-old-blue-700: var(--palette-old-blue-700);
+$palette-old-blue-800: var(--palette-old-blue-800);
+$palette-old-blue-900: var(--palette-old-blue-900);
+$palette-old-blue-1000: var(--palette-old-blue-1000);
+
+// Old Palette - Indigo
+$palette-old-indigo-50: var(--palette-old-indigo-50);
+$palette-old-indigo-100: var(--palette-old-indigo-100);
+$palette-old-indigo-200: var(--palette-old-indigo-200);
+$palette-old-indigo-300: var(--palette-old-indigo-300);
+$palette-old-indigo-400: var(--palette-old-indigo-400);
+$palette-old-indigo-500: var(--palette-old-indigo-500);
+$palette-old-indigo-600: var(--palette-old-indigo-600);
+$palette-old-indigo-700: var(--palette-old-indigo-700);
+$palette-old-indigo-800: var(--palette-old-indigo-800);
+$palette-old-indigo-900: var(--palette-old-indigo-900);
+$palette-old-indigo-1000: var(--palette-old-indigo-1000);
+
+// Old Palette - Magenta
+$palette-old-magenta-50: var(--palette-old-magenta-50);
+$palette-old-magenta-100: var(--palette-old-magenta-100);
+$palette-old-magenta-200: var(--palette-old-magenta-200);
+$palette-old-magenta-300: var(--palette-old-magenta-300);
+$palette-old-magenta-400: var(--palette-old-magenta-400);
+$palette-old-magenta-500: var(--palette-old-magenta-500);
+$palette-old-magenta-600: var(--palette-old-magenta-600);
+$palette-old-magenta-700: var(--palette-old-magenta-700);
+$palette-old-magenta-800: var(--palette-old-magenta-800);
+$palette-old-magenta-900: var(--palette-old-magenta-900);
+$palette-old-magenta-1000: var(--palette-old-magenta-1000);
+
+// Opacity Variables
+$opacity-red800-30: var(--opacity-red800-30);
+$opacity-orange700-30: var(--opacity-orange700-30);
+$opacity-white-0: var(--opacity-white-0);
+$opacity-500-gray500-0: var(--opacity-500-gray500-0);
+$opacity-500-gray500-5: var(--opacity-500-gray500-5);
+$opacity-500-gray500-10: var(--opacity-500-gray500-10);
+$opacity-500-gray500-20: var(--opacity-500-gray500-20);
+$opacity-500-gray500-30: var(--opacity-500-gray500-30);
+$opacity-500-gray500-40: var(--opacity-500-gray500-40);
+$opacity-500-gray500-50: var(--opacity-500-gray500-50);
+$opacity-500-gray500-60: var(--opacity-500-gray500-60);
+$opacity-500-gray500-70: var(--opacity-500-gray500-70);
+$opacity-500-gray500-80: var(--opacity-500-gray500-80);
+$opacity-500-gray500-90: var(--opacity-500-gray500-90);
+$opacity-white-5: var(--opacity-white-5);
+$opacity-white-10: var(--opacity-white-10);
+$opacity-white-20: var(--opacity-white-20);
+$opacity-white-30: var(--opacity-white-30);
+$opacity-white-40: var(--opacity-white-40);
+$opacity-white-50: var(--opacity-white-50);
+$opacity-white-60: var(--opacity-white-60);
+$opacity-white-70: var(--opacity-white-70);
+$opacity-white-80: var(--opacity-white-80);
+$opacity-white-90: var(--opacity-white-90);
+$opacity-800-gray800-0: var(--opacity-800-gray800-0);
+$opacity-900-gray900-0: var(--opacity-900-gray900-0);
+$opacity-900-gray900-10: var(--opacity-900-gray900-10);
+$opacity-900-gray900-20: var(--opacity-900-gray900-20);
+$opacity-900-gray900-30: var(--opacity-900-gray900-30);
+$opacity-900-gray900-40: var(--opacity-900-gray900-40);
+$opacity-900-gray900-50: var(--opacity-900-gray900-50);
+$opacity-900-gray900-60: var(--opacity-900-gray900-60);
+$opacity-900-gray900-70: var(--opacity-900-gray900-70);
+$opacity-900-gray900-80: var(--opacity-900-gray900-80);
+$opacity-900-gray900-90: var(--opacity-900-gray900-90);
+$opacity-800-gray800-5: var(--opacity-800-gray800-5);
+$opacity-800-gray800-10: var(--opacity-800-gray800-10);
+$opacity-800-gray800-20: var(--opacity-800-gray800-20);
+$opacity-800-gray800-30: var(--opacity-800-gray800-30);
+$opacity-800-gray800-40: var(--opacity-800-gray800-40);
+$opacity-800-gray800-50: var(--opacity-800-gray800-50);
+$opacity-800-gray800-60: var(--opacity-800-gray800-60);
+$opacity-800-gray800-70: var(--opacity-800-gray800-70);
+$opacity-800-gray800-80: var(--opacity-800-gray800-80);
+$opacity-800-gray800-90: var(--opacity-800-gray800-90);
+$opacity-950-gray950-0: var(--opacity-950-gray950-0);
+$opacity-black-80: var(--opacity-black-80);
+$opacity-950-gray950-10: var(--opacity-950-gray950-10);
+$opacity-950-gray950-20: var(--opacity-950-gray950-20);
+$opacity-950-gray950-30: var(--opacity-950-gray950-30);
+$opacity-950-gray950-40: var(--opacity-950-gray950-40);
+$opacity-950-gray950-50: var(--opacity-950-gray950-50);
+$opacity-950-gray950-60: var(--opacity-950-gray950-60);
+$opacity-950-gray950-70: var(--opacity-950-gray950-70);
+$opacity-950-gray950-80: var(--opacity-950-gray950-80);
+$opacity-950-gray950-90: var(--opacity-950-gray950-90);
+
+// People Palette
+$palette-new-people-skin-0: var(--palette-new-people-skin-0);
+$palette-new-people-hair-0: var(--palette-new-people-hair-0);
+$palette-new-people-hair-1: var(--palette-new-people-hair-1);
+$palette-new-people-hair-2: var(--palette-new-people-hair-2);
+$palette-new-people-hair-3: var(--palette-new-people-hair-3);
+$palette-new-people-hair-4: var(--palette-new-people-hair-4);
+$palette-new-people-skin-1: var(--palette-new-people-skin-1);
+$palette-new-people-skin-2: var(--palette-new-people-skin-2);
+$palette-new-people-skin-3: var(--palette-new-people-skin-3);
+$palette-new-people-skin-4: var(--palette-new-people-skin-4);
+
+// Spacing
+$spacing-none: var(--spacing-none);
+$spacing-xs: var(--spacing-xs);
+$spacing-sm: var(--spacing-sm);
+$spacing-md: var(--spacing-md);
+$spacing-lg: var(--spacing-lg);
+$spacing-xl: var(--spacing-xl);
+$spacing-2xl: var(--spacing-2xl);
+$spacing-3xl: var(--spacing-3xl);
+$spacing-4xl: var(--spacing-4xl);
+$spacing-5xl: var(--spacing-5xl);
+$spacing-6xl: var(--spacing-6xl);
+$spacing-7xl: var(--spacing-7xl);
+$spacing-container-padding-mobile: var(--spacing-container-padding-mobile);
+
+// Border Radius
+$radius-none: var(--radius-none);
+$radius-xxs: var(--radius-xxs);
+$radius-xs: var(--radius-xs);
+$radius-sm: var(--radius-sm);
+$radius-md: var(--radius-md);
+$radius-lg: var(--radius-lg);
+$radius-xl: var(--radius-xl);
+$radius-2xl: var(--radius-2xl);
+$radius-full: var(--radius-full);
+
+// Text Colors (Light Theme)
+$text-primary: var(--text-primary);
+$text-primary-same: var(--text-primary-same);
+$text-secondary: var(--text-secondary);
+$text-tertiary: var(--text-tertiary);
+$text-quaternary: var(--text-quaternary);
+$text-disabled-same: var(--text-disabled-same);
+$text-placeholder-same: var(--text-placeholder-same);
+$text-brand: var(--text-brand);
+$text-brand-disabled-alt: var(--text-brand-disabled-alt);
+$text-brand-disabled: var(--text-brand-disabled);
+$text-ondark-primary: var(--text-ondark-primary);
+$text-ondark-primary-same: var(--text-ondark-primary-same);
+$text-ondark-secondary-same: var(--text-ondark-secondary-same);
+$text-ondark-brand-same: var(--text-ondark-brand-same);
+$text-negative-same: var(--text-negative-same);
+$text-negative-alt: var(--text-negative-alt);
+$text-new-same: var(--text-new-same);
+$text-decrease: var(--text-decrease);
+$text-increase-same: var(--text-increase-same);
+$text-steady: var(--text-steady);
+
+// Foreground Colors
+$fg-primary: var(--fg-primary);
+$fg-secondary: var(--fg-secondary);
+$fg-tertiary: var(--fg-tertiary);
+$fg-quaternary: var(--fg-quaternary);
+$fg-disabled: var(--fg-disabled);
+$fg-brand-same: var(--fg-brand-same);
+$fg-brand-disabled: var(--fg-brand-disabled);
+$fg-ondark-primary-same: var(--fg-ondark-primary-same);
+$fg-ondark-disabled: var(--fg-ondark-disabled);
+$fg-success-same: var(--fg-success-same);
+$fg-negative-same: var(--fg-negative-same);
+$fg-notice-same: var(--fg-notice-same);
+$fg-informative: var(--fg-informative);
+$fg-increase-same: var(--fg-increase-same);
+$fg-steady: var(--fg-steady);
+$fg-decrease: var(--fg-decrease);
+
+// Border Colors
+$border-primary: var(--border-primary);
+$border-primary-strong-same: var(--border-primary-strong-same);
+$border-primary-heavy: var(--border-primary-heavy);
+$border-secondary: var(--border-secondary);
+$border-tertiary: var(--border-tertiary);
+$border-disabled: var(--border-disabled);
+$border-brand: var(--border-brand);
+$border-brand-disabled: var(--border-brand-disabled);
+$border-decrease: var(--border-decrease);
+$border-negative-same: var(--border-negative-same);
+$border-increase-same: var(--border-increase-same);
+
+// Background Colors
+$bg-canvas-white: var(--bg-canvas-white);
+$bg-canvas-white-elevated: var(--bg-canvas-white-elevated);
+$bg-white: var(--bg-white);
+$bg-white-elevated: var(--bg-white-elevated);
+$bg-canvas-gray-light: var(--bg-canvas-gray-light);
+$bg-canvas-gray: var(--bg-canvas-gray);
+$bg-graylight: var(--bg-graylight);
+$bg-gray: var(--bg-gray);
+$bg-ongray-graylight-a5: var(--bg-ongray-graylight-a5);
+$bg-ongray-gray-a10: var(--bg-ongray-gray-a10);
+$bg-gray-strong-same: var(--bg-gray-strong-same);
+$bg-disabled: var(--bg-disabled);
+$bg-brand: var(--bg-brand);
+$bg-brand-selected-disabled: var(--bg-brand-selected-disabled);
+$bg-brand-strong-same: var(--bg-brand-strong-same);
+$bg-dark: var(--bg-dark);
+$bg-dark-a90-same: var(--bg-dark-a90-same);
+$bg-canvas-dark-a60: var(--bg-canvas-dark-a60);
+$bg-success: var(--bg-success);
+$bg-notice: var(--bg-notice);
+$bg-negative: var(--bg-negative);
+$bg-decrease: var(--bg-decrease);
+$bg-increase: var(--bg-increase);
+$bg-new: var(--bg-new);
+$bg-new-strong-same: var(--bg-new-strong-same);
+$bg-dark-a20: var(--bg-dark-a20);
+$bg-dark-a10: var(--bg-dark-a10);
+$bg-canvas-white-a0: var(--bg-canvas-white-a0);
+$bg-canvas-white-a0-elevated: var(--bg-canvas-white-a0-elevated);
+$bg-canvas-white-a30-elevated: var(--bg-canvas-white-a30-elevated);
+$bg-canvas-white-a70-elevated: var(--bg-canvas-white-a70-elevated);
+
+$font-size-headline-l: var(--font-size-headline-l);
+$font-size-title-xl: var(--font-size-title-xl);
+$font-size-title-l: var(--font-size-title-l);
+$font-size-title-m: var(--font-size-title-m);
+$font-size-title-s: var(--font-size-title-s);
+$font-size-headline-m: var(--font-size-headline-m);
+$font-size-headline-s: var(--font-size-headline-s);
+$font-size-body-l: var(--font-size-body-l);
+$font-size-body-m: var(--font-size-body-m);
+$font-size-body-s: var(--font-size-body-s);
+$font-size-detail-l: var(--font-size-detail-l);
+$font-size-detail-s: var(--font-size-detail-s);
+$font-weight-eb: var(--font-weight-eb);
+$font-weight-b: var(--font-weight-b);
+$font-weight-sb-b: var(--font-weight-sb-b);
+$font-weight-sb-m: var(--font-weight-sb-m);
+$font-weight-m-m: var(--font-weight-m-m);
+$font-weight-m-l: var(--font-weight-m-l);
+$font-weight-r: var(--font-weight-r);
+$letterspace-headline-l: var(--letterspace-headline-l);
+$letterspace-title-xl: var(--letterspace-title-xl);
+$letterspace-body-l: var(--letterspace-body-l);
+$letterspace-detail-l: var(--letterspace-detail-l);
+$letterspace-num-headline-l: var(--letterspace-num-headline-l);
+$letterspace-num-headline-m: var(--letterspace-num-headline-m);
+$letterspace-num-headline-s: var(--letterspace-num-headline-s);
+$letterspace-num-title-xl: var(--letterspace-num-title-xl);
+$letterspace-num-title-l: var(--letterspace-num-title-l);
+$letterspace-num-title-m: var(--letterspace-num-title-m);
+$letterspace-num-title-s: var(--letterspace-num-title-s);
+$letterspace-num-body-l: var(--letterspace-num-body-l);
+$letterspace-num-body-m: var(--letterspace-num-body-m);
+$letterspace-num-body-s: var(--letterspace-num-body-s);
+$letterspace-num-detail-l: var(--letterspace-num-detail-l);
+$letterspace-num-detail-s: var(--letterspace-num-detail-s);
+$letterspace-detail-s: var(--letterspace-detail-s);
+$letterspace-body-m: var(--letterspace-body-m);
+$letterspace-body-s: var(--letterspace-body-s);
+$letterspace-title-l: var(--letterspace-title-l);
+$letterspace-title-m: var(--letterspace-title-m);
+$letterspace-title-s: var(--letterspace-title-s);
+$letterspace-headline-m: var(--letterspace-headline-m);
+$letterspace-headline-s: var(--letterspace-headline-s);
+$lineheight-headline-l: var(--lineheight-headline-l);
+$lineheight-title-xl: var(--lineheight-title-xl);
+$lineheight-title-l: var(--lineheight-title-l);
+$lineheight-title-m: var(--lineheight-title-m);
+$lineheight-title-s: var(--lineheight-title-s);
+$lineheight-headline-m: var(--lineheight-headline-m);
+$lineheight-headline-s: var(--lineheight-headline-s);
+$lineheight-body-l: var(--lineheight-body-l);
+$lineheight-body-m: var(--lineheight-body-m);
+$lineheight-body-s: var(--lineheight-body-s);
+$lineheight-detail-l: var(--lineheight-detail-l);
+$lineheight-detail-s: var(--lineheight-detail-s);
+$font-size-headline-l: var(--font-size-headline-l);
+$font-size-title-xl: var(--font-size-title-xl);
+$font-size-title-l: var(--font-size-title-l);
+$font-size-title-m: var(--font-size-title-m);
+$font-size-title-s: var(--font-size-title-s);
+$font-size-headline-m: var(--font-size-headline-m);
+$font-size-headline-s: var(--font-size-headline-s);
+$font-size-body-l: var(--font-size-body-l);
+$font-size-body-m: var(--font-size-body-m);
+$font-size-body-s: var(--font-size-body-s);
+$font-size-detail-l: var(--font-size-detail-l);
+$font-size-detail-s: var(--font-size-detail-s);
+$font-weight-eb: var(--font-weight-eb);
+$font-weight-b: var(--font-weight-b);
+$font-weight-sb-b: var(--font-weight-sb-b);
+$font-weight-sb-m: var(--font-weight-sb-m);
+$font-weight-m-m: var(--font-weight-m-m);
+$font-weight-m-l: var(--font-weight-m-l);
+$font-weight-r: var(--font-weight-r);
+$letterspace-headline-l: var(--letterspace-headline-l);
+$letterspace-title-xl: var(--letterspace-title-xl);
+$letterspace-body-l: var(--letterspace-body-l);
+$letterspace-detail-l: var(--letterspace-detail-l);
+$letterspace-num-headline-l: var(--letterspace-num-headline-l);
+$letterspace-num-headline-m: var(--letterspace-num-headline-m);
+$letterspace-num-headline-s: var(--letterspace-num-headline-s);
+$letterspace-num-title-xl: var(--letterspace-num-title-xl);
+$letterspace-num-title-l: var(--letterspace-num-title-l);
+$letterspace-num-title-m: var(--letterspace-num-title-m);
+$letterspace-num-title-s: var(--letterspace-num-title-s);
+$letterspace-num-body-l: var(--letterspace-num-body-l);
+$letterspace-num-body-m: var(--letterspace-num-body-m);
+$letterspace-num-body-s: var(--letterspace-num-body-s);
+$letterspace-num-detail-l: var(--letterspace-num-detail-l);
+$letterspace-num-detail-s: var(--letterspace-num-detail-s);
+$letterspace-detail-s: var(--letterspace-detail-s);
+$letterspace-body-m: var(--letterspace-body-m);
+$letterspace-body-s: var(--letterspace-body-s);
+$letterspace-title-l: var(--letterspace-title-l);
+$letterspace-title-m: var(--letterspace-title-m);
+$letterspace-title-s: var(--letterspace-title-s);
+$letterspace-headline-m: var(--letterspace-headline-m);
+$letterspace-headline-s: var(--letterspace-headline-s);
+$lineheight-headline-l: var(--lineheight-headline-l);
+$lineheight-title-xl: var(--lineheight-title-xl);
+$lineheight-title-l: var(--lineheight-title-l);
+$lineheight-title-m: var(--lineheight-title-m);
+$lineheight-title-s: var(--lineheight-title-s);
+$lineheight-headline-m: var(--lineheight-headline-m);
+$lineheight-headline-s: var(--lineheight-headline-s);
+$lineheight-body-l: var(--lineheight-body-l);
+$lineheight-body-m: var(--lineheight-body-m);
+$lineheight-body-s: var(--lineheight-body-s);
+$lineheight-detail-l: var(--lineheight-detail-l);
+$lineheight-detail-s: var(--lineheight-detail-s);
+$test-color-primary: var(--test-color-primary);
+$test-color-secondary: var(--test-color-secondary);
+$test-spacing-small: var(--test-spacing-small);
+$test-spacing-large: var(--test-spacing-large);
+$test-border-radius: var(--test-border-radius);
+$test-font-size: var(--test-font-size);
+$test-shadow: var(--test-shadow);
+
+$brand-new-color-primary: var(--brand-new-color-primary);
+$brand-new-color-secondary: var(--brand-new-color-secondary);
+$brand-new-spacing-small: var(--brand-new-spacing-small);
+$brand-new-spacing-large: var(--brand-new-spacing-large);
+$brand-new-border-radius: var(--brand-new-border-radius);
+$brand-new-font-size: var(--brand-new-font-size);
+$brand-new-shadow: var(--brand-new-shadow);
+

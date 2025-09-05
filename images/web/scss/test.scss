@@ -1,0 +1,76 @@
+// 컴포넌트 스타일 (all.scss에서 변수 사용 가능)
+@import '../tokens/scss/_variables';
+
+// 예시: 변수 사용법
+.example {
+  // 색상 변수 사용 (SCSS 변수 사용)
+  color: $brand-500;
+  background-color: $gray-100;
+  
+  // 폰트 변수 사용
+  font-family: $font-family-pretendard;
+  
+  // 테두리 변수 사용
+  border: 1px solid $gray-200;
+}
+
+// 버튼 컴포넌트 예시
+.button {
+  background-color: $brand-500;
+  color: $white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: $font-family-pretendard;
+  
+  &:hover {
+    background-color: $brand-600;
+  }
+  
+  &:active {
+    background-color: $brand-700;
+  }
+}
+
+// 카드 컴포넌트 예시
+.card {
+  background-color: $white;
+  border: 1px solid $gray-200;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  .card-title {
+    color: $gray-900;
+    font-family: $font-family-pretendard;
+    margin-bottom: 8px;
+  }
+  
+  .card-content {
+    color: $gray-700;
+    font-family: $font-family-pretendard;
+  }
+}
+
+// 새로운 컴포넌트 추가 (watch 테스트용)
+.alert {
+  background-color: $palette-new-red-100;
+  color: $palette-new-red-700;
+  border: 1px solid $palette-new-red-300;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: $font-family-pretendard;
+  margin: 16px 0;
+  
+  &.alert-success {
+    background-color: $palette-new-green-100;
+    color: $palette-new-green-700;
+    border-color: $palette-new-green-300;
+  }
+  
+  &.alert-warning {
+    background-color: $palette-new-yellow-100;
+    color: $palette-new-yellow-700;
+    border-color: $palette-new-yellow-300;
+  }
+}

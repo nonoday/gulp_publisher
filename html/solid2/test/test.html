@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 라이브러리</title>
+    <link rel="stylesheet" href="../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/css/solid2/all.css">
+   
+</head>
+<body>
+    <div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+        <h1>컴포넌트 라이브러리 테스트</h1>
+        
+        <!-- 예시 컴포넌트 -->
+        <div class="example" style="margin: 20px 0; padding: 20px;">
+            <h3>예시 컴포넌트</h3>
+            <p>이것은 tokens.css의 변수들을 사용한 예시 컴포넌트입니다.</p>
+        </div>
+        
+        <!-- 버튼 컴포넌트들 -->
+        <div style="margin: 20px 0;">
+            <h3>버튼 컴포넌트</h3>
+            <button class="button">기본 버튼</button>
+            <button class="button" style="margin-left: 10px;">두 번째 버튼</button>
+        </div>
+        
+        <!-- 카드 컴포넌트들 -->
+        <div style="margin: 20px 0;">
+            <h3>카드 컴포넌트</h3>
+            <div class="card" style="margin-bottom: 16px;">
+                <div class="card-title">카드 제목</div>
+                <div class="card-content">이것은 카드 컴포넌트의 내용입니다. tokens.css의 변수들을 사용하여 스타일이 적용되었습니다.</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">두 번째 카드</div>
+                <div class="card-content">또 다른 카드 컴포넌트입니다. 일관된 디자인 시스템을 사용합니다.</div>
+            </div>
+        </div>
+        
+        <!-- Alert 컴포넌트들 -->
+        <div style="margin: 20px 0;">
+            <h3>Alert 컴포넌트 (실시간 업데이트 테스트)</h3>
+            <div class="alert">
+                기본 Alert 메시지입니다. SCSS 파일을 수정하면 실시간으로 반영됩니다.
+            </div>
+            
+            <div class="alert alert-success">
+                성공 메시지입니다. 초록색으로 표시됩니다.
+            </div>
+            
+            <div class="alert alert-warning">
+                경고 메시지입니다. 노란색으로 표시됩니다.
+            </div>
+        </div>
+        
+        <!-- 모든 컴포넌트 조합 예시 -->
+        <div style="margin: 20px 0;">
+            <h3>모든 컴포넌트 조합 예시</h3>
+            <div class="combined-layout">
+                <div class="example">
+                    <h4>예시 컴포넌트</h4>
+                    <p>이것은 all-components.css에서 모든 컴포넌트를 한 번에 import한 예시입니다.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">카드 제목</div>
+                    <div class="card-content">카드 내용입니다.</div>
+                </div>
+                
+                <button class="button">버튼</button>
+                
+                <div class="alert alert-success">
+                    성공 메시지입니다.
+                </div>
+            </div>
+        </div>
+        
+        <!-- CSS 변수 테스트 -->
+        <div style="margin: 20px 0;">
+            <h3>CSS 변수 직접 사용 테스트</h3>
+            <div style="background-color: var(--brand-100); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                <p style="color: var(--brand-700); font-family: var(--font-family-pretendard);">
+                    브랜드 색상을 직접 사용한 예시입니다.
+                </p>
+            </div>
+            
+            <div style="background-color: var(--gray-50); padding: 16px; border-radius: 8px; border: 1px solid var(--gray-200);">
+                <p style="color: var(--gray-800); font-family: var(--font-family-pretendard);">
+                    그레이 색상 팔레트를 사용한 예시입니다.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
