@@ -65,6 +65,18 @@ images/web/
 └── tokens/                 # 디자인 토큰
     ├── css/                # 토큰 CSS 파일
     └── scss/               # SCSS 변수 파일
+
+html/solid2/page/           # 페이지별 폴더 구조
+├── notification/           # 알림함
+├── mypage/                # 마이페이지
+├── common/                # 공통
+├── inquiry-management/    # 조회/관리
+├── utilities/             # 공과금
+├── products/              # 상품
+├── foreign-exchange/      # 외환
+├── mydata/                # 마이데이터
+├── lifestyle/             # 생활편의
+└── benefits/              # 혜택
 ```
 
 ## 🔧 작업 설명
@@ -114,4 +126,11 @@ images/web/
 - SCSS 파일명은 `_`로 시작하지 않는 파일만 컴파일됩니다
 - `tokens.css` 파일은 `cleanCSS` 작업에서 삭제되지 않습니다
 - 폴더가 없으면 자동으로 생성되므로 수동으로 만들 필요가 없습니다
+
+## 📝 Git 관리
+
+### .gitignore 설정
+- `node_modules/` 폴더는 Git에 추가되지 않습니다
+- `.gitignore` 파일에 필요한 제외 항목들이 설정되어 있습니다
+- 프로젝트를 클론한 후 `npm install`로 의존성을 설치하세요
 
