@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infobox Component</title>
+    <style>
+/* Infobox Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --text-tertiary: #333333;
+  --text-quaternary: #666666;
+  --text-negative-alt: #ffffff;
+  --fg-tertiary: #999999;
+  --fg-quaternary: #999999;
+  --fg-brand-same: #007bff;
+  --bg-notice: #fff3cd;
+  --bg-negative: #dc3545;
+  --bg-success: #d4edda;
+  --bg-ongray-graylight-a5: rgba(245, 245, 245, 0.5);
+  --font-weight-300: 300;
+  --font-weight-500: 500;
+  --font-size-body-m: 14px;
+  --font-size-body-s: 12px;
+  --lineheight-body-m: 1.4;
+  --lineheight-body-s: 1.3;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Infobox Base */
+.infobox {
+  position: relative;
+}
+
+.infobox:is(button) {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-align: left;
+  font-family: inherit;
+}
+
+.infobox__header {
+  display: flex;
+  align-items: center;
+}
+
+.infobox__header > .icon {
+  margin-left: 16px;
+  color: var(--fg-tertiary);
+}
+
+.infobox__header:has(+ .infobox__body) {
+  padding-bottom: var(--spacing-md);
+}
+
+.infobox__header-label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  color: var(--text-tertiary);
+}
+
+.infobox__header-arrow {
+  flex-shrink: 0;
+  margin-left: var(--spacing-md);
+}
+
+.infobox__body {
+  text-align: left;
+  color: var(--text-quaternary);
+}
+
+/* Size variants */
+.infobox--size-large {
+  border-radius: var(--radius-xl);
+}
+
+.infobox--size-large .infobox__header {
+  padding: var(--spacing-xl);
+}
+
+.infobox--size-large .infobox__header-label {
+  gap: var(--spacing-md);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-500);
+  line-height: var(--lineheight-body-m);
+}
+
+.infobox--size-large .infobox__body {
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-m);
+}
+
+.infobox--size-small {
+  border-radius: var(--radius-md);
+}
+
+.infobox--size-small .infobox__header {
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.infobox--size-small .infobox__header-label {
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-s);
+}
+
+.infobox--size-small .infobox__body {
+  padding: 0 var(--spacing-xl) var(--spacing-lg);
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-s);
+}
+
+/* Color variants */
+.infobox--color-notice {
+  background-color: var(--bg-notice);
+}
+
+.infobox--color-error {
+  background-color: var(--bg-negative);
+}
+
+.infobox--color-error .infobox__header-label {
+  color: var(--text-negative-alt);
+}
+
+.infobox--color-success {
+  background-color: var(--bg-success);
+}
+
+.infobox--color-success .infobox__header-label > .icon {
+  color: var(--fg-brand-same);
+}
+
+.infobox--color-info {
+  background-color: var(--bg-ongray-graylight-a5);
+}
+
+.infobox--color-info .infobox__header-label > .icon {
+  color: var(--fg-quaternary);
+}
+
+/* Custom Infobox styles */
+.custom-infobox {
+  position: relative;
+  margin: 16px 0;
+  transition: all 0.2s var(--ease);
+}
+
+.custom-infobox:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.custom-infobox__header {
+  display: flex;
+  align-items: center;
+}
+
+.custom-infobox__header > .icon {
+  margin-left: 16px;
+  color: var(--fg-tertiary);
+  flex-shrink: 0;
+}
+
+.custom-infobox__header:has(+ .custom-infobox__body) {
+  padding-bottom: var(--spacing-md);
+}
+
+.custom-infobox__header-label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  color: var(--text-tertiary);
+}
+
+.custom-infobox__header-arrow {
+  flex-shrink: 0;
+  margin-left: var(--spacing-md);
+  color: var(--fg-tertiary);
+}
+
+.custom-infobox__body {
+  text-align: left;
+  color: var(--text-quaternary);
+}
+
+/* Size variants for custom infobox */
+.custom-infobox--size-large {
+  border-radius: var(--radius-xl);
+}
+
+.custom-infobox--size-large .custom-infobox__header {
+  padding: var(--spacing-xl);
+}
+
+.custom-infobox--size-large .custom-infobox__header-label {
+  gap: var(--spacing-md);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-500);
+  line-height: var(--lineheight-body-m);
+}
+
+.custom-infobox--size-large .custom-infobox__body {
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
+  font-size: var(--font-size-body-m);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-m);
+}
+
+.custom-infobox--size-small {
+  border-radius: var(--radius-md);
+}
+
+.custom-infobox--size-small .custom-infobox__header {
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.custom-infobox--size-small .custom-infobox__header-label {
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-s);
+}
+
+.custom-infobox--size-small .custom-infobox__body {
+  padding: 0 var(--spacing-xl) var(--spacing-lg);
+  font-size: var(--font-size-body-s);
+  font-weight: var(--font-weight-300);
+  line-height: var(--lineheight-body-s);
+}
+
+/* Color variants for custom infobox */
+.custom-infobox--color-notice {
+  background-color: var(--bg-notice);
+}
+
+.custom-infobox--color-error {
+  background-color: var(--bg-negative);
+}
+
+.custom-infobox--color-error .custom-infobox__header-label {
+  color: var(--text-negative-alt);
+}
+
+.custom-infobox--color-success {
+  background-color: var(--bg-success);
+}
+
+.custom-infobox--color-success .custom-infobox__header-label > .icon {
+  color: var(--fg-brand-same);
+}
+
+.custom-infobox--color-info {
+  background-color: var(--bg-ongray-graylight-a5);
+}
+
+.custom-infobox--color-info .custom-infobox__header-label > .icon {
+  color: var(--fg-quaternary);
+}
+
+/* Icon styles */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.icon--size-16 {
+  width: 16px;
+  height: 16px;
+}
+
+.icon--size-20 {
+  width: 20px;
+  height: 20px;
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* Infobox examples */
+.infobox-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.infobox-example {
+  min-width: 300px;
+  flex: 1;
+}
+
+.infobox-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Control buttons */
+.control-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-button {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s var(--ease);
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.control-button:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.control-button--color {
+  background: rgba(0, 123, 255, 0.8);
+  border-color: rgba(0, 123, 255, 0.9);
+}
+
+.control-button--size {
+  background: rgba(16, 185, 129, 0.8);
+  border-color: rgba(16, 185, 129, 0.9);
+}
+
+.control-button--icon {
+  background: rgba(245, 158, 11, 0.8);
+  border-color: rgba(245, 158, 11, 0.9);
+}
+
+.control-button--link {
+  background: rgba(239, 68, 68, 0.8);
+  border-color: rgba(239, 68, 68, 0.9);
+}
+
+.control-button--accordion {
+  background: rgba(139, 92, 246, 0.8);
+  border-color: rgba(139, 92, 246, 0.9);
+}
+
+.control-button--reset {
+  background: rgba(108, 117, 125, 0.8);
+  border-color: rgba(108, 117, 125, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .infobox-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-button {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .infobox-example {
+    min-width: 100%;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Infobox Component</h1>
+        
+        <!-- Basic Infobox -->
+        <div class="demo-section">
+            <h3>Basic Infobox</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Color Variants</span>
+                <div class="infobox-examples">
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Info Color</div>
+                        <div class="custom-infobox custom-infobox--size-large custom-infobox--color-info">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                    </svg>
+                                    정보 알림
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                이것은 정보를 제공하는 인포박스입니다. 사용자에게 중요한 정보를 전달할 때 사용됩니다.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Success Color</div>
+                        <div class="custom-infobox custom-infobox--size-large custom-infobox--color-success">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    성공 메시지
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                작업이 성공적으로 완료되었습니다. 모든 데이터가 정상적으로 처리되었습니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Color Variants -->
+        <div class="demo-section">
+            <h3>Color Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">All Color Types</span>
+                <div class="infobox-examples">
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Notice Color</div>
+                        <div class="custom-infobox custom-infobox--size-large custom-infobox--color-notice">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    주의사항
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                이 작업을 진행하기 전에 주의사항을 확인해주세요.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Error Color</div>
+                        <div class="custom-infobox custom-infobox--size-large custom-infobox--color-error">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    오류 발생
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Size Variants -->
+        <div class="demo-section">
+            <h3>Size Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Sizes</span>
+                <div class="infobox-examples">
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Large Size</div>
+                        <div class="custom-infobox custom-infobox--size-large custom-infobox--color-info">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                    </svg>
+                                    큰 크기 인포박스
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                이것은 큰 크기의 인포박스입니다. 더 많은 내용을 표시할 수 있습니다.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Small Size</div>
+                        <div class="custom-infobox custom-infobox--size-small custom-infobox--color-info">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                    </svg>
+                                    작은 크기
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                작은 크기의 인포박스입니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- With Link Arrow -->
+        <div class="demo-section">
+            <h3>With Link Arrow</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Infobox with Navigation Arrow</span>
+                <div class="infobox-examples">
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Info + Link</div>
+                        <button class="custom-infobox custom-infobox--size-large custom-infobox--color-info">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                    </svg>
+                                    자세히 보기
+                                </div>
+                                <svg class="custom-infobox__header-arrow icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="custom-infobox__body">
+                                클릭하면 더 자세한 정보를 볼 수 있습니다.
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Success + Link</div>
+                        <button class="custom-infobox custom-infobox--size-large custom-infobox--color-success">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    완료 확인
+                                </div>
+                                <svg class="custom-infobox__header-arrow icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="custom-infobox__body">
+                                작업 완료 상태를 확인하려면 클릭하세요.
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Without Icon -->
+        <div class="demo-section">
+            <h3>Without Icon</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Infobox without Icon</span>
+                <div class="infobox-examples">
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">No Icon</div>
+                        <div class="custom-infobox custom-infobox--size-large custom-infobox--color-info">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    아이콘 없는 인포박스
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                아이콘 없이도 깔끔하게 정보를 표시할 수 있습니다.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">No Icon + Link</div>
+                        <button class="custom-infobox custom-infobox--size-large custom-infobox--color-success">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    아이콘 없는 링크
+                                </div>
+                                <svg class="custom-infobox__header-arrow icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="custom-infobox__body">
+                                아이콘 없이도 링크 기능을 사용할 수 있습니다.
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">실시간으로 Infobox 상태 변경</span>
+                
+                <div class="control-buttons">
+                    <button class="control-button control-button--color" onclick="toggleColor()">색상 변경</button>
+                    <button class="control-button control-button--size" onclick="toggleSize()">크기 변경</button>
+                    <button class="control-button control-button--icon" onclick="toggleIcon()">아이콘 토글</button>
+                    <button class="control-button control-button--link" onclick="toggleLink()">링크 토글</button>
+                    <button class="control-button control-button--reset" onclick="resetInfobox()">초기화</button>
+                </div>
+                
+                <div id="demoInfobox" class="custom-infobox custom-infobox--size-large custom-infobox--color-info">
+                    <div class="custom-infobox__header">
+                        <div class="custom-infobox__header-label">
+                            <svg id="demoIcon" class="icon icon--size-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                            </svg>
+                            인터랙티브 인포박스
+                        </div>
+                        <svg id="demoArrow" class="custom-infobox__header-arrow icon icon--size-20" style="display: none;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="custom-infobox__body">
+                        실시간으로 인포박스의 속성을 변경할 수 있습니다. 위의 버튼들을 클릭해보세요!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Combined Examples -->
+        <div class="demo-section">
+            <h3>Combined Examples</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">복합 상태 조합</span>
+                <div class="infobox-examples">
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Small + Error + Link</div>
+                        <button class="custom-infobox custom-infobox--size-small custom-infobox--color-error">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    <svg class="icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    작은 오류
+                                </div>
+                                <svg class="custom-infobox__header-arrow icon icon--size-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="custom-infobox__body">
+                                작은 크기의 오류 인포박스입니다.
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="infobox-example">
+                        <div class="infobox-example-label">Large + Notice + No Icon</div>
+                        <div class="custom-infobox custom-infobox--size-large custom-infobox--color-notice">
+                            <div class="custom-infobox__header">
+                                <div class="custom-infobox__header-label">
+                                    큰 주의사항
+                                </div>
+                            </div>
+                            <div class="custom-infobox__body">
+                                아이콘 없이 큰 크기로 주의사항을 표시하는 인포박스입니다. 중요한 정보를 강조할 때 사용됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데모 인포박스 상태 변수
+        let currentColor = 'info';
+        let currentSize = 'large';
+        let showIcon = true;
+        let showLink = false;
+        
+        // DOM 요소
+        const demoInfobox = document.getElementById('demoInfobox');
+        const demoIcon = document.getElementById('demoIcon');
+        const demoArrow = document.getElementById('demoArrow');
+        
+        // 색상 변경 함수
+        function toggleColor() {
+            const colors = ['info', 'success', 'notice', 'error'];
+            const currentIndex = colors.indexOf(currentColor);
+            currentColor = colors[(currentIndex + 1) % colors.length];
+            updateInfobox();
+        }
+        
+        // 크기 변경 함수
+        function toggleSize() {
+            currentSize = currentSize === 'large' ? 'small' : 'large';
+            updateInfobox();
+        }
+        
+        // 아이콘 토글 함수
+        function toggleIcon() {
+            showIcon = !showIcon;
+            updateInfobox();
+        }
+        
+        // 링크 토글 함수
+        function toggleLink() {
+            showLink = !showLink;
+            updateInfobox();
+        }
+        
+        // 인포박스 초기화 함수
+        function resetInfobox() {
+            currentColor = 'info';
+            currentSize = 'large';
+            showIcon = true;
+            showLink = false;
+            updateInfobox();
+        }
+        
+        // 인포박스 상태 업데이트 함수
+        function updateInfobox() {
+            // 기존 클래스 제거
+            demoInfobox.className = 'custom-infobox';
+            
+            // 새로운 클래스 추가
+            demoInfobox.classList.add(`custom-infobox--size-${currentSize}`);
+            demoInfobox.classList.add(`custom-infobox--color-${currentColor}`);
+            
+            // 아이콘 표시/숨김
+            if (showIcon) {
+                demoIcon.style.display = 'inline-block';
+                // 색상에 따른 아이콘 변경
+                if (currentColor === 'notice') {
+                    demoIcon.innerHTML = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+                } else if (currentColor === 'error') {
+                    demoIcon.innerHTML = '<path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>';
+                } else if (currentColor === 'success') {
+                    demoIcon.innerHTML = '<path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>';
+                } else {
+                    demoIcon.innerHTML = '<path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>';
+                }
+            } else {
+                demoIcon.style.display = 'none';
+            }
+            
+            // 링크 화살표 표시/숨김
+            if (showLink) {
+                demoArrow.style.display = 'inline-block';
+            } else {
+                demoArrow.style.display = 'none';
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Infobox 컴포넌트가 로드되었습니다.');
+            updateInfobox();
+        });
+    </script>
+</body>
+</html>
