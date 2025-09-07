@@ -1,6 +1,166 @@
 // 컴포넌트 스타일 (all.scss에서 변수 사용 가능)
 @use '../tokens/scss/variables' as *;
 
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  font-family: "OneShinhan";
+  vertical-align: baseline;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  box-sizing: border-box;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+img, fieldset {
+  border: 0;
+}
+
+em, address {
+  font-style: normal;
+}
+
+html,
+body {
+  height: 100%;
+  background: #fff;
+}
+
+textarea,
+button,
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+body,
+button {
+  font-size: var(--t6-font-size);
+  line-height: var(--t6-line-height);
+  letter-spacing: -0.5px;
+  font-family: "OneShinhan", AppleSDGothic, "Apple SD Gothic Neo", sans-serif;
+  word-wrap: break-word;
+  word-break: break-all;
+  color: #121619;
+}
+
+strong {
+  font-weight: 700;
+}
+
+
+
+/* 자동완성 스타일 변경 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  border-radius: 12px;
+}
+
+/* 이미지 저장, 텍스트 선택 방지 */
+body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none !important;
+  -moz-user-select: -moz-none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+
+/*img {pointer-events: none;} 접근성 수정*/
+/*
+* layout
+*/
+html {
+  --safeAreaInsetTop: constant(safe-area-inset-top);
+  --safeAreaInsetTop: env(safe-area-inset-top);
+  --safeAreaInsetBottom: constant(safe-area-inset-bottom);
+  --safeAreaInsetBottom: env(safe-area-inset-bottom);
+  --containerPaddingBottom: 40px;
+  --stickyBottomMargin: 16px;
+}
+:focus {
+  outline: 2px solid var(--brand-500, #005df9);
+}
+body.is-hold {
+  overflow: hidden;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.blind {
+  display: block;
+  margin: 0;
+  position: absolute;
+  z-index: -1;
+  width: 1px;
+  height: 1px;
+  font-size: 1px;
+  line-height: 1px;
+  color: transparent;
+  border: none;
+  padding: 0;
+  overflow: hidden;
+  background: none;
+}
+
 .wrap {
   padding: 20px;
 }
