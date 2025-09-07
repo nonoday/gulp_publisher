@@ -36,3 +36,23 @@
   color: var(--gray-700);
   font-family: var(--font-family-pretendard);
 }
+
+.alert {
+  background-color: var(--palette-new-red-100);
+  color: var(--palette-new-red-700);
+  border: 1px solid var(--palette-new-red-300);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: var(--font-family-pretendard);
+  margin: 16px 0;
+}
+.alert.alert-success {
+  background-color: var(--palette-new-green-100);
+  color: var(--palette-new-green-700);
+  border-color: var(--palette-new-green-300);
+}
+.alert.alert-warning {
+  background-color: var(--palette-new-yellow-100);
+  color: var(--palette-new-yellow-700);
+  border-color: var(--palette-new-yellow-300);
+}

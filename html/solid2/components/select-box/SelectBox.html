@@ -381,15 +381,15 @@
             getIndicatorIconName() {
                 if (this._selected) {
                     if (this._disabled) {
-                        return 'check-checked-disabled';
+                        return 'check_checked_disabled';
                     } else {
-                        return 'check-checked';
+                        return 'check_checked';
                     }
                 } else {
                     if (this._disabled) {
-                        return 'check-unchecked-disabled';
+                        return 'check_unchecked_disabled';
                     } else {
-                        return 'check-unchecked';
+                        return 'check_unchecked';
                     }
                 }
             }
@@ -397,10 +397,10 @@
             getIconEmoji(iconName) {
                 // 아이콘 이름을 이모지로 변환 (실제 구현에서는 SVG나 아이콘 폰트 사용)
                 const iconMap = {
-                    'check-checked': '✓',
-                    'check-unchecked': '○',
-                    'check-checked-disabled': '✓',
-                    'check-unchecked-disabled': '○'
+                    'check_checked': '✓',
+                    'check_unchecked': '○',
+                    'check_checked_disabled': '✓',
+                    'check_unchecked_disabled': '○'
                 };
                 return iconMap[iconName] || '●';
             }
