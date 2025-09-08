@@ -136,3 +136,4 @@ html/solid2/page/           # 페이지별 폴더 구조
 - `node_modules/` 폴더는 Git에 추가되지 않습니다
 - `.gitignore` 파일에 필요한 제외 항목들이 설정되어 있습니다
 
+

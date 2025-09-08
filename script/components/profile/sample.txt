@@ -1,0 +1,24 @@
+Profile 컴포넌트 사용법
+
+1. HTML에서 컴포넌트 사용:
+<profile-component count="2" use-button="true" edit="true" alert="5" dot="true"></profile-component>
+
+2. 속성 설명:
+- count: 아바타 개수 (1-4)
+- use-button: 버튼으로 사용할지 여부 (true/false)
+- edit: 편집 버튼 표시 여부 (true/false)
+- alert: 알림 숫자 표시 (숫자 또는 null)
+- dot: 점 표시 여부 (true/false)
+- edit-label: 편집 버튼 라벨 (기본값: "편집")
+- alert-label: 알림 라벨 (기본값: "알림")
+- dot-label: 점 라벨 (기본값: "새알림")
+
+3. 이벤트:
+- profile-click: 프로필 클릭 시 발생
+- profile-edit-click: 편집 버튼 클릭 시 발생
+
+4. JavaScript로 제어:
+const profile = document.querySelector('profile-component');
+profile.count = 3;
+profile.alert = '10';
+profile.edit = true;

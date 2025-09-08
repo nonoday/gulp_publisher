@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast Component</title>
+    <style>
+/* Toast Component Styles */
+:root {
+  --spacing-none: 0px;
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 40px;
+  --spacing-6xl: 48px;
+  --spacing-7xl: 80px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --bg-white-elevated: #ffffff;
+  --bg-dark-a90-same: rgba(51, 51, 51, 0.9);
+  --text-primary: #333333;
+  --text-ondark-primary-same: #ffffff;
+  --font-weight-m-m: 500;
+  --font-size-body-m: 14px;
+  --lineheight-body-m: 1.4;
+  --letterspace-body-m: -0.01em;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Toast Base */
+.toast {
+  max-width: 100%;
+  min-width: 280px;
+  border-radius: var(--radius-2xl);
+  font-weight: var(--font-weight-m-m);
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+  letter-spacing: var(--letterspace-body-m);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+
+.toast:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Color variants */
+.toast--color-light {
+  background: var(--bg-white-elevated);
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px 0 rgba(12, 17, 29, 0.1);
+}
+
+.toast--color-dark {
+  background-color: var(--bg-dark-a90-same);
+  color: var(--text-ondark-primary-same);
+}
+
+/* Content container */
+.toast__content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+/* Icon */
+.toast__icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Text */
+.toast__text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Type variants */
+.toast--type-success {
+  border-left: 4px solid #10b981;
+}
+
+.toast--type-success .toast__icon {
+  color: #10b981;
+}
+
+.toast--type-error {
+  border-left: 4px solid #ef4444;
+}
+
+.toast--type-error .toast__icon {
+  color: #ef4444;
+}
+
+.toast--type-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.toast--type-warning .toast__icon {
+  color: #f59e0b;
+}
+
+.toast--type-info {
+  border-left: 4px solid #3b82f6;
+}
+
+.toast--type-info .toast__icon {
+  color: #3b82f6;
+}
+
+/* Toast Container */
+.toast-container {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  max-width: 400px;
+  pointer-events: none;
+}
+
+.toast-container__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+}
+
+.toast-container--top {
+  top: 0;
+}
+
+.toast-container--top .toast-container__list {
+  padding-top: var(--spacing-3xl);
+}
+
+.toast-container--bottom {
+  bottom: 0;
+}
+
+.toast-container--bottom .toast-container__list {
+  padding-bottom: var(--spacing-3xl);
+}
+
+/* Custom toast styles */
+.custom-toast {
+  max-width: 100%;
+  min-width: 280px;
+  border-radius: var(--radius-2xl);
+  font-weight: var(--font-weight-m-m);
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+  letter-spacing: var(--letterspace-body-m);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  margin: 10px 0;
+}
+
+.custom-toast:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.custom-toast--color-light {
+  background: var(--bg-white-elevated);
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px 0 rgba(12, 17, 29, 0.1);
+}
+
+.custom-toast--color-dark {
+  background-color: var(--bg-dark-a90-same);
+  color: var(--text-ondark-primary-same);
+}
+
+.custom-toast__content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.custom-toast__icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.custom-toast__text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.custom-toast--type-success {
+  border-left: 4px solid #10b981;
+}
+
+.custom-toast--type-success .custom-toast__icon {
+  color: #10b981;
+}
+
+.custom-toast--type-error {
+  border-left: 4px solid #ef4444;
+}
+
+.custom-toast--type-error .custom-toast__icon {
+  color: #ef4444;
+}
+
+.custom-toast--type-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.custom-toast--type-warning .custom-toast__icon {
+  color: #f59e0b;
+}
+
+.custom-toast--type-info {
+  border-left: 4px solid #3b82f6;
+}
+
+.custom-toast--type-info .custom-toast__icon {
+  color: #3b82f6;
+}
+
+/* Icon styles */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.icon--size-20 {
+  width: 20px;
+  height: 20px;
+}
+
+/* Demo container styles */
+.demo-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.demo-section {
+  margin-bottom: 30px;
+}
+
+.demo-section h3 {
+  margin-bottom: 15px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demo-row {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.demo-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* Toast examples */
+.toast-examples {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.toast-example {
+  min-width: 300px;
+}
+
+.toast-example-label {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Interactive demo */
+.interactive-demo {
+  position: relative;
+  min-height: 200px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.interactive-demo .custom-toast {
+  margin: 0 auto;
+}
+
+/* Control buttons */
+.control-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-button {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s var(--ease);
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.control-button:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.control-button--success {
+  background: rgba(16, 185, 129, 0.8);
+  border-color: rgba(16, 185, 129, 0.9);
+}
+
+.control-button--error {
+  background: rgba(239, 68, 68, 0.8);
+  border-color: rgba(239, 68, 68, 0.9);
+}
+
+.control-button--warning {
+  background: rgba(245, 158, 11, 0.8);
+  border-color: rgba(245, 158, 11, 0.9);
+}
+
+.control-button--info {
+  background: rgba(59, 130, 246, 0.8);
+  border-color: rgba(59, 130, 246, 0.9);
+}
+
+.control-button--light {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.control-button--dark {
+  background: rgba(51, 51, 51, 0.9);
+  border-color: rgba(51, 51, 51, 1);
+}
+
+/* Toast container for demo */
+.demo-toast-container {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  max-width: 400px;
+  pointer-events: none;
+}
+
+.demo-toast-container--top {
+  top: 20px;
+}
+
+.demo-toast-container--bottom {
+  bottom: 20px;
+}
+
+.demo-toast-container__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+}
+
+/* Toast animations */
+.toast-enter-active {
+  transition: all 0.5s cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+.toast-leave-active {
+  transition: all 0.2s cubic-bezier(0.3, 0, 0.8, 0.15);
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.toast-enter-to,
+.toast-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .toast-examples {
+    gap: 15px;
+  }
+  
+  .demo-row {
+    padding: 15px;
+  }
+  
+  .custom-toast {
+    min-width: 250px;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Toast Component</h1>
+        
+        <!-- Basic Toast -->
+        <div class="demo-section">
+            <h3>Basic Toast</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Type Variants</span>
+                <div class="toast-examples">
+                    <div class="toast-example">
+                        <div class="toast-example-label">Info Toast</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-info">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                </svg>
+                                <span class="custom-toast__text">정보 메시지입니다</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">Success Toast</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-success">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span class="custom-toast__text">성공적으로 처리되었습니다</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">Warning Toast</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-warning">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="custom-toast__text">주의가 필요한 메시지입니다</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">Error Toast</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-error">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="custom-toast__text">오류가 발생했습니다</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Color Variants -->
+        <div class="demo-section">
+            <h3>Color Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Different Colors</span>
+                <div class="toast-examples">
+                    <div class="toast-example">
+                        <div class="toast-example-label">Dark Color</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-info">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                </svg>
+                                <span class="custom-toast__text">다크 테마 토스트</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">Light Color</div>
+                        <div class="custom-toast custom-toast--color-light custom-toast--type-success">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span class="custom-toast__text">라이트 테마 토스트</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Combined Variants -->
+        <div class="demo-section">
+            <h3>Combined Variants</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">Type + Color Combinations</span>
+                <div class="toast-examples">
+                    <div class="toast-example">
+                        <div class="toast-example-label">Success + Light</div>
+                        <div class="custom-toast custom-toast--color-light custom-toast--type-success">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span class="custom-toast__text">성공 + 라이트 테마</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">Error + Dark</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-error">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="custom-toast__text">에러 + 다크 테마</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">Warning + Light</div>
+                        <div class="custom-toast custom-toast--color-light custom-toast--type-warning">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="custom-toast__text">경고 + 라이트 테마</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">Info + Dark</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-info">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                </svg>
+                                <span class="custom-toast__text">정보 + 다크 테마</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <h3>Interactive Demo</h3>
+            
+            <div class="demo-row interactive-demo">
+                <span class="demo-label">실시간으로 Toast 생성 및 제어</span>
+                
+                <div class="control-buttons">
+                    <button class="control-button control-button--info" onclick="showToast('info', 'dark')">Info Toast</button>
+                    <button class="control-button control-button--success" onclick="showToast('success', 'dark')">Success Toast</button>
+                    <button class="control-button control-button--warning" onclick="showToast('warning', 'dark')">Warning Toast</button>
+                    <button class="control-button control-button--error" onclick="showToast('error', 'dark')">Error Toast</button>
+                </div>
+                
+                <div class="control-buttons" style="margin-top: 15px;">
+                    <button class="control-button control-button--light" onclick="showToast('info', 'light')">Light Theme</button>
+                    <button class="control-button control-button--dark" onclick="showToast('info', 'dark')">Dark Theme</button>
+                </div>
+                
+                <div class="control-buttons" style="margin-top: 15px;">
+                    <button class="control-button control-button--secondary" onclick="showToastAtPosition('info', 'dark', 'top')">Top Position</button>
+                    <button class="control-button control-button--secondary" onclick="showToastAtPosition('info', 'dark', 'bottom')">Bottom Position</button>
+                </div>
+                
+                <div class="control-buttons" style="margin-top: 15px;">
+                    <button class="control-button control-button--secondary" onclick="clearAllToasts()">모든 Toast 제거</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast Examples -->
+        <div class="demo-section">
+            <h3>Toast Examples</h3>
+            
+            <div class="demo-row">
+                <span class="demo-label">다양한 메시지 예시</span>
+                <div class="toast-examples">
+                    <div class="toast-example">
+                        <div class="toast-example-label">긴 메시지</div>
+                        <div class="custom-toast custom-toast--color-dark custom-toast--type-info">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>
+                                </svg>
+                                <span class="custom-toast__text">매우 긴 메시지가 포함된 토스트입니다. 이 텍스트는 자동으로 줄바꿈됩니다.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toast-example">
+                        <div class="toast-example-label">짧은 메시지</div>
+                        <div class="custom-toast custom-toast--color-light custom-toast--type-success">
+                            <div class="custom-toast__content">
+                                <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span class="custom-toast__text">완료</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container for Demo -->
+    <div class="demo-toast-container demo-toast-container--top" id="topToastContainer">
+        <div class="demo-toast-container__list" id="topToastList"></div>
+    </div>
+    
+    <div class="demo-toast-container demo-toast-container--bottom" id="bottomToastContainer">
+        <div class="demo-toast-container__list" id="bottomToastList"></div>
+    </div>
+
+    <script>
+        // Toast 생성 함수
+        function createToast(type, color, text, position = 'bottom') {
+            const toast = document.createElement('div');
+            toast.className = `custom-toast custom-toast--color-${color} custom-toast--type-${type}`;
+            
+            // 아이콘 설정
+            let iconSvg = '';
+            switch(type) {
+                case 'info':
+                    iconSvg = '<path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="currentColor"/>';
+                    break;
+                case 'success':
+                    iconSvg = '<path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>';
+                    break;
+                case 'warning':
+                case 'error':
+                    iconSvg = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+                    break;
+            }
+            
+            toast.innerHTML = `
+                <div class="custom-toast__content">
+                    <svg class="custom-toast__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        ${iconSvg}
+                    </svg>
+                    <span class="custom-toast__text">${text}</span>
+                </div>
+            `;
+            
+            // 클릭 시 제거
+            toast.addEventListener('click', function() {
+                removeToast(toast);
+            });
+            
+            // 자동 제거 타이머
+            setTimeout(() => {
+                removeToast(toast);
+            }, 3000);
+            
+            return toast;
+        }
+        
+        // Toast 표시 함수
+        function showToast(type, color) {
+            const text = getToastText(type);
+            const toast = createToast(type, color, text, 'bottom');
+            
+            const container = document.getElementById('bottomToastList');
+            container.appendChild(toast);
+            
+            // 애니메이션 효과
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.5s cubic-bezier(0.05, 0.7, 0.1, 1)';
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            }, 10);
+        }
+        
+        // 특정 위치에 Toast 표시
+        function showToastAtPosition(type, color, position) {
+            const text = getToastText(type);
+            const toast = createToast(type, color, text, position);
+            
+            const container = document.getElementById(position === 'top' ? 'topToastList' : 'bottomToastList');
+            container.appendChild(toast);
+            
+            // 애니메이션 효과
+            toast.style.opacity = '0';
+            toast.style.transform = position === 'top' ? 'translateY(-30px)' : 'translateY(30px)';
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.5s cubic-bezier(0.05, 0.7, 0.1, 1)';
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            }, 10);
+        }
+        
+        // Toast 제거 함수
+        function removeToast(toast) {
+            if (toast.parentNode) {
+                toast.style.transition = 'all 0.2s cubic-bezier(0.3, 0, 0.8, 0.15)';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 200);
+            }
+        }
+        
+        // 모든 Toast 제거
+        function clearAllToasts() {
+            const topList = document.getElementById('topToastList');
+            const bottomList = document.getElementById('bottomToastList');
+            
+            topList.innerHTML = '';
+            bottomList.innerHTML = '';
+        }
+        
+        // Toast 타입별 텍스트
+        function getToastText(type) {
+            switch(type) {
+                case 'info':
+                    return '정보 메시지입니다';
+                case 'success':
+                    return '성공적으로 처리되었습니다';
+                case 'warning':
+                    return '주의가 필요한 메시지입니다';
+                case 'error':
+                    return '오류가 발생했습니다';
+                default:
+                    return '토스트 메시지입니다';
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Toast 컴포넌트가 로드되었습니다.');
+        });
+    </script>
+</body>
+</html>
