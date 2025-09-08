@@ -62,10 +62,13 @@ images/web/
 ├── css/solid2/             # 컴파일된 CSS 파일
 │   ├── minify/             # 미니파이된 CSS 파일
 │   └── *.css
-└── tokens/                 # 디자인 토큰
-    ├── css/                # 토큰 CSS 파일
-    └── scss/               # SCSS 변수 파일
-
+├── tokens/                 # 디자인 토큰
+│    ├── css/                # 토큰 CSS 파일
+│    └── scss/               # SCSS 변수 파일
+└── img/                     # 이미지 파일
+    └── solid2/              # 솔리드2.0 이미지 파일
+        └── icons/           # 아이콘 폴더
+  
 html/solid2/page/           # 페이지별 폴더 구조
 ├── notification/           # 알림함
 ├── mypage/                # 마이페이지
@@ -132,5 +135,4 @@ html/solid2/page/           # 페이지별 폴더 구조
 ### .gitignore 설정
 - `node_modules/` 폴더는 Git에 추가되지 않습니다
 - `.gitignore` 파일에 필요한 제외 항목들이 설정되어 있습니다
-- 프로젝트를 클론한 후 `npm install`로 의존성을 설치하세요
 
