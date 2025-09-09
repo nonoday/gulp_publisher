@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solid2.0 컴포넌트 사용자 가이드</title>
+    <link rel="stylesheet" href="../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../images/web/css/solid2/component.css">
+    <style>
+        body {
+            font-family: var(--font-family-pretendard);
+            line-height: 1.6;
+            color: var(--text-primary);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-canvas-gray-light);
+        }
+        .guide-container {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--text-primary);
+            border-bottom: 3px solid var(--border-brand);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: var(--text-brand);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            border-left: 4px solid var(--border-brand);
+            padding-left: 15px;
+        }
+        h3 {
+            color: var(--text-secondary);
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .component-section {
+            margin-bottom: 50px;
+            padding: 20px;
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-md);
+            background: var(--bg-graylight);
+        }
+        .code-block {
+            background: var(--bg-canvas-gray-light);
+            border: 1px solid var(--border-tertiary);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .attribute-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .attribute-table th,
+        .attribute-table td {
+            border: 1px solid var(--border-secondary);
+            padding: 10px;
+            text-align: left;
+        }
+        .attribute-table th {
+            background: var(--bg-gray);
+            font-weight: 600;
+        }
+        .example-demo {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin: 15px 0;
+            border: 1px solid var(--border-tertiary);
+        }
+        .js-file-path {
+            background: var(--bg-brand);
+            color: white;
+            padding: 5px 10px;
+            border-radius: var(--radius-xs);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .required {
+            color: var(--text-negative);
+            font-weight: 600;
+        }
+        .optional {
+            color: var(--text-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <h1>Solid2.0 컴포넌트 사용자 가이드</h1>
+        <p>이 가이드는 Solid2.0 디자인 시스템의 주요 컴포넌트들을 사용하는 방법을 설명합니다.</p>
+
+        <!-- Infobox 컴포넌트 가이드 -->
+        <div class="component-section">
+            <h2>📦 Infobox 컴포넌트</h2>
+            <p>정보, 성공, 오류, 알림 등의 메시지를 표시하는 컴포넌트입니다.</p>
+            
+            <h3>📁 참고 파일</h3>
+            <p><span class="js-file-path">script/modules/info-box/infobox-component.js</span></p>
+            
+            <h3>🔧 사용법</h3>
+            <div class="code-block">
+&lt;infobox-component 
+  type="success" 
+  text="고객님은 면책 대상입니다" 
+  button-text="자세히 보기"
+  button-link="https://example.com"
+  button-target="_blank"
+  show-icon="true"
+  show-button="true"
+  show-content="true"&gt;
+  &lt;div slot="content"&gt;
+    &lt;p&gt;추가 상세 정보가 여기에 표시됩니다.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/infobox-component&gt;
+            </div>
+
+            <h3>⚙️ 속성 옵션</h3>
+            <table class="attribute-table">
+                <thead>
+                    <tr>
+                        <th>속성명</th>
+                        <th>타입</th>
+                        <th>필수</th>
+                        <th>기본값</th>
+                        <th>설명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>type</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>info</td>
+                        <td>인포박스 타입 (success, error, notice, info)</td>
+                    </tr>
+                    <tr>
+                        <td>text</td>
+                        <td>string</td>
+                        <td class="required">필수</td>
+                        <td>-</td>
+                        <td>메인 텍스트 내용</td>
+                    </tr>
+                    <tr>
+                        <td>button-text</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>-</td>
+                        <td>버튼에 표시될 텍스트</td>
+                    </tr>
+                    <tr>
+                        <td>button-link</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>-</td>
+                        <td>버튼 클릭 시 이동할 링크</td>
+                    </tr>
+                    <tr>
+                        <td>button-target</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>_self</td>
+                        <td>링크 열기 방식 (_self, _blank)</td>
+                    </tr>
+                    <tr>
+                        <td>show-icon</td>
+                        <td>boolean</td>
+                        <td class="optional">선택</td>
+                        <td>true</td>
+                        <td>아이콘 표시 여부</td>
+                    </tr>
+                    <tr>
+                        <td>show-button</td>
+                        <td>boolean</td>
+                        <td class="optional">선택</td>
+                        <td>false</td>
+                        <td>버튼 표시 여부</td>
+                    </tr>
+                    <tr>
+                        <td>show-content</td>
+                        <td>boolean</td>
+                        <td class="optional">선택</td>
+                        <td>false</td>
+                        <td>추가 콘텐츠 슬롯 표시 여부</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📝 예시</h3>
+            <div class="example-demo">
+                <infobox-component type="success" text="계좌 연결을 완료하였습니다" show-icon="true"></infobox-component>
+            </div>
+        </div>
+
+        <!-- Navigation 컴포넌트 가이드 -->
+        <div class="component-section">
+            <h2>🧭 Navigation 컴포넌트</h2>
+            <p>페이지 상단의 네비게이션 바를 구성하는 컴포넌트입니다.</p>
+            
+            <h3>📁 참고 파일</h3>
+            <p><span class="js-file-path">script/modules/navigation/navigation-component.js</span></p>
+            
+            <h3>🔧 사용법</h3>
+            <div class="code-block">
+&lt;navigation-component id="mainNavigation"&gt;
+  &lt;!-- Header 슬롯 --&gt;
+  &lt;div slot="header"&gt;
+    &lt;a href="#" class="navigation-header-link"&gt;
+      &lt;img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" /&gt;
+    &lt;/a&gt;
+    &lt;h1 class="navigation-title"&gt;타이틀&lt;/h1&gt;
+  &lt;/div&gt;
+  
+  &lt;!-- Function 슬롯 --&gt;
+  &lt;div slot="function"&gt;
+    &lt;button class="navigation-button" type="button"&gt;
+      &lt;img src="../../../../images/icon/icon_home.svg" alt="홈" /&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/navigation-component&gt;
+            </div>
+
+            <h3>⚙️ 속성 옵션</h3>
+            <table class="attribute-table">
+                <thead>
+                    <tr>
+                        <th>속성명</th>
+                        <th>타입</th>
+                        <th>필수</th>
+                        <th>기본값</th>
+                        <th>설명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>alarm-class</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>-</td>
+                        <td>알림 버튼에 적용할 커스텀 클래스</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🎯 슬롯 설명</h3>
+            <ul>
+                <li><strong>header</strong>: 왼쪽 영역 (뒤로가기 버튼, 타이틀 등)</li>
+                <li><strong>function</strong>: 오른쪽 영역 (기능 버튼들)</li>
+            </ul>
+        </div>
+
+        <!-- Divider 컴포넌트 가이드 -->
+        <div class="component-section">
+            <h2>➖ Divider 컴포넌트</h2>
+            <p>콘텐츠를 구분하는 구분선 컴포넌트입니다.</p>
+            
+            <h3>📁 참고 파일</h3>
+            <p><span class="js-file-path">script/components/dividers/divider-component.js</span></p>
+            
+            <h3>🔧 사용법</h3>
+            <div class="code-block">
+&lt;!-- 기본 구분선 --&gt;
+&lt;divider-component type="basic" orientation="horizontal"&gt;&lt;/divider-component&gt;
+
+&lt;!-- 그룹 구분선 (두꺼운) --&gt;
+&lt;divider-component type="group" orientation="horizontal" color="accent"&gt;&lt;/divider-component&gt;
+
+&lt;!-- 수직 구분선 --&gt;
+&lt;divider-component type="basic" orientation="vertical" color="brand"&gt;&lt;/divider-component&gt;
+            </div>
+
+            <h3>⚙️ 속성 옵션</h3>
+            <table class="attribute-table">
+                <thead>
+                    <tr>
+                        <th>속성명</th>
+                        <th>타입</th>
+                        <th>필수</th>
+                        <th>기본값</th>
+                        <th>설명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>type</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>basic</td>
+                        <td>구분선 타입 (basic: 1px, group: 10px)</td>
+                    </tr>
+                    <tr>
+                        <td>orientation</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>horizontal</td>
+                        <td>구분선 방향 (horizontal, vertical)</td>
+                    </tr>
+                    <tr>
+                        <td>color</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>-</td>
+                        <td>색상 (accent, secondary, tertiary, brand)</td>
+                    </tr>
+                    <tr>
+                        <td>size</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>-</td>
+                        <td>크기 (inset: 여백 있음)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📝 예시</h3>
+            <div class="example-demo">
+                <divider-component type="basic" orientation="horizontal" color="accent"></divider-component>
+                <p>기본 구분선</p>
+                <divider-component type="group" orientation="horizontal" color="secondary"></divider-component>
+                <p>그룹 구분선</p>
+            </div>
+        </div>
+
+        <!-- Button 컴포넌트 가이드 -->
+        <div class="component-section">
+            <h2>🔘 Button 컴포넌트</h2>
+            <p>다양한 스타일과 크기의 버튼 컴포넌트입니다.</p>
+            
+            <h3>📁 참고 파일</h3>
+            <p><span class="js-file-path">script/components/button/solid-button.js</span></p>
+            
+            <h3>🔧 사용법</h3>
+            <div class="code-block">
+&lt;!-- 기본 버튼 --&gt;
+&lt;solid-button label="기본 버튼"&gt;&lt;/solid-button&gt;
+
+&lt;!-- 색상과 스타일 지정 --&gt;
+&lt;solid-button label="Primary" color="primary" variant="solid"&gt;&lt;/solid-button&gt;
+
+&lt;!-- 크기와 아이콘 --&gt;
+&lt;solid-button label="아이콘 버튼" size="l" color="primary"&gt;
+  &lt;span slot="leftIcon"&gt;🔍&lt;/span&gt;
+&lt;/solid-button&gt;
+
+&lt;!-- 캡슐 버튼 --&gt;
+&lt;solid-button label="캡슐" rounded color="primary"&gt;&lt;/solid-button&gt;
+            </div>
+
+            <h3>⚙️ 속성 옵션</h3>
+            <table class="attribute-table">
+                <thead>
+                    <tr>
+                        <th>속성명</th>
+                        <th>타입</th>
+                        <th>필수</th>
+                        <th>기본값</th>
+                        <th>설명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>label</td>
+                        <td>string</td>
+                        <td class="required">필수</td>
+                        <td>-</td>
+                        <td>버튼에 표시될 텍스트</td>
+                    </tr>
+                    <tr>
+                        <td>color</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>primary</td>
+                        <td>색상 (primary, secondary, netural)</td>
+                    </tr>
+                    <tr>
+                        <td>variant</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>solid</td>
+                        <td>스타일 (solid, outline, ghost, underline)</td>
+                    </tr>
+                    <tr>
+                        <td>size</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>m</td>
+                        <td>크기 (xl, l, m, s, xs)</td>
+                    </tr>
+                    <tr>
+                        <td>rounded</td>
+                        <td>boolean</td>
+                        <td class="optional">선택</td>
+                        <td>false</td>
+                        <td>캡슐 형태 여부</td>
+                    </tr>
+                    <tr>
+                        <td>disabled</td>
+                        <td>boolean</td>
+                        <td class="optional">선택</td>
+                        <td>false</td>
+                        <td>비활성화 여부</td>
+                    </tr>
+                    <tr>
+                        <td>loading</td>
+                        <td>boolean</td>
+                        <td class="optional">선택</td>
+                        <td>false</td>
+                        <td>로딩 상태 여부</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🎯 슬롯 설명</h3>
+            <ul>
+                <li><strong>leftIcon</strong>: 버튼 왼쪽에 표시될 아이콘</li>
+                <li><strong>rightIcon</strong>: 버튼 오른쪽에 표시될 아이콘</li>
+            </ul>
+
+            <h3>📝 예시</h3>
+            <div class="example-demo">
+                <solid-button label="기본 버튼" color="primary"></solid-button>
+                <solid-button label="아웃라인" variant="outline" color="primary"></solid-button>
+                <solid-button label="비활성화" disabled></solid-button>
+            </div>
+        </div>
+
+        <!-- Label 컴포넌트 가이드 -->
+        <div class="component-section">
+            <h2>🏷️ Label 컴포넌트</h2>
+            <p>카테고리나 상태를 표시하는 라벨 컴포넌트입니다.</p>
+            
+            <h3>📁 참고 파일</h3>
+            <p><span class="js-file-path">script/components/label/label-component.js</span></p>
+            
+            <h3>🔧 사용법</h3>
+            <div class="code-block">
+&lt;!-- Solid 타입 --&gt;
+&lt;label-component type="solid" variant="blue"&gt;텍스트&lt;/label-component&gt;
+
+&lt;!-- Line 타입 --&gt;
+&lt;label-component type="line" variant="red"&gt;텍스트&lt;/label-component&gt;
+
+&lt;!-- Tint 타입 --&gt;
+&lt;label-component type="tint" variant="green"&gt;텍스트&lt;/label-component&gt;
+            </div>
+
+            <h3>⚙️ 속성 옵션</h3>
+            <table class="attribute-table">
+                <thead>
+                    <tr>
+                        <th>속성명</th>
+                        <th>타입</th>
+                        <th>필수</th>
+                        <th>기본값</th>
+                        <th>설명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>type</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>solid</td>
+                        <td>라벨 타입 (solid, line, tint)</td>
+                    </tr>
+                    <tr>
+                        <td>variant</td>
+                        <td>string</td>
+                        <td class="optional">선택</td>
+                        <td>blue</td>
+                        <td>색상 변형 (blue, cyan, green, yellow, orange, red, gray, olive, celery, seaform, indigo, purple, fushia, magenta)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🎨 타입별 설명</h3>
+            <ul>
+                <li><strong>solid</strong>: 배경이 채워진 라벨</li>
+                <li><strong>line</strong>: 테두리만 있는 라벨</li>
+                <li><strong>tint</strong>: 연한 배경의 라벨</li>
+            </ul>
+
+            <h3>📝 예시</h3>
+            <div class="example-demo">
+                <label-component type="solid" variant="blue">Solid Blue</label-component>
+                <label-component type="line" variant="red">Line Red</label-component>
+                <label-component type="tint" variant="green">Tint Green</label-component>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 컴포넌트 스크립트 로드 -->
+    <script src="../../script/modules/info-box/infobox-component.js"></script>
+    <script src="../../script/modules/navigation/navigation-component.js"></script>
+    <script src="../../script/components/dividers/divider-component.js"></script>
+    <script src="../../script/components/button/solid-button.js"></script>
+    <script src="../../script/components/label/label-component.js"></script>
+</body>
+</html>
