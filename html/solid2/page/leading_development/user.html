@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leading Development</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <style>
+ 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #7c7c7c;
+            min-height: 100vh;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        #wrap {
+            max-width: 900px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #005df9, #4c7dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            display: block;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #005df9, #4c7dff, #005df9);
+            background-size: 200% 100%;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #005df9;
+            box-shadow: 0 0 0 4px rgba(0, 93, 249, 0.1);
+            transform: scale(1.02);
+        }
+
+        .input-field::placeholder {
+            color: #a0aec0;
+            font-weight: 400;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .footer-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            justify-content: center;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="wrap">
+        <h1 class="section-title">PureJS</h1>
+        <div class="section">
+            <div class="section-title">세션 검증</div>
+            <div class="button-group">
+                <solid-button label="은행 WAS 검증" color="primary"></solid-button>
+                <solid-button label="연계 WAS 검증" color="secondary"></solid-button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../script/components/button/solid-button.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leading Development</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+</head>
+<body>
+
+    <div id="wrap" class="new-wrap">
+
+        <div class="header-area">
+            <navigation-component id="mainNavigation">
+
+                <div slot="header">
+                    <a href="#" class="navigation-header-link" aria-label="홈으로 이동">
+                        <img src="../../../images/icon/icon_chevron_left.svg" alt="챗봇 아이콘" />
+                    </a>
+                    <h1 class="navigation-title">
+                        보유자산
+                    </h1>
+                </div>
+                
+                <!-- Function 슬롯 -->
+                <div slot="function">
+                    <button class="navigation-button" type="button" tabindex="0" aria-label="챗봇">
+                        <img src="../../../images/icon/icon_chatbot.svg" alt="챗봇 아이콘" />
+                    </button>
+                </div>
+            </navigation-component>
+        </div>
+        
+        <div class="content-area">
+            <h2 class="headline">보유자산 총잔액</h2>
+            
+            <h3 class="headline-2">은행입출금 / 증권입출금</h3>
+            <p class="textList">상품명, 계좌번호, 잔액</p>
+            
+            <h3 class="headline-2">페이 / 포인트</h3>
+            <p class="textList">기관명, 잔액</p>
+
+            <h3 class="headline-2">예금 / 적금</h3>
+            <p class="textList">상품명, 계좌번호, 잔액</p>
+
+            <h3 class="headline-2">ISA / 펀드 / 주식 / 신탁</h3>
+            <p class="textList">상품명, 계좌번호, 납입원금</p>
+
+            <h3 class="headline-2">연금</h3>
+            <p class="textList">상품명, 계좌번호, 계좌잔액</p>
+        </div>
+    </div>
+    
+    <script src="../../script/modules/navigation/navigation-component.js"></script>
+    <script src="../../script/components/button/solid-button.js"></script>
+    
+</body>
+</html>
