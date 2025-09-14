@@ -146,7 +146,9 @@ class SolidButton extends HTMLElement {
 
     getStyles() {
         return `
-            
+            :host {
+                width: 100%;
+            }
             /* Button 기본 스타일 */
             /* Button component */
             .solid-button {
@@ -156,23 +158,24 @@ class SolidButton extends HTMLElement {
             align-items: center;
             justify-content: center;
             min-height: 24px;
+            width: 100%;
             border: 0;
             box-sizing: border-box;
             font-weight: 500;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.25s var(--ease);
+            transition: all 0.25s ease;
             }
 
             .solid-button:focus-visible,
             .solid-button:focus {
-            outline: 2px solid var(--focus-color);
+            outline: 2px solid var(--brand-500);
             outline-offset: 2px;
             }
 
             /* 포커스 상태 스타일 */
             :host([focused]) .solid-button {
-            outline: 2px solid var(--focus-color);
+            outline: 2px solid var(--brand-500);
             outline-offset: 2px;
             }
 
@@ -232,6 +235,7 @@ class SolidButton extends HTMLElement {
 
             /* Size modifiers */
             .solid-button.solid-button-size-xl {
+            height: 56px;
             padding: var(--spacing-lg);
             border-radius: var(--radius-xl);
             }
@@ -264,6 +268,7 @@ class SolidButton extends HTMLElement {
             }
 
             .solid-button.solid-button-size-l {
+            height: 48px;
             padding: var(--spacing-md);
             border-radius: var(--radius-md);
             }
@@ -302,6 +307,7 @@ class SolidButton extends HTMLElement {
             }
 
             .solid-button.solid-button-size-m {
+            height: 40px;
             padding: var(--spacing-md);
             border-radius: var(--radius-sm);
             }
@@ -334,6 +340,7 @@ class SolidButton extends HTMLElement {
             }
 
             .solid-button.solid-button-size-s {
+            height: 32px;
             padding: var(--spacing-sm);
             border-radius: var(--radius-sm);
             }
@@ -366,6 +373,7 @@ class SolidButton extends HTMLElement {
             }
 
             .solid-button.solid-button-size-xs {
+            height: 24px;
             border-radius: var(--radius-xs);
             padding: var(--spacing-xs) var(--spacing-xs);
             }
@@ -421,7 +429,7 @@ class SolidButton extends HTMLElement {
             }
 
             .solid-button.solid-button-variant-ghost:focus-visible {
-            outline: 2px solid var(--focus-color);
+            outline: 2px solid var(--brand-500);
             outline-offset: 2px;
             }
 
@@ -452,7 +460,7 @@ class SolidButton extends HTMLElement {
             }
 
             .solid-button.solid-button-variant-underline:focus-visible {
-            outline: 2px solid var(--focus-color);
+            outline: 2px solid var(--brand-500);
             outline-offset: 2px;
             border-radius: var(--radius-xxs);
             }

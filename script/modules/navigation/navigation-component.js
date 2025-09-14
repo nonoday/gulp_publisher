@@ -3,10 +3,10 @@ class NavigationComponent extends HTMLElement {
         super();
         // AOS6 폴백: Shadow DOM 지원 여부 확인
         if (typeof this.attachShadow === 'function') {
-            this.shadowRoot = this.attachShadow({ mode: 'open' });
+            this.attachShadow({ mode: 'open' });
         } else {
             // AOS6 폴백: Shadow DOM이 지원되지 않는 경우 일반 DOM 사용
-            this.shadowRoot = this;
+            this._useFallback = true;
         }
     }
 
@@ -38,7 +38,7 @@ class NavigationComponent extends HTMLElement {
 
     render() {
         // AOS6 폴백: Shadow DOM 지원 여부에 따른 렌더링
-        if (this.shadowRoot === this) {
+        if (this._useFallback) {
             // Shadow DOM이 지원되지 않는 경우 (AOS6)
             this.innerHTML = `
                 <style>

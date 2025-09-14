@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leading Development</title>
+     <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+</head>
+<body>
+
+    <div id="wrap" class="solid-wrap">
+
+        <div class="header-area">
+            <navigation-component id="mainNavigation">
+
+                <div slot="header">
+                    <a href="#" class="navigation-header-link" aria-label="홈으로 이동">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                            <path d="M18.4985 7.12366L11.6216 13.9996L18.4985 20.8766L17.0845 22.2906L8.79443 13.9996L17.0845 5.70959L18.4985 7.12366Z" fill="#101828"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <!-- Function 슬롯 -->
+                <div slot="function">
+                    <button class="navigation-button" type="button" tabindex="0" aria-label="챗봇">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M19.6082 18.3938L18.396 19.606L4.39612 5.6061L5.6083 4.39392L19.6082 18.3938Z" fill="#101828"/>
+                            <path d="M18.3938 4.39404L19.606 5.60622L5.6061 19.6061L4.39392 18.3939L18.3938 4.39404Z" fill="#101828"/>
+                          </svg>
+                    </button>
+                </div>
+            </navigation-component>
+        </div>
+        
+        <div class="content-area">
+            <h2 class="headline-small">휴대폰번호 확인을 위해<br />문자메시지를 그대로 보내주세요</h2>
+            <p class="body-medium">디바이스 백버튼을 눌러 돌아와주세요<br />요금제에 따라 비용이 발생할 수 있어요</p>
+            <div class="content-image">
+                <img src="../../../../images/solid2/temp/sample.png" alt="샘플 이미지" />
+            </div>
+        </div>
+        <div class="modal-dimmed-popup show">
+            <div class="modal-container-box">
+                <p class="title-medium text-primary font-weight-sb-m">휴대폰번호 확인 지연 안내</p>
+                <p class="body-medium text-tertiary mt-spacing-md ">일시적으로 휴대폰번호 확인이 늦어지고 있어요.<br />잠시 후 다시 시도해주세요.</p>
+                <!-- <p class="body-medium text-tertiary align-center">휴대폰 본인인증을 중단할까요?</p> -->
+                <div class="modal-box-button-group">
+                    <div class="modal-box-button-row">
+                        <solid-button label="계속 진행" color="secondary" size="l"></solid-button>
+                    </div>
+                    <div class="modal-box-button-row">
+                        <solid-button label="중단하기" color="primary" size="l"></solid-button>
+                    </div>
+                </div>
+                <!-- <div class="modal-box-button-group">
+                    <solid-button label="확인" color="primary" size="l"></solid-button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../../../script/modules/navigation/navigation-component.js"></script>
+    <script src="../../../../script/components/button/solid-button.js"></script>
+    
+</body>
+</html>

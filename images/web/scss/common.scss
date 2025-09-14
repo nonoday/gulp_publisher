@@ -1,22 +1,23 @@
+@charset "UTF-8";
 @use '../tokens/scss/variables' as *;
 
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
   font-weight: 400;
-  src: local("OneShinhanLight"), url("../fonts/OneShinhanBold.woff") format("woff");
+  src: local("OneShinhanLight"), url("../../fonts/OneShinhanLight.woff") format("woff");
 }
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
   font-weight: 500;
-  src: local("OneShinhanMedium"), url("../fonts/OneShinhanMedium.woff") format("woff");
+  src: local("OneShinhanMedium"), url("../../fonts/OneShinhanMedium.woff") format("woff");
 }
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
   font-weight: 700;
-  src: local("OneShinhanBold"), url("../fonts/OneShinhanBold.woff") format("woff");
+  src: local("OneShinhanBold"), url("../../fonts/OneShinhanBold.woff") format("woff");
 }
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -179,9 +180,7 @@ body {
   background: none;
 }
 
-.solid-wrap {
 
-}
 
 /* asis 소스 */
 #contents-area {position: relative;min-height: calc(100vh - 56px - var(--safeAreaInsetBottom));display: -webkit-box;display: -ms-flexbox;display: flex;-webkit-box-orient: vertical;-webkit-box-direction: normal;-ms-flex-direction: column;flex-direction: column; } 
@@ -259,6 +258,7 @@ body {
   width: 24px;
   height: 24px;
 }
+
 
 
 .content-area-2 {
@@ -347,98 +347,249 @@ letter-spacing: var(--letterspace-body-M, -0.28px);
   font-weight: 300;
   line-height: var(--lineheight-body-M, 24px);
   letter-spacing: var(--letterspace-body-M, -0.28px);
-  
+
 }
-/* footer-box가 없을 때는 기본 여백 */
-.content-area {
+
+.solid-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
-.content-button {
-  margin-top: 32px;
-}
-.text-body-1 {
-  color:#475467;
-  font-size:14px;
-  font-weight:400;
-  line-height:20px;
-  letter-spacing:0;
-}
-.input-box {
-  margin-top:8px;
-}
-.input-text {
-  width:100%;
+
+
+// 임시 내부에서 작업한부분 없어서 임시 처리
+.header-area {
   height: 56px;
-  border:1px solid #D0D5DD;
-  color:#000;
-  font-size:16px;
-  font-weight:400;
-  line-height:24px;
-  letter-spacing:0;
-  padding:0 16px;
-  border-radius:12px;
-  background-color:#fff;
-  box-sizing:border-box;
 }
-.input-text::placeholder {
-  color:#818DA2;
-}
-
-
-
-.headline {
-  color: var(--Text-text-primary, #101828);
-  font-family: var(--font-FontName, OneShinhan);
-  font-size: var(--size-headline-S, 22px);
-  font-style: normal;
-  font-weight: 500;
-  line-height: var(--lineheight-headline-S, 33px); /* 150% */
-  letter-spacing: var(--letterspace-headline-S, -0.44px);
-}
-.headline-2 {
-  margin-top: var(--spacing-2xl, 20px);
-  color: var(--Text-text-primary, #101828);
-  font-family: var(--font-FontName, OneShinhan);
-  font-size: var(--size-title-S, 14px);
-  font-style: normal;
-  font-weight: 500;
-  line-height: var(--lineheight-body-S, 22px); 
-  letter-spacing: var(--letterspace-title-S, -0.28px);
-}
-.textList {
-  margin-top: var(--spacing-md, 8px);
-  color: var(--Text-text-secondary, #344054);
-  font-family: var(--font-FontName, OneShinhan);
-  font-size: var(--size-body-M, 14px);
-  font-style: normal;
-  font-weight: 300;
-  line-height: var(--lineheight-body-M, 24px); /* 171.429% */
-  letter-spacing: var(--letterspace-body-M, -0.28px);
-}
-
-.content-box-checklist {
+.content-area {
   display: flex;
-  width: 100%;
+  padding: $spacing-xl $spacing-2xl;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-lg, 12px);
-  margin-top:var(--spacing-3xl, 24px);
+  height: calc(100vh - 56px);
 }
-.content-box-checklist li {
+
+//폰트 가이드에 있는 css 작성
+.headline-large {
+  font-size: $font-size-headline-s;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-s;
+}
+.headline-medium {
+  font-size: $font-size-headline-m;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-m;
+}
+.headline-small {
+  font-size: $font-size-headline-s;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-s;
+}        
+.title-xl {
+  font-size: $font-size-title-xl;
+  line-height: $lineheight-title-xl;
+  letter-spacing: $letterspace-title-xl;
+}
+.title-large     {
+  font-size: $font-size-title-l;
+  line-height: $lineheight-title-l;
+  letter-spacing: $letterspace-title-l;
+}
+.title-medium {
+  font-size: $font-size-title-m;
+  line-height: $lineheight-title-m;
+  letter-spacing: $letterspace-title-m;
+}
+.title-small {
+  font-size: $font-size-title-s;
+  line-height: $lineheight-title-s;
+  letter-spacing: $letterspace-title-s;
+}
+.body-large {
+  font-size: $font-size-body-l;
+  line-height: $lineheight-body-l;
+  letter-spacing: $letterspace-body-l;
+}
+.body-medium {
+  font-size: $font-size-body-m;
+  line-height: $lineheight-body-m;
+  letter-spacing: $letterspace-body-m;
+}
+.body-small {
+  font-size: $font-size-body-s;
+  line-height: $lineheight-body-s;
+  letter-spacing: $letterspace-body-s;
+}
+.detail-large {
+  font-size: $font-size-detail-l;
+  line-height: $lineheight-detail-l;
+  letter-spacing: $letterspace-detail-l;
+}
+.detail-small { 
+  font-size: $font-size-detail-s;
+  line-height: $lineheight-detail-s;
+  letter-spacing: $letterspace-detail-s;
+}
+// 텍스트컬러 가이드에 있는 css 작성
+.text-tertiary {
+  color: $text-tertiary;
+}
+.text-primary {
+  color: $text-primary;
+}
+.text-primary-same {
+  color: $text-primary-same;
+}
+.text-secondary {
+  color: $text-secondary;
+}
+.text-quaternary {
+  color: $text-quaternary;
+}
+.text-disabled-same {
+  color: $text-disabled-same;
+}
+.text-placeholder-same {
+  color: $text-placeholder-same;
+}
+.text-brand {
+  color: $text-brand;
+}
+.text-brand-disabled-alt {
+  color: $text-brand-disabled-alt;
+}
+.text-brand-disabled {
+  color: $text-brand-disabled;
+}
+.text-ondark-primary {
+  color: $text-ondark-primary;
+}
+.text-ondark-primary-same {
+  color: $text-ondark-primary-same;
+}
+.text-ondark-secondary-same {
+  color: $text-ondark-secondary-same;
+}
+.text-ondark-brand-same {
+  color: $text-ondark-brand-same;
+}
+.text-negative-same {
+  color: $text-negative-same;
+}
+.text-negative-alt {
+  color: $text-negative-alt;
+}
+.text-new-same {
+  color: $text-new-same;
+}
+.text-decrease {
+  color: $text-decrease;
+}
+.text-increase-same {
+  color: $text-increase-same;
+}
+.text-steady {
+  color: $text-steady;
+}
+// 폰트 두께 가이드에 있는 css 작성
+.font-weight-eb {
+  font-weight: $font-weight-eb;
+}
+.font-weight-b {
+  font-weight: $font-weight-b;
+}
+.font-weight-sb-b {
+  font-weight: $font-weight-sb-b;
+}
+.font-weight-sb-m {
+  font-weight: $font-weight-sb-m;
+}
+.font-weight-m-m {
+  font-weight: $font-weight-m-m;
+}
+.font-weight-m-l {
+  font-weight: $font-weight-m-l;
+}
+.font-weight-r {
+  font-weight: $font-weight-r;
+}
+// 텍스트 정렬
+.align-center {
+  text-align: center;
+}
+.align-left {
+  text-align: left;
+}
+.align-right {
+  text-align: right;
+}
+// Spacing 유틸리티 클래스
+.mt-spacing-none { margin-top: $spacing-none; }
+.mt-spacing-xs { margin-top: $spacing-xs; }
+.mt-spacing-sm { margin-top: $spacing-sm; }
+.mt-spacing-md { margin-top: $spacing-md; }
+.mt-spacing-lg { margin-top: $spacing-lg; }
+.mt-spacing-xl { margin-top: $spacing-xl; }
+.mt-spacing-2xl { margin-top: $spacing-2xl; }
+.mt-spacing-3xl { margin-top: $spacing-3xl; }
+.mt-spacing-4xl { margin-top: $spacing-4xl; }
+.mt-spacing-5xl { margin-top: $spacing-5xl; }
+.mt-spacing-6xl { margin-top: $spacing-6xl; }
+.mt-spacing-7xl { margin-top: $spacing-7xl; }
+
+
+
+.content-image {
+  flex:1;
+  margin-top: $spacing-4xl;
   width: 100%;
+  height: auto;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
-.content-box-checklist li input[type="radio"] {
-  display: none;
+
+
+.modal {
+  &-dimmed-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right:0;
+    bottom:0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-3xl;
+    
+    &.show {
+      display: flex;
+    }
+  }
+
+  &-container-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: $radius-xl;
+    background-color: $bg-canvas-white-elevated;
+    padding: $spacing-4xl $spacing-2xl $spacing-2xl $spacing-2xl;
+  }
+  &-box-button-group {
+    display: flex;
+    width:100%;
+    margin-top: $spacing-3xl;
+  }
+  &-box-button-row {
+    flex: 1;
+    width: calc(50% - #{$spacing-sm});
+    
+    &:first-child {
+      margin-right: $spacing-md;
+    }
+  }
 }
-.content-box-checklist li label {
-  display: flex;
-  padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
-  flex-direction: column;
-  align-items:flex-start;
-  gap: var(--spacing-md, 8px);
-  border-radius: var(--radius-xl, 16px);
-  border: 1px solid var(--Border-border-secondary, #E4E7EC);
-}
-.content-box-checklist li input[type="radio"]:checked + label {
-  border: 1px solid var(--Border-border-primary, #005DF9);
-  background: var(--Background-bg-canvas_white-elevated, #FFF);
-}
+
+

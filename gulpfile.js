@@ -121,10 +121,8 @@ function combineTokensCSS() {
   
   return gulp.src(paths.tokensCssFiles)
     .pipe(plumber())
-    .pipe(changed(paths.tokensCombinedDest, { extension: '.css' }))
     .pipe(concat('tokens.css'))
     .pipe(gulp.dest(paths.tokensCombinedDest))
-    .pipe(changed(paths.tokensCombinedDest + '/minify', { extension: '.min.css' }))
     .pipe(cleanCSS())
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(paths.tokensCombinedDest + '/minify'));

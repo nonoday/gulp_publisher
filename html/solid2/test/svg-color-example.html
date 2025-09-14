@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG 색상 제어 방법</title>
+    <style>
+        :root {
+            /* 피그마 디자인 토큰에서 가져온 색상들 */
+            --color-primary: #3399ff;
+            --color-secondary: #666666;
+            --color-success: #00c851;
+            --color-danger: #ff4444;
+            --color-warning: #ffbb33;
+            --color-white: #ffffff;
+            --color-black: #000000;
+        }
+
+        .icon-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 방법 1: CSS 변수 + currentColor */
+        .icon-primary { color: var(--color-primary); }
+        .icon-secondary { color: var(--color-secondary); }
+        .icon-success { color: var(--color-success); }
+        .icon-danger { color: var(--color-danger); }
+        .icon-warning { color: var(--color-warning); }
+        .icon-white { color: var(--color-white); }
+        .icon-black { color: var(--color-black); }
+
+        /* 방법 2: 직접 색상 지정 */
+        .icon-custom-blue { color: #007bff; }
+        .icon-custom-purple { color: #6f42c1; }
+        .icon-custom-orange { color: #fd7e14; }
+
+        .label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .method-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>피그마 SVG 색상 제어 방법</h1>
+    
+    <div class="method-title">방법 1: CSS 변수 + currentColor (추천!)</div>
+    <div class="icon-container">
+        <div class="icon-item">
+            <svg class="icon icon-primary" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Primary<br>#3399ff</div>
+        </div>
+        
+        <div class="icon-item">
+            <svg class="icon icon-secondary" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Secondary<br>#666666</div>
+        </div>
+        
+        <div class="icon-item">
+            <svg class="icon icon-success" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Success<br>#00c851</div>
+        </div>
+        
+        <div class="icon-item">
+            <svg class="icon icon-danger" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Danger<br>#ff4444</div>
+        </div>
+        
+        <div class="icon-item">
+            <svg class="icon icon-warning" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Warning<br>#ffbb33</div>
+        </div>
+    </div>
+
+    <div class="method-title">방법 2: 직접 색상 지정</div>
+    <div class="icon-container">
+        <div class="icon-item">
+            <svg class="icon icon-custom-blue" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Custom Blue<br>#007bff</div>
+        </div>
+        
+        <div class="icon-item">
+            <svg class="icon icon-custom-purple" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Custom Purple<br>#6f42c1</div>
+        </div>
+        
+        <div class="icon-item">
+            <svg class="icon icon-custom-orange" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+            </svg>
+            <div class="label">Custom Orange<br>#fd7e14</div>
+        </div>
+    </div>
+
+    <div class="method-title">방법 3: 기존 이미지 태그와 비교</div>
+    <div class="icon-container">
+        <div class="icon-item">
+            <img src="../../images/solid2/icons/Home.svg" alt="Home" style="width: 24px; height: 24px;">
+            <div class="label">기존 방법<br>(복잡한 filter)</div>
+        </div>
+        
+        <div class="icon-item">
+            <svg class="icon icon-primary" viewBox="0 0 24 24" fill="none">
+                <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z" fill="currentColor"/>
+            </svg>
+            <div class="label">새로운 방법<br>(간단한 color)</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+        <h3>💡 장점 비교</h3>
+        <ul>
+            <li><strong>기존 방법 (filter):</strong> 복잡한 수치값, 계산 어려움, 성능 저하</li>
+            <li><strong>새로운 방법 (currentColor):</strong> 피그마 색상값 그대로 사용, 간단함, 성능 좋음</li>
+        </ul>
+        
+        <h3>🛠️ 사용법</h3>
+        <ol>
+            <li>피그마에서 아이콘을 SVG로 내보내기</li>
+            <li>SVG 코드에서 <code>fill="색상값"</code>을 <code>fill="currentColor"</code>로 변경</li>
+            <li>CSS에서 <code>color</code> 속성으로 색상 제어</li>
+        </ol>
+    </div>
+</body>
+</html>
