@@ -4,18 +4,21 @@
   font-style: normal;
   font-weight: 400;
   src: local("OneShinhanLight"), url("../../fonts/OneShinhanLight.woff") format("woff");
+  font-display: swap;
 }
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
   font-weight: 500;
   src: local("OneShinhanMedium"), url("../../fonts/OneShinhanMedium.woff") format("woff");
+  font-display: swap;
 }
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
   font-weight: 700;
   src: local("OneShinhanBold"), url("../../fonts/OneShinhanBold.woff") format("woff");
+  font-display: swap;
 }
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -732,4 +735,315 @@ body {
 }
 .modal-box-button-row:first-child {
   margin-right: var(--spacing-md);
+}
+
+.solid-button {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  border: 0;
+  box-sizing: border-box;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.solid-button:focus-visible, .solid-button:focus {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+}
+.solid-button.disabled {
+  background-color: var(--bg-disabled) !important;
+  color: var(--text-disabled-same) !important;
+  cursor: not-allowed;
+}
+.solid-button.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-dark-a10);
+}
+.solid-button.rounded {
+  border-radius: var(--radius-full) !important;
+  background-color: var(--bg-gray);
+  color: var(--text-secondary);
+}
+.solid-button.rounded.outline {
+  border: 1px solid var(--border-secondary);
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+.solid-button.rounded.outline.disabled {
+  background-color: transparent !important;
+}
+.solid-button.primary {
+  background-color: var(--bg-brand-strong-same);
+  color: var(--text-ondark-primary-same);
+  border-color: var(--border-brand);
+}
+.solid-button.primary:active:not(:disabled) {
+  background-color: var(--bg-dark-a20);
+}
+.solid-button.primary.disabled {
+  color: var(--text-disabled-same) !important;
+  background-color: var(--bg-disabled) !important;
+}
+.solid-button.primary.loading::after {
+  background-color: var(--bg-dark-a20);
+}
+.solid-button.secondary {
+  background-color: var(--bg-brand);
+  color: var(--text-brand);
+  border: 0;
+}
+.solid-button.secondary:active:not(:disabled) {
+  background-color: var(--bg-dark-a10);
+}
+.solid-button.secondary.disabled {
+  background-color: var(--fg-disabled);
+  border-color: var(--border-disabled);
+  color: var(--text-ondark-primary-same);
+}
+.solid-button.neutral {
+  background-color: var(--bg-gray);
+  color: var(--text-primary);
+  border: 0;
+}
+.solid-button.neutral:active:not(:disabled) {
+  background-color: var(--bg-dark-a10);
+}
+.solid-button.neutral.disabled {
+  background-color: var(--fg-disabled);
+  border-color: var(--border-disabled);
+  color: var(--text-ondark-primary-same);
+}
+.solid-button.outline {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-secondary);
+}
+.solid-button.outline.disabled {
+  background-color: var(--bg-disabled) !important;
+  border-color: var(--border-disabled) !important;
+  color: var(--text-disabled-same) !important;
+}
+.solid-button.ghost {
+  background-color: transparent;
+  padding: var(--spacing-none);
+  color: var(--text-brand);
+  border-radius: var(--radius-xs);
+  gap: var(--spacing-sm);
+  border: none;
+}
+.solid-button.ghost:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+}
+.solid-button.ghost:active:not(:disabled) {
+  background-color: var(--bg-dark-a10);
+}
+.solid-button.ghost.disabled {
+  background-color: transparent !important;
+}
+.solid-button.ghost.primary {
+  color: var(--text-brand);
+}
+.solid-button.ghost.secondary {
+  color: var(--text-secondary);
+}
+.solid-button.underline {
+  background-color: transparent;
+  padding: 0 0 2px;
+  color: var(--text-brand);
+  border-radius: 0;
+  border-bottom: 0;
+  box-sizing: border-box;
+}
+.solid-button.underline:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-xxs);
+}
+.solid-button.underline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: block;
+  clear: both;
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-brand);
+}
+.solid-button.underline.disabled {
+  color: var(--text-disabled-same) !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+.solid-button.underline.disabled::before {
+  background-color: var(--text-disabled-same) !important;
+}
+.solid-button.underline:active:not(:disabled) {
+  background-color: var(--bg-dark-a10);
+  border-radius: var(--radius-xxs);
+}
+.solid-button.underline.primary {
+  color: var(--text-brand);
+}
+.solid-button.underline.primary::before {
+  background-color: var(--text-brand);
+}
+.solid-button.underline.secondary {
+  color: var(--text-secondary);
+}
+.solid-button.underline.secondary::before {
+  background-color: var(--text-secondary);
+}
+.solid-button.extra-large {
+  height: 56px;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-xl);
+}
+.solid-button.extra-large .label {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-title-l);
+  line-height: var(--lineheight-title-l);
+}
+.solid-button.extra-large .lottie-animation {
+  width: 24px;
+  height: 24px;
+}
+.solid-button.extra-large .left-icon,
+.solid-button.extra-large .right-icon {
+  width: 24px;
+  height: 24px;
+}
+.solid-button.extra-large.underline .label {
+  padding: 0;
+  font-size: var(--font-size-title-xl);
+  line-height: var(--lineheight-title-xl);
+}
+.solid-button.large {
+  height: 48px;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+}
+.solid-button.large .label {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-l);
+  line-height: var(--lineheight-body-l);
+}
+.solid-button.large .lottie-animation {
+  width: 20px;
+  height: 20px;
+}
+.solid-button.large .left-icon,
+.solid-button.large .right-icon {
+  width: 20px;
+  height: 20px;
+}
+.solid-button.large.underline .label {
+  padding: 0;
+  font-size: var(--font-size-title-l);
+  line-height: var(--lineheight-title-l);
+}
+.solid-button.large.outline .label {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-l);
+  line-height: var(--lineheight-body-l);
+}
+.solid-button.medium {
+  height: 40px;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+}
+.solid-button.medium .label {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+}
+.solid-button.medium .lottie-animation {
+  width: 16px;
+  height: 16px;
+}
+.solid-button.medium .left-icon,
+.solid-button.medium .right-icon {
+  width: 16px;
+  height: 16px;
+}
+.solid-button.medium.underline .label {
+  padding: 0;
+  font-size: var(--font-size-title-m);
+  line-height: var(--lineheight-title-m);
+}
+.solid-button.small {
+  height: 32px;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+}
+.solid-button.small .label {
+  padding: var(--spacing-none) var(--spacing-sm);
+  font-size: var(--font-size-body-s);
+  line-height: var(--lineheight-body-s);
+}
+.solid-button.small .lottie-animation {
+  width: 14px;
+  height: 14px;
+}
+.solid-button.small .left-icon,
+.solid-button.small .right-icon {
+  width: 14px;
+  height: 14px;
+}
+.solid-button.small.underline .label {
+  padding: 0;
+  font-size: var(--font-size-body-m);
+  line-height: var(--lineheight-body-m);
+}
+.solid-button.extra-small {
+  height: 24px;
+  border-radius: var(--radius-xs);
+  padding: var(--spacing-xs) var(--spacing-xs);
+}
+.solid-button.extra-small .label {
+  padding: var(--spacing-none) var(--spacing-xs);
+  font-size: var(--font-size-detail-l);
+  line-height: 20px;
+}
+.solid-button.extra-small .lottie-animation {
+  width: 12px;
+  height: 12px;
+}
+.solid-button.extra-small .left-icon,
+.solid-button.extra-small .right-icon {
+  width: 12px;
+  height: 12px;
+}
+.solid-button.extra-small.underline .label {
+  padding: 0;
+  font-size: var(--font-size-title-s);
+  line-height: var(--lineheight-title-s);
+}
+.solid-button .label {
+  position: relative;
+  display: inline-block;
+}
+.solid-button .left-icon {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.solid-button .right-icon {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.solid-button.full-width {
+  width: 100%;
 }

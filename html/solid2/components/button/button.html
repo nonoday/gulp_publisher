@@ -3,78 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Button Web Component</title>
-    <link rel="stylesheet" href="../../../css/tokens.css">
-
+    <title>Button Component</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
 </head>
 <body>
     <div class="demo-container">
-        <h1>Button Web Component</h1>
+        <h1>Button Component</h1>
         
         <div class="demo-section">
             <div class="demo-title">기본 버튼</div>
             <div class="demo-row">
-                <solid-button label="기본 버튼"></solid-button>
-                <solid-button label="비활성화" disabled></solid-button>
-                <solid-button label="로딩 중" loading></solid-button>
+                <button class="solid-button primary solid medium">기본 버튼</button>
+                <button class="solid-button primary solid medium disabled" disabled>비활성화</button>
+                <button class="solid-button primary solid medium loading">로딩 중</button>
             </div>
         </div>
 
         <div class="demo-section">
             <div class="demo-title">색상 변형</div>
             <div class="demo-row">
-                <solid-button label="Primary" color="primary"></solid-button>
-                <solid-button label="Secondary" color="secondary"></solid-button>
-                <solid-button label="Neutral" color="netural"></solid-button>
+                <button class="solid-button primary solid medium">Primary</button>
+                <button class="solid-button secondary solid medium">Secondary</button>
+                <button class="solid-button neutral solid medium">Neutral</button>
             </div>
         </div>
 
         <div class="demo-section">
             <div class="demo-title">스타일 변형</div>
             <div class="demo-row">
-                <solid-button label="Solid" variant="solid" color="primary"></solid-button>
-                <solid-button label="Outline" variant="outline" color="primary"></solid-button>
-                <solid-button label="Ghost" variant="ghost" color="primary"></solid-button>
-                <solid-button label="Underline" variant="underline" color="primary"></solid-button>
+                <button class="solid-button primary solid medium">Solid</button>
+                <button class="solid-button primary outline medium">Outline</button>
+                <button class="solid-button primary ghost medium">Ghost</button>
+                <button class="solid-button primary underline medium">Underline</button>
             </div>
         </div>
 
         <div class="demo-section">
             <div class="demo-title">크기 변형</div>
             <div class="demo-row">
-                <solid-button label="XL" size="xl" color="primary"></solid-button>
-                <solid-button label="Large" size="l" color="primary"></solid-button>
-                <solid-button label="Medium" size="m" color="primary"></solid-button>
-                <solid-button label="Small" size="s" color="primary"></solid-button>
-                <solid-button label="XS" size="xs" color="primary"></solid-button>
+                <button class="solid-button primary solid extra-large">XL</button>
+                <button class="solid-button primary solid large">Large</button>
+                <button class="solid-button primary solid medium">Medium</button>
+                <button class="solid-button primary solid small">Small</button>
+                <button class="solid-button primary solid extra-small">XS</button>
             </div>
         </div>
 
         <div class="demo-section">
             <div class="demo-title">캡슐 버튼</div>
             <div class="demo-row">
-                <solid-button label="캡슐" rounded color="primary"></solid-button>
-                <solid-button label="캡슐 아웃라인" rounded variant="outline" color="primary"></solid-button>
+                <button class="solid-button primary solid medium rounded">캡슐</button>
+                <button class="solid-button primary outline medium rounded">캡슐 아웃라인</button>
             </div>
         </div>
 
         <div class="demo-section">
             <div class="demo-title">아이콘 버튼</div>
             <div class="demo-row">
-                <solid-button label="좌측 아이콘" color="primary">
-                    <span slot="leftIcon">🔍</span>
-                </solid-button>
-                <solid-button label="우측 아이콘" color="primary">
-                    <span slot="rightIcon">→</span>
-                </solid-button>
-                <solid-button label="양쪽 아이콘" color="primary">
-                    <span slot="leftIcon">📁</span>
-                    <span slot="rightIcon">📤</span>
-                </solid-button>
+                <button class="solid-button primary solid medium">
+                    <span class="left-icon">🔍</span>
+                    <span class="label">좌측 아이콘</span>
+                </button>
+                <button class="solid-button primary solid medium">
+                    <span class="label">우측 아이콘</span>
+                    <span class="right-icon">→</span>
+                </button>
+                <button class="solid-button primary solid medium">
+                    <span class="left-icon">📁</span>
+                    <span class="label">양쪽 아이콘</span>
+                    <span class="right-icon">📤</span>
+                </button>
             </div>
         </div>
     </div>
-
-    <script src="../../../script/components/button/solid-button.js"></script>
 </body>
 </html>
