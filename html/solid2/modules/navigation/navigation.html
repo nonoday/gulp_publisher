@@ -1,78 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leading Development</title>
-    <link rel="stylesheet" href="../../../css/tokens.css">
-    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
-
+    <title>Navigation Component</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
 </head>
 <body>
-
     <div id="wrap">
-        <!-- 출석퀴즈 > 출석퀴즈 메인 -->
-
+        <!-- Navigation 컴포넌트 -->
         <div class="header-area">
-            <navigation-component id="mainNavigation">
-                <!-- Header 슬롯 -->
-                <div slot="header">
+            <div class="solid-navigation" id="mainNavigation">
+                <!-- Header 영역 -->
+                <div class="navigation-header">
                     <a href="#" class="navigation-header-link" aria-label="홈으로 이동">
-                        <img src="../../../../images/icon/icon_chevron_left.svg" alt="챗봇 아이콘" />
+                        <img src="../../../../images/solid2/icons/Chevron_left.svg" alt="뒤로가기 아이콘" />
                     </a>
                     <h1 class="navigation-title">
                         타이틀
                     </h1>
                 </div>
                 
-                <!-- Function 슬롯 -->
-                <div slot="function">
+                <!-- Function 영역 -->
+                <div class="navigation-function">
                     <span>레이블</span>
                     <button class="navigation-button" type="button" tabindex="0" aria-label="챗봇">
-                        <img src="../../../../images/icon/icon_chatbot.svg" alt="챗봇 아이콘" />
+                        <img src="../../../../images/solid2/icons/Chatbot.svg" alt="챗봇 아이콘" />
                     </button>
                     <button class="navigation-button" type="button" tabindex="0" aria-label="홈으로 이동">
-                        <img src="../../../../images/icon/icon_home.svg" alt="홈" />
+                        <img src="../../../../images/solid2/icons/Home.svg" alt="홈" />
                     </button>
                     <button class="navigation-button" type="button" tabindex="0" aria-label="검색 메뉴">
-                        <img src="../../../../images/icon/icon_menu_search.svg" alt="검색메뉴" />
+                        <img src="../../../../images/solid2/icons/Search.svg" alt="검색메뉴" />
                     </button>
                     <button class="navigation-button" type="button" tabindex="0" aria-label="음성 입력">
-                        <img src="../../../../images/icon/icon_mic.svg" alt="마이크" />
+                        <img src="../../../../images/solid2/icons/Mic.svg" alt="마이크" />
                     </button>
                     <button class="navigation-button" type="button" tabindex="0" aria-label="검색">
-                        <img src="../../../../images/icon/icon_search.svg" alt="검색" />
+                        <img src="../../../../images/solid2/icons/Search.svg" alt="검색" />
                     </button>
                     <button class="navigation-button" type="button" tabindex="0" aria-label="설정">
-                        <img src="../../../../images/icon/icon_setting.svg" alt="설정" />
+                        <img src="../../../../images/solid2/icons/Setting.svg" alt="설정" />
                     </button>
                     <button class="navigation-button alarm" type="button" tabindex="0" aria-label="알림">
-                        <img src="../../../../images/icon/icon_alarm.svg" alt="알림" />
+                        <img src="../../../../images/solid2/icons/Alert.svg" alt="알림" />
                     </button>
                 </div>
-            </navigation-component>
+            </div>
+        </div>
+        
+        <!-- 콘텐츠 영역 -->
+        <div class="content-area">
+            <h2>Navigation Component Demo</h2>
+            <p>이 페이지는 Navigation 컴포넌트의 데모입니다.</p>
+            <p>상단의 네비게이션 바는 고정되어 있으며, 다양한 기능 버튼들을 포함하고 있습니다.</p>
         </div>
     </div>
-    
-    <!-- 웹컴포넌트 스크립트 로드 -->
-    <script src="../../../script/modules/navigation/navigation-component.js"></script>
-    
-    <script>
-        // 알림 버튼 클래스 수정 예시
-        document.addEventListener('DOMContentLoaded', function() {
-            const navigation = document.getElementById('mainNavigation');
-            
-            // 알림 버튼 클래스 수정 예시
-            // navigation.setAttribute('alarm-class', 'custom-alarm');
-            
-            // 또는 JavaScript로 직접 수정
-            // const alarmButton = navigation.querySelector('.navigation-button.alarm');
-            // if (alarmButton) {
-            //     alarmButton.classList.remove('alarm');
-            //     alarmButton.classList.add('custom-alarm');
-            // }
-        });
-    </script>
-    
 </body>
 </html>

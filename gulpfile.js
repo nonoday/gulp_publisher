@@ -9,6 +9,7 @@ const concat = require('gulp-concat');
 const del = require('del');
 const fs = require('fs');
 const path = require('path');
+const sourcemaps = require('gulp-sourcemaps');
 
 // 경로 설정
 /*
@@ -74,7 +75,9 @@ function scssToSolid2CSS() {
   
   return gulp.src(paths.scssToSolid2)
     .pipe(plumber())
+    .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(paths.solid2CssDest))
     .on('end', () => {
       console.log('✅ SCSS 컴파일이 완료되었습니다.');
@@ -103,7 +106,9 @@ function variablesToCSS() {
   
   return gulp.src(paths.variablesScss)
     .pipe(plumber())
+    .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write('.'))
     .pipe(rename({ basename: 'variables' })) // 파일명을 variables.css로 변경
     .pipe(gulp.dest(paths.solid2CssDest))
     .pipe(cleanCSS())

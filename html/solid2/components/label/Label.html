@@ -3,47 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Label Web Component</title>
-    <link rel="stylesheet" href="../../../css/tokens.css">
-    <script src="../../../script/components/label/label-component.js"></script>
+    <title>Label Component</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
 </head>
 <body>
+    <div class="demo-container">
+        <h1>Label Component</h1>
+        
+        <!-- Solid 타입 -->
+        <h2>Solid Type</h2>
+        <div class="demo-row">
+            <span class="solid-label solid blue">텍스트</span>
+            <span class="solid-label solid cyan">텍스트</span>
+            <span class="solid-label solid green">텍스트</span>
+            <span class="solid-label solid yellow">텍스트</span>
+            <span class="solid-label solid orange">텍스트</span>
+            <span class="solid-label solid red">텍스트</span>
+            <span class="solid-label solid gray">텍스트</span>
+        </div>
 
-    <!-- Solid 타입 -->
-    <label-component type="solid" variant="blue">텍스트</label-component>
-    <label-component type="solid" variant="cyan">텍스트</label-component>
-    <label-component type="solid" variant="green">텍스트</label-component>
-    <label-component type="solid" variant="yellow">텍스트</label-component>
-    <label-component type="solid" variant="orange">텍스트</label-component>
-    <label-component type="solid" variant="red">텍스트</label-component>
-    <label-component type="solid" variant="gray">텍스트</label-component>
-    <label-component type="solid" variant="blue">텍스트</label-component>
+        <!-- Line 타입 -->
+        <h2>Line Type</h2>
+        <div class="demo-row">
+            <span class="solid-label line red">텍스트</span>
+            <span class="solid-label line orange">텍스트</span>
+            <span class="solid-label line yellow">텍스트</span>
+            <span class="solid-label line olive">텍스트</span>
+            <span class="solid-label line celery">텍스트</span>
+            <span class="solid-label line green">텍스트</span>
+            <span class="solid-label line seaform">텍스트</span>
+            <span class="solid-label line cyan">텍스트</span>
+            <span class="solid-label line gray">텍스트</span>
+            <span class="solid-label line blue">텍스트</span>
+            <span class="solid-label line indigo">텍스트</span>
+            <span class="solid-label line purple">텍스트</span>
+            <span class="solid-label line fushia">텍스트</span>
+            <span class="solid-label line magenta">텍스트</span>
+        </div>
 
-    <!-- Line 타입 -->
-    <label-component type="line" variant="red">텍스트</label-component>
-    <label-component type="line" variant="orange">텍스트</label-component>
-    <label-component type="line" variant="yellow">텍스트</label-component>
-    <label-component type="line" variant="olive">텍스트</label-component>
-    <label-component type="line" variant="celery">텍스트</label-component>
-    <label-component type="line" variant="green">텍스트</label-component>
-    <label-component type="line" variant="seaform">텍스트</label-component>
-    <label-component type="line" variant="cyan">텍스트</label-component>
-    <label-component type="line" variant="gray">텍스트</label-component>
-    <label-component type="line" variant="blue">텍스트</label-component>
-    <label-component type="line" variant="indigo">텍스트</label-component>
-    <label-component type="line" variant="purple">텍스트</label-component>
-    <label-component type="line" variant="fushia">텍스트</label-component>
-    <label-component type="line" variant="magenta">텍스트</label-component>
-
-    <!-- Tint 타입 -->
-    <label-component type="tint" variant="blue">텍스트</label-component>
-    <label-component type="tint" variant="cyan">텍스트</label-component>
-    <label-component type="tint" variant="green">텍스트</label-component>
-    <label-component type="tint" variant="yellow">텍스트</label-component>
-    <label-component type="tint" variant="orange">텍스트</label-component>
-    <label-component type="tint" variant="red">텍스트</label-component>
-
-
-
+        <!-- Tint 타입 -->
+        <h2>Tint Type</h2>
+        <div class="demo-row">
+            <span class="solid-label tint blue">텍스트</span>
+            <span class="solid-label tint cyan">텍스트</span>
+            <span class="solid-label tint green">텍스트</span>
+            <span class="solid-label tint yellow">텍스트</span>
+            <span class="solid-label tint orange">텍스트</span>
+            <span class="solid-label tint red">텍스트</span>
+        </div>
+        
+        <!-- 데모 스타일 -->
+        <style>
+            .demo-container {
+                padding: 20px;
+            }
+            .demo-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                margin-top: 30px;
+                margin-bottom: 10px;
+            }
+        </style>
+    </div>
 </body>
 </html>
