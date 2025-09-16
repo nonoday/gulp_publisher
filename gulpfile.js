@@ -56,27 +56,35 @@ function tokensToCSS(done) {
 
 // SCSS 파일들을 solid2 CSS 폴더로 컴파일하는 함수
 function scssToSolid2CSS() {
+  console.log('🔄 SCSS 컴파일을 시작합니다...');
+  
   // solid2 폴더가 없으면 생성
   const solid2Dir = path.resolve(paths.solid2CssDest);
   if (!fs.existsSync(solid2Dir)) {
     fs.mkdirSync(solid2Dir, { recursive: true });
+    console.log('📁 CSS 폴더를 생성했습니다:', solid2Dir);
   }
   
   // solid2 minify 폴더가 없으면 생성
   const solid2MinDir = path.resolve(paths.solid2MinDest);
   if (!fs.existsSync(solid2MinDir)) {
     fs.mkdirSync(solid2MinDir, { recursive: true });
+    console.log('📁 Minify 폴더를 생성했습니다:', solid2MinDir);
   }
   
   return gulp.src(paths.scssToSolid2)
     .pipe(plumber())
-    .pipe(changed(paths.solid2CssDest, { extension: '.css' }))
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(paths.solid2CssDest))
-    .pipe(changed(paths.solid2MinDest, { extension: '.min.css' }))
+    .on('end', () => {
+      console.log('✅ SCSS 컴파일이 완료되었습니다.');
+    })
     .pipe(cleanCSS())
     .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(paths.solid2MinDest));
+    .pipe(gulp.dest(paths.solid2MinDest))
+    .on('end', () => {
+      console.log('✅ Minify CSS 생성이 완료되었습니다.');
+    });
 }
 
 // _variables.scss를 CSS로 변환하는 함수
@@ -95,11 +103,9 @@ function variablesToCSS() {
   
   return gulp.src(paths.variablesScss)
     .pipe(plumber())
-    .pipe(changed(paths.solid2CssDest, { extension: '.css' }))
     .pipe(sass().on('error', sass.logError))
     .pipe(rename({ basename: 'variables' })) // 파일명을 variables.css로 변경
     .pipe(gulp.dest(paths.solid2CssDest))
-    .pipe(changed(paths.solid2MinDest, { extension: '.min.css' }))
     .pipe(cleanCSS())
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(paths.solid2MinDest));
@@ -305,15 +311,17 @@ function updateVariablesFile(existingContent, commonVariables, normalTypoVariabl
 
 // watch
 function watchFiles() {
+  console.log('👀 파일 감시를 시작합니다...');
+  
   // 토큰 파일 변경 감시 (더 안정적인 감시)
   watch(paths.tokens, { ignoreInitial: false }, function(cb) {
+    console.log('📝 토큰 파일이 변경되었습니다.');
     tokensToCSS(cb);
   });
   
-  
-  
   // SCSS 파일 변경 감시 (solid2 CSS 폴더로 컴파일)
   watch(paths.scssToSolid2, { ignoreInitial: false }, function(cb) {
+    console.log('🎨 SCSS 파일이 변경되었습니다. 컴파일 중...');
     scssToSolid2CSS();
     if (typeof cb === 'function') {
       cb();
@@ -322,6 +330,7 @@ function watchFiles() {
   
   // _variables.scss 파일 변경 감시
   watch(paths.variablesScss, { ignoreInitial: false }, function(cb) {
+    console.log('🔧 변수 파일이 변경되었습니다.');
     variablesToCSS();
     if (typeof cb === 'function') {
       cb();
@@ -330,6 +339,7 @@ function watchFiles() {
   
   // CSS 파일 변경 감시 (common.css, normal-typo.css)
   watch(['./images/web/tokens/css/common.css', './images/web/tokens/css/normal-typo.css'], { ignoreInitial: false }, function(cb) {
+    console.log('📋 CSS 파일이 변경되었습니다.');
     checkCssToVariables();
     if (typeof cb === 'function') {
       cb();
@@ -338,6 +348,7 @@ function watchFiles() {
   
   // tokens CSS 파일들 변경 감시 (합치기)
   watch(paths.tokensCssFiles, { ignoreInitial: false }, function(cb) {
+    console.log('🔗 토큰 CSS 파일이 변경되었습니다.');
     combineTokensCSS();
     if (typeof cb === 'function') {
       cb();
