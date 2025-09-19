@@ -1311,6 +1311,22 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
       }
     }
 
+    /* 상태별 스타일 */
+    &.error .progress-step-item-marker {
+      background: $fg-negative-same;
+      color: $white;
+    }
+    
+    &.hold .progress-step-item-marker {
+      background: $fg-steady;
+      color: $white;
+    }
+    
+    &.check .progress-step-item-marker {
+      background: $fg-brand-same;
+      color: $white;
+    }
+
     /* 연결선 */
     &:not(:last-child)::after {
       content: '';
@@ -1326,26 +1342,6 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-    }
-  }
-}
-
-
-  /* 상태별 스타일 */
-  &-item {
-    &.error .progress-step-item-marker {
-      background: $fg-negative-same;
-      color: $white;
-    }
-    
-    &.hold .progress-step-item-marker {
-      background: $fg-steady;
-      color: $white;
-    }
-    
-    &.check .progress-step-item-marker {
-      background: $fg-brand-same;
-      color: $white;
     }
   }
 
@@ -1401,7 +1397,6 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
       top: 12px;
     }
   }
-}
 
   /* 세로형 스타일 */
   &.vertical {
@@ -1458,12 +1453,6 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
           color: $text-secondary;
           font-size: $font-size-body-l;
           font-weight: $font-weight-m-m;
-        }
-
-        &-description {
-          color: $text-quaternary;
-          font-size: $font-size-body-s;
-          font-weight: $font-weight-r;
         }
 
         &-description {
