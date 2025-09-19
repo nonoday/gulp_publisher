@@ -1194,3 +1194,310 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
     border: 1px solid $border-secondary;
   }
 }
+
+
+
+.progress-step {
+  list-style: none;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-lg;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+
+  &-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 90px;
+
+    /* 진행률 단계 아이템 번호 */
+    &-marker {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin-bottom: $spacing-sm;
+      border-radius: $radius-full;
+      background-color: $bg-gray;
+      color: $text-quaternary;
+      font-weight: $font-weight-m-m;
+      font-size: $font-size-body-s;
+      z-index: 2;
+    }
+
+    &-content {
+      text-align: center;
+      width: 100%;
+
+      /* 진행률 단계 제목 */
+      &-title {
+        margin-bottom: $spacing-sm;
+        color: $text-secondary;
+        font-size: $font-size-body-m;
+        font-weight: $font-weight-m-m;
+      }
+
+      /* 진행률 단계 설명 */
+      &-description {
+        color: $text-quaternary;
+        font-size: $font-size-body-s;
+        font-weight: $font-weight-r;
+        margin-bottom: $spacing-xs;
+      }
+
+      /* 진행률 단계 날짜 */
+      &-date {
+        color: $text-tertiary;
+        font-size: $font-size-body-s;
+        font-weight: $font-weight-r;
+      }
+
+      /* 진행률 단계 링크 컨테이너 */
+      &-link-container {
+        margin-top: $spacing-xs;
+      }
+
+      /* 진행률 단계 링크 */
+      &-link {
+        display: inline-flex;
+        align-items: center;
+        color: $text-brand;
+        font-size: $font-size-body-s;
+        font-weight: $font-weight-r;
+        text-decoration: none;
+
+        &:focus {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    /* 활성화된 단계 */
+    &.active {
+      .progress-step-item-marker {
+        background: $bg-brand-strong-same;
+        color: $white;
+      }
+      
+      .progress-step-item-content-title {
+        color: $text-brand;
+      }
+
+      &:not(:last-child)::after {
+        background: $border-secondary;
+      }
+    }
+
+    /* 완료된 단계 */
+    &.completed {
+      .progress-step-item-marker {
+        background: $bg-brand-strong-same;
+        color: $white;
+      }
+
+      .progress-step-item-content-title {
+        color: $text-secondary;
+      }
+
+      &:not(:last-child)::after {
+        background: $brand-500;
+      }
+    }
+
+    /* 연결선 */
+    &:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      width: calc(100% + #{$spacing-lg});
+      height: 1px;
+      background: $border-secondary;
+      z-index: 1;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+  }
+}
+
+
+  /* 상태별 스타일 */
+  &-item {
+    &.error .progress-step-item-marker {
+      background: $fg-negative-same;
+      color: $white;
+    }
+    
+    &.hold .progress-step-item-marker {
+      background: $fg-steady;
+      color: $white;
+    }
+    
+    &.check .progress-step-item-marker {
+      background: $fg-brand-same;
+      color: $white;
+    }
+  }
+
+  /* 타입별 스타일 */
+  &.number .progress-step-item-marker {
+    background: $bg-brand;
+    color: $text-brand;
+  }
+
+  /* 크기별 스타일 */
+  &.icon {
+    .progress-step-item-marker {
+      width: 48px;
+      height: 48px;
+
+      img {
+        width: 25px;
+      }
+    }
+
+    .progress-step-item:not(:last-child)::after {
+      top: 24px;
+    }
+  }
+
+  &.large {
+    .progress-step-item-marker {
+      width: 32px;
+      height: 32px;
+
+      img {
+        width: 20px;
+      }
+    }
+
+    .progress-step-item:not(:last-child)::after {
+      top: 17px;
+    }
+  }
+
+  &.small {
+    .progress-step-item-marker {
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+
+      img {
+        width: 15px;
+      }
+    }
+
+    .progress-step-item:not(:last-child)::after {
+      top: 12px;
+    }
+  }
+}
+
+  /* 세로형 스타일 */
+  &.vertical {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0;
+
+    .progress-step-item {
+      flex-direction: row;
+      align-items: flex-start;
+      flex: auto;
+      min-width: auto;
+      gap: $spacing-sm;
+      margin-top: $spacing-sm;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &::after {
+        display: none;
+      }
+
+      &-content {
+        width: auto;
+        text-align: left;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 40px;
+          bottom: 0;
+          left: 16px;
+          width: 1px;
+          background: $border-secondary;
+          z-index: 1;
+          pointer-events: none;
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+        }
+
+        &:last-child::after {
+          display: none;
+        }
+
+        &-title {
+          display: flex;
+          align-items: center;
+          min-height: 32px;
+          color: $text-secondary;
+          font-size: $font-size-body-l;
+          font-weight: $font-weight-m-m;
+        }
+
+        &-description {
+          color: $text-quaternary;
+          font-size: $font-size-body-s;
+          font-weight: $font-weight-r;
+        }
+
+        &-description {
+          color: $text-quaternary;
+          font-size: $font-size-body-s;
+          font-weight: $font-weight-r;
+          margin-bottom: $spacing-xs;
+        }
+
+        &-date {
+          margin-top: $spacing-xs;
+        }
+
+        &-link-container {
+          margin-top: $spacing-xs;
+        }
+
+        &-link {
+          display: inline-flex;
+          align-items: center;
+          color: $text-brand;
+          font-size: $font-size-body-s;
+          font-weight: $font-weight-r;
+          text-decoration: none;
+
+          &:focus {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      &.completed .progress-step-item-content::after {
+        background: $brand-500;
+      }
+    }
+  }
+}
