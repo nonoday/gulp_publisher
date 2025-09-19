@@ -1168,3 +1168,29 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
 }
 
 
+
+// 다크모드 대응 믹스인
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+  
+  html[data-theme="dark"] & {
+    @content;
+  }
+}
+
+.test {
+  color: $text-primary;
+  font-size: $font-size-body-m;
+  padding: $spacing-md;
+  background-color: $bg-canvas-white;
+  border-radius: $radius-md;
+  
+  // 다크모드 스타일
+  @include dark-mode {
+    color: $text-primary;
+    background-color: $bg-canvas-white;
+    border: 1px solid $border-secondary;
+  }
+}
