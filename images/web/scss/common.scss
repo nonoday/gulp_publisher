@@ -4,22 +4,45 @@
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
-  font-weight: 400;
-  src: local("OneShinhanLight"), url("../../fonts/OneShinhanLight.woff") format("woff");
+  font-weight: 300;
+  src: local("OneShinhanDigital-Light"), 
+       url("../fonts/woff2/OneShinhanDigital-Light_20250918.woff2") format("woff2"),
+       url("../fonts/woff/OneShinhanDigital-Light_20250919-1.woff") format("woff"),
+       url("../fonts/ttf/OneShinhanDigital-Light_20250919-1.ttf") format("truetype"),
+       url("../fonts/otf/OneShinhanDigital-Light_20250919.otf") format("opentype");
   font-display: swap;
 }
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
-  font-weight: 500;
-  src: local("OneShinhanMedium"), url("../../fonts/OneShinhanMedium.woff") format("woff");
+  font-weight: 400;
+  src: local("OneShinhanDigital-Medium"), 
+       url("../fonts/woff2/OneShinhanDigital-Medium_20250918.woff2") format("woff2"),
+       url("../fonts/woff/OneShinhanDigital-Medium_20250919-1.woff") format("woff"),
+       url("../fonts/ttf/OneShinhanDigital-Medium_20250919-1.ttf") format("truetype"),
+       url("../fonts/otf/OneShinhanDigital-Medium_20250919.otf") format("opentype");
   font-display: swap;
 }
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
   font-weight: 700;
-  src: local("OneShinhanBold"), url("../../fonts/OneShinhanBold.woff") format("woff");
+  src: local("OneShinhanDigital-Bold"), 
+       url("../fonts/woff2/OneShinhanDigital-Bold_20250918-1.woff2") format("woff2"),
+       url("../fonts/woff/OneShinhanDigital-Bold_20250919-1.woff") format("woff"),
+       url("../fonts/ttf/OneShinhanDigital-Bold_20250919-1.ttf") format("truetype"),
+       url("../fonts/otf/OneShinhanDigital-Bold_20250919.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "OneShinhan";
+  font-style: normal;
+  font-weight: 800;
+  src: local("OneShinhanDigital-ExtraBold"), 
+       url("../fonts/woff2/OneShinhanDigital-ExtraBold_20250918.woff2") format("woff2"),
+       url("../fonts/woff/OneShinhanDigital-ExtraBold_20250919-1.woff") format("woff"),
+       url("../fonts/ttf/OneShinhanDigital-ExtraBold_20250919-1.ttf") format("truetype"),
+       url("../fonts/otf/OneShinhanDigital-ExtraBold_20250919.otf") format("opentype");
   font-display: swap;
 }
 html, body, div, span, applet, object, iframe,
