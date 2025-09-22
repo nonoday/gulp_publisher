@@ -1,0 +1,310 @@
+<!--
+Figma Layer: 앱 선택
+Node ID: 4642-140874
+Description: 앱 선택 바텀시트 모달 - 조폐공사 관련 앱 목록 선택
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>앱 선택</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            background-color: var(--bg-canvas_white, #ffffff);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas_white, #ffffff);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(45, 55, 72, 0.6);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Bottom Sheet Container */
+        .bottom-sheet {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 20px 20px 0 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0px -4px 32px 0px rgba(12, 17, 29, 0.12);
+            align-items: flex-start;
+            justify-content: flex-start;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .sheet-header {
+            width: 100%;
+            padding: 20px 20px 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .sheet-title {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+        }
+
+        .close-button {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            background-image: url('../../../../images/icon/icon_x.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            outline: none;
+        }
+
+        /* Content */
+        .sheet-content {
+            width: 100%;
+            padding: 24px 20px 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* App List */
+        .app-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+        }
+
+        .app-item {
+            width: 100%;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-tertiary, #f0f4fa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            background: none;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            outline: none;
+        }
+
+        .app-item:last-child {
+            border-bottom: none;
+        }
+
+        .app-item:hover {
+            background-color: var(--bg-canvas_gray, #f0f4fa);
+        }
+
+        .app-name {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-secondary, #344054);
+            margin: 0;
+            flex: 1;
+            text-align: left;
+        }
+
+        .chevron-right {
+            width: 16px;
+            height: 16px;
+            background-image: url('../../../../images/icon/icon_chevron_right.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Footer */
+        .sheet-footer {
+            width: 100%;
+            padding: 24px 20px 24px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .confirm-button {
+            width: 100%;
+            height: 56px;
+            background-color: var(--bg-brand_strong-same, #005df9);
+            border: none;
+            border-radius: 16px;
+            color: var(--text-ondark_primary-same, #ffffff);
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+        }
+
+        .confirm-button:hover {
+            background-color: #004de5;
+        }
+
+        .confirm-button:active {
+            background-color: #003db8;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Modal Overlay -->
+        <div class="modal-overlay">
+            <!-- Bottom Sheet -->
+            <div class="bottom-sheet">
+                <!-- Header -->
+                <div class="sheet-header">
+                    <h2 class="sheet-title">앱 선택</h2>
+                    <button class="close-button" id="closeButton"></button>
+                </div>
+
+                <!-- Content -->
+                <div class="sheet-content">
+                    <!-- App List -->
+                    <div class="app-list">
+                        <button class="app-item" data-app="app1">
+                            <span class="app-name">조폐공사 통화 발급 민간/정부앱1</span>
+                            <div class="chevron-right"></div>
+                        </button>
+                        
+                        <button class="app-item" data-app="app2">
+                            <span class="app-name">조폐공사 통화 발급 민간/정부앱2</span>
+                            <div class="chevron-right"></div>
+                        </button>
+                        
+                        <button class="app-item" data-app="app3">
+                            <span class="app-name">조폐공사 통화 발급 민간/정부앱3</span>
+                            <div class="chevron-right"></div>
+                        </button>
+                        
+                        <button class="app-item" data-app="app4">
+                            <span class="app-name">조폐공사 통화 발급 민간/정부앱4</span>
+                            <div class="chevron-right"></div>
+                        </button>
+                        
+                        <button class="app-item" data-app="app5">
+                            <span class="app-name">조폐공사 통화 발급 민간/정부앱5</span>
+                            <div class="chevron-right"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="sheet-footer">
+                    <button class="confirm-button" id="confirmButton">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App selection
+        const appItems = document.querySelectorAll('.app-item');
+        let selectedApp = null;
+
+        appItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove selected state from all items
+                appItems.forEach(app => app.classList.remove('selected'));
+                // Add selected state to clicked item
+                item.classList.add('selected');
+                selectedApp = item.dataset.app;
+                console.log('Selected app:', selectedApp);
+            });
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close app selection modal');
+            // Close modal or navigate back
+        });
+
+        // Confirm button handler
+        document.getElementById('confirmButton').addEventListener('click', () => {
+            if (selectedApp) {
+                console.log('Confirm app selection:', selectedApp);
+                // Process the selected app
+            } else {
+                console.log('No app selected');
+                // Show warning or select first app by default
+            }
+        });
+
+        // Close modal when clicking overlay
+        document.querySelector('.modal-overlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close modal by clicking overlay');
+                // Close modal
+            }
+        });
+
+        console.log('App selection modal loaded');
+    </script>
+</body>
+</html>

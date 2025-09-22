@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko" >
+<html lang="ko" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Label Web Component</title>
-    <link rel="stylesheet" href="../../../css/tokens.css">
+    <title>Skeleton Loading Component</title>
+    <link rel="stylesheet" href="../../../images/web/css/solid2/tokens.css">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -25,14 +25,15 @@
             overflow: hidden;
             background: none;
         }
+
         .skeleton-loading {
             width: 100%;
             height: 100vh;
-            background-color: #F0F4FA;
+            background-color: var(--bg-canvas-gray);
         }
         .skeleton-loading-bar {
             height: 100%;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, #FFFFFF 50%, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0) 100%);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, var(--white) 50%, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0) 100%);
             background-size: 200% 100%;
             animation: shimmer 4s infinite;
         }
@@ -47,21 +48,71 @@
         }
 
         /* 다크 모드 스타일 */
-        .dark .skeleton-loading {background-color: #000;}
-        .dark .skeleton-loading-bar {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0) 100%);
+        html[data-theme="dark"] .skeleton-loading {
+            background-color: var(--bg-canvas-gray);
+        }
+        html[data-theme="dark"] .skeleton-loading-bar {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 40%, var(--opacity-white-10) 50%, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0) 100%);
             background-size: 200% 100%;
             animation: shimmer 4s infinite;
+        }
+
+        /* 테마 토글 버튼 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background-color: var(--bg-brand-strong-same);
+            color: var(--text-ondark-primary-same);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: var(--font-size-body-m);
+            z-index: 1000;
+            font-family: inherit;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.8;
         }
 
     </style>
 
 </head>
 <body>
-<div class="skeleton-loading">
-    <div class="skeleton-loading-bar">
-        <span class="blind">로딩중</span>
+    <button class="theme-toggle" onclick="toggleTheme()">다크모드 토글</button>
+    
+    <div class="skeleton-loading">
+        <div class="skeleton-loading-bar">
+            <span class="blind">로딩중</span>
+        </div>
     </div>
-</div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            
+            // 로컬 스토리지에 테마 저장
+            localStorage.setItem('theme', newTheme);
+            
+            // 버튼 텍스트 업데이트
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = newTheme === 'dark' ? '라이트모드 토글' : '다크모드 토글';
+        }
+        
+        // 페이지 로드 시 저장된 테마 적용
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = savedTheme === 'dark' ? '라이트모드 토글' : '다크모드 토글';
+        });
+    </script>
 </body>
 </html>

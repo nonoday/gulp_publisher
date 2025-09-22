@@ -1,0 +1,21 @@
+@use 'mixins' as mixins;
+
+.basic-chip {
+    min-height:36px;
+    border-radius: 18px;
+    width:fit-content;
+    padding: var(--spacing-none) var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+
+    &.selected {
+    }
+}
+.basic-chip-label-container {
+    display: flex;
+    gap: var(--spacting-none) var(--spacting-sm);
+}
+.basic-chip-number {
+    color: var(--text-brand);
+}

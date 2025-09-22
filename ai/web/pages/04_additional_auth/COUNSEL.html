@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담사를 통한 본인확인</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-canvas-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas-white);
+            position: relative;
+        }
+
+        /* Header Navigation */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            border-bottom: 1px solid var(--border-tertiary);
+        }
+
+        .nav-title {
+            font-family: Pretendard;
+            font-size: var(--typography-fontSize-lg);
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--text-primary);
+            letter-spacing: -0.36px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .nav-button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-button svg {
+            width: 24px;
+            height: 24px;
+            color: var(--text-primary);
+        }
+
+        .nav-back {
+            transform: rotate(180deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-xl) var(--spacing-2xl) 200px;
+            gap: var(--spacing-4xl);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Title Section */
+        .title-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .main-title {
+            font-family: OneShinhan, Pretendard;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 33px;
+            letter-spacing: -0.44px;
+            color: var(--text-primary);
+        }
+
+        .main-title .phone-number {
+            color: var(--text-brand);
+        }
+
+        .main-title .highlight {
+            color: var(--text-brand);
+        }
+
+        .subtitle {
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-md);
+        }
+
+        /* Call Icon Section */
+        .call-icon-section {
+            display: flex;
+            justify-content: center;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .call-icon-wrapper {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(194, 211, 255, 0.3) 0%, rgba(235, 240, 255, 0.8) 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .call-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--brand-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .call-icon svg {
+            width: 32px;
+            height: 32px;
+            color: var(--white);
+        }
+
+        /* Pulse Animation */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 93, 249, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(0, 93, 249, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 93, 249, 0);
+            }
+        }
+
+        .call-icon.calling {
+            animation: pulse 2s infinite;
+        }
+
+        /* Phone Input Section */
+        .phone-input-section {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .phone-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .phone-input {
+            width: 100%;
+            height: 56px;
+            padding: 0 var(--spacing-xl);
+            background: var(--bg-canvas-white);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            font-family: OneShinhan, Pretendard;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            color: var(--text-primary);
+            cursor: text;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .phone-input::placeholder {
+            color: var(--text-placeholder-same);
+        }
+
+        .phone-input:focus {
+            border-color: var(--border-brand);
+            box-shadow: 0 0 0 3px rgba(0, 93, 249, 0.1);
+        }
+
+        .phone-input:hover:not(:focus) {
+            border-color: var(--border-primary-strong-same);
+        }
+
+        .phone-input.filled {
+            font-family: OneShinhan, Pretendard;
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+        }
+
+        /* Timer and Retry Section */
+        .timer-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-lg);
+        }
+
+        .timer {
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-brand);
+        }
+
+        .retry-button {
+            padding: var(--spacing-sm) var(--spacing-xl);
+            background: var(--bg-brand);
+            color: var(--text-brand);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: OneShinhan, Pretendard;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 22px;
+            letter-spacing: -0.26px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .retry-button:hover:not(:disabled) {
+            background: var(--brand-200);
+        }
+
+        .retry-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .input-label {
+            position: absolute;
+            left: var(--spacing-xl);
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: OneShinhan, Pretendard;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            color: var(--text-placeholder-same);
+            pointer-events: none;
+            transition: all 0.2s ease;
+            background: var(--bg-canvas-white);
+            padding: 0 var(--spacing-xs);
+        }
+
+        .phone-input:focus + .input-label,
+        .phone-input:not(:placeholder-shown) + .input-label {
+            top: 0;
+            font-size: 12px;
+            line-height: 18px;
+            letter-spacing: -0.24px;
+            color: var(--text-brand);
+        }
+
+        /* Notice Section */
+        .notice-section {
+            position: fixed;
+            bottom: 144px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+            z-index: 50;
+        }
+
+        .notice-item {
+            position: relative;
+            padding-left: var(--spacing-xl);
+            font-family: OneShinhan, Pretendard;
+            font-size: 12px;
+            font-weight: 300;
+            line-height: 22px;
+            letter-spacing: -0.26px;
+            color: var(--text-tertiary);
+        }
+
+        .notice-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--fg-tertiary);
+        }
+
+        /* CTA Area */
+        .cta-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background: var(--bg-canvas-white);
+            z-index: 100;
+        }
+
+        .scroll-dim {
+            height: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white) 100%);
+        }
+
+        .button-area {
+            padding: 0 var(--spacing-2xl) var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+        }
+
+        .auth-button {
+            width: 100%;
+            min-height: 56px;
+            background: var(--bg-brand-strong-same);
+            color: var(--text-ondark-primary-same);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-family: OneShinhan, Pretendard, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-button:hover {
+            background: var(--brand-700);
+        }
+
+        .auth-button:active {
+            transform: scale(0.98);
+        }
+
+        .auth-button:disabled {
+            background: var(--bg-brand-selected-disabled);
+            cursor: not-allowed;
+        }
+
+        /* Loading Animation */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .auth-button.loading {
+            pointer-events: none;
+        }
+
+        .auth-button.hidden {
+            display: none;
+        }
+
+        .auth-button.success {
+            background: var(--bg-brand-strong-same);
+            pointer-events: all;
+        }
+
+        .auth-button.success:hover {
+            background: var(--brand-700);
+        }
+
+        /* Help Link */
+        .help-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) 0;
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .help-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .help-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .container {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .header-nav {
+                background: var(--bg-canvas-white);
+                border-bottom-color: var(--border-tertiary);
+            }
+
+            .main-title {
+                color: var(--text-primary);
+            }
+
+            .phone-input {
+                background: var(--bg-canvas-white);
+                border-color: var(--border-primary);
+                color: var(--text-primary);
+            }
+
+            .notice-item {
+                color: var(--text-tertiary);
+            }
+
+            .cta-container {
+                background: var(--bg-canvas-white);
+            }
+
+            .help-link {
+                color: var(--text-tertiary);
+            }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+
+            .main-content {
+                padding: var(--spacing-3xl) var(--spacing-5xl) 200px;
+            }
+
+            .cta-container {
+                max-width: 768px;
+            }
+
+            .notice-section {
+                max-width: 768px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Navigation -->
+        <header class="header-nav">
+            <button class="nav-button nav-back" aria-label="뒤로">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <h1 class="nav-title">상담사를 통한 본인확인</h1>
+            <button class="nav-button" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h2 class="main-title" id="mainTitle">
+                    연락받을 전화번호를<br>
+                    입력해주세요
+                </h2>
+                <p class="subtitle" id="subtitle" style="display: none;">
+                    전화가 오지 않으면 착신정지상태를 확인하세요
+                </p>
+            </div>
+
+            <!-- Call Icon -->
+            <div class="call-icon-section">
+                <div class="call-icon-wrapper">
+                    <div class="call-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M22 23.5C22 16.5 16.5 11 9.5 11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M9.5 11C9.5 11 8 11 8 12.5V16.5C8 18 9.5 18 9.5 18C10.5 18 14 18 18 22C22 26 22 29.5 22 30.5C22 30.5 22 32 23.5 32H27.5C29 32 29 30.5 29 30.5C29 23.5 23.5 18 16.5 18"
+                                  stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Number Inputs -->
+            <div>
+                <div class="phone-input-section">
+                    <div class="phone-input-wrapper">
+                        <input
+                            type="tel"
+                            class="phone-input"
+                            id="countryCode"
+                            placeholder=" "
+                            value="+1"
+                        />
+                        <label class="input-label" for="countryCode">국가코드</label>
+                    </div>
+                    <div class="phone-input-wrapper" style="flex: 2;">
+                        <input
+                            type="tel"
+                            class="phone-input"
+                            id="phoneNumber"
+                            placeholder=" "
+                            value="0"
+                        />
+                        <label class="input-label" for="phoneNumber">전화번호</label>
+                    </div>
+                </div>
+                <!-- Timer and Retry Button -->
+                <div class="timer-section" id="timerSection" style="display: none;">
+                    <span class="timer" id="timer">00:00</span>
+                    <button class="retry-button" id="retryButton" disabled>인증재요청</button>
+                </div>
+            </div>
+
+            <!-- Notice -->
+            <div class="notice-section">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="notice-item">
+                        해외 거주/체류중 고객님은 상담사에게 본인확인을 받을 수 있습니다.
+                    </li>
+                    <li class="notice-item">
+                        한국시간 09:00~18:00에 거래 신청 시 상담사와 국제전화로 본인확인을 합니다. 통화비용은 은행과 고객님께 각각 부과됩니다.
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- CTA Area -->
+        <div class="cta-container">
+            <div class="scroll-dim"></div>
+            <div class="button-area">
+                <button class="auth-button hidden" id="requestButton">
+                    <span id="buttonText">인증요청</span>
+                </button>
+                <a href="#" class="help-link">
+                    해외연락처로 전화를 받을 수 없나요?
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const countryCodeInput = document.getElementById('countryCode');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        const requestButton = document.getElementById('requestButton');
+        const buttonText = document.getElementById('buttonText');
+        const helpLink = document.querySelector('.help-link');
+        const timerSection = document.getElementById('timerSection');
+        const timerDisplay = document.getElementById('timer');
+        const retryButton = document.getElementById('retryButton');
+        const mainTitle = document.getElementById('mainTitle');
+        const subtitle = document.getElementById('subtitle');
+        const callIcon = document.querySelector('.call-icon');
+
+        let timerInterval = null;
+        let seconds = 0;
+        let authState = 'initial'; // initial, authenticating, completed
+
+        // Check if both inputs are valid
+        function checkInputs() {
+            const countryCode = countryCodeInput.value.trim();
+            const phoneNumber = phoneNumberInput.value.trim();
+
+            // Show button only if both fields are filled and phone number is not just '0'
+            if (countryCode && countryCode !== '' && phoneNumber && phoneNumber !== '' && phoneNumber !== '0') {
+                requestButton.classList.remove('hidden');
+            } else {
+                requestButton.classList.add('hidden');
+            }
+        }
+
+        // Input event listeners
+        countryCodeInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.classList.add('filled');
+            } else {
+                this.classList.remove('filled');
+            }
+            checkInputs();
+        });
+
+        phoneNumberInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.classList.add('filled');
+            } else {
+                this.classList.remove('filled');
+            }
+            checkInputs();
+        });
+
+        // Start timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            seconds = 0;
+
+            timerInterval = setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                // Enable retry button after 30 seconds
+                if (seconds >= 30) {
+                    retryButton.disabled = false;
+                }
+            }, 1000);
+        }
+
+        // Stop timer
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // Complete authentication
+        function completeAuth() {
+            authState = 'completed';
+
+            // Stop timer
+            stopTimer();
+
+            // Update title for completion
+            mainTitle.innerHTML = '인증이 끝나면,<br><span class="highlight">인증완료</span> 버튼을 눌러주세요';
+
+            // Hide subtitle
+            subtitle.style.display = 'none';
+
+            // Stop calling animation
+            callIcon.classList.remove('calling');
+
+            // Hide timer section and show 인증재요청 button
+            timerSection.style.display = 'flex';
+            retryButton.disabled = false;
+            retryButton.textContent = '인증재요청';
+
+            // Update button to completion state
+            requestButton.innerHTML = '<span>인증완료</span>';
+            requestButton.classList.remove('loading');
+            requestButton.classList.add('success');
+            requestButton.disabled = false;
+
+            console.log('인증 완료');
+        }
+
+        // Start authentication
+        function startAuth() {
+            authState = 'authenticating';
+
+            // Get phone number values
+            const countryCode = countryCodeInput.value.trim();
+            const phoneNumber = phoneNumberInput.value.trim();
+
+            // Update title with phone number
+            mainTitle.innerHTML = `<span class="phone-number">02-1577-8000</span>으로<br>오는 전화를 받아주세요`;
+
+            // Show subtitle
+            subtitle.style.display = 'block';
+
+            // Add calling animation
+            callIcon.classList.add('calling');
+
+            // Update input values to show formatted numbers
+            countryCodeInput.value = '+123';
+            phoneNumberInput.value = '23145697834';
+
+            // Update button to loading state
+            requestButton.innerHTML = '<span>인증 진행중</span><div class="loading-spinner"></div>';
+            requestButton.classList.add('loading');
+            requestButton.disabled = true;
+
+            // Show timer section
+            timerSection.style.display = 'flex';
+            retryButton.disabled = true;
+
+            // Start timer
+            startTimer();
+
+            // Disable inputs during authentication
+            countryCodeInput.disabled = true;
+            phoneNumberInput.disabled = true;
+
+            console.log('상담사 연결 요청 시작');
+
+            // Simulate authentication completion after 5 seconds
+            setTimeout(() => {
+                if (authState === 'authenticating') {
+                    completeAuth();
+                }
+            }, 5000);
+        }
+
+        // Request authentication button click
+        requestButton.addEventListener('click', function() {
+            if (authState === 'initial') {
+                const countryCode = countryCodeInput.value.trim();
+                const phoneNumber = phoneNumberInput.value.trim();
+
+                if (!countryCode || !phoneNumber || phoneNumber === '0') {
+                    alert('전화번호를 올바르게 입력해주세요.');
+                    return;
+                }
+
+                startAuth();
+            } else if (authState === 'completed') {
+                console.log('인증 완료 처리');
+                // TODO: 다음 단계로 진행
+                alert('인증이 완료되었습니다.');
+            }
+        });
+
+        // Retry button click
+        retryButton.addEventListener('click', function() {
+            if (!this.disabled) {
+                stopTimer();
+
+                // Reset button state
+                requestButton.classList.remove('success');
+
+                // If in completed state, restart the whole process
+                if (authState === 'completed') {
+                    // Reset inputs to initial values
+                    countryCodeInput.value = '+1';
+                    phoneNumberInput.value = '';
+                    countryCodeInput.disabled = false;
+                    phoneNumberInput.disabled = false;
+
+                    // Reset UI to initial state
+                    mainTitle.innerHTML = '연락받을 전화번호를<br>입력해주세요';
+                    subtitle.style.display = 'none';
+                    callIcon.classList.remove('calling');
+
+                    // Hide timer section
+                    timerSection.style.display = 'none';
+
+                    // Reset button
+                    requestButton.innerHTML = '<span id="buttonText">인증요청</span>';
+                    requestButton.classList.remove('loading', 'success');
+                    requestButton.classList.add('hidden');
+                    requestButton.disabled = false;
+
+                    // Reset state
+                    authState = 'initial';
+
+                    // Check inputs again
+                    checkInputs();
+                } else {
+                    // If authenticating, just restart auth
+                    startAuth();
+                }
+
+                console.log('인증 재요청');
+            }
+        });
+
+        // Help link click
+        helpLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('다른 인증 방법 안내');
+            // TODO: 도움말 페이지 또는 다른 인증 방법 안내
+        });
+
+        // Navigation buttons
+        document.querySelector('.nav-back').addEventListener('click', function() {
+            stopTimer();
+            history.back();
+        });
+
+        document.querySelector('.nav-button:not(.nav-back)').addEventListener('click', function() {
+            stopTimer();
+            console.log('페이지 닫기');
+            // window.close() 또는 history.back()
+        });
+
+        // Initialize with default values
+        countryCodeInput.value = '+1';
+        phoneNumberInput.value = '';
+        countryCodeInput.classList.add('filled');
+
+        // Initial check
+        checkInputs();
+    </script>
+</body>
+</html>

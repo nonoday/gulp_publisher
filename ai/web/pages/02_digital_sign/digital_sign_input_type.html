@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전자서명 - 비밀번호 입력</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-canvas-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas-white);
+            position: relative;
+        }
+
+/* Header Navigation */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            border-bottom: 1px solid var(--border-tertiary);
+        }
+
+        .nav-title {
+            font-family: Pretendard;
+            font-size: var(--typography-fontSize-lg);
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--text-primary);
+            letter-spacing: -0.36px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .nav-button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-left {
+            width: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-xl) var(--spacing-2xl) 0;
+            gap: var(--spacing-4xl);
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .document-viewer {
+            flex: 1;
+            background-color: var(--brand-200);
+            border-radius: var(--radius-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 580px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-placeholder {
+            font-family: Pretendard;
+            font-size: 32px;
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--brand-500);
+            letter-spacing: -0.64px;
+            text-align: center;
+        }
+
+        /* Input Area */
+        .input-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background: var(--bg-canvas-white);
+            z-index: 100;
+        }
+
+        .scroll-dim {
+            height: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white) 100%);
+        }
+
+        .input-area {
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .password-input {
+            width: 100%;
+            height: 56px;
+            padding: 0 var(--spacing-xl);
+            background: var(--bg-canvas-white);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            font-family: OneShinhan, Pretendard, sans-serif;
+            font-size: var(--typography-fontSize-base);
+            font-weight: var(--typography-fontWeight-light);
+            color: var(--text-primary);
+            letter-spacing: -0.32px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .password-input::placeholder {
+            color: var(--text-placeholder-same);
+        }
+
+        .password-input:focus {
+            border-color: var(--border-brand);
+            box-shadow: 0 0 0 3px rgba(0, 93, 249, 0.1);
+        }
+
+        .password-input:hover:not(:focus) {
+            border-color: var(--border-primary-strong-same);
+        }
+
+        .password-input.error {
+            border-color: var(--border-negative-same);
+        }
+
+        .password-input.error:focus {
+            box-shadow: 0 0 0 3px rgba(229, 56, 56, 0.1);
+        }
+
+        .input-label {
+            position: absolute;
+            left: var(--spacing-xl);
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: OneShinhan, Pretendard, sans-serif;
+            font-size: var(--typography-fontSize-base);
+            font-weight: var(--typography-fontWeight-light);
+            color: var(--text-placeholder-same);
+            letter-spacing: -0.32px;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            background: var(--bg-canvas-white);
+            padding: 0 var(--spacing-sm);
+        }
+
+        .password-input:focus + .input-label,
+        .password-input:not(:placeholder-shown) + .input-label {
+            top: 0;
+            font-size: var(--typography-fontSize-sm);
+            color: var(--text-brand);
+        }
+
+        .error-message {
+            margin-top: var(--spacing-sm);
+            font-family: Pretendard;
+            font-size: var(--typography-fontSize-sm);
+            color: var(--text-negative-same);
+            letter-spacing: -0.28px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+/* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+
+            .main-content {
+                padding: var(--spacing-3xl) var(--spacing-5xl) 0;
+            }
+
+            .input-container {
+                max-width: 768px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+<!-- Header Navigation -->
+        <header class="header-nav">
+            <div class="nav-left"></div>
+            <h1 class="nav-title">전자서명</h1>
+            <button class="nav-button" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 6L18 18" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="document-viewer">
+                <div class="document-placeholder">내용</div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <div class="input-container">
+            <div class="scroll-dim"></div>
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <input
+                        type="password"
+                        id="certificate-password"
+                        class="password-input"
+                        placeholder="공동인증서 비밀번호 입력"
+                        autocomplete="off"
+                    />
+                    <span class="error-message" id="error-message">올바른 비밀번호를 입력해주세요.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 비밀번호 입력 필드 이벤트 처리
+        const passwordInput = document.getElementById('certificate-password');
+        const errorMessage = document.getElementById('error-message');
+
+        passwordInput.addEventListener('input', function() {
+            // 에러 상태 초기화
+            this.classList.remove('error');
+            errorMessage.classList.remove('show');
+        });
+
+        passwordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                validatePassword();
+            }
+        });
+
+        function validatePassword() {
+            const password = passwordInput.value;
+
+            if (!password) {
+                showError('비밀번호를 입력해주세요.');
+                return false;
+            }
+
+            // TODO: 실제 인증서 비밀번호 검증 로직
+            console.log('인증서 비밀번호 검증 시작:', password);
+
+            // 예시: 비밀번호 검증 실패 시
+            // showError('올바른 비밀번호를 입력해주세요.');
+
+            return true;
+        }
+
+        function showError(message) {
+            passwordInput.classList.add('error');
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        // 닫기 버튼 클릭 이벤트
+        document.querySelector('.nav-button').addEventListener('click', function() {
+            console.log('페이지 닫기');
+            // window.close() 또는 history.back()
+        });
+
+        // 입력 필드 자동 포커스
+        window.addEventListener('load', function() {
+            passwordInput.focus();
+        });
+    </script>
+</body>
+</html>

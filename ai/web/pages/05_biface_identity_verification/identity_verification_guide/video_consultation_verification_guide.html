@@ -1,0 +1,396 @@
+<!--
+Figma Layer: (화상 상담을 위해 비대면 실명확인이 필요해요)
+Node ID: 4642-140464
+Description: 화상 상담 비대면 실명확인 안내 화면 - 신분증 확인과 본인확인 절차 안내
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비대면 실명확인</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            background-color: var(--bg-canvas_white, #ffffff);
+            color: var(--text-primary, #101828);
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas_white, #ffffff);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: clamp(48px, 15vw, 64px);
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(16px, 5vw, 24px);
+            position: relative;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            width: clamp(20px, 6.4vw, 28px);
+            height: clamp(20px, 6.4vw, 28px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('../../../../images/icon/icon_chevron_left.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 28px);
+            height: clamp(20px, 6.4vw, 28px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(16px, 4.8vw, 22px);
+            color: var(--text-primary, #101828);
+        }
+
+        .nav-close::before {
+            content: "×";
+            font-size: 20px;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: clamp(12px, 4vw, 20px) 0;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 40px);
+            position: relative;
+            z-index: 2;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .title-section {
+            padding: 0 clamp(16px, 5vw, 24px);
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2vw, 12px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 26px);
+            line-height: clamp(27px, 8.8vw, 39px);
+            letter-spacing: clamp(-0.36px, -0.12vw, -0.52px);
+            color: var(--text-primary, #101828);
+            margin: 0;
+            width: 100%;
+            text-align: left;
+        }
+
+        /* Content Section */
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 28px);
+            width: 100%;
+        }
+
+        /* Illustration */
+        .illustration {
+            width: 100%;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .id-card-image {
+            width: 100%;
+            height: auto;
+            background-image: url('../../../../images/icon/id_card.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            aspect-ratio: 3/2;
+            max-width: none;
+        }
+
+        /* Steps Section */
+        .steps-section {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 40px);
+            width: 100%;
+        }
+
+        .steps-container {
+            padding: 0 clamp(16px, 5vw, 24px);
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2vw, 12px);
+        }
+
+        .step-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            width: 100%;
+            min-height: 68px;
+            position: relative;
+        }
+
+        .step-marker-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            min-height: 68px;
+        }
+
+        .step-marker {
+            width: clamp(28px, 8.5vw, 36px);
+            height: clamp(28px, 8.5vw, 36px);
+            background-color: var(--bg-brand, #ebf0ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 18px);
+            line-height: clamp(22px, 6.9vw, 29px);
+            letter-spacing: clamp(-0.28px, -0.09vw, -0.36px);
+            color: var(--text-brand, #005df9);
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .step-line {
+            flex: 1;
+            width: 1px;
+            background-color: var(--border-secondary, #e4e7ec);
+            margin-top: 8px;
+            min-height: 36px;
+        }
+
+        .step-item:last-child .step-line {
+            display: none;
+        }
+
+        .step-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 4px;
+        }
+
+        .step-title {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 18px);
+            line-height: clamp(23px, 7.2vw, 30px);
+            letter-spacing: clamp(-0.28px, -0.09vw, -0.36px);
+            color: var(--text-quaternary, #667085);
+            margin: 0;
+        }
+
+        .step-description {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(10px, 3.2vw, 14px);
+            line-height: clamp(18px, 5.9vw, 24px);
+            letter-spacing: clamp(-0.20px, -0.06vw, -0.28px);
+            color: var(--text-quaternary, #667085);
+            margin: 0;
+            margin-top: clamp(1px, 0.5vw, 3px);
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            background-color: var(--bg-canvas_white, #ffffff);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            padding: 0 clamp(16px, 5vw, 24px) 0 clamp(16px, 5vw, 24px);
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .cta-button {
+            width: 100%;
+            min-height: clamp(48px, 15vw, 64px);
+            background-color: var(--bg-brand_strong-same, #005df9);
+            border: none;
+            border-radius: clamp(12px, 4.3vw, 20px);
+            color: var(--text-ondark_primary-same, #ffffff);
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(16px, 4.8vw, 22px);
+            line-height: clamp(26px, 7.7vw, 35px);
+            letter-spacing: clamp(-0.32px, -0.10vw, -0.44px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(3px, 1vw, 6px) clamp(10px, 3.2vw, 16px);
+            box-sizing: border-box;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #004de5;
+        }
+
+        .cta-button:active {
+            background-color: #003db8;
+        }
+
+        /* No max-width constraints - let content fill entire screen */
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="navigation">
+                <div class="nav-back"></div>
+                <div class="nav-close"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">화상 상담을 위해<br>비대면 실명확인이 필요해요</h1>
+            </div>
+
+            <!-- Content Section -->
+            <div class="content-section">
+                <!-- Illustration -->
+                <div class="illustration">
+                    <div class="id-card-image"></div>
+                </div>
+
+                <!-- Steps Section -->
+                <div class="steps-section">
+                    <div class="steps-container">
+                        <!-- Step 1 -->
+                        <div class="step-item">
+                            <div class="step-marker-container">
+                                <div class="step-marker">1</div>
+                                <div class="step-line"></div>
+                            </div>
+                            <div class="step-content">
+                                <h3 class="step-title">신분증 확인</h3>
+                                <p class="step-description">주민등록증·운전면허증</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="step-item">
+                            <div class="step-marker-container">
+                                <div class="step-marker">2</div>
+                            </div>
+                            <div class="step-content">
+                                <h3 class="step-title">본인확인</h3>
+                                <p class="step-description">본인명의 계좌인증</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="button-area">
+                    <button class="cta-button" id="ctaButton">시작하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation handlers
+        document.querySelector('.nav-back').addEventListener('click', () => {
+            console.log('Navigate back');
+            // Navigate to previous screen
+        });
+
+        document.querySelector('.nav-close').addEventListener('click', () => {
+            console.log('Close authentication flow');
+            // Navigate to main screen or close modal
+        });
+
+        // CTA button handler
+        document.getElementById('ctaButton').addEventListener('click', () => {
+            console.log('Start identity verification process');
+            // Navigate to first step of identity verification
+        });
+
+        console.log('Video consultation verification guide screen loaded');
+    </script>
+</body>
+</html>

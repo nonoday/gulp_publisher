@@ -1,0 +1,348 @@
+<!--
+Figma Layer: -(SMS인증)04
+Node ID: 4642-140927
+Description: 이름 불일치 확인 바텀시트 - 직접 입력한 이름과 신분증 인식 이름이 다를 때 표시 (바텀시트 형태)
+Asset Usage: No new assets required - reused existing CSS patterns
+Duplicate Prevention: Reused bottom sheet structure and styling patterns
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이름 불일치 확인</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* OneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/OneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/OneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/OneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            background-color: rgba(12, 17, 29, 0.6);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(12, 17, 29, 0.6);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            justify-content: flex-end;
+            align-items: stretch;
+        }
+
+        /* Bottom Sheet Container - Full responsive width */
+        .bottom-sheet {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: clamp(16px, 6.4vw, 24px) clamp(16px, 6.4vw, 24px) 0 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+            max-width: none;
+            margin: 0;
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.14);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Header - Simple top rounded section */
+        .sheet-header {
+            width: 100%;
+            height: clamp(20px, 6.4vw, 24px);
+            background-color: #ffffff;
+            border-radius: clamp(16px, 6.4vw, 24px) clamp(16px, 6.4vw, 24px) 0 0;
+        }
+
+        /* Content Body */
+        .sheet-body {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* Top Title Area - matches Figma structure */
+        .top-title-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 4.3vw, 16px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(2px, 0.5vw, 4px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .sheet-title {
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(16px, 4.8vw, 18px);
+            line-height: clamp(25px, 7.7vw, 29px);
+            letter-spacing: -0.36px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Content Body with description */
+        .content-body {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 0 0 clamp(16px, 5.3vw, 20px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        .description-section {
+            width: 100%;
+            display: flex;
+            gap: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sheet-description {
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: #475467;
+            margin: 0;
+            flex: 1;
+            word-wrap: break-word;
+        }
+
+        /* Footer CTA Section - matches Figma structure */
+        .sheet-footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+        }
+
+        .cta-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .cta-content {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* Button Section */
+        .button-section {
+            width: 100%;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            height: clamp(48px, 14.9vw, 56px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .secondary-button {
+            flex: 1;
+            height: 100%;
+            background-color: #ebf0ff;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #005df9;
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .secondary-button:hover {
+            background-color: #d6e4ff;
+        }
+
+        .secondary-button:active {
+            background-color: #c7d9ff;
+        }
+
+        .secondary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+
+        .primary-button {
+            flex: 1;
+            height: 100%;
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #ffffff;
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .primary-button:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Bottom Sheet -->
+        <div class="bottom-sheet">
+            <!-- Header -->
+            <div class="sheet-header"></div>
+
+            <!-- Body -->
+            <div class="sheet-body">
+                <!-- Top Title Area -->
+                <div class="top-title-area">
+                    <div class="title-section">
+                        <h2 class="sheet-title">직접 입력한 이름(000)과 신분증 촬영으로 인식된 이름(000)이 다릅니다.</h2>
+                    </div>
+
+                    <!-- Content Body with Description -->
+                    <div class="content-body">
+                        <div class="description-section">
+                            <p class="sheet-description">이름을 다시 입력하거나, 촬영된 신분증 정보를 확인해주세요.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer CTA -->
+            <div class="sheet-footer">
+                <div class="cta-section">
+                    <div class="cta-content">
+                        <div class="button-area">
+                            <!-- Button Section -->
+                            <div class="button-section">
+                                <button class="secondary-button" id="reInputButton">다시 입력</button>
+                                <button class="primary-button" id="viewResultButton">촬영결과 보기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Re-input button handler
+        document.getElementById('reInputButton').addEventListener('click', () => {
+            console.log('Re-input name selected');
+            // Navigate back to name input screen
+        });
+
+        // View result button handler
+        document.getElementById('viewResultButton').addEventListener('click', () => {
+            console.log('View capture result selected');
+            // Navigate to result verification screen
+        });
+
+        // Close bottom sheet when clicking overlay
+        document.querySelector('.page-container').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close bottom sheet by clicking overlay');
+                // Close bottom sheet
+            }
+        });
+
+        console.log('Name mismatch bottom sheet loaded');
+    </script>
+</body>
+</html>

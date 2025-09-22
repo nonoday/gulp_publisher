@@ -1,0 +1,575 @@
+<!--
+Figma Layer: 다른 금융기관에 있는 계좌 정보를 입력해주세요 (with chips)
+Node ID: 4642-140723
+Description: 다른 은행 계좌 인증 두 번째 화면 - 계좌번호 입력 중, 은행 칩들 표시
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>다른 은행 계좌 인증</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: flex-start;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: clamp(52px, 14.9vw, 56px);
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .nav-back {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            padding: clamp(16px, 5.3vw, 20px) 0 clamp(32px, 10.7vw, 40px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 22px);
+            line-height: clamp(28px, 8.8vw, 33px);
+            letter-spacing: -0.44px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .description-text {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: #667085;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Form Section */
+        .form-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .input-group {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 3.2vw, 12px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .input-label {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.32px;
+            color: #101828;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: clamp(3px, 1.1vw, 4px);
+        }
+
+        .required-mark {
+            color: #ff4444;
+            font-weight: 700;
+        }
+
+        .input-field-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-field {
+            width: 100%;
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: #ffffff;
+            border: 1px solid var(--border-brand, #005df9);
+            border-radius: clamp(10px, 3.2vw, 12px);
+            padding: 0 clamp(40px, 12.8vw, 48px) 0 clamp(14px, 4.3vw, 16px);
+            box-sizing: border-box;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            color: #101828;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--border-brand, #005df9);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-quaternary, #667085);
+        }
+
+        .clear-button {
+            position: absolute;
+            right: clamp(12px, 3.7vw, 14px);
+            top: 50%;
+            transform: translateY(-50%);
+            width: clamp(18px, 5.9vw, 22px);
+            height: clamp(18px, 5.9vw, 22px);
+            background: #667085;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .clear-icon {
+            width: clamp(10px, 3.2vw, 12px);
+            height: clamp(10px, 3.2vw, 12px);
+            filter: brightness(0) saturate(100%) invert(100%);
+        }
+
+        .dropdown-field {
+            width: 100%;
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: #ffffff;
+            border: 1px solid var(--border-secondary, #e4e7ec);
+            border-radius: clamp(10px, 3.2vw, 12px);
+            padding: 0 clamp(14px, 4.3vw, 16px);
+            box-sizing: border-box;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            color: var(--text-quaternary, #667085);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.2s ease;
+        }
+
+        .dropdown-field:hover {
+            border-color: var(--border-brand, #005df9);
+        }
+
+        .dropdown-icon {
+            width: clamp(16px, 5.3vw, 20px);
+            height: clamp(16px, 5.3vw, 20px);
+            flex-shrink: 0;
+            transform: rotate(90deg);
+            transition: transform 0.2s ease;
+        }
+
+        /* Bank Chips */
+        .chips-container {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            margin-top: clamp(-8px, -2.7vw, -4px);
+        }
+
+        .bank-chip {
+            height: clamp(32px, 9.6vw, 36px);
+            background-color: #f0f4fa;
+            border: none;
+            border-radius: clamp(16px, 4.8vw, 18px);
+            padding: 0 clamp(12px, 3.7vw, 14px);
+            box-sizing: border-box;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: #344054;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 2.1vw, 8px);
+            transition: all 0.2s ease;
+        }
+
+        .bank-chip:hover {
+            background-color: #e4e7ec;
+        }
+
+        .bank-chip.selected {
+            background-color: #005df9;
+            color: #ffffff;
+        }
+
+        .bank-logo {
+            width: clamp(18px, 5.9vw, 22px);
+            height: clamp(18px, 5.9vw, 22px);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            z-index: 1;
+            position: relative;
+        }
+
+        .scroll-dim {
+            width: 100%;
+            height: clamp(20px, 6.4vw, 24px);
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff);
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .primary-button {
+            width: 100%;
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: #f0f4fa;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #818da2;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: not-allowed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .primary-button.enabled {
+            background-color: #005df9;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .primary-button.enabled:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button.enabled:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button.enabled:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" style="width: 100%; height: 100%;" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">다른 금융기관에 있는<br>계좌 정보를 입력해주세요</h1>
+                <p class="description-text">비밀번호를 틀려서 잠겨있는 계좌로는<br>인증할 수 없으니 유의해주세요.</p>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <!-- Account Number Input -->
+                <div class="input-group">
+                    <label class="input-label" for="accountNumber">
+                        계좌번호
+                    </label>
+                    <div class="input-field-container">
+                        <input
+                            type="text"
+                            id="accountNumber"
+                            class="input-field"
+                            placeholder="- 없이 입력"
+                            value="123456"
+                            maxlength="20"
+                        />
+                        <button class="clear-button" id="clearButton">
+                            <img src="../../../../images/icon/icon_x.svg" alt="지우기" class="clear-icon" />
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bank Selection Dropdown -->
+                <div class="input-group">
+                    <label class="input-label" for="bankSelect">
+                        은행
+                    </label>
+                    <div class="dropdown-field" id="bankSelect" role="button" tabindex="0">
+                        <span id="bankSelectText">선택하여 입력</span>
+                        <img src="../../../../images/icon/icon_chevron_right.svg" alt="드롭다운" class="dropdown-icon" />
+                    </div>
+                </div>
+
+                <!-- Bank Chips -->
+                <div class="chips-container">
+                    <button class="bank-chip" data-bank="신한">
+                        <div class="bank-logo" style="background-color: #005df9;"></div>
+                        신한
+                    </button>
+                    <button class="bank-chip" data-bank="국민">
+                        <div class="bank-logo" style="background-color: #f0b90b;"></div>
+                        국민
+                    </button>
+                    <button class="bank-chip" data-bank="하나">
+                        <div class="bank-logo" style="background-color: #00b4a6;"></div>
+                        하나
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <div class="scroll-dim"></div>
+            <div class="button-area">
+                <button class="primary-button" id="nextButton">
+                    다음
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let accountNumber = '123456';
+        let selectedBank = '';
+
+        function updateButtonState() {
+            const button = document.getElementById('nextButton');
+            if (accountNumber.trim() && selectedBank) {
+                button.classList.add('enabled');
+            } else {
+                button.classList.remove('enabled');
+            }
+        }
+
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        // Account number input handler
+        document.getElementById('accountNumber').addEventListener('input', (e) => {
+            // Remove any non-numeric characters
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            accountNumber = e.target.value;
+            updateButtonState();
+        });
+
+        // Clear button handler
+        document.getElementById('clearButton').addEventListener('click', () => {
+            document.getElementById('accountNumber').value = '';
+            accountNumber = '';
+            updateButtonState();
+        });
+
+        // Bank selection dropdown handler
+        document.getElementById('bankSelect').addEventListener('click', () => {
+            console.log('Bank dropdown clicked');
+            // Show bank selection modal/dropdown
+        });
+
+        // Bank chip handlers
+        document.querySelectorAll('.bank-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const bankName = chip.getAttribute('data-bank');
+
+                // Remove selected state from all chips
+                document.querySelectorAll('.bank-chip').forEach(c => c.classList.remove('selected'));
+
+                // Add selected state to clicked chip
+                chip.classList.add('selected');
+
+                // Update selected bank
+                selectedBank = bankName;
+                document.getElementById('bankSelectText').textContent = bankName;
+                document.getElementById('bankSelect').style.color = '#101828';
+
+                updateButtonState();
+            });
+        });
+
+        // Next button handler
+        document.getElementById('nextButton').addEventListener('click', () => {
+            if (accountNumber.trim() && selectedBank) {
+                console.log('Next button clicked', { accountNumber, selectedBank });
+                // Navigate to next screen
+            } else {
+                console.log('Form incomplete');
+            }
+        });
+
+        // Keyboard accessibility for dropdown
+        document.getElementById('bankSelect').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('bankSelect').click();
+            }
+        });
+
+        // Initialize button state
+        updateButtonState();
+
+        console.log('Bank account verification screen with chips loaded');
+    </script>
+</body>
+</html>

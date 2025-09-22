@@ -1,0 +1,388 @@
+<!--
+Figma Layer: 상담사를 연결하고 있어요
+Node ID: 4642-139781
+Description: 상담사 연결 중 화면 - 신분증 준비 안내와 로딩 애니메이션
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담사 연결 중</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: none;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: flex-start;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: clamp(52px, 14.9vw, 56px);
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .nav-back {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            padding: clamp(14px, 4.3vw, 16px) 0 clamp(24px, 8.5vw, 32px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-content {
+            width: 100%;
+            max-width: none;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 22px);
+            line-height: clamp(28px, 8.8vw, 33px);
+            letter-spacing: clamp(-0.55px, -0.12vw, -0.44px);
+            color: #101828;
+            margin: clamp(0px, 0vw, 0px);
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .sub-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: clamp(-0.35px, -0.08vw, -0.28px);
+            color: var(--text-quaternary, #667085);
+            margin: clamp(0px, 0vw, 0px);
+            width: 100%;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Character Section */
+        .character-section {
+            width: 100%;
+            max-width: none;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: center;
+            padding: clamp(0px, 0vw, 0px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+        }
+
+        .character-container {
+            position: relative;
+            width: clamp(238px, 74.7vw, 280px);
+            height: clamp(142px, 44.8vw, 168px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-background {
+            position: absolute;
+            width: clamp(142px, 44.8vw, 168px);
+            height: clamp(142px, 44.8vw, 168px);
+            background: linear-gradient(135deg, #f0f4fa 0%, #e9edf5 100%);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .character-image {
+            position: absolute;
+            width: clamp(142px, 44.8vw, 168px);
+            height: clamp(142px, 44.8vw, 168px);
+            border-radius: 50%;
+            background-image: url('../../../../images/icon/consultant_character.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .loading-dot {
+            position: absolute;
+            width: clamp(14px, 4.5vw, 16px);
+            height: clamp(14px, 4.5vw, 16px);
+            background-color: #005df9;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .loading-dot.left {
+            left: 0;
+            animation-delay: -0.3s;
+        }
+
+        .loading-dot.right {
+            right: 0;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: translateY(-50%) scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-50%) scale(1.2);
+            }
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 1;
+            position: relative;
+        }
+
+        .footer-content {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px) clamp(0px, 0vw, 0px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+            min-height: clamp(27px, 8.5vw, 32px);
+        }
+
+        .button-group {
+            width: 100%;
+            min-height: clamp(27px, 8.5vw, 32px);
+            padding: 0 clamp(6px, 2.1vw, 8px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .secondary-button {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(19px, 5.9vw, 22px);
+            letter-spacing: clamp(-0.35px, -0.08vw, -0.28px);
+            color: #667085;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: clamp(0px, 0vw, 0px);
+            margin: clamp(0px, 0vw, 0px);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: clamp(3px, 1.1vw, 4px);
+        }
+
+        .secondary-button:hover {
+            color: #475467;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" style="width: 100%; height: 100%;" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Title Section -->
+            <div class="title-section">
+                <div class="title-content">
+                    <h1 class="main-title">상담사를 연결하고 있어요</h1>
+                    <p class="sub-title">빠른진행을 위해 신분증을 준비해주세요</p>
+                </div>
+            </div>
+
+            <!-- Character Section -->
+            <div class="character-section">
+                <div class="character-container">
+                    <div class="character-background"></div>
+                    <div class="character-image"></div>
+                    <div class="loading-dot left"></div>
+                    <div class="loading-dot right"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="button-area">
+                    <div class="button-group">
+                        <button class="secondary-button" id="alternativeAuthButton">
+                            다른 방식으로 인증
+                            <img src="../../../../images/icon/icon_chevron_right.svg" alt="화살표" style="width: clamp(16px, 5.1vw, 20px); height: clamp(16px, 5.1vw, 20px);" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        // Alternative authentication button handler
+        document.getElementById('alternativeAuthButton').addEventListener('click', () => {
+            console.log('Alternative authentication clicked');
+            // Navigate to alternative authentication options
+        });
+
+        console.log('Video call consultant connecting screen loaded');
+    </script>
+</body>
+</html>

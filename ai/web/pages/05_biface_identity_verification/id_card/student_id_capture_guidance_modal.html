@@ -1,0 +1,195 @@
+<!--
+Figma Layer: -신분증촬영(학생증)여권과학생증정보불일치인경우
+Node ID: 4642-140942
+Description: 학생증 촬영 안내 모달 - 학생증 촬영시 주민번호 13자리 전체가 보이도록 안내하는 모달
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생증 촬영 안내</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: rgba(12, 17, 29, 0.6);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(12, 17, 29, 0.6);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            width: clamp(300px, 87.2vw, 327px);
+            max-height: clamp(450px, 133.3vw, 500px);
+            background-color: #ffffff;
+            border-radius: clamp(12px, 4.3vw, 16px);
+            padding: clamp(24px, 8.5vw, 32px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(18px, 6.4vw, 24px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.14);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Content Section */
+        .content-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .modal-description {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary, #475467);
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+            text-align: left;
+        }
+
+        /* Button Section */
+        .button-section {
+            width: 100%;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            height: clamp(44px, 12.8vw, 48px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .primary-button {
+            width: 100%;
+            height: 100%;
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .primary-button:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Modal Container -->
+        <div class="modal-container">
+            <!-- Content Section -->
+            <div class="content-section">
+                <p class="modal-description">
+                    학생증(청소년증) 촬영시 주민번호 13자리가 모두 보이도록 촬영해주세요<br><br>주민번호13자리가 없는 경우 승인이 불가할 수 있습니다.
+                </p>
+            </div>
+
+            <!-- Button Section -->
+            <div class="button-section">
+                <button class="primary-button" id="confirmButton">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Confirm button handler
+        document.getElementById('confirmButton').addEventListener('click', () => {
+            console.log('Confirm button clicked');
+            // Close modal and proceed with capture
+        });
+
+        // Close modal when clicking overlay
+        document.querySelector('.page-container').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close modal by clicking overlay');
+                // Close modal
+            }
+        });
+
+        // Prevent modal content click from closing
+        document.querySelector('.modal-container').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        console.log('Student ID capture guidance modal loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전자서명</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-canvas-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas-white);
+            position: relative;
+        }
+
+/* Header Navigation */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            border-bottom: 1px solid var(--border-tertiary);
+        }
+
+        .nav-title {
+            font-family: Pretendard;
+            font-size: var(--typography-fontSize-lg);
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--text-primary);
+            letter-spacing: -0.36px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .nav-button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-left {
+            width: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-xl) var(--spacing-2xl) var(--spacing-xl);
+            gap: var(--spacing-4xl);
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .document-viewer {
+            flex: 1;
+            background-color: var(--brand-200);
+            border-radius: var(--radius-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 580px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-placeholder {
+            font-family: Pretendard;
+            font-size: 32px;
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--brand-500);
+            letter-spacing: -0.64px;
+            text-align: center;
+        }
+
+        /* CTA Area */
+        .cta-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background: var(--bg-canvas-white);
+            z-index: 100;
+        }
+
+        .scroll-dim {
+            height: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white) 100%);
+        }
+
+        .button-area {
+            padding: 0 var(--spacing-2xl) var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+        }
+
+        .sign-button {
+            width: 100%;
+            min-height: 56px;
+            background: var(--bg-brand-strong-same);
+            color: var(--text-ondark-primary-same);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-family: OneShinhan, Pretendard, sans-serif;
+            font-size: var(--typography-fontSize-lg);
+            font-weight: var(--typography-fontWeight-medium);
+            letter-spacing: -0.36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sign-button:hover {
+            background: var(--brand-700);
+        }
+
+        .sign-button:active {
+            transform: scale(0.98);
+        }
+
+        .sign-button:disabled {
+            background: var(--bg-brand-selected-disabled);
+            cursor: not-allowed;
+        }
+
+/* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+
+            .main-content {
+                padding: var(--spacing-3xl) var(--spacing-5xl) 140px;
+            }
+
+            .cta-container {
+                max-width: 768px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+<!-- Header Navigation -->
+        <header class="header-nav">
+            <div class="nav-left"></div>
+            <h1 class="nav-title">전자서명</h1>
+            <button class="nav-button" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 6L18 18" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="document-viewer">
+                <div class="document-placeholder">내용</div>
+            </div>
+        </main>
+
+        <!-- CTA Area -->
+        <div class="cta-container">
+            <div class="scroll-dim"></div>
+            <div class="button-area">
+                <button class="sign-button">
+                    전자서명 및 서류 다운로드
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전자서명 버튼 클릭 이벤트
+        document.querySelector('.sign-button').addEventListener('click', function() {
+            // 전자서명 프로세스 시작
+            console.log('전자서명 프로세스 시작');
+            // TODO: 실제 전자서명 로직 구현
+        });
+
+        // 닫기 버튼 클릭 이벤트
+        document.querySelector('.nav-button').addEventListener('click', function() {
+            // 페이지 닫기 또는 이전 페이지로 이동
+            console.log('페이지 닫기');
+            // window.close() 또는 history.back()
+        });
+    </script>
+</body>
+</html>

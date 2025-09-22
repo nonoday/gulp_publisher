@@ -1,0 +1,314 @@
+<!--
+Figma Layer: 업데이트 안내 모달
+Node ID: 4642-139934
+Description: 앱 업데이트 안내 모달 - 어두운 배경 위 하단 시트 스타일
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>업데이트 안내</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: rgba(12, 17, 29, 0.6);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(12, 17, 29, 0.6);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            width: 100%;
+            max-width: 100vw;
+            background-color: #ffffff;
+            border-radius: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px) 0 0;
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.06);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: modalSlideUp 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header Section */
+        .modal-header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: clamp(6px, 2.1vw, 8px);
+            border-radius: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px) 0 0;
+        }
+
+        .title-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding-bottom: clamp(16px, 5.3vw, 20px);
+        }
+
+        .modal-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(16px, 4.8vw, 18px);
+            line-height: clamp(24px, 7.7vw, 29px);
+            letter-spacing: -0.36px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .close-button {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        /* Body Section */
+        .modal-body {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 0 clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .modal-description {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            color: var(--text-tertiary, #475467);
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Footer Section */
+        .modal-footer {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .primary-button {
+            width: 100%;
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .primary-button:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+
+        .home-indicator {
+            width: 100%;
+            height: clamp(28px, 9.1vw, 34px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            padding: clamp(8px, 2.7vw, 10px) 0;
+            box-sizing: border-box;
+        }
+
+        .indicator-bar {
+            width: clamp(120px, 35.5vw, 133px);
+            height: clamp(3px, 1.1vw, 4px);
+            background-color: #101828;
+            border-radius: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Modal Container -->
+        <div class="modal-container">
+            <!-- Header Section -->
+            <div class="modal-header">
+                <div class="title-section">
+                    <h1 class="modal-title">업데이트 안내</h1>
+                </div>
+                <button class="close-button" id="closeButton">
+                    <img src="../../../../images/icon/icon_close_modal.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                </button>
+            </div>
+
+            <!-- Body Section -->
+            <div class="modal-body">
+                <p class="modal-description">안면 인증은 신한 쏠(SOL) 최신 버전으로 이용할 수 있습니다.<br>최신 버전으로 업데이트를 할까요?</p>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="modal-footer">
+                <div class="button-area">
+                    <button class="primary-button" id="updateButton">
+                        업데이트 하기
+                    </button>
+                </div>
+                <div class="home-indicator">
+                    <div class="indicator-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close modal with animation
+            const modal = document.querySelector('.modal-container');
+            modal.style.animation = 'modalSlideDown 0.3s ease-in forwards';
+            setTimeout(() => {
+                // Hide or remove modal
+                document.body.style.display = 'none';
+            }, 300);
+        });
+
+        // Update button handler
+        document.getElementById('updateButton').addEventListener('click', () => {
+            console.log('Update button clicked');
+            // Navigate to app store or trigger update
+        });
+
+        // Close modal when clicking overlay
+        document.querySelector('.page-container').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close modal by clicking overlay');
+                document.getElementById('closeButton').click();
+            }
+        });
+
+        // Prevent modal content click from closing
+        document.querySelector('.modal-container').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Add slide down animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes modalSlideDown {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('App update modal loaded');
+    </script>
+</body>
+</html>

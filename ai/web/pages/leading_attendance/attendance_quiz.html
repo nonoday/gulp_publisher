@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출석퀴즈</title>
+    <!-- Design Token CSS (Required) -->
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <!-- Common Style CSS (Required) -->
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        /* Page specific styles */
+        .quiz-page {
+            background: var(--bg-canvas_gray, #f0f4fa);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-area {
+            background: var(--bg-canvas_white, #ffffff);
+            box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .navigation-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 var(--spacing-2xl, 20px);
+            background: var(--bg-canvas_white, #ffffff);
+        }
+
+        .navigation-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md, 8px);
+            flex: 1;
+        }
+
+        .navigation-back {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .navigation-title {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 27px;
+            color: var(--text-primary, #101828);
+            letter-spacing: -0.32px;
+        }
+
+        .navigation-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl, 16px);
+        }
+
+        .navigation-button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .content-area {
+            flex: 1;
+            background: linear-gradient(180deg, #ffffff 2.533%, #ffffff00 17.974%);
+            padding-top: var(--spacing-xl, 16px);
+            margin-top: 56px;
+        }
+
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg, 12px);
+        }
+
+        .quiz-header {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl, 16px);
+        }
+
+        .quiz-title {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 29px;
+            color: var(--text-secondary, #344054);
+            letter-spacing: -0.36px;
+        }
+
+        .status-card {
+            background: var(--bg-canvas_white, #ffffff);
+            border-radius: var(--radius-xl, 16px);
+            padding: var(--spacing-3xl, 24px);
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.06);
+            display: flex;
+            gap: var(--spacing-xl, 16px);
+            align-items: center;
+        }
+
+        .status-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs, 2px);
+            text-align: center;
+        }
+
+        .status-label {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 24px;
+            color: var(--text-tertiary, #475467);
+            letter-spacing: -0.28px;
+        }
+
+        .status-value {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            line-height: 33px;
+            color: var(--text-primary, #101828);
+            letter-spacing: -0.44px;
+        }
+
+        .status-value.points {
+            color: var(--text-brand, #005df9);
+        }
+
+        .status-divider {
+            width: 1px;
+            align-self: stretch;
+            background: var(--border-tertiary, #f0f4fa);
+            border-radius: 10px;
+        }
+
+        .quiz-board {
+            background: var(--bg-canvas_white, #ffffff);
+            border-radius: var(--radius-xl, 16px);
+            padding: var(--spacing-4xl, 32px) var(--spacing-2xl, 20px) var(--spacing-3xl, 24px);
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.06);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-question {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 26px;
+            color: var(--text-secondary, #344054);
+            letter-spacing: -0.32px;
+            margin-bottom: var(--spacing-3xl, 24px);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg, 12px);
+        }
+
+        .quiz-option {
+            padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+            border-radius: var(--radius-xl, 16px);
+            border: 1px solid var(--border-secondary, #e4e7ec);
+            background: var(--bg-canvas_white, #ffffff);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-option.selected {
+            border: 1.6px solid var(--text-brand, #005df9);
+        }
+
+        .quiz-option-text {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 22px;
+            color: var(--text-secondary, #344054);
+            letter-spacing: -0.28px;
+        }
+
+        .submit-button-container {
+            padding-top: var(--spacing-4xl, 32px);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: var(--spacing-lg, 12px);
+            background: var(--text-brand, #005df9);
+            color: var(--text-ondark_primary-same, #ffffff);
+            border: none;
+            border-radius: var(--spacing-lg, 12px);
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 27px;
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            min-height: 48px;
+        }
+
+        .notice-section {
+            background: var(--bg-canvas_white, #ffffff);
+            padding: 0 0 var(--spacing-4xl, 32px);
+            margin-top: var(--spacing-4xl, 32px);
+        }
+
+        .divider {
+            height: 10px;
+            background: var(--border-tertiary, #f0f4fa);
+            margin-bottom: var(--spacing-4xl, 32px);
+        }
+
+        .notice-content {
+            padding: 0 var(--spacing-2xl, 20px);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md, 8px);
+        }
+
+        .notice-title {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 26px;
+            color: var(--text-secondary, #344054);
+            letter-spacing: -0.32px;
+        }
+
+        .notice-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg, 12px);
+        }
+
+        .notice-item {
+            display: flex;
+            gap: var(--spacing-sm, 4px);
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: 14px;
+            line-height: 24px;
+            color: var(--text-tertiary, #475467);
+            letter-spacing: -0.28px;
+        }
+
+        .notice-bullet {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap" class="new-wrap">
+        <div class="quiz-page">
+            <!-- Header Area -->
+            <div class="header-area">
+                <div class="navigation-header">
+                    <div class="navigation-left">
+                        <a href="#" class="navigation-back" aria-label="Go back">
+                            <img src="../../../images/icon/icon_chevron_left.svg" alt="Back" />
+                        </a>
+                        <h1 class="navigation-title">출석퀴즈</h1>
+                    </div>
+                    <div class="navigation-right">
+                        <button class="navigation-button" type="button" tabindex="0" aria-label="Chatbot">
+                            <img src="../../../images/icon/icon_chatbot.svg" alt="Chatbot icon" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="quiz-container">
+                    <!-- Quiz Header -->
+                    <div class="quiz-header">
+                        <div class="quiz-title">내 출석퀴즈 현황(월 기준)</div>
+                        
+                        <!-- Status Card -->
+                        <div class="status-card">
+                            <div class="status-item">
+                                <div class="status-label">이번달 출석일</div>
+                                <div class="status-value">3일</div>
+                            </div>
+                            <div class="status-divider"></div>
+                            <div class="status-item">
+                                <div class="status-label">출석퀴즈 포인트</div>
+                                <div class="status-value points">999P</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Board -->
+                    <div class="quiz-board">
+                        <div class="quiz-question">
+                            마이데이터 서비스에서 내 소비내역을<br>
+                            카테고리별로 한 눈에 보여주는 서비스는<br>
+                            무엇일까요?
+                        </div>
+                        
+                        <div class="quiz-options">
+                            <div class="quiz-option selected">
+                                <div class="quiz-option-text">소비 달력</div>
+                            </div>
+                            <div class="quiz-option">
+                                <div class="quiz-option-text">소비 분류</div>
+                            </div>
+                            <div class="quiz-option">
+                                <div class="quiz-option-text">소비 리포트</div>
+                            </div>
+                            <div class="quiz-option">
+                                <div class="quiz-option-text">내 소비</div>
+                            </div>
+                        </div>
+
+                        <div class="submit-button-container">
+                            <button class="submit-button" type="button">정답 제출</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notice Section -->
+                <div class="notice-section">
+                    <div class="divider"></div>
+                    <div class="notice-content">
+                        <div class="notice-title">출석퀴즈3종->어드민에서 등록/관리</div>
+                        <div class="notice-list">
+                            <div class="notice-item">
+                                <span class="notice-bullet">•</span>
+                                <span>주관식, 객관식,OX선택 中 1가지</span>
+                            </div>
+                            <div class="notice-item">
+                                <span class="notice-bullet">•</span>
+                                <span>질문, 선택 문항 노출 후 정답 제출</span>
+                            </div>
+                            <div class="notice-item">
+                                <span class="notice-bullet">•</span>
+                                <span>정답으로 확인되면 포인트 보상</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load required web component scripts (reference only) -->
+    <script src="../../script/modules/navigation/navigation-component.js"></script>
+    <script src="../../script/components/button/solid-button.js"></script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!--
+Figma Layer: (여권 거래고객은 가까운 영업점으로 방문해주세요)
+Node ID: 4642-140634
+Description: 여권 거래고객 영업점 방문 안내 화면
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여권 거래고객 안내</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            background-color: var(--bg-canvas_white, #ffffff);
+            color: var(--text-primary, #101828);
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas_white, #ffffff);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: clamp(48px, 15vw, 64px);
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(16px, 5vw, 24px);
+            position: relative;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            width: clamp(20px, 6.4vw, 28px);
+            height: clamp(20px, 6.4vw, 28px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('../../../../images/icon/icon_chevron_left.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 28px);
+            height: clamp(20px, 6.4vw, 28px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(16px, 4.8vw, 22px);
+            color: var(--text-primary, #101828);
+        }
+
+        .nav-close::before {
+            content: "×";
+            font-size: 20px;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: clamp(60px, 18vw, 120px) clamp(16px, 5vw, 24px) clamp(40px, 12vw, 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            gap: clamp(24px, 7vw, 32px);
+            position: relative;
+            z-index: 2;
+            box-sizing: border-box;
+        }
+
+        /* Illustration */
+        .illustration {
+            width: clamp(120px, 35vw, 180px);
+            height: clamp(120px, 35vw, 180px);
+            background-image: url('../../../../images/icon/moli_sad1.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0 auto;
+        }
+
+        /* Message Section */
+        .message-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(12px, 3.5vw, 20px);
+            width: 100%;
+        }
+
+        .main-message {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.5vw, 24px);
+            line-height: clamp(28px, 8.5vw, 36px);
+            letter-spacing: clamp(-0.36px, -0.11vw, -0.48px);
+            color: var(--text-primary, #101828);
+            margin: 0;
+            text-align: center;
+        }
+
+        .service-time-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(4px, 1.2vw, 8px);
+        }
+
+        .service-time-label {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(14px, 4.3vw, 18px);
+            line-height: clamp(22px, 6.9vw, 29px);
+            letter-spacing: clamp(-0.28px, -0.09vw, -0.36px);
+            color: var(--text-quaternary, #667085);
+            margin: 0;
+        }
+
+        .service-time {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(16px, 4.8vw, 22px);
+            line-height: clamp(26px, 7.7vw, 35px);
+            letter-spacing: clamp(-0.32px, -0.10vw, -0.44px);
+            color: var(--Text-text-brand, #005DF9);
+            margin: 0;
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            background-color: var(--bg-canvas_white, #ffffff);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            padding: 0 clamp(16px, 5vw, 24px) 0 clamp(16px, 5vw, 24px);
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .cta-button {
+            width: 100%;
+            min-height: clamp(48px, 15vw, 64px);
+            background-color: var(--bg-brand_strong-same, #005df9);
+            border: none;
+            border-radius: clamp(12px, 4.3vw, 20px);
+            color: var(--text-ondark_primary-same, #ffffff);
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(16px, 4.8vw, 22px);
+            line-height: clamp(26px, 7.7vw, 35px);
+            letter-spacing: clamp(-0.32px, -0.10vw, -0.44px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(3px, 1vw, 6px) clamp(10px, 3.2vw, 16px);
+            box-sizing: border-box;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #004de5;
+        }
+
+        .cta-button:active {
+            background-color: #003db8;
+        }
+
+        /* No max-width constraints - let content fill entire screen */
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="navigation">
+                <div class="nav-back"></div>
+                <div class="nav-close"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Illustration -->
+            <div class="illustration"></div>
+
+            <!-- Message Section -->
+            <div class="message-section">
+                <h1 class="main-message">여권 거래고객은<br>가까운 영업점으로 방문해주세요</h1>
+                
+                <div class="service-time-section">
+                    <p class="service-time-label">서비스 이용 가능 시간</p>
+                    <p class="service-time">09:00~21:00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="button-area">
+                    <button class="cta-button" id="ctaButton">이전 화면으로 이동</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation handlers
+        document.querySelector('.nav-back').addEventListener('click', () => {
+            console.log('Navigate back');
+            // Navigate to previous screen
+        });
+
+        document.querySelector('.nav-close').addEventListener('click', () => {
+            console.log('Close flow');
+            // Navigate to main screen or close modal
+        });
+
+        // CTA button handler
+        document.getElementById('ctaButton').addEventListener('click', () => {
+            console.log('Navigate to previous screen');
+            // Navigate to previous screen
+        });
+
+        console.log('Passport customer notice screen loaded');
+    </script>
+</body>
+</html>

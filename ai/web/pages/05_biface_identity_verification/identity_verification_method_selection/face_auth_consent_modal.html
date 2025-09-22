@@ -1,0 +1,556 @@
+<!--
+Figma Layer: 얼굴 인증을 위해 동의가 필요해요
+Node ID: 4642-139962
+Description: 얼굴 인증 동의 모달 - 개인정보 수집 이용 동의서 체크박스와 안내사항 포함
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>얼굴 인증 동의</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: rgba(12, 17, 29, 0.6);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(12, 17, 29, 0.6);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            width: 100%;
+            max-width: 100vw;
+            background-color: #ffffff;
+            border-radius: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px) 0 0;
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.14);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: modalSlideUp 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header Section */
+        .modal-header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            border-radius: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px) 0 0;
+        }
+
+        .close-button {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        /* Body Section */
+        .modal-body {
+            width: 100%;
+            background-color: #ffffff;
+            padding: clamp(6px, 2.1vw, 8px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .content-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .modal-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(16px, 4.8vw, 18px);
+            line-height: clamp(24px, 7.7vw, 29px);
+            letter-spacing: -0.36px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        /* Agreement Section */
+        .agreement-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 3.2vw, 12px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .required-consent-card {
+            width: 100%;
+            background-color: #f8f9fc;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            padding: clamp(14px, 4.3vw, 16px);
+            box-sizing: border-box;
+            margin-bottom: clamp(10px, 3.2vw, 12px);
+        }
+
+        .required-consent-item {
+            width: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 2.1vw, 8px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: clamp(20px, 6.4vw, 24px);
+        }
+
+        .required-consent-text {
+            flex: 1;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(18px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: #344054;
+            margin: 0;
+            word-wrap: break-word;
+        }
+
+        .agreement-item {
+            width: 100%;
+            background-color: #ffffff;
+            border: none;
+            outline: none;
+            padding: clamp(10px, 3.2vw, 12px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 2.1vw, 8px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: clamp(20px, 6.4vw, 24px);
+        }
+
+        .agreement-checkbox {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            background-color: #005df9;
+            border-radius: clamp(6px, 2.1vw, 8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: clamp(6px, 2.1vw, 8px);
+            box-sizing: border-box;
+        }
+
+        .agreement-checkbox.unchecked {
+            background-color: transparent;
+            border: none;
+            padding: clamp(6px, 2.1vw, 8px);
+        }
+
+        .checkbox-icon.unchecked {
+            filter: brightness(0) saturate(100%) invert(65%) sepia(8%) saturate(1245%) hue-rotate(187deg) brightness(89%) contrast(88%);
+            width: clamp(11px, 3.6vw, 13.5px);
+            height: clamp(11px, 3.6vw, 13.5px);
+        }
+
+        .checkbox-icon {
+            width: clamp(11px, 3.6vw, 13.5px);
+            height: clamp(11px, 3.6vw, 13.5px);
+            object-fit: contain;
+        }
+
+        .agreement-text {
+            flex: 1;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(18px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: #344054;
+            margin: 0;
+            word-wrap: break-word;
+        }
+
+        .agreement-arrow {
+            width: clamp(16px, 5.3vw, 20px);
+            height: clamp(16px, 5.3vw, 20px);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Info Box */
+        .info-box {
+            width: 100%;
+            background-color: rgba(102, 112, 133, 0.05);
+            border-radius: clamp(10px, 3.2vw, 12px);
+            padding: clamp(14px, 4.3vw, 16px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .info-item {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(6px, 2.1vw, 8px);
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(11px, 3.5vw, 13px);
+            line-height: clamp(18px, 5.9vw, 22px);
+            letter-spacing: -0.26px;
+            color: #667085;
+            margin: 0;
+            word-wrap: break-word;
+        }
+
+        .info-bullet {
+            flex-shrink: 0;
+            color: #667085;
+            font-weight: 300;
+        }
+
+        .info-text {
+            flex: 1;
+        }
+
+        /* Footer Section */
+        .modal-footer {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: clamp(16px, 5.3vw, 20px) 0 clamp(20px, 6.4vw, 24px) 0;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .primary-button {
+            width: 100%;
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: #f0f4fa;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #818da2;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: not-allowed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .primary-button.enabled {
+            background-color: #005df9;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .primary-button.enabled:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button.enabled:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button.enabled:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Modal Container -->
+        <div class="modal-container">
+            <!-- Header Section -->
+            <div class="modal-header">
+                <button class="close-button" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                </button>
+            </div>
+
+            <!-- Body Section -->
+            <div class="modal-body">
+                <div class="content-section">
+                    <!-- Title Section -->
+                    <div class="title-section">
+                        <h1 class="modal-title">얼굴 인증을 위해<br>동의가 필요해요</h1>
+                    </div>
+
+                    <!-- Agreement Section -->
+                    <div class="agreement-section">
+                        <div class="required-consent-card">
+                            <div class="required-consent-item" id="requiredConsentItem" role="button" tabindex="0">
+                                <div class="agreement-checkbox">
+                                    <img src="../../../../images/icon/icon_check.svg" alt="체크" class="checkbox-icon" />
+                                </div>
+                                <p class="required-consent-text">[필수] 약관 모두 동의</p>
+                            </div>
+                        </div>
+                        <div class="agreement-item" id="agreementItem" role="button" tabindex="0">
+                            <div class="agreement-checkbox unchecked">
+                                <img src="../../../../images/icon/icon_check.svg" alt="체크" class="checkbox-icon unchecked" />
+                            </div>
+                            <p class="agreement-text">개인정보 수집 이용 동의서(얼굴인증을 통한 본인 확인)</p>
+                            <div class="agreement-arrow">
+                                <img src="../../../../images/icon/icon_chevron_right.svg" alt="자세히보기" class="arrow-icon" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div class="info-box">
+                        <div class="info-item">
+                            <span class="info-bullet">•</span>
+                            <span class="info-text">오래된 신분증이거나 고객님 계신 곳이 촬영 환경이 좋지 않은 경우 인증이 어려워요.</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-bullet">•</span>
+                            <span class="info-text">카메라를 이용해 고객님의 얼굴을 확인하지만 따로 저장하진 않으니 안심하세요.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="modal-footer">
+                <div class="button-area">
+                    <button class="primary-button" id="confirmButton">
+                        필수 약관에 동의해주세요
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isAgreed = false;
+        let isDetailAgreed = false;
+
+        function updateButtonState() {
+            const button = document.getElementById('confirmButton');
+            if (isDetailAgreed) {
+                button.classList.add('enabled');
+                button.textContent = '확인';
+            } else {
+                button.classList.remove('enabled');
+                button.textContent = '필수 약관에 동의해주세요';
+            }
+        }
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close modal with animation
+            const modal = document.querySelector('.modal-container');
+            modal.style.animation = 'modalSlideDown 0.3s ease-in forwards';
+            setTimeout(() => {
+                // Hide or remove modal
+                document.body.style.display = 'none';
+            }, 300);
+        });
+
+        // Required consent item handler
+        document.getElementById('requiredConsentItem').addEventListener('click', () => {
+            console.log('Required consent item clicked');
+            // Toggle agreement state or show overall consent info
+        });
+
+        // Agreement item handler
+        document.getElementById('agreementItem').addEventListener('click', () => {
+            console.log('Agreement item clicked');
+
+            // Toggle checkbox state
+            const checkbox = document.querySelector('#agreementItem .agreement-checkbox');
+            const checkIcon = checkbox.querySelector('.checkbox-icon');
+            const isCurrentlyChecked = !checkbox.classList.contains('unchecked');
+
+            if (isCurrentlyChecked) {
+                // Change to unchecked state
+                checkbox.classList.add('unchecked');
+                checkIcon.classList.add('unchecked');
+                isDetailAgreed = false;
+            } else {
+                // Change to checked state
+                checkbox.classList.remove('unchecked');
+                checkIcon.classList.remove('unchecked');
+                isDetailAgreed = true;
+            }
+
+            updateButtonState();
+        });
+
+        // Confirm button handler
+        document.getElementById('confirmButton').addEventListener('click', () => {
+            if (isDetailAgreed) {
+                console.log('Agreement confirmed');
+                // Proceed to face authentication
+            } else {
+                console.log('Agreement required');
+                // Show message that agreement is required
+            }
+        });
+
+        // Close modal when clicking overlay
+        document.querySelector('.page-container').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close modal by clicking overlay');
+                document.getElementById('closeButton').click();
+            }
+        });
+
+        // Prevent modal content click from closing
+        document.querySelector('.modal-container').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Keyboard accessibility for required consent item
+        document.getElementById('requiredConsentItem').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('requiredConsentItem').click();
+            }
+        });
+
+        // Keyboard accessibility for agreement item
+        document.getElementById('agreementItem').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('agreementItem').click();
+            }
+        });
+
+        // Add slide down animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes modalSlideDown {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('Face authentication consent modal loaded');
+    </script>
+</body>
+</html>

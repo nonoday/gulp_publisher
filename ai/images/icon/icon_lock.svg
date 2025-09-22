@@ -1,0 +1,8 @@
+<svg width="32.667" height="32.667" viewBox="0 0 32.667 32.667" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Lock shackle (top curved part) -->
+<path d="M9.82 10.01V8.01C9.82 5.79 11.61 4 13.82 4h1.36C17.39 4 19.18 5.79 19.18 8.01v2" stroke="#4B5362" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+<!-- Lock body (main rectangle) -->
+<rect x="4.45" y="9.99" width="23.77" height="16.18" rx="2.67" fill="#4B5362"/>
+<!-- Lock keyhole dot -->
+<circle cx="16.33" cy="18.08" r="1.5" fill="#ffffff"/>
+</svg>

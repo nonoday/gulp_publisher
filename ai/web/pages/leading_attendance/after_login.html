@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출석퀴즈 - 로그인</title>
+    <!-- Design Token CSS (Required) -->
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <!-- Common Style CSS (Required) -->
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    
+    <style>
+        /* Page-specific styles */
+        .login-container {
+            background: var(--bg-canvas_white, #ffffff);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header Area */
+        .header-area {
+            background: var(--bg-canvas_white, #ffffff);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .custom-nav {
+            background: var(--bg-canvas_white, #ffffff);
+            height: 56px;
+            padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md, 8px);
+            flex: 1;
+        }
+        
+        .nav-back-button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 4px;
+        }
+        
+        .nav-back-button img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .nav-title {
+            font-family: 'OneShinhan', 'Noto Sans Symbols2', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 27px;
+            color: var(--text-primary, #101828);
+            letter-spacing: -0.32px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl, 16px);
+        }
+        
+        .nav-icon-button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 4px;
+        }
+        
+        .nav-icon-button img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        /* Content Body */
+        .login-body {
+            background: linear-gradient(180deg, #ffffff 2.533%, #ffffff00 17.974%);
+            padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px) var(--spacing-4xl, 32px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .login-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl, 16px);
+        }
+        
+        /* Input Field */
+        .input-field-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md, 8px);
+            width: 100%;
+        }
+        
+        .input-label {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 24px;
+            color: var(--text-tertiary, #475467);
+            letter-spacing: -0.28px;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .input-field {
+            width: 100%;
+            height: 56px;
+            padding: var(--spacing-lg, 12px) var(--spacing-xl, 16px);
+            border: 1px solid var(--border-primary, #d0d5dd);
+            border-radius: 12px;
+            box-sizing: border-box;
+            background: var(--bg-canvas_white, #ffffff);
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 27px;
+            color: var(--text-primary, #101828);
+            letter-spacing: -0.32px;
+            outline: none;
+        }
+        
+        .input-field::placeholder {
+            color: #818DA2;
+        }
+        
+        .input-field:focus {
+            border-color: var(--text-brand, #005df9);
+        }
+        
+        /* Button Area */
+        .button-area {
+            padding-top: var(--spacing-4xl, 32px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: var(--spacing-md, 8px);
+            width: 100%;
+        }
+        
+        .primary-button {
+            flex: 1;
+            min-height: 48px;
+            min-width: 48px;
+            padding: 2px 8px;
+            background: var(--text-brand, #005df9);
+            border: none;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .primary-button:hover {
+            opacity: 0.9;
+        }
+        
+        .primary-button:active {
+            opacity: 0.8;
+        }
+        
+        .button-text {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 27px;
+            color: var(--text-ondark_primary-same, #ffffff);
+            letter-spacing: -0.32px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap" class="new-wrap">
+        <div class="login-container">
+            <!-- Header Area -->
+            <div class="header-area">
+                <nav class="custom-nav">
+                    <div class="nav-left">
+                        <button class="nav-back-button" type="button" tabindex="0" aria-label="Go back">
+                            <img src="../../../images/icon/icon_chevron_left.svg" alt="Back" />
+                        </button>
+                        <span class="nav-title">로그인</span>
+                    </div>
+                    <div class="nav-right">
+                        <button class="nav-icon-button" type="button" tabindex="0" aria-label="Chatbot">
+                            <img src="../../../images/icon/icon_chatbot.svg" alt="Chatbot icon" />
+                        </button>
+                    </div>
+                </nav>
+            </div>
+            
+            <!-- Content Body -->
+            <div class="login-body">
+                <div class="login-content">
+                    <!-- Input Field -->
+                    <div class="input-field-container">
+                        <label class="input-label" for="customer-number">고객번호</label>
+                        <div class="input-container">
+                            <input type="text" id="customer-number" class="input-field" value="G100000005" placeholder="고객번호를 입력해주세요">
+                        </div>
+                    </div>
+                    
+                    <!-- Button Area -->
+                    <div class="button-area">
+                        <div class="button-group">
+                            <button class="primary-button" type="button" tabindex="0">
+                                <span class="button-text">출석퀴즈</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Required Web Component Scripts (Reference only - not for implementation) -->
+    <script src="../../script/modules/navigation/navigation-component.js"></script>
+    <script src="../../script/components/button/solid-button.js"></script>
+</body>
+</html>

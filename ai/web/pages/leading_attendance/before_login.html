@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <!-- 필수 CSS 임포트 -->
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    
+    <style>
+        /* Component specific styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-white, #ffffff);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #wrap.new-wrap {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            background: var(--bg-white, #ffffff);
+        }
+        
+        /* Header area */
+        .header-area {
+            background: var(--bg-white, #ffffff);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .navigation-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 16px 20px;
+            background: var(--bg-white, #ffffff);
+            box-sizing: border-box;
+        }
+        
+        .navigation-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .navigation-back {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        
+        .navigation-back img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .navigation-title {
+            font-family: 'OneShinhan', 'Noto Sans', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 27px;
+            letter-spacing: -0.32px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+            flex: 1;
+        }
+        
+        .navigation-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .navigation-button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+        
+        .navigation-button img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        /* Content area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, #ffffff 2.533%, #ffffff00 17.974%);
+            padding: 16px 20px 32px;
+            box-sizing: border-box;
+        }
+        
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
+        
+        /* Input field styles */
+        .input-field-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .input-label {
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary, #475467);
+        }
+        
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .input-field {
+            width: 100%;
+            min-height: 56px;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-primary, #d0d5dd);
+            border-radius: 12px;
+            background: transparent;
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 27px;
+            letter-spacing: -0.32px;
+            color: var(--text-primary, #101828);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .input-field::placeholder {
+            color: var(--text-placeholder, #818da2);
+        }
+        
+        .input-field:focus {
+            border-color: var(--border-brand, #005df9);
+        }
+        
+        /* Footer area */
+        .footer-area {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            background: var(--bg-white, #ffffff);
+        }
+        
+        .footer-gradient {
+            height: 24px;
+            background: linear-gradient(180deg, #ffffff00 0%, #ffffff 100%);
+            width: 100%;
+        }
+        
+        .footer-content {
+            background: var(--bg-white, #ffffff);
+            padding: 0 20px 34px;
+            box-sizing: border-box;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+        
+        .primary-button {
+            width: 100%;
+            min-height: 56px;
+            padding: 0 12px;
+            box-sizing: border-box;
+            background: var(--text-brand, #005df9);
+            border: none;
+            border-radius: 16px;
+            font-family: 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            color: var(--text-ondark_primary-same, #ffffff);
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .primary-button:hover {
+            opacity: 0.9;
+        }
+        
+        .primary-button:active {
+            opacity: 0.8;
+        }
+        
+        .primary-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap" class="new-wrap">
+        <!-- 헤더 영역 -->
+        <div class="header-area">
+            <div class="navigation-container">
+                <div class="navigation-left">
+                    <button class="navigation-back" type="button" aria-label="뒤로 가기">
+                        <img src="../../../images/icon/icon_chevron_left.svg" alt="뒤로" />
+                    </button>
+                    <h1 class="navigation-title">로그인</h1>
+                </div>
+                <div class="navigation-right">
+                    <button class="navigation-button" type="button" aria-label="챗봇">
+                        <img src="../../../images/icon/icon_chatbot.svg" alt="챗봇" />
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 컨텐츠 영역 -->
+        <div class="content-area">
+            <div class="content-container">
+                <div class="input-field-container">
+                    <label class="input-label" for="customer-number">고객번호</label>
+                    <div class="input-container">
+                        <input 
+                            type="text" 
+                            id="customer-number" 
+                            class="input-field" 
+                            placeholder="고객번호를 입력하세요."
+                            aria-label="고객번호 입력"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 영역 -->
+        <div class="footer-area">
+            <div class="footer-gradient"></div>
+            <div class="footer-content">
+                <div class="button-container">
+                    <button type="button" class="primary-button" aria-label="로그인">
+                        로그인
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

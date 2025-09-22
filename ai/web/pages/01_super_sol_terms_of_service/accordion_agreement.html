@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>슈퍼 SOL 약관 동의</title>
+    <link rel="stylesheet" href="../../css/tokens.css" />
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "OneShinhan", sans-serif;
+        background-color: var(--bg-canvas-white);
+        color: var(--text-primary);
+      }
+
+      .container {
+        width: 100%;
+        max-width: 768px;
+        margin: 0 auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background: var(--bg-canvas-white);
+        border-bottom: 1px solid var(--border-tertiary);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .status-bar {
+        height: 46px;
+        background: var(--bg-canvas-white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        font-size: 14px;
+        color: var(--text-primary);
+      }
+
+      @media (min-width: 768px) {
+        .status-bar {
+          display: none;
+        }
+      }
+
+      .nav-bar {
+        height: 56px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 12px;
+      }
+
+      @media (min-width: 768px) {
+        .nav-bar {
+          padding: 0 32px;
+          height: 64px;
+        }
+      }
+
+      .nav-bar .back-btn {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--fg-primary);
+      }
+
+      .nav-bar .title {
+        flex: 1;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      @media (min-width: 768px) {
+        .nav-bar .title {
+          font-size: 20px;
+        }
+      }
+
+      .nav-bar .close-btn {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--fg-primary);
+      }
+
+      .content {
+        flex: 1;
+        padding-bottom: 90px;
+      }
+
+      .title-section {
+        padding: 16px 20px 32px;
+      }
+
+      @media (min-width: 768px) {
+        .title-section {
+          padding: 24px 32px 40px;
+        }
+      }
+
+      .main-title {
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 33px;
+        letter-spacing: -0.44px;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
+
+      @media (min-width: 768px) {
+        .main-title {
+          font-size: 28px;
+          line-height: 40px;
+          margin-bottom: 12px;
+        }
+      }
+
+      .sub-title {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 24px;
+        letter-spacing: -0.28px;
+        color: var(--text-quaternary);
+      }
+
+      @media (min-width: 768px) {
+        .sub-title {
+          font-size: 16px;
+          line-height: 26px;
+        }
+      }
+
+      .agreement-container {
+        padding: 0 20px;
+      }
+
+      @media (min-width: 768px) {
+        .agreement-container {
+          padding: 0 32px;
+        }
+      }
+
+      .all-agree-card {
+        background: var(--bg-graylight);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @media (min-width: 768px) {
+        .all-agree-card {
+          padding: 20px;
+          margin-bottom: 16px;
+          gap: 12px;
+        }
+      }
+
+      .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+      }
+
+      .checkbox {
+        width: 24px;
+        height: 24px;
+        appearance: none;
+        background: var(--bg-white);
+        border: 1.5px solid var(--border-primary);
+        border-radius: 8px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s;
+      }
+
+      .checkbox:checked {
+        background: var(--bg-brand-strong-same);
+        border-color: var(--border-brand);
+      }
+
+      .checkbox:checked::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 13px;
+        height: 10px;
+        background-image: url("data:image/svg+xml,%3Csvg width='14' height='10' viewBox='0 0 14 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5L5 9L13 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      /* 서브 아이템 내부의 체크마크 스타일 */
+      .sub-item .checkbox-mark {
+        width: 24px;
+        height: 24px;
+        appearance: none;
+        background: var(--bg-white);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sub-item .checkbox-mark::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 18px;
+        height: 18px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+
+      .sub-item .checkbox-mark:checked::after {
+        background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 9L7.5 12.5L14 6' stroke='%23005df9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      }
+
+      .sub-item .checkbox-mark:not(:checked)::after {
+        background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 9L7.5 12.5L14 6' stroke='%23818da2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      }
+
+      .checkbox-label {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      @media (min-width: 768px) {
+        .checkbox-label {
+          font-size: 15px;
+        }
+      }
+
+      .accordion-item {
+        margin-bottom: 24px;
+      }
+
+      @media (min-width: 768px) {
+        .accordion-item {
+          margin-bottom: 32px;
+        }
+      }
+
+      .accordion-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .accordion-header .checkbox-label {
+        font-weight: 500;
+      }
+
+      .accordion-arrow {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .accordion-arrow svg {
+        width: 12px;
+        height: 12px;
+        transform: rotate(-90deg);
+        color: var(--fg-tertiary);
+      }
+
+      .accordion-item.active .accordion-arrow svg {
+        transform: rotate(0deg);
+      }
+
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+
+      .accordion-item.active .accordion-content {
+        max-height: 2000px;
+      }
+
+      .sub-item {
+        padding: 12px 0 12px 32px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        border-bottom: 1px solid var(--border-tertiary);
+      }
+
+      .sub-item:last-child {
+        border-bottom: none;
+      }
+
+      .sub-item .checkbox-label {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--text-secondary);
+        line-height: 22px;
+      }
+
+      .nested-card {
+        margin: 12px 0 12px 48px;
+        padding: 16px;
+        background: var(--bg-white);
+        border: 1px solid var(--border-secondary);
+        border-radius: 16px;
+      }
+
+      @media (min-width: 768px) {
+        .nested-card {
+          margin: 16px 0 16px 56px;
+          padding: 20px;
+        }
+      }
+
+      .nested-card-section {
+        padding: 0;
+      }
+
+      .nested-card-section + .nested-card-section {
+        border-top: 1px solid var(--border-tertiary);
+        margin-top: 16px;
+        padding-top: 16px;
+      }
+
+      .nested-card-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+      }
+
+      .nested-card-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 0;
+      }
+
+      /* nested-card 내부의 체크마크도 동일한 스타일 적용 */
+      .nested-card-item .checkbox-mark {
+        width: 24px;
+        height: 24px;
+        appearance: none;
+        background: var(--bg-white);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nested-card-item .checkbox-mark::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 18px;
+        height: 18px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+
+      .nested-card-item .checkbox-mark:checked::after {
+        background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 9L7.5 12.5L14 6' stroke='%23005df9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      }
+
+      .nested-card-item .checkbox-mark:not(:checked)::after {
+        background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 9L7.5 12.5L14 6' stroke='%23818da2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      }
+
+      .nested-card-item .text {
+        font-size: 14px;
+        font-weight: 300;
+        color: var(--text-secondary);
+        line-height: 24px;
+      }
+
+      .view-all-btn {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+        padding: 10px 0 0;
+        width: 100%;
+        font-size: 12px;
+        font-weight: 300;
+        color: var(--text-tertiary);
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: right;
+      }
+
+      .view-all-btn svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .divider {
+        height: 1px;
+        background: var(--border-tertiary);
+        margin: 0;
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-canvas-white);
+        padding: 16px 20px;
+        box-shadow: 0 -2px 8px var(--bg-dark-a10);
+      }
+
+      @media (min-width: 768px) {
+        .footer {
+          padding: 20px;
+        }
+
+        .footer .footer-btn-wrapper {
+          max-width: 768px;
+          margin: 0 auto;
+        }
+      }
+
+      .footer-btn {
+        width: 100%;
+        height: 56px;
+        background: var(--bg-brand-strong-same);
+        color: var(--text-ondark-primary-same);
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+
+      @media (min-width: 768px) {
+        .footer-btn {
+          height: 60px;
+          font-size: 17px;
+          display: block;
+          margin: 0 auto;
+        }
+      }
+
+      .footer-btn:disabled {
+        background: var(--bg-disabled);
+        color: var(--text-disabled-same);
+        cursor: not-allowed;
+      }
+
+      .footer-btn:not(:disabled):hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="status-bar">
+          <span>9:41</span>
+        </div>
+        <nav class="nav-bar">
+          <button class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 18L9 12L15 6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <h1 class="title"></h1>
+          <button class="close-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 6L6 18M6 6L18 18"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </nav>
+      </header>
+
+      <main class="content">
+        <section class="title-section">
+          <h2 class="main-title">슈퍼 SOL 이용하려면<br />동의가 필요해요</h2>
+          <p class="sub-title">
+            신한슈퍼 SOL은 신한의 금융을 모으고 혜택을 더한 신한금융그룹
+            통합서비스입니다.
+          </p>
+        </section>
+
+        <div class="agreement-container">
+          <div class="all-agree-card">
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="all-agree" class="checkbox" />
+            </div>
+            <label for="all-agree" class="checkbox-label"
+              >전체 약관 모두 동의</label
+            >
+          </div>
+
+          <div class="accordion-item active">
+            <div class="accordion-header">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" id="required-terms" class="checkbox" />
+              </div>
+              <label for="required-terms" class="checkbox-label"
+                >[필수] 약관 모두 동의</label
+              >
+              <div class="accordion-arrow">
+                <svg viewBox="0 0 12 12" fill="none">
+                  <path
+                    d="M2 4L6 8L10 4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div class="accordion-content">
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="terms1"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="terms1" class="checkbox-label"
+                  >신한 플러스 플랫폼 이용약관</label
+                >
+              </div>
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="terms2"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="terms2" class="checkbox-label"
+                  >신한 포인트 통합약관</label
+                >
+              </div>
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="terms3"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="terms3" class="checkbox-label"
+                  >전자금융거래 기본약관</label
+                >
+              </div>
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="terms4"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="terms4" class="checkbox-label"
+                  >신한은행서비스 이용약관</label
+                >
+              </div>
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="terms5"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="terms5" class="checkbox-label"
+                  >개인 신용정보 수집·이용·제공 동의서 (마케팅공유 신규
+                  등)</label
+                >
+              </div>
+
+              <div class="nested-card">
+                <div class="nested-card-section">
+                  <div class="nested-card-title">수집·이용에 관한 사항</div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">고유식별정보 수집·이용 동의</span>
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">개인 신용정보 수집·이용 동의</span>
+                  </div>
+                  <button class="view-all-btn">
+                    전체보기
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                      <path
+                        d="M2 4L6 8L10 4"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        transform="rotate(-90 6 6)"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div class="nested-card-section">
+                  <div class="nested-card-title">제공에 관한 사항</div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">고유식별정보 수집·이용 동의</span>
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">개인 신용정보 수집·이용 동의</span>
+                  </div>
+                  <button class="view-all-btn">
+                    전체보기
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                      <path
+                        d="M2 4L6 8L10 4"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        transform="rotate(-90 6 6)"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="terms6"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="terms6" class="checkbox-label"
+                  >슈퍼 플랫폼 서비스 이용 동의</label
+                >
+              </div>
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="terms7"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="terms7" class="checkbox-label"
+                  >개인 신용정보 수집·이용·제공 동의서</label
+                >
+              </div>
+
+              <div class="nested-card">
+                <div class="nested-card-section">
+                  <div class="nested-card-title">수집·이용에 관한 사항</div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">고유식별정보 수집·이용 동의</span>
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">개인 신용정보 수집·이용 동의</span>
+                  </div>
+                  <button class="view-all-btn">
+                    전체보기
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                      <path
+                        d="M2 4L6 8L10 4"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        transform="rotate(-90 6 6)"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="accordion-item active">
+            <div class="accordion-header">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" id="optional-terms" class="checkbox" />
+              </div>
+              <label for="optional-terms" class="checkbox-label"
+                >[선택] 약관 모두 동의</label
+              >
+              <div class="accordion-arrow">
+                <svg viewBox="0 0 12 12" fill="none">
+                  <path
+                    d="M2 4L6 8L10 4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div class="accordion-content">
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="optional1"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="optional1" class="checkbox-label"
+                  >개인 신용정보 수집이용제공 동의서 (상품서비스 안내 등)</label
+                >
+              </div>
+
+              <div class="nested-card">
+                <div class="nested-card-section">
+                  <div class="nested-card-title">수집·이용에 관한 사항</div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">고유식별정보 수집·이용 동의</span>
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">개인 신용정보 수집·이용 동의</span>
+                  </div>
+                  <button class="view-all-btn">
+                    전체보기
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                      <path
+                        d="M2 4L6 8L10 4"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        transform="rotate(-90 6 6)"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div class="nested-card-section">
+                  <div class="nested-card-title">제공에 관한 사항</div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">고유식별정보 수집·이용 동의</span>
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">개인 신용정보 수집·이용 동의</span>
+                  </div>
+                  <button class="view-all-btn">
+                    전체보기
+                    <svg viewBox="0 0 12 12" fill="currentColor">
+                      <path
+                        d="M2 4L6 8L10 4"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        transform="rotate(-90 6 6)"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="sub-item">
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="optional2"
+                    class="checkbox-mark"
+                    checked
+                  />
+                </div>
+                <label for="optional2" class="checkbox-label"
+                  >본인정보 은행 수집 이용 동의</label
+                >
+              </div>
+
+              <div class="nested-card">
+                <div class="nested-card-section">
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      margin-bottom: 12px;
+                    "
+                  >
+                    <div class="checkbox-wrapper">
+                      <input
+                        type="checkbox"
+                        id="optional-sub"
+                        class="checkbox"
+                        checked
+                      />
+                    </div>
+                    <label
+                      for="optional-sub"
+                      class="nested-card-title"
+                      style="margin: 0; cursor: pointer"
+                      >슈퍼혜택에 관한 사항</label
+                    >
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">문자</span>
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">이메일</span>
+                  </div>
+                  <div class="nested-card-item">
+                    <div class="checkbox-wrapper">
+                      <input type="checkbox" class="checkbox-mark" checked />
+                    </div>
+                    <span class="text">전화</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-btn-wrapper">
+          <button class="footer-btn" id="agree-btn" disabled>
+            필수 약관에 동의해주세요
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const allAgreeCheckbox = document.getElementById("all-agree");
+        const requiredCheckbox = document.getElementById("required-terms");
+        const optionalCheckbox = document.getElementById("optional-terms");
+        const allCheckboxes = document.querySelectorAll(
+          ".checkbox, .checkbox-mark"
+        );
+        const allCheckMarks = document.querySelectorAll(".checkbox-mark");
+        const agreeBtn = document.getElementById("agree-btn");
+        const accordionHeaders = document.querySelectorAll(".accordion-header");
+
+        // 아코디언 토글
+        accordionHeaders.forEach((header) => {
+          header.addEventListener("click", function (e) {
+            // 체크박스 클릭은 제외
+            if (
+              e.target.type === "checkbox" ||
+              e.target.classList.contains("checkbox") ||
+              e.target.classList.contains("checkbox-mark")
+            ) {
+              return;
+            }
+            const accordionItem = this.parentElement;
+            accordionItem.classList.toggle("active");
+          });
+        });
+
+        // 전체 동의 체크박스 처리
+        allAgreeCheckbox.addEventListener("change", function () {
+          const isChecked = this.checked;
+          allCheckboxes.forEach((checkbox) => {
+            if (checkbox !== allAgreeCheckbox) {
+              checkbox.checked = isChecked;
+            }
+          });
+          updateButtonState();
+        });
+
+        // 필수 약관 체크박스 처리
+        requiredCheckbox.addEventListener("change", function () {
+          const isChecked = this.checked;
+          const requiredSubCheckboxes = this.closest(
+            ".accordion-item"
+          ).querySelectorAll(".accordion-content .checkbox-mark");
+          requiredSubCheckboxes.forEach((checkbox) => {
+            checkbox.checked = isChecked;
+          });
+          updateAllAgreeState();
+          updateButtonState();
+        });
+
+        // 선택 약관 체크박스 처리
+        optionalCheckbox.addEventListener("change", function () {
+          const isChecked = this.checked;
+          const optionalSubCheckboxes = this.closest(
+            ".accordion-item"
+          ).querySelectorAll(".accordion-content .checkbox-mark");
+          optionalSubCheckboxes.forEach((checkbox) => {
+            checkbox.checked = isChecked;
+          });
+          updateAllAgreeState();
+        });
+
+        // 개별 체크박스 처리
+        allCheckboxes.forEach((checkbox) => {
+          if (
+            checkbox !== allAgreeCheckbox &&
+            checkbox !== requiredCheckbox &&
+            checkbox !== optionalCheckbox
+          ) {
+            checkbox.addEventListener("change", function () {
+              updateParentCheckboxes();
+              updateAllAgreeState();
+              updateButtonState();
+            });
+          }
+        });
+
+        // 부모 체크박스 상태 업데이트
+        function updateParentCheckboxes() {
+          // 필수 약관 체크 상태 업데이트
+          const requiredItem = requiredCheckbox.closest(".accordion-item");
+          const requiredSubCheckboxes = requiredItem.querySelectorAll(
+            ".accordion-content .checkbox-mark"
+          );
+          const requiredAllChecked = Array.from(requiredSubCheckboxes).every(
+            (cb) => cb.checked
+          );
+          requiredCheckbox.checked = requiredAllChecked;
+
+          // 선택 약관 체크 상태 업데이트
+          const optionalItem = optionalCheckbox.closest(".accordion-item");
+          const optionalSubCheckboxes = optionalItem.querySelectorAll(
+            ".accordion-content .checkbox-mark"
+          );
+          const optionalAllChecked = Array.from(optionalSubCheckboxes).every(
+            (cb) => cb.checked
+          );
+          optionalCheckbox.checked = optionalAllChecked;
+        }
+
+        // 전체 동의 체크박스 상태 업데이트
+        function updateAllAgreeState() {
+          const allOtherCheckboxes = Array.from(allCheckboxes).filter(
+            (cb) => cb !== allAgreeCheckbox
+          );
+          const allChecked = allOtherCheckboxes.every((cb) => cb.checked);
+          allAgreeCheckbox.checked = allChecked;
+        }
+
+        // 버튼 활성화 상태 업데이트 (필수 약관만 체크)
+        function updateButtonState() {
+          const requiredItem = requiredCheckbox.closest(".accordion-item");
+          const requiredSubCheckboxes = requiredItem.querySelectorAll(
+            ".accordion-content .checkbox-mark"
+          );
+          const requiredAllChecked = Array.from(requiredSubCheckboxes).every(
+            (cb) => cb.checked
+          );
+          agreeBtn.disabled = !requiredAllChecked;
+        }
+
+        // 전체보기 버튼 클릭 이벤트
+        document.querySelectorAll(".view-all-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            alert("약관 전체 내용 보기");
+          });
+        });
+
+        // 동의 버튼 클릭 이벤트
+        agreeBtn.addEventListener("click", function () {
+          if (!this.disabled) {
+            alert("약관에 동의하셨습니다.");
+          }
+        });
+
+        // 초기 상태 설정 (모든 체크박스가 체크된 상태)
+        updateParentCheckboxes();
+        updateAllAgreeState();
+        updateButtonState();
+      });
+    </script>
+  </body>
+</html>

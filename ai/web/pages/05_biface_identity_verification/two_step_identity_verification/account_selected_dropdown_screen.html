@@ -1,0 +1,438 @@
+<!--
+Figma Layer: (-)계좌번호 입력후
+Node ID: 4642-139662
+Description: 2단계 본인인증 계좌 선택 완료 화면 - 신한은행 계좌가 선택된 드롭다운 상태
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계좌 선택 완료</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .nav-back {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            padding: clamp(12px, 4.3vw, 16px) 0 clamp(24px, 8.5vw, 32px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 22px);
+            line-height: clamp(28px, 8.8vw, 33px);
+            letter-spacing: -0.44px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .description {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: var(--text-quaternary, #667085);
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Account Dropdown Section */
+        .account-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .account-label {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary, #475467);
+            margin: 0;
+        }
+
+        .account-dropdown {
+            width: 100%;
+            min-height: clamp(52px, 16vw, 60px);
+            padding: clamp(14px, 4.3vw, 16px);
+            background-color: #ffffff;
+            border: 1px solid #d0d5dd;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: clamp(6px, 2.1vw, 8px);
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .account-dropdown:hover {
+            border-color: var(--border-secondary, #e4e7ec);
+        }
+
+        .account-dropdown:focus {
+            border-color: var(--border-brand, #005df9);
+            outline: none;
+        }
+
+        .account-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 2.1vw, 8px);
+        }
+
+        .bank-logo {
+            width: clamp(28px, 8.7vw, 32px);
+            height: clamp(28px, 8.7vw, 32px);
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: clamp(2px, 0.6vw, 2px);
+            box-sizing: border-box;
+        }
+
+        .account-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1px, 0.5vw, 2px);
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .account-name {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 6.9vw, 26px);
+            letter-spacing: -0.32px;
+            color: var(--text-secondary, #344054);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .account-number {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(10px, 3.2vw, 12px);
+            line-height: clamp(18px, 5.9vw, 22px);
+            letter-spacing: -0.26px;
+            color: var(--text-quaternary, #667085);
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .dropdown-icon {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .account-dropdown.open .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            z-index: 1;
+            position: relative;
+        }
+
+        .scroll-dim {
+            width: 100%;
+            height: clamp(20px, 6.4vw, 24px);
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff);
+        }
+
+        .button-container {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .text-button-group {
+            width: 100%;
+            min-height: clamp(28px, 8.5vw, 32px);
+            padding: 0 clamp(6px, 2.1vw, 8px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .text-button {
+            background: none;
+            border: none;
+            color: var(--text-tertiary, #667085);
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(2px, 0.8vw, 4px);
+        }
+
+        .text-button:hover {
+            color: var(--text-primary, #101828);
+        }
+
+        .text-button:active {
+            color: var(--text-secondary, #344054);
+        }
+
+        /* Bottom padding for mobile safe area */
+        .content-body {
+            padding-bottom: clamp(16px, 5.3vw, 20px);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" width="24" height="24" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" width="24" height="24" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">신한은행 계좌로<br>한 번 더 본인을 확인할게요</h1>
+                <p class="description">비밀번호를 틀려서 잠겨있는 계좌로는<br>인증할 수 없으니 유의해주세요.</p>
+            </div>
+
+            <!-- Account Dropdown Section -->
+            <div class="account-section">
+                <label class="account-label">출금계좌선택</label>
+                <div class="account-dropdown" id="accountDropdown" role="button" tabindex="0">
+                    <div class="account-info">
+                        <div class="bank-logo">
+                            <img src="../../../../images/icon/icon_shinhan_bank_logo.svg" alt="신한은행" style="width: 100%; height: 100%;" />
+                        </div>
+                        <div class="account-details">
+                            <p class="account-name">쏠편한 입출금통장(저축예금)</p>
+                            <p class="account-number">123-000-456789</p>
+                        </div>
+                    </div>
+                    <img src="../../../../images/icon/icon_chevron_right.svg" alt="" class="dropdown-icon" style="transform: rotate(90deg);" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <div class="scroll-dim"></div>
+            <div class="button-container">
+                <div class="button-area">
+                    <div class="text-button-group">
+                        <button class="text-button" id="alternativeButton">
+                            다른 방식으로 인증
+                            <img src="../../../../images/icon/icon_chevron_right.svg" alt="" width="16" height="16" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        // Account dropdown handler
+        document.getElementById('accountDropdown').addEventListener('click', () => {
+            console.log('Account dropdown clicked');
+            const dropdown = document.getElementById('accountDropdown');
+            dropdown.classList.toggle('open');
+            // Show/hide dropdown options
+        });
+
+        // Alternative authentication button handler
+        document.getElementById('alternativeButton').addEventListener('click', () => {
+            console.log('Alternative authentication button clicked');
+            // Navigate to alternative authentication methods
+        });
+
+        // Keyboard accessibility for dropdown
+        document.getElementById('accountDropdown').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('accountDropdown').click();
+            }
+        });
+
+        console.log('Account selected dropdown screen loaded');
+    </script>
+</body>
+</html>

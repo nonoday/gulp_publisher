@@ -32,7 +32,7 @@
             position: relative;
             display: flex;
             align-items: flex-start;
-            gap: var(--spacing-lg);
+            gap: $spacing-lg;
             width: 100%;
             padding: 0;
             margin: 0;
@@ -54,12 +54,12 @@
             justify-content: center;
             width: 32px;
             height: 32px;
-            margin-bottom: var(--spacing-sm);
-            border-radius: var(--borderRadius-full);
-            background-color: var(--background-bg-gray);
-            color: var(--text-text-quaternary);
-            font-weight: var(--typography-fontWeight-medium);
-            font-size: var(--typography-fontSize-sm);
+            margin-bottom: $spacing-sm;
+            border-radius: $radius-full;
+            background-color: $bg-gray;
+            color: $text-quaternary;
+            font-weight: $font-weight-m-m;
+            font-size: $font-size-body-s;
             z-index: 2;
         }
         .progress-step-item-content {
@@ -69,38 +69,38 @@
 
         /* 진행률 단계 제목 */
         .progress-step-item-content-title {
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-text-secondary);
-            font-size: var(--typography-fontSize-base);
-            font-weight: var(--typography-fontWeight-medium);
+            margin-bottom: $spacing-sm;
+            color: $text-secondary;
+            font-size: $font-size-body-m;
+            font-weight: $font-weight-m-m;
         }
 
         /* 진행률 단계 날짜 */
         .progress-step-item-content-date {
-            color: var(--colors-text-tertiary);
-            font-size: var(--typography-fontSize-sm);
-            font-weight: var(--typography-fontWeight-light);
+            color: $text-tertiary;
+            font-size: $font-size-body-s;
+            font-weight: $font-weight-r;
         }
 
         /* 활성화된 단계 -  디자인에는 없으나 추가될때 대비  */
         .progress-step-item.active .progress-step-item-marker {
-            background: var(--background-bg-brand_strong-same);
+            background: $bg-brand-strong-same;
             /* 텍스트에 흰색이 없음 --colors-text-primary */
-            color: var(--white);
+            color: $white;
         }
         .progress-step-item.active .progress-step-item-content-title {
-            color: var(--text-text-brand);
+            color: $text-brand;
         }
 
         /* 완료된 단계 */
         .progress-step-item.completed .progress-step-item-marker {
-            background: var(--background-bg-brand_strong-same);  
-            color: var(--white);
+            background: $bg-brand-strong-same;  
+            color: $white;
         }
 
         /* 완료된 단계 스타일 */
         .progress-step-item.completed .progress-step-item-content-title {
-            color: var(--text-text-secondary);
+            color: $text-secondary;
         }
 
         /* 연결선 */
@@ -109,9 +109,9 @@
             position: absolute;
             top: 12px;
             left: 50%;
-            width: calc(100% + var(--spacing-lg));
+            width: calc(100% + #{$spacing-lg});
             height: 1px;
-            background: var(--border-border-secondary);
+            background: $border-secondary;
             z-index: 1;
             pointer-events: none;
             user-select: none;
@@ -122,31 +122,31 @@
 
         /* 완료된 연결선 */
         .progress-step-item.completed:not(:last-child)::after {
-            background:var(--brand-500);
+            background: $brand-500;
         }
 
         /* 진행 중인 연결선 */
         .progress-step-item.active:not(:last-child)::after {
-            background: var(--border-border-secondary)
+            background: $border-secondary;
         }
 
 
         .progress-step-item.error .progress-step-item-marker {
-            background: var(--foreground-fg-negative-same);
-            color: var(--white);
+            background: $fg-negative-same;
+            color: $white;
         }
         .progress-step-item.hold .progress-step-item-marker {
-            background: var(--foreground-fg-steady);
-            color: var(--white);
+            background: $fg-steady;
+            color: $white;
         }
         .progress-step-item.check .progress-step-item-marker {
-            background: var(--foreground-fg-brand-same);
-            color: var(--white);
+            background: $fg-brand-same;
+            color: $white;
         }
         
         .number .progress-step-item-marker {
-            background: var(--background-bg-brand);
-            color: var(--text-text-brand);
+            background: $bg-brand;
+            color: $text-brand;
         }
         
         .icon .progress-step-item-marker {
@@ -195,8 +195,8 @@
             align-items: flex-start;
             flex:auto;
             min-width:auto;
-            gap:var(--spacing-sm);
-            margin-top:var(--spacing-sm);
+            gap: $spacing-sm;
+            margin-top: $spacing-sm;
         }
 
         .progress-step.vertical .progress-step-item::after {
@@ -219,7 +219,7 @@
             bottom:0;
             left: 16px;
             width: 1px;
-            background: var(--border-border-secondary);
+            background: $border-secondary;
             z-index: 1;
             pointer-events: none;
             user-select: none;
@@ -228,33 +228,33 @@
             -ms-user-select: none;
         }
         .progress-step.vertical .progress-step-item.completed .progress-step-item-content::after {
-            background: var(--brand-500);
+            background: $brand-500;
         }
         .progress-step.vertical .progress-step-item-content-title {
             display: flex;
             align-items: center;
             min-height: 32px;
-            color: var(--text-text-secondary);
-            font-size: var(--typography-fontSize-lg);
-            font-weight: var(--typography-fontWeight-medium);
+            color: $text-secondary;
+            font-size: $font-size-body-l;
+            font-weight: $font-weight-m-m;
         }
         .progress-step.vertical .progress-step-item-content-description {
-            color: var(--text-text-quaternary);
-            font-size: var(--typography-fontSize-sm);
-            font-weight: var(--typography-fontWeight-light);
+            color: $text-quaternary;
+            font-size: $font-size-body-s;
+            font-weight: $font-weight-r;
         }
         .progress-step.vertical .progress-step-item-content-date {
-            margin-top:var(--spacing-xs);
+            margin-top: $spacing-xs;
         }
         .progress-step.vertical .progress-step-item-content-link-container {
-            margin-top:var(--spacing-xs);
+            margin-top: $spacing-xs;
         }
         .progress-step.vertical .progress-step-item-content-link {
             display: inline-flex;
             align-items: center;
-            color: var(--text-text-brand);
-            font-size: var(--typography-fontSize-sm);
-            font-weight: var(--typography-fontWeight-light);
+            color: $text-brand;
+            font-size: $font-size-body-s;
+            font-weight: $font-weight-r;
             text-decoration: none;
         }
         .progress-step.vertical .progress-step-item-content-link:focus {

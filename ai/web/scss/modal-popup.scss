@@ -1,0 +1,123 @@
+// Modal Popup Component Styles
+.modal-dimmed-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    
+    &.show {
+        display: flex;
+    }
+}
+
+.modal-container-box {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 24px;
+    margin: auto;
+    
+    // all-center 옵션
+    &.all-center {
+        text-align: center;
+    }
+    
+    // icon 옵션
+    &.icon {
+        padding-left: 60px;
+    }
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.modal-error {
+    color: #dc3545;
+    font-size: 14px;
+    margin-bottom: 16px;
+    display: none;
+    
+    &.show {
+        display: block;
+    }
+}
+
+.modal-message {
+    margin-bottom: 24px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.modal-buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.modal-footer {
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+    margin-top: 16px;
+    
+    &.custom-footer {
+        // 커스텀 footer 스타일
+    }
+}
+
+.default-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.dont-show-again {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    
+    &:hover {
+        color: #333;
+    }
+}
+
+// footer-type별 스타일
+.footer-type01 {
+    .custom-footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+.footer-type02 {
+    .complex-footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        
+        .footer-left,
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    }
+}

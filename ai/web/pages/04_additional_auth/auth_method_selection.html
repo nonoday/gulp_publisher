@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>본인확인 방법 선택</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-canvas-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas-white);
+            position: relative;
+        }
+
+        /* Header Navigation */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            border-bottom: 1px solid var(--border-tertiary);
+        }
+
+        .nav-title {
+            font-family: Pretendard;
+            font-size: var(--typography-fontSize-lg);
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--text-primary);
+            letter-spacing: -0.36px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .nav-button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-left {
+            width: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-xl) 0 var(--spacing-4xl);
+            gap: var(--spacing-4xl);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Title Section */
+        .title-section {
+            padding: 0 var(--spacing-2xl);
+        }
+
+        .main-title {
+            font-family: OneShinhan, Pretendard;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 33px;
+            letter-spacing: -0.44px;
+            color: var(--text-primary);
+        }
+
+        /* Selection List */
+        .selection-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+            padding: 0 var(--spacing-2xl);
+        }
+
+        .select-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-xl) var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .select-item:hover {
+            border-color: var(--border-primary);
+            background: var(--bg-graylight);
+        }
+
+        .select-item.selected {
+            border-width: 1.6px;
+            border-color: var(--brand-500);
+            background: var(--bg-canvas-white);
+        }
+
+        .select-icon {
+            width: 32px;
+            height: 32px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .select-icon img,
+        .select-icon svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .icon-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 11px;
+            height: 11px;
+            background: var(--palette-new-green-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-badge.gray {
+            background: var(--gray-600);
+        }
+
+        .icon-badge svg {
+            width: 6px;
+            height: 6px;
+            color: var(--white);
+        }
+
+        .select-text {
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-secondary);
+        }
+
+        .selected .select-text {
+            color: var(--text-primary);
+        }
+
+        /* Divider */
+        .divider {
+            height: 8px;
+            background: var(--bg-gray);
+            width: 100%;
+        }
+
+        /* Notice Section */
+        .notice-section {
+            padding: var(--spacing-3xl) var(--spacing-2xl);
+        }
+
+        .accordion {
+            border-radius: var(--radius-xs);
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg) 0;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .accordion-title {
+            font-family: Pretendard;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-primary);
+        }
+
+        .accordion-icon {
+            width: 20px;
+            height: 20px;
+            transform: rotate(0deg);
+            transition: transform 0.3s ease;
+        }
+
+        .accordion.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion.open .accordion-content {
+            max-height: 500px;
+        }
+
+        .notice-list {
+            padding: var(--spacing-xl) 0;
+        }
+
+        .notice-item {
+            position: relative;
+            padding-left: var(--spacing-xl);
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary);
+        }
+
+        .notice-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--fg-quaternary);
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .container {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .header-nav {
+                background: var(--bg-canvas-white);
+                border-bottom-color: var(--border-tertiary);
+            }
+
+            .main-title {
+                color: var(--text-primary);
+            }
+
+            .select-item {
+                background: var(--bg-canvas-white);
+                border-color: var(--border-secondary);
+            }
+
+            .select-item:hover {
+                background: var(--bg-graylight);
+                border-color: var(--border-primary);
+            }
+
+            .select-item.selected {
+                background: var(--bg-canvas-white);
+                border-color: var(--brand-500);
+            }
+
+            .select-text {
+                color: var(--text-secondary);
+            }
+
+            .selected .select-text {
+                color: var(--text-primary);
+            }
+
+            .divider {
+                background: var(--bg-gray);
+            }
+
+            .accordion-title {
+                color: var(--text-primary);
+            }
+
+            .notice-item {
+                color: var(--text-tertiary);
+            }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+
+            .main-content {
+                padding: var(--spacing-3xl) 0 var(--spacing-5xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Navigation -->
+        <header class="header-nav">
+            <div class="nav-left"></div>
+            <h1 class="nav-title">본인확인</h1>
+            <button class="nav-button" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 6L18 18" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h2 class="main-title">
+                    안전한 거래를 위해<br>
+                    본인확인 방법을 선택해주세요
+                </h2>
+            </div>
+
+            <!-- Selection List -->
+            <div class="selection-list">
+                <!-- ARS (Selected) -->
+                <div class="select-item selected" data-method="ars">
+                    <div class="select-icon">
+                        <svg width="33" height="33" viewBox="0 0 33 33" fill="none">
+                            <path d="M21.5 23.5C21.5 24.5609 20.9205 25.5783 19.9749 26.3284C19.0294 27.0786 17.7956 27.5 16.5 27.5C15.2044 27.5 13.9706 27.0786 13.0251 26.3284C12.0795 25.5783 11.5 24.5609 11.5 23.5" stroke="#005DF9" stroke-width="1.5" stroke-linecap="round"/>
+                            <rect x="8.5" y="8.5" width="16" height="16" rx="3" stroke="#005DF9" stroke-width="1.5"/>
+                            <circle cx="16.5" cy="20.5" r="1.5" fill="#005DF9"/>
+                            <path d="M16.5 5.5V8.5" stroke="#005DF9" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <div class="icon-badge">
+                            <svg viewBox="0 0 8 6" fill="none">
+                                <path d="M1 3L3 5L7 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="select-text">ARS</span>
+                </div>
+
+                <!-- 문자메시지 -->
+                <div class="select-item" data-method="sms">
+                    <div class="select-icon">
+                        <svg width="33" height="33" viewBox="0 0 33 33" fill="none">
+                            <path d="M8.5 10.5C8.5 9.39543 9.39543 8.5 10.5 8.5H22.5C23.6046 8.5 24.5 9.39543 24.5 10.5V18.5C24.5 19.6046 23.6046 20.5 22.5 20.5H17.5L14.5 24.5V20.5H10.5C9.39543 20.5 8.5 19.6046 8.5 18.5V10.5Z" stroke="#667085" stroke-width="1.5"/>
+                            <circle cx="12.5" cy="14.5" r="1" fill="#667085"/>
+                            <circle cx="16.5" cy="14.5" r="1" fill="#667085"/>
+                            <circle cx="20.5" cy="14.5" r="1" fill="#667085"/>
+                        </svg>
+                    </div>
+                    <span class="select-text">문자메시지</span>
+                </div>
+
+                <!-- 상담사를 통한 본인확인 -->
+                <div class="select-item" data-method="counselor">
+                    <div class="select-icon">
+                        <svg width="33" height="33" viewBox="0 0 33 33" fill="none">
+                            <rect x="7.5" y="10.5" width="18" height="12" rx="1" stroke="#667085" stroke-width="1.5"/>
+                            <path d="M11.5 14.5H21.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M11.5 18.5H18.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span class="select-text">상담사를 통한 본인확인</span>
+                </div>
+
+                <!-- 해외출국사실확인 -->
+                <div class="select-item" data-method="overseas">
+                    <div class="select-icon">
+                        <svg width="33" height="33" viewBox="0 0 33 33" fill="none">
+                            <path d="M16.5 8.5L21.5 13.5L16.5 16.5V14.5H11.5V10.5H16.5V8.5Z" stroke="#667085" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M8.5 18.5C8.5 20.5 10.5 24.5 16.5 24.5C22.5 24.5 24.5 20.5 24.5 18.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span class="select-text">해외출국사실확인</span>
+                </div>
+
+                <!-- 모바일 OTP 인증 -->
+                <div class="select-item" data-method="otp">
+                    <div class="select-icon">
+                        <svg width="33" height="33" viewBox="0 0 33 33" fill="none">
+                            <rect x="10.5" y="7.5" width="12" height="18" rx="2" stroke="#667085" stroke-width="1.5"/>
+                            <path d="M13.5 11.5H19.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M13.5 14.5H17.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                            <circle cx="16.5" cy="21.5" r="1" fill="#667085"/>
+                        </svg>
+                    </div>
+                    <span class="select-text">모바일 OTP 인증</span>
+                </div>
+
+                <!-- 비대면 실명확인 -->
+                <div class="select-item" data-method="non-face">
+                    <div class="select-icon">
+                        <svg width="33" height="33" viewBox="0 0 33 33" fill="none">
+                            <rect x="8.5" y="10.5" width="16" height="10" rx="1" stroke="#667085" stroke-width="1.5"/>
+                            <path d="M11.5 23.5H21.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M11.5 14.5H13.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M11.5 17.5H20.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <div class="icon-badge gray">
+                            <svg viewBox="0 0 8 6" fill="none">
+                                <path d="M1 3L3 5L7 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="select-text">비대면 실명확인</span>
+                </div>
+
+                <!-- 얼굴인증 -->
+                <div class="select-item" data-method="face">
+                    <div class="select-icon">
+                        <svg width="33" height="33" viewBox="0 0 33 33" fill="none">
+                            <circle cx="16.5" cy="16.5" r="8" stroke="#667085" stroke-width="1.5"/>
+                            <circle cx="13.5" cy="14.5" r="1" fill="#667085"/>
+                            <circle cx="19.5" cy="14.5" r="1" fill="#667085"/>
+                            <path d="M13.5 19.5C13.5 19.5 14.5 21.5 16.5 21.5C18.5 21.5 19.5 19.5 19.5 19.5" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span class="select-text">얼굴인증</span>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- Notice Section -->
+            <div class="notice-section">
+                <div class="accordion" id="noticeAccordion">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="accordion-title">꼭! 알아두세요</span>
+                        <svg class="accordion-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M5 7.5L10 12.5L15 7.5" stroke="var(--text-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div class="accordion-content">
+                        <ul class="notice-list">
+                            <li class="notice-item">
+                                해외 IP로 접속한 고객님께서 예금 해지 또는 예금 담보대출 신청 시 ARS 인증이 불가능한 경우, 한국 시간 오전 9시~ 오후 6시에 거래하시면, 상담사가 입력하신 해외 연락처로 직접 연락드리는 '상담사를 통한 본인확인'이 가능합니다. (070 번호 제외)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 선택 항목 클릭 이벤트
+        document.querySelectorAll('.select-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 모든 항목에서 selected 클래스 제거
+                document.querySelectorAll('.select-item').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                // 클릭한 항목에 selected 클래스 추가
+                this.classList.add('selected');
+
+                const method = this.dataset.method;
+                console.log('선택된 인증 방법:', method);
+
+                // TODO: 선택한 인증 방법에 따른 처리
+            });
+        });
+
+        // 아코디언 토글
+        const accordion = document.getElementById('noticeAccordion');
+        const accordionHeader = accordion.querySelector('.accordion-header');
+
+        accordionHeader.addEventListener('click', function() {
+            const isOpen = accordion.classList.contains('open');
+            accordion.classList.toggle('open');
+            this.setAttribute('aria-expanded', !isOpen);
+        });
+
+        // 닫기 버튼 클릭 이벤트
+        document.querySelector('.nav-button').addEventListener('click', function() {
+            console.log('페이지 닫기');
+            // window.close() 또는 history.back()
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>보유자산 총잔액</title>
+    <!-- Design Token CSS (Required) -->
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <!-- Common Style CSS (Required) -->
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    
+    <style>
+        /* Page-specific styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'OneShinhan', 'Pretendard', sans-serif;
+            background: var(--bg-canvas-white, #ffffff);
+        }
+        
+        #wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-canvas-white, #ffffff);
+        }
+        
+        /* Header styles */
+        .header-area {
+            background: var(--bg-white, #ffffff);
+            border-bottom: 1px solid var(--border-tertiary, #f0f4fa);
+        }
+        
+        .header-inner {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+            box-sizing: border-box;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md, 8px);
+            flex: 1;
+        }
+        
+        .back-button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 4px;
+        }
+        
+        .back-button img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .page-title {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 27px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+            letter-spacing: -0.32px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl, 16px);
+        }
+        
+        .chatbot-button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 4px;
+        }
+        
+        .chatbot-button img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        /* Content area styles */
+        .content-area {
+            flex: 1;
+            background: linear-gradient(180deg, var(--bg-canvas-white, #ffffff) 2.533%, var(--bg-canvas-white-a0, rgba(255, 255, 255, 0)) 17.974%);
+            padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px) var(--spacing-4xl, 32px);
+            box-sizing: border-box;
+            margin-top: 56px; /* Add margin to account for fixed header */
+        }
+        
+        .content-inner {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-2xl, 20px);
+        }
+        
+        .main-title {
+            font-size: 22px;
+            font-weight: 500;
+            line-height: 33px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+            letter-spacing: -0.44px;
+        }
+        
+        .asset-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md, 8px);
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 22px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+            letter-spacing: -0.28px;
+        }
+        
+        .section-description {
+            display: flex;
+            gap: var(--spacing-sm, 4px);
+            align-items: flex-start;
+        }
+        
+        .bullet {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 24px;
+            color: var(--text-secondary, #344054);
+            letter-spacing: -0.28px;
+            flex-shrink: 0;
+        }
+        
+        .description-text {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 24px;
+            color: var(--text-secondary, #344054);
+            letter-spacing: -0.28px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap" class="new-wrap">
+        <!-- Header area -->
+        <div class="header-area">
+            <div class="header-inner">
+                <div class="header-left">
+                    <button class="back-button" type="button" tabindex="0" aria-label="이전 페이지로">
+                        <img src="../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" />
+                    </button>
+                    <h1 class="page-title">보유자산</h1>
+                </div>
+                <div class="header-right">
+                    <button class="chatbot-button" type="button" tabindex="0" aria-label="챗봇">
+                        <img src="../../../images/icon/icon_chatbot.svg" alt="챗봇 아이콘" />
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content area -->
+        <div class="content-area">
+            <div class="content-inner">
+                <h2 class="main-title">보유자산 총잔액</h2>
+                
+                <!-- 은행입출금 / 증권입출금 -->
+                <div class="asset-section">
+                    <h3 class="section-title">은행입출금 / 증권입출금</h3>
+                    <div class="section-description">
+                        <span class="bullet">•</span>
+                        <p class="description-text">상품명, 계좌번호, 잔액</p>
+                    </div>
+                </div>
+                
+                <!-- 페이 / 포인트 -->
+                <div class="asset-section">
+                    <h3 class="section-title">페이 / 포인트</h3>
+                    <div class="section-description">
+                        <span class="bullet">•</span>
+                        <p class="description-text">기관명, 잔액</p>
+                    </div>
+                </div>
+                
+                <!-- 예금 / 적금 -->
+                <div class="asset-section">
+                    <h3 class="section-title">예금 / 적금</h3>
+                    <div class="section-description">
+                        <span class="bullet">•</span>
+                        <p class="description-text">상품명, 계좌번호, 잔액</p>
+                    </div>
+                </div>
+                
+                <!-- ISA / 펀드 / 주식 / 신탁 -->
+                <div class="asset-section">
+                    <h3 class="section-title">ISA / 펀드 / 주식 / 신탁</h3>
+                    <div class="section-description">
+                        <span class="bullet">•</span>
+                        <p class="description-text">상품명, 계좌번호, 납입원금</p>
+                    </div>
+                </div>
+                
+                <!-- 연금 -->
+                <div class="asset-section">
+                    <h3 class="section-title">연금</h3>
+                    <div class="section-description">
+                        <span class="bullet">•</span>
+                        <p class="description-text">상품명, 계좌번호, 계좌잔액</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

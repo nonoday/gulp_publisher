@@ -1,0 +1,61 @@
+// SCSS Variables
+$fw-bold: 600;
+$fw-medium: 500;
+$fw-light: 400;
+
+:root {
+    // font weight
+    --fw-bold :600;
+    --fw-medium :500;
+    --fw-light :400;
+
+    // spacing
+    --spacing-xs: 2px;
+    --spacing-sm: 4px;
+    --spacing-md: 8px;
+    --spacing-lg: 12px;
+    --spacing-xl: 16px;
+    --spacing-3xl: 24px;
+    --spacing-4xl: 32px;
+    --spacing-5xl: 40px;
+    --spacing-6xl: 48px;
+    --spacing-2xl: 20px;
+    --spacing-7xl: 80px;
+    --spacing-none: 0px;
+    --container-padding-mobile: 20px;
+
+
+    //radius
+    --radius-none: 0px;
+    --radius-xxs: 4px;
+    --radius-xs: 8px;
+    --radius-md: 12px;
+    --radius-lg: 14px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+    --radius-sm: 10px;
+
+    --palette-brand-100:#ebf0ff;
+    --palette-brand-200:#c2d3ff;
+    --palette-brand-300:#94abfa;
+    --palette-brand-400:#4c7dff;
+    --palette-brand-500:#005df9;
+    --palette-brand-600:#0046ff;
+    --palette-brand-700:#0040e8;
+    --palette-brand-800:#1539cb;
+    --palette-brand-900:#ebf0ff;
+
+    --palette-gray-0:#ffffff;
+    --palette-gray-50:#ffffff;
+    --palette-gray-100:#ffffff;
+    --palette-gray-200:#ffffff;
+    --palette-gray-300:#ffffff;
+    --palette-gray-400:#ffffff;
+    --palette-gray-500:#ffffff;
+    --palette-gray-600:#ffffff;
+    --palette-gray-700:#ffffff;
+    --palette-gray-800:#ffffff;
+    --palette-gray-900:#ffffff;
+    --palette-gray-1000:#ffffff;
+}

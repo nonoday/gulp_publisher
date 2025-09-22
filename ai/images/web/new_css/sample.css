@@ -1,0 +1,37 @@
+@charset "UTF-8";
+.sample-box {
+  background: var(--colors-primary-500);
+  color: var(--colors-text-inverse);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadows-md);
+  font-size: var(--typography-fontSize-lg);
+  border: 2px solid var(--colors-border-primary);
+  transition: background 0.3s;
+}
+
+html.dark .sample-box {
+  background: var(--colors-primary-700);
+  color: var(--colors-text-primary);
+  border-color: var(--colors-border-secondary);
+  box-shadow: var(--shadows-lg);
+}
+
+.ds {
+  background: var(--colors-primary-500);
+  color: var(--colors-text-inverse);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadows-md);
+  font-size: var(--typography-fontSize-lg);
+  border: 2px solid var(--colors-border-primary);
+  transition: background 0.3s;
+}
+
+.test {
+  background: var(--colors-primary-500);
+  /* 테스트용 새로운 스타일 추가 */
+  margin: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+}

@@ -1,0 +1,457 @@
+<!--
+Figma Layer: 외국인신분증 진위확인을 위해 동의가 필요해요
+Node ID: 4642-140900
+Description: 외국인신분증 진위확인 동의 바텀시트 - 정확한 레이아웃 매칭
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>외국인신분증 진위확인 동의</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            background-color: var(--bg-canvas_white, #ffffff);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas_white, #ffffff);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(45, 55, 72, 0.6);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Bottom Sheet Container */
+        .bottom-sheet {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 20px 20px 0 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0px -4px 32px 0px rgba(12, 17, 29, 0.12);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .sheet-header {
+            width: 100%;
+            padding: 16px 20px 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .close-button {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            background-image: url('../../../../images/icon/icon_x.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            outline: none;
+        }
+
+        /* Title */
+        .sheet-title {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+            text-align: left;
+            width: 100%;
+        }
+
+        /* Content */
+        .sheet-content {
+            width: 100%;
+            padding: 16px 20px 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Main Agreement */
+        .main-agreement {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .main-agreement.checked {
+            background-color: var(--bg-brand_weak, #f8faff);
+            border-radius: 12px;
+        }
+
+        .main-checkbox {
+            width: 20px;
+            height: 20px;
+            background-image: url('../../../../images/icon/icon_uncheck.svg');
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        .main-checkbox.checked {
+            background-color: var(--bg-brand_strong-same, #005df9);
+            background-image: url('../../../../images/icon/icon_check.svg');
+            background-size: 16px 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 6px;
+        }
+
+        .main-agreement-text {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+        }
+
+        /* Agreement List */
+        .agreement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .agreement-item {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .agreement-item.checked {
+            background-color: var(--bg-brand_weak, #f8faff);
+            border-radius: 12px;
+        }
+
+        .agreement-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .agreement-checkbox {
+            width: 16px;
+            height: 16px;
+            background-image: url('../../../../images/icon/icon_uncheck.svg');
+            background-size: 16px 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        .agreement-checkbox.checked {
+            background-color: var(--bg-brand_strong-same, #005df9);
+            background-image: url('../../../../images/icon/icon_check.svg');
+            background-size: 12px 12px;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 4px;
+        }
+
+        .agreement-text {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-secondary, #344054);
+            margin: 0;
+            flex: 1;
+            text-align: left;
+        }
+
+        .chevron-right {
+            width: 16px;
+            height: 16px;
+            background-image: url('../../../../images/icon/icon_chevron_right.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        .sheet-footer {
+            width: 100%;
+            padding: 16px 20px 24px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .confirm-button {
+            width: 100%;
+            height: 56px;
+            background-color: var(--bg-disabled, #e4e7ec);
+            border: none;
+            border-radius: 16px;
+            color: var(--text-disabled, #667085);
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            cursor: not-allowed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .confirm-button.enabled {
+            background-color: var(--bg-brand_strong-same, #005df9);
+            color: var(--text-ondark_primary-same, #ffffff);
+            cursor: pointer;
+        }
+
+        .confirm-button.enabled:hover {
+            background-color: #004de5;
+        }
+
+        .confirm-button.enabled:active {
+            background-color: #003db8;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Modal Overlay -->
+        <div class="modal-overlay">
+            <!-- Bottom Sheet -->
+            <div class="bottom-sheet">
+                <!-- Header -->
+                <div class="sheet-header">
+                    <button class="close-button" id="closeButton"></button>
+                </div>
+
+                <!-- Content -->
+                <div class="sheet-content">
+                    <!-- Title -->
+                    <h2 class="sheet-title">외국인신분증 진위확인을 위해<br>동의가 필요해요</h2>
+                    <!-- Main Agreement -->
+                    <button class="main-agreement" id="mainAgreement">
+                        <div class="main-checkbox" id="mainCheckbox"></div>
+                        <span class="main-agreement-text">[필수] 약관 모두 동의</span>
+                    </button>
+
+                    <!-- Agreement List -->
+                    <div class="agreement-list">
+                        <button class="agreement-item" data-agreement="immigration">
+                            <div class="agreement-left">
+                                <div class="agreement-checkbox" id="checkbox1"></div>
+                                <span class="agreement-text">개인정보 수집·이용·제공 동의서(외국인신분증 진위확인 및 실명확인용)</span>
+                            </div>
+                            <div class="chevron-right"></div>
+                        </button>
+                        
+                        <button class="agreement-item" data-agreement="collection">
+                            <div class="agreement-left">
+                                <div class="agreement-checkbox" id="checkbox2"></div>
+                                <span class="agreement-text">개인정보 수집이용 제공 동의서</span>
+                            </div>
+                            <div class="chevron-right"></div>
+                        </button>
+                        
+                        <button class="agreement-item" data-agreement="outsourcing">
+                            <div class="agreement-left">
+                                <div class="agreement-checkbox" id="checkbox3"></div>
+                                <span class="agreement-text">고유식별정보 수집·이용 제공 동의서(외국인등록번호)</span>
+                            </div>
+                            <div class="chevron-right"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="sheet-footer">
+                    <button class="confirm-button" id="confirmButton">필수 약관에 동의해주세요</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Agreement checkboxes
+        const mainAgreement = document.getElementById('mainAgreement');
+        const mainCheckbox = document.getElementById('mainCheckbox');
+        const agreementItems = document.querySelectorAll('.agreement-item');
+        const checkboxes = [
+            document.getElementById('checkbox1'),
+            document.getElementById('checkbox2'),
+            document.getElementById('checkbox3')
+        ];
+        const confirmButton = document.getElementById('confirmButton');
+
+        let agreementStates = [false, false, false];
+
+        // Update button state
+        function updateButtonState() {
+            const allChecked = agreementStates.every(state => state);
+            
+            if (allChecked) {
+                confirmButton.classList.add('enabled');
+                confirmButton.disabled = false;
+            } else {
+                confirmButton.classList.remove('enabled');
+                confirmButton.disabled = true;
+            }
+        }
+
+        // Update main checkbox
+        function updateMainCheckbox() {
+            const allChecked = agreementStates.every(state => state);
+            
+            if (allChecked) {
+                mainCheckbox.classList.add('checked');
+                mainAgreement.classList.add('checked');
+            } else {
+                mainCheckbox.classList.remove('checked');
+                mainAgreement.classList.remove('checked');
+            }
+        }
+
+        // Individual agreement item clicks
+        agreementItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                agreementStates[index] = !agreementStates[index];
+                
+                if (agreementStates[index]) {
+                    checkboxes[index].classList.add('checked');
+                    item.classList.add('checked');
+                } else {
+                    checkboxes[index].classList.remove('checked');
+                    item.classList.remove('checked');
+                }
+                
+                updateMainCheckbox();
+                updateButtonState();
+                
+                console.log(`Agreement ${index + 1} ${agreementStates[index] ? 'checked' : 'unchecked'}`);
+            });
+        });
+
+        // Main agreement toggle
+        mainAgreement.addEventListener('click', () => {
+            const allChecked = agreementStates.every(state => state);
+            const newState = !allChecked;
+            
+            agreementStates = [newState, newState, newState];
+            
+            checkboxes.forEach((checkbox, index) => {
+                if (newState) {
+                    checkbox.classList.add('checked');
+                    agreementItems[index].classList.add('checked');
+                } else {
+                    checkbox.classList.remove('checked');
+                    agreementItems[index].classList.remove('checked');
+                }
+            });
+            
+            updateMainCheckbox();
+            updateButtonState();
+            
+            console.log(`All agreements ${newState ? 'checked' : 'unchecked'}`);
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close foreign ID verification agreement modal');
+        });
+
+        // Confirm button handler
+        confirmButton.addEventListener('click', () => {
+            if (confirmButton.classList.contains('enabled')) {
+                console.log('Proceed with foreign ID verification');
+            }
+        });
+
+        // Close modal when clicking overlay
+        document.querySelector('.modal-overlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close modal by clicking overlay');
+            }
+        });
+
+        // Initialize
+        updateMainCheckbox();
+        updateButtonState();
+
+        console.log('Foreign ID verification agreement modal loaded');
+    </script>
+</body>
+</html>

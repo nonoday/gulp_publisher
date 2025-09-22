@@ -1,0 +1,494 @@
+<!--
+Figma Layer: 영상통화 상담 화면
+Node ID: 4642-139809
+Description: 영상통화 중 상담사와의 대화 화면 - 고객확인 단계
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영상통화 상담</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: none;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 6;
+        }
+
+        .navigation {
+            height: clamp(52px, 14.9vw, 56px);
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .nav-back {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            width: 100%;
+            background-color: #f8f9fc;
+            padding: clamp(10px, 3.2vw, 12px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: flex-start;
+            justify-content: flex-end;
+            z-index: 5;
+            position: relative;
+        }
+
+        .progress-container {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .progress-text {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1px, 0.5vw, 2px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex: 1;
+        }
+
+        .progress-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: clamp(-0.35px, -0.08vw, -0.28px);
+            color: #101828;
+            margin: clamp(0px, 0vw, 0px);
+            width: 100%;
+        }
+
+        .progress-pagination {
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .pagination-badge {
+            background-color: #818da2;
+            padding: clamp(1px, 0.3vw, 1px) clamp(5px, 1.6vw, 6px);
+            border-radius: 100px;
+            display: flex;
+            height: clamp(18px, 5.9vw, 22px);
+            align-items: center;
+            justify-content: flex-start;
+            box-sizing: border-box;
+        }
+
+        .current-step {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(10px, 3.2vw, 12px);
+            line-height: clamp(17px, 5.3vw, 20px);
+            letter-spacing: clamp(-0.3px, -0.06vw, -0.24px);
+            color: #ffffff;
+            text-align: right;
+            width: clamp(6px, 2.1vw, 8px);
+            margin: clamp(0px, 0vw, 0px);
+        }
+
+        .step-divider {
+            width: clamp(6px, 1.9vw, 7px);
+            height: clamp(15px, 4.8vw, 18px);
+            background-image: url('../../../../images/icon/c9e861c09081dc05efd3c4c7c6d51cfc1a990b94.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .total-step {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(10px, 3.2vw, 12px);
+            line-height: clamp(17px, 5.3vw, 20px);
+            letter-spacing: clamp(-0.3px, -0.06vw, -0.24px);
+            color: #ffffff;
+            text-align: center;
+            width: clamp(6px, 2.1vw, 8px);
+            margin: clamp(0px, 0vw, 0px);
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../../../../images/icon/video_call_background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+
+        /* Dark Overlay */
+        .dark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: clamp(180px, 57.6vw, 216px);
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        /* Conversation Card */
+        .conversation-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0 0 clamp(24px, 8.5vw, 32px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 3;
+        }
+
+        .conversation-content {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .conversation-card {
+            width: clamp(283px, 89.3vw, 335px);
+            background-color: rgba(24, 34, 48, 0.9);
+            padding: clamp(14px, 4.3vw, 16px) 0;
+            border-radius: clamp(14px, 4.3vw, 16px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        .card-content {
+            width: clamp(251px, 78.7vw, 295px);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* Recording Status */
+        .recording-status {
+            width: 100%;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .recording-icon {
+            width: clamp(5px, 1.6vw, 6px);
+            height: clamp(5px, 1.6vw, 6px);
+            background-image: url('../../../../images/icon/d5260b8f84c00433c94ff1aaf45e000604ca97a6.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .recording-text {
+            flex: 1;
+            display: flex;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            font-size: clamp(10px, 3.2vw, 12px);
+            letter-spacing: clamp(-0.32px, -0.07vw, -0.26px);
+            line-height: clamp(18px, 5.9vw, 22px);
+        }
+
+        .rec-label {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            color: #d0d5dd;
+            margin: clamp(0px, 0vw, 0px);
+            white-space: nowrap;
+        }
+
+        .rec-time {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            color: #ffffff;
+            margin: clamp(0px, 0vw, 0px);
+            flex: 1;
+        }
+
+        /* Message Area */
+        .message-area {
+            width: 100%;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .message-text {
+            flex: 1;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: clamp(-0.35px, -0.08vw, -0.28px);
+            color: #ffffff;
+            margin: clamp(0px, 0vw, 0px);
+        }
+
+        /* Avatar */
+        .consultant-avatar {
+            width: clamp(54px, 17.1vw, 64px);
+            height: clamp(54px, 17.1vw, 64px);
+            position: relative;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        .avatar-background {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: clamp(54px, 17.1vw, 64px);
+            height: clamp(54px, 17.1vw, 64px);
+            transform: translate(-50%, -50%);
+            background-image: url('../../../../images/icon/d7007ce773935c0d80b32b027d9ef23547aef38e.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .avatar-face {
+            position: absolute;
+            left: 50%;
+            top: 23.44%;
+            width: clamp(19px, 5.9vw, 22px);
+            height: clamp(19px, 5.9vw, 22px);
+            transform: translate(-50%, 0) scaleY(-1);
+            background-image: url('../../../../images/icon/633387198b951c778ef6b90cbd2005fafe5aad67.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .avatar-body {
+            position: absolute;
+            left: clamp(8px, 2.4vw, 9px);
+            top: clamp(34px, 10.7vw, 40px);
+            width: clamp(39px, 12.3vw, 46px);
+            height: clamp(22px, 6.9vw, 26px);
+            background-image: url('../../../../images/icon/db1fb2c4bff05370c85d929255b05660c7c636c7.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" style="width: 100%; height: 100%;" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-container">
+                <div class="progress-text">
+                    <div class="progress-title">고객확인</div>
+                </div>
+                <div class="progress-pagination">
+                    <div class="pagination-badge">
+                        <div class="current-step">1</div>
+                        <div class="step-divider"></div>
+                        <div class="total-step">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Video Background -->
+            <div class="video-background"></div>
+
+            <!-- Dark Overlay -->
+            <div class="dark-overlay"></div>
+
+            <!-- Conversation Area -->
+            <div class="conversation-area">
+                <div class="conversation-content">
+                    <div class="conversation-card">
+                        <div class="card-content">
+                            <!-- Recording Status -->
+                            <div class="recording-status">
+                                <div class="recording-icon"></div>
+                                <div class="recording-text">
+                                    <div class="rec-label">REC</div>
+                                    <div class="rec-time">00:00:01</div>
+                                </div>
+                            </div>
+
+                            <!-- Message Area -->
+                            <div class="message-area">
+                                <div class="message-text">
+                                    안녕하세요 고객님<br>신한은행 고객센터 김신한입니다.
+                                </div>
+                                <div class="consultant-avatar">
+                                    <div class="avatar-background"></div>
+                                    <div class="avatar-face"></div>
+                                    <div class="avatar-body"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let recordingTime = 1;
+
+        function updateRecordingTime() {
+            const minutes = Math.floor(recordingTime / 60);
+            const seconds = recordingTime % 60;
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${Math.floor((recordingTime % 1) * 100).toString().padStart(2, '0')}`;
+
+            const recTimeElement = document.querySelector('.rec-time');
+            if (recTimeElement) {
+                recTimeElement.textContent = timeString;
+            }
+
+            recordingTime += 1;
+        }
+
+        // Start recording timer
+        setInterval(updateRecordingTime, 1000);
+
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        console.log('Video call conversation screen loaded');
+    </script>
+</body>
+</html>

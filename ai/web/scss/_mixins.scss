@@ -1,0 +1,12 @@
+// Font Weight Mixins
+@mixin fw-bold {
+  font-weight: var(--fw-bold);
+}
+
+@mixin fw-medium {
+  font-weight: var(--fw-medium);
+}
+
+@mixin fw-light {
+  font-weight: var(--fw-light);
+}

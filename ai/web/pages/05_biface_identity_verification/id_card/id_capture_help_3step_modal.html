@@ -1,0 +1,361 @@
+<!--
+Figma Layer: -(촬영이 잘 되자않나요?)선택 시
+Node ID: 4642-140952
+Description: 신분증 촬영 안내 바텀시트 모달 - 3단계 촬영 가이드
+Asset Usage: Reused existing icons from project - icon_card.svg, icon_lightning.svg, icon_letter.svg
+Duplicate Prevention: Reused modal structure and icons from existing implementations
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신분증 촬영 안내</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* OneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/OneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/OneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/OneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            background-color: rgba(12, 17, 29, 0.6);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(12, 17, 29, 0.6);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            justify-content: flex-end;
+            align-items: stretch;
+        }
+
+        /* Bottom Sheet Container - Full responsive width */
+        .bottom-sheet {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: clamp(16px, 6.4vw, 24px) clamp(16px, 6.4vw, 24px) 0 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+            max-width: none;
+            margin: 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Header - Responsive */
+        .sheet-header {
+            width: 100%;
+            padding: clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: clamp(6px, 2.1vw, 8px);
+            background-color: #ffffff;
+            border-radius: clamp(16px, 6.4vw, 24px) clamp(16px, 6.4vw, 24px) 0 0;
+        }
+
+        .title-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(3px, 1.1vw, 4px);
+            padding-bottom: clamp(16px, 5.3vw, 20px);
+            min-width: 0;
+        }
+
+        .sheet-title {
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(16px, 4.8vw, 18px);
+            line-height: clamp(25px, 7.7vw, 29px);
+            letter-spacing: -0.36px;
+            color: #101828;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            word-wrap: break-word;
+        }
+
+        .close-button {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            background-image: url('../../../../images/icon/icon_x.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            outline: none;
+            flex-shrink: 0;
+        }
+
+        /* Content */
+        .sheet-content {
+            width: 100%;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        /* Step List */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+        }
+
+        .step-item {
+            width: 100%;
+            padding: clamp(10px, 3.2vw, 12px) clamp(16px, 5.3vw, 20px);
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 2.1vw, 8px);
+            background: none;
+            border: none;
+            outline: none;
+            cursor: default;
+            box-sizing: border-box;
+        }
+
+        .step-icon-container {
+            width: clamp(28px, 8.7vw, 32.667px);
+            height: clamp(28px, 8.7vw, 32.667px);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-icon {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-icon.step1 {
+            background-image: url('../../../../images/icon/icon_card.svg');
+            background-size: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .step-icon.step2 {
+            background-image: url('../../../../images/icon/icon_lightning.svg');
+            background-size: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .step-icon.step3 {
+            background-image: url('../../../../images/icon/icon_letter.svg');
+            background-size: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .step-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1px, 0.5vw, 2px);
+            text-align: left;
+            min-width: 0;
+        }
+
+        .step-title-container {
+            width: 100%;
+            display: flex;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .step-title {
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(18px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: #344054;
+            margin: 0;
+            white-space: nowrap;
+            flex-shrink: 0;
+            word-wrap: break-word;
+        }
+
+        .step-description-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .step-description {
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(10px, 3.2vw, 12px);
+            line-height: clamp(18px, 5.9vw, 22px);
+            letter-spacing: -0.26px;
+            color: #667085;
+            margin: 0;
+            white-space: nowrap;
+            word-wrap: break-word;
+        }
+
+        /* Footer with gradient and CTA */
+        .sheet-footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+        }
+
+        .scroll-gradient {
+            width: 100%;
+            height: clamp(20px, 6.4vw, 24px);
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff);
+        }
+
+        .cta-section {
+            width: 100%;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Bottom Sheet -->
+        <div class="bottom-sheet">
+            <!-- Header -->
+            <div class="sheet-header">
+                <div class="title-section">
+                    <h2 class="sheet-title">신분증 촬영 안내</h2>
+                </div>
+                <button class="close-button" id="closeButton"></button>
+            </div>
+
+            <!-- Content -->
+            <div class="sheet-content">
+                <!-- Step List -->
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-icon-container">
+                            <div class="step-icon step1"></div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title-container">
+                                <div class="step-title">Step1</div>
+                            </div>
+                            <div class="step-description-container">
+                                <div class="step-description">어두운 배경 위에 신분증을 놓아주세요.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-icon-container">
+                            <div class="step-icon step2"></div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title-container">
+                                <div class="step-title">Step2</div>
+                            </div>
+                            <div class="step-description-container">
+                                <div class="step-description">빛이 반사되지 않도도록 방향을 조절해주세요.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-icon-container">
+                            <div class="step-icon step3"></div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title-container">
+                                <div class="step-title">Step3</div>
+                            </div>
+                            <div class="step-description-container">
+                                <div class="step-description">훼손된 신분증은 확인이 어려워요.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="sheet-footer">
+                <div class="scroll-gradient"></div>
+                <div class="cta-section"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close capture help modal (3-step)');
+            // Close modal
+        });
+
+        // Close modal when clicking overlay
+        document.querySelector('.page-container').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close modal by clicking overlay');
+                // Close modal
+            }
+        });
+
+        console.log('ID capture help modal (3-step) loaded');
+    </script>
+</body>
+</html>

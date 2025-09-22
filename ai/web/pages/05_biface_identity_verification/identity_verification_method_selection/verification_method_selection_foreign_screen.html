@@ -1,0 +1,291 @@
+<!--
+Figma Layer: 어떤 방법으로 본인인증을 할까요? (외국인신분증)
+Node ID: 4642-139895
+Description: 외국인신분증용 본인확인 방법 선택 화면 - 1개 옵션 (계좌인증만)
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>본인인증 방법 선택 (외국인신분증)</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: flex-start;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: clamp(52px, 14.9vw, 56px);
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .nav-back {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            padding: clamp(12px, 4.3vw, 16px) 0 clamp(24px, 8.5vw, 32px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 22px);
+            line-height: clamp(28px, 8.8vw, 33px);
+            letter-spacing: -0.44px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Selection Options Section */
+        .selection-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 3.2vw, 12px);
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        .selection-option {
+            width: 100%;
+            min-height: clamp(52px, 16.5vw, 62px);
+            padding: clamp(14px, 4.3vw, 16px) clamp(16px, 5.3vw, 20px);
+            background-color: #ffffff;
+            border: none;
+            outline: 1.60px solid var(--border-brand, #005df9);
+            outline-offset: 0;
+            border-radius: clamp(12px, 4.3vw, 16px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 2.1vw, 8px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-checkbox {
+            width: clamp(16px, 5.9vw, 22px);
+            height: clamp(12px, 4.5vw, 17px);
+            min-width: 16px;
+            min-height: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-image {
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.2s ease;
+            object-fit: contain;
+        }
+
+        .option-text {
+            flex: 1;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(18px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: var(--text-secondary, #344054);
+            margin: 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            z-index: 1;
+            position: relative;
+            height: 0;
+        }
+
+        /* Bottom padding for mobile safe area */
+        .content-body {
+            padding-bottom: clamp(16px, 5.3vw, 20px);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" style="width: 100%; height: 100%;" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">어떤 방법으로<br>본인인증을 할까요?</h1>
+            </div>
+
+            <!-- Selection Options Section -->
+            <div class="selection-section">
+                <div class="selection-option" id="bankAccountOption" role="button" tabindex="0">
+                    <div class="option-checkbox">
+                        <img src="../../../../images/icon/icon_checkbox_selected.svg" alt="체크박스" class="checkbox-image" />
+                    </div>
+                    <p class="option-text">다른 은행 계좌인증</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+        </div>
+    </div>
+
+    <script>
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        // Single option handler (no selection needed since only one option)
+        document.getElementById('bankAccountOption').addEventListener('click', () => {
+            console.log('Bank account option clicked');
+            // Navigate to bank account verification
+        });
+
+        // Keyboard accessibility
+        document.getElementById('bankAccountOption').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('bankAccountOption').click();
+            }
+        });
+
+        console.log('Verification method selection screen (foreign ID) loaded');
+    </script>
+</body>
+</html>

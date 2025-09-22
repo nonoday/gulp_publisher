@@ -1,0 +1,394 @@
+<!--
+Figma Layer: 영상통화 중 상담사가 '신고하기' 처리 시
+Node ID: 5159-100125
+Description: 상담종료 안내 바텀시트 - 부적절한 행동으로 인한 상담 종료 안내
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담종료 안내</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: none;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Dimmed Background */
+        .dimmed-background {
+            width: 100%;
+            flex: 1;
+            background-color: rgba(12, 17, 29, 0.6);
+            min-height: 0;
+        }
+
+        /* Bottom Sheet */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            max-width: none;
+            background-color: #ffffff;
+            border-top-left-radius: clamp(20px, 6.4vw, 24px);
+            border-top-right-radius: clamp(20px, 6.4vw, 24px);
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .bottom-sheet-header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+            border-top-left-radius: clamp(20px, 6.4vw, 24px);
+            border-top-right-radius: clamp(20px, 6.4vw, 24px);
+        }
+
+        .header-content {
+            width: 100%;
+            background-color: #ffffff;
+            padding: clamp(17px, 5.3vw, 20px) clamp(17px, 5.3vw, 20px) 0 clamp(17px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+
+        .title-section {
+            flex: 1;
+            padding: 0 0 clamp(17px, 5.3vw, 20px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .sheet-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(15px, 4.8vw, 18px);
+            line-height: clamp(24px, 7.7vw, 29px);
+            letter-spacing: clamp(-0.45px, -0.1vw, -0.36px);
+            color: #101828;
+            margin: clamp(0px, 0vw, 0px);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .close-button {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Body Section */
+        .bottom-sheet-body {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 0 0 clamp(17px, 5.3vw, 20px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(17px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        .content-section {
+            width: 100%;
+            padding: 0 clamp(17px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            gap: clamp(14px, 4.3vw, 16px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-text {
+            flex: 1;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: clamp(-0.4px, -0.09vw, -0.32px);
+            color: #475467;
+            margin: clamp(0px, 0vw, 0px);
+        }
+
+        .content-text br {
+            line-height: clamp(8px, 2.7vw, 10px);
+        }
+
+        /* Footer Section */
+        .bottom-sheet-footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .cta-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .cta-frame {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(17px, 5.3vw, 20px) clamp(20px, 6.4vw, 24px) clamp(17px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(17px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .primary-button {
+            width: 100%;
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(14px, 4.3vw, 16px);
+            color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(15px, 4.8vw, 18px);
+            line-height: clamp(24px, 7.7vw, 29px);
+            letter-spacing: clamp(-0.45px, -0.1vw, -0.36px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .primary-button:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+
+        /* Bottom Sheet Animation */
+        .bottom-sheet {
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Overlay Animation */
+        .dimmed-background {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Dimmed Background -->
+        <div class="dimmed-background" id="dimmedBackground"></div>
+
+        <!-- Bottom Sheet -->
+        <div class="bottom-sheet" id="bottomSheet">
+            <!-- Header Section -->
+            <div class="bottom-sheet-header">
+                <div class="header-content">
+                    <div class="title-section">
+                        <h2 class="sheet-title">상담종료 안내</h2>
+                    </div>
+                    <button class="close-button" id="closeButton">
+                        <img src="../../../../images/icon/icon_x.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body Section -->
+            <div class="bottom-sheet-body">
+                <div class="content-section">
+                    <div class="content-text">
+                        고객님은 은행 업무 이외의 목적으로 영상상담을 진행하였기에 상담이 종료되었습니다.<br>
+                        성희롱 및 욕설, 폭언 시에는 관련 법률에 따라 고소, 고발 또는 이용중단 조치될 수 있습니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="bottom-sheet-footer">
+                <div class="cta-section">
+                    <div class="cta-frame">
+                        <div class="button-area">
+                            <button class="primary-button" id="confirmButton">
+                                확인
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            closeBottomSheet();
+        });
+
+        // Confirm button handler
+        document.getElementById('confirmButton').addEventListener('click', () => {
+            console.log('Confirm button clicked - Exit consultation');
+            closeBottomSheet();
+        });
+
+        // Dimmed background click handler
+        document.getElementById('dimmedBackground').addEventListener('click', () => {
+            console.log('Background clicked');
+            closeBottomSheet();
+        });
+
+        // Close bottom sheet function
+        function closeBottomSheet() {
+            const bottomSheet = document.getElementById('bottomSheet');
+            const dimmedBackground = document.getElementById('dimmedBackground');
+
+            bottomSheet.style.animation = 'slideDown 0.3s ease';
+            dimmedBackground.style.animation = 'fadeOut 0.3s ease';
+
+            setTimeout(() => {
+                // Navigate back to main screen or exit flow
+                console.log('Navigating to main screen...');
+                document.body.style.display = 'none';
+            }, 300);
+        }
+
+        // Add slide down and fade out animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from {
+                    transform: translateY(0);
+                }
+                to {
+                    transform: translateY(100%);
+                }
+            }
+
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ESC key handler
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeBottomSheet();
+            }
+        });
+
+        console.log('Consultation termination bottom sheet loaded');
+    </script>
+</body>
+</html>

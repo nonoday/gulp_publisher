@@ -1,0 +1,270 @@
+<!--
+Figma Layer: CO0708S0013K01
+Node ID: 4642-140844
+Description: 신분증 촬영 화면 - 네모칸 안에 신분증을 맞춰서 촬영하는 화면
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신분증 촬영</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            background-color: #2d3748;
+            color: var(--text-ondark_primary-same, #ffffff);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #2d3748;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: #2d3748;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+            justify-content: space-between;
+            background-color: transparent;
+        }
+
+        .nav-back {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('../../../../images/icon/icon_chevron_left.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: invert(1);
+        }
+
+        .nav-close {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('../../../../images/icon/icon_x.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: invert(1);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: 32px 20px 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            min-height: 0;
+            box-sizing: border-box;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 64px;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 26px;
+            letter-spacing: -0.36px;
+            color: var(--text-ondark_primary-same, #ffffff);
+            margin: 0;
+            text-align: center;
+        }
+
+        /* ID Card Area */
+        .id-card-area {
+            width: 335px;
+            height: 220px;
+            background-color: #9ca3af;
+            border: 1px solid var(--Border-border-blue, #C5DDFF);
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 256px;
+        }
+
+        /* Bottom Section */
+        .bottom-section {
+            position: absolute;
+            bottom: 34px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Capsule Button */
+        .capsule-button {
+            background-color: var(--bg-canvas_white, #ffffff);
+            border: none;
+            border-radius: 16px;
+            padding: 5px 16px;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 22px;
+            letter-spacing: -0.24px;
+            color: var(--text-primary, #101828);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .capsule-button:hover {
+            background-color: #f9fafb;
+        }
+
+        .capsule-button-icon {
+            width: 16px;
+            height: 16px;
+            background-image: url('../../../../images/icon/icon_camera.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Capture Button */
+        .capture-button {
+            width: 72px;
+            height: 72px;
+            border: 4px solid var(--bg-canvas_white, #ffffff);
+            border-radius: 50%;
+            background-color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .capture-button:hover {
+            border-color: #f9fafb;
+        }
+
+        .capture-button:active {
+            transform: scale(0.95);
+        }
+
+        .capture-button-inner {
+            width: 56px;
+            height: 56px;
+            background-color: var(--bg-canvas_white, #ffffff);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="navigation">
+                <div class="nav-back"></div>
+                <div class="nav-close"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">네모칸 안에 신분증이<br>꽉 차도록 맞춰주세요</h1>
+            </div>
+
+            <!-- ID Card Area -->
+            <div class="id-card-area"></div>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="bottom-section">
+            <!-- Capsule Button -->
+            <button class="capsule-button" id="helpButton">
+                <div class="capsule-button-icon"></div>
+                <span>촬영이 잘 되지 않나요?</span>
+            </button>
+
+            <!-- Capture Button -->
+            <button class="capture-button" id="captureButton">
+                <div class="capture-button-inner"></div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Navigation handlers
+        document.querySelector('.nav-back').addEventListener('click', () => {
+            console.log('Navigate back');
+            // Navigate to previous screen
+        });
+
+        document.querySelector('.nav-close').addEventListener('click', () => {
+            console.log('Close flow');
+            // Navigate to main screen or close modal
+        });
+
+        // Help button handler
+        document.getElementById('helpButton').addEventListener('click', () => {
+            console.log('Show help for ID card capture');
+            // Show help modal or tips
+        });
+
+        // Capture button handler
+        document.getElementById('captureButton').addEventListener('click', () => {
+            console.log('Capture ID card photo');
+            // Trigger camera capture
+        });
+
+        console.log('ID card capture screen loaded');
+    </script>
+</body>
+</html>

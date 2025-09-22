@@ -41,47 +41,6 @@ class NavigationComponent extends HTMLElement {
         if (this._useFallback) {
             // Shadow DOM이 지원되지 않는 경우 (AOS6)
             this.innerHTML = `
-                <style>
-                    navigation-component {
-                        display: block;
-                        position: fixed;
-                        top:0;
-                        left:0;
-                        right:0;
-                        height:56px;
-                    }
-                    
-                    .navigation {
-                        display: flex;
-                        align-items: center;
-                        height: 56px;
-                        padding: 0 4px 0 8px;
-                        background-color: #fff;
-                    }
-                    
-                    .navigation-header {
-                        display: flex;
-                        align-items: center;
-                    }
-                    
-                    .navigation-function {
-                        display: flex;
-                        align-items: center;
-                        margin-left: auto;
-                    }
-                    
-                    /* AOS6 폴백: 슬롯 대신 직접 스타일링 */
-                    .navigation-header > * {
-                        display: flex;
-                        align-items: center;
-                    }
-                    
-                    .navigation-function > * {
-                        display: flex;
-                        align-items: center;
-                    }
-                </style>
-                
                 <div class="navigation">
                     <div class="navigation-header">
                         <div class="header-content"></div>
@@ -98,47 +57,6 @@ class NavigationComponent extends HTMLElement {
         } else {
             // Shadow DOM이 지원되는 경우 (최신 브라우저)
             this.shadowRoot.innerHTML = `
-                <style>
-                    :host {
-                        display: block;
-                        position: fixed;
-                        top:0;
-                        left:0;
-                        right:0;
-                        height:56px;
-                    }
-                    
-                    .navigation {
-                        display: flex;
-                        align-items: center;
-                        height: 56px;
-                        padding: 0 4px 0 8px;
-                        background-color: #fff;
-                    }
-                    
-                    .navigation-header {
-                        display: flex;
-                        align-items: center;
-                    }
-                    
-                    .navigation-function {
-                        display: flex;
-                        align-items: center;
-                        margin-left: auto;
-                    }
-                    
-                    /* 슬롯 스타일 - 더 구체적인 선택자 사용 */
-                    ::slotted([slot="header"]) {
-                        display: flex;
-                        align-items: center;
-                    }
-                    
-                    ::slotted([slot="function"]) {
-                        display: flex;
-                        align-items: center;
-                    }
-                </style>
-                
                 <div class="navigation">
                     <div class="navigation-header">
                         <slot name="header"></slot>
@@ -185,21 +103,14 @@ if (typeof customElements !== 'undefined' && customElements.define) {
             if (!element.initialized) {
                 element.initialized = true;
                 // 수동으로 컴포넌트 기능 초기화
-                element.style.display = 'block';
-                element.style.position = 'fixed';
-                element.style.top = '0';
-                element.style.left = '0';
-                element.style.right = '0';
-                element.style.height = '56px';
-                
                 // 내부 구조 생성
                 if (!element.querySelector('.navigation')) {
                     element.innerHTML = `
-                        <div class="navigation" style="display: flex; align-items: center; height: 56px; padding: 0 4px 0 8px; background-color: #fff;">
-                            <div class="navigation-header" style="display: flex; align-items: center;">
+                        <div class="navigation">
+                            <div class="navigation-header">
                                 <div class="header-content"></div>
                             </div>
-                            <div class="navigation-function" style="display: flex; align-items: center; margin-left: auto;">
+                            <div class="navigation-function">
                                 <div class="function-content"></div>
                             </div>
                         </div>

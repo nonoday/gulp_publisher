@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS 인증</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-canvas-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas-white);
+            position: relative;
+        }
+
+        /* Header Navigation */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            border-bottom: 1px solid var(--border-tertiary);
+        }
+
+        .nav-title {
+            font-family: Pretendard;
+            font-size: var(--typography-fontSize-lg);
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--text-primary);
+            letter-spacing: -0.36px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .nav-button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-button svg {
+            width: 24px;
+            height: 24px;
+            color: var(--text-primary);
+        }
+
+        .nav-back {
+            transform: rotate(180deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-xl) var(--spacing-2xl) 140px;
+            gap: var(--spacing-4xl);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Title Section */
+        .title-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .main-title {
+            font-family: OneShinhan, Pretendard;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 33px;
+            letter-spacing: -0.44px;
+            color: var(--text-primary);
+        }
+
+        /* SMS Icon Section */
+        .sms-icon-section {
+            display: flex;
+            justify-content: center;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .sms-icon-wrapper {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(194, 211, 255, 0.3) 0%, rgba(235, 240, 255, 0.8) 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sms-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--brand-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .sms-icon svg {
+            width: 32px;
+            height: 32px;
+            color: var(--white);
+        }
+
+        /* Input Section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .input-label {
+            font-family: Pretendard;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .phone-input {
+            width: 100%;
+            height: 56px;
+            padding: 0 var(--spacing-xl);
+            background: var(--bg-disabled);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            font-family: OneShinhan, Pretendard;
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            color: var(--text-primary);
+            cursor: default;
+            outline: none;
+        }
+
+        .phone-input:disabled {
+            background: var(--bg-disabled);
+            color: var(--text-primary);
+            opacity: 1;
+        }
+
+        /* Notice Section */
+        .notice-section {
+            margin-top: auto;
+            background: var(--bg-canvas-white);
+        }
+
+        .notice-item {
+            position: relative;
+            padding-left: var(--spacing-xl);
+            font-family: OneShinhan, Pretendard;
+            font-size: 12px;
+            font-weight: 300;
+            line-height: 22px;
+            letter-spacing: -0.26px;
+            color: var(--text-tertiary);
+        }
+
+        .notice-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--fg-tertiary);
+        }
+
+        /* CTA Area */
+        .cta-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background: var(--bg-canvas-white);
+            z-index: 100;
+        }
+
+        .scroll-dim {
+            height: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white) 100%);
+        }
+
+        .button-area {
+            padding: 0 var(--spacing-2xl) var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+        }
+
+        .auth-button {
+            width: 100%;
+            min-height: 56px;
+            background: var(--bg-brand-strong-same);
+            color: var(--text-ondark-primary-same);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-family: OneShinhan, Pretendard, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-button:hover {
+            background: var(--brand-700);
+        }
+
+        .auth-button:active {
+            transform: scale(0.98);
+        }
+
+        .auth-button:disabled {
+            background: var(--bg-brand-selected-disabled);
+            cursor: not-allowed;
+        }
+
+        /* Help Link */
+        .help-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) 0;
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .help-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .help-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .container {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .header-nav {
+                background: var(--bg-canvas-white);
+                border-bottom-color: var(--border-tertiary);
+            }
+
+            .main-title {
+                color: var(--text-primary);
+            }
+
+            .phone-input {
+                background: var(--bg-disabled);
+                border-color: var(--border-primary);
+                color: var(--text-primary);
+            }
+
+            .notice-item {
+                color: var(--text-tertiary);
+            }
+
+            .cta-container {
+                background: var(--bg-canvas-white);
+            }
+
+            .help-link {
+                color: var(--text-tertiary);
+            }
+        }
+
+        /* Bottom Sheet Overlay */
+        .bottom-sheet-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 200;
+        }
+
+        .bottom-sheet-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Bottom Sheet Container */
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 375px;
+            background: var(--bg-canvas-white-elevated);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            transition: transform 0.3s ease;
+            z-index: 201;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bottom-sheet.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Bottom Sheet Header */
+        .bottom-sheet-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: var(--spacing-2xl) var(--spacing-2xl) 0;
+            background: var(--bg-canvas-white);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        }
+
+        .bottom-sheet-title {
+            font-family: OneShinhan, Pretendard;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            color: var(--text-primary);
+            padding-bottom: var(--spacing-2xl);
+        }
+
+        .bottom-sheet-close {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .bottom-sheet-close svg {
+            width: 24px;
+            height: 24px;
+            color: var(--fg-primary);
+        }
+
+        /* Auth Method List */
+        .auth-method-list {
+            padding-bottom: var(--spacing-4xl);
+        }
+
+        .auth-method-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-align: left;
+        }
+
+        .auth-method-item:hover {
+            background: var(--bg-graylight);
+        }
+
+        .auth-method-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(102, 112, 133, 0.05);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .auth-method-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 15px;
+            height: 15px;
+            background: var(--palette-new-green-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-method-badge svg {
+            width: 8px;
+            height: 6px;
+        }
+
+        .auth-method-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            padding-top: var(--spacing-xs);
+        }
+
+        .auth-method-title {
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-secondary);
+        }
+
+        .auth-method-desc {
+            font-family: OneShinhan, Pretendard;
+            font-size: 12px;
+            font-weight: 300;
+            line-height: 22px;
+            letter-spacing: -0.26px;
+            color: var(--fg-tertiary);
+        }
+
+        .scroll-dim-bottom {
+            height: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white) 100%);
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+
+            .main-content {
+                padding: var(--spacing-3xl) var(--spacing-5xl) 140px;
+            }
+
+            .cta-container {
+                max-width: 768px;
+            }
+
+            .bottom-sheet {
+                max-width: 768px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Navigation -->
+        <header class="header-nav">
+            <button class="nav-button nav-back" aria-label="뒤로">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <h1 class="nav-title">SMS 인증</h1>
+            <button class="nav-button" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h2 class="main-title">
+                    문자로 인증번호를<br>
+                    보내드릴게요
+                </h2>
+            </div>
+
+            <!-- SMS Icon -->
+            <div class="sms-icon-section">
+                <div class="sms-icon-wrapper">
+                    <div class="sms-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="8" y="10" width="16" height="12" rx="2" stroke="white" stroke-width="2"/>
+                            <path d="M8 13L16 18L24 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Number Input -->
+            <div class="input-section">
+                <label class="input-label">휴대폰번호</label>
+                <div class="input-wrapper">
+                    <input
+                        type="tel"
+                        class="phone-input"
+                        value="010-1234-5678"
+                        disabled
+                        readonly
+                    />
+                </div>
+            </div>
+
+            <!-- Notice -->
+            <div class="notice-section">
+                <ul style="list-style: none; padding: 0;">
+                    <li class="notice-item">
+                        검사/경찰/금융감독원 등에서 금융사고나 낮은 금리 대출 상품으로 변경 등 사유로 모바일 OTP 발급을 요청한 경우, 신한은행과 고객센터(1588-8000)로 바로 신고해주세요.
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- CTA Area -->
+        <div class="cta-container">
+            <div class="scroll-dim"></div>
+            <div class="button-area">
+                <button class="auth-button" id="requestButton">
+                    인증요청
+                </button>
+                <a href="#" class="help-link">
+                    문자를 받지 못했나요?
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Sheet Overlay -->
+    <div class="bottom-sheet-overlay" id="bottomSheetOverlay"></div>
+
+    <!-- Auth Method Bottom Sheet -->
+    <div class="bottom-sheet" id="authMethodBottomSheet">
+        <div class="bottom-sheet-header">
+            <h3 class="bottom-sheet-title">인증방법 선택</h3>
+            <button class="bottom-sheet-close" id="bottomSheetClose" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="auth-method-list">
+            <!-- ARS 인증 -->
+            <button class="auth-method-item" data-method="ars">
+                <div class="auth-method-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect x="7" y="8" width="10" height="8" rx="1" stroke="#667085" stroke-width="1.5"/>
+                        <path d="M10 11h4M10 13h2" stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="auth-method-text">
+                    <div class="auth-method-title">ARS 인증</div>
+                    <div class="auth-method-desc">ARS 전화 안내에 따라 인증을 진행합니다.</div>
+                </div>
+            </button>
+
+            <!-- 휴대폰번호 변경 후 인증 -->
+            <button class="auth-method-item" data-method="change-phone">
+                <div class="auth-method-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M16 21C16 21 16 21 12 21C7.581 21 4 17.419 4 13C4 8.581 7.581 5 12 5C12 5 12 5 12 5"
+                              stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M12 5C16.419 5 20 8.581 20 13C20 14.5 19.5 16 18.5 17"
+                              stroke="#667085" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <div class="auth-method-badge">
+                        <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+                            <path d="M1 3L3 5L7 1" stroke="white" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="auth-method-text">
+                    <div class="auth-method-title">휴대폰번호 변경 후 인증</div>
+                    <div class="auth-method-desc">휴대폰번호를 변경할 때 비대면 실명인증을 해야<br>합니다. (신분증필요)</div>
+                </div>
+            </button>
+        </div>
+
+        <div class="scroll-dim-bottom"></div>
+    </div>
+
+    <script>
+        // Bottom Sheet Elements
+        const bottomSheetOverlay = document.getElementById('bottomSheetOverlay');
+        const authMethodBottomSheet = document.getElementById('authMethodBottomSheet');
+        const bottomSheetClose = document.getElementById('bottomSheetClose');
+        const helpLink = document.querySelector('.help-link');
+
+        // Bottom Sheet Functions
+        function openBottomSheet() {
+            bottomSheetOverlay.classList.add('show');
+            authMethodBottomSheet.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBottomSheet() {
+            bottomSheetOverlay.classList.remove('show');
+            authMethodBottomSheet.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Help link click event - open bottom sheet
+        helpLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            openBottomSheet();
+        });
+
+        // Close bottom sheet
+        bottomSheetOverlay.addEventListener('click', closeBottomSheet);
+        bottomSheetClose.addEventListener('click', closeBottomSheet);
+
+        // Auth method selection
+        const authMethodItems = document.querySelectorAll('.auth-method-item');
+        authMethodItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const method = this.dataset.method;
+                console.log('선택된 인증 방법:', method);
+
+                if (method === 'ars') {
+                    // ARS 인증 페이지로 이동
+                    window.location.href = './ARS.html';
+                } else if (method === 'change-phone') {
+                    // 휴대폰번호 변경 페이지로 이동
+                    console.log('휴대폰번호 변경 페이지로 이동');
+                }
+
+                closeBottomSheet();
+            });
+        });
+
+        // Request authentication button click event
+        document.getElementById('requestButton').addEventListener('click', function() {
+            console.log('SMS 인증번호 요청');
+            // TODO: 실제 SMS 인증 요청 로직
+            // 인증번호 입력 화면으로 전환하거나 모달 표시
+        });
+
+        // Navigation buttons
+        document.querySelector('.nav-back').addEventListener('click', function() {
+            history.back();
+        });
+
+        document.querySelector('.nav-button:not(.nav-back)').addEventListener('click', function() {
+            console.log('페이지 닫기');
+            // window.close() 또는 history.back()
+        });
+    </script>
+</body>
+</html>

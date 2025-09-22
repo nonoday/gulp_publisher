@@ -1,0 +1,443 @@
+<!--
+Figma Layer: 프레임에 얼굴을 맞춰주세요
+Node ID: 4642-140044
+Description: 프레임에 얼굴을 맞춰주세요 - 얼굴 인증 가이드 화면
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>얼굴 인증 가이드</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            margin: 0 auto;
+            isolation: isolate;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+            z-index: 5;
+        }
+
+        .status-bar {
+            height: clamp(40px, 12.3vw, 46px);
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .navigation {
+            height: clamp(48px, 14.9vw, 56px);
+            padding: clamp(12px, 4.3vw, 16px) clamp(16px, 5.3vw, 20px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close img {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Character Image with OK text */
+        .character-container {
+            position: absolute;
+            left: 70px;
+            top: 239px;
+            width: 329px;
+            height: 421px;
+            z-index: 6;
+        }
+
+        .bear-image {
+            position: absolute;
+            left: -44px;
+            top: -51px;
+            width: 329px;
+            height: 421px;
+            background-image: url('../../../../images/icon/face_service_bear_frame_guide.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            mask-image: url('../../../../images/icon/face_service_frame_mask.svg');
+            mask-size: 240px 240px;
+            mask-position: 44px 51px;
+            mask-repeat: no-repeat;
+            -webkit-mask-image: url('../../../../images/icon/face_service_frame_mask.svg');
+            -webkit-mask-size: 240px 240px;
+            -webkit-mask-position: 44px 51px;
+            -webkit-mask-repeat: no-repeat;
+        }
+
+        .ok-group {
+            position: absolute;
+            left: 175px;
+            top: 120px;
+            width: 84px;
+            height: 150px;
+        }
+
+        .ok-shadow {
+            position: absolute;
+            left: 1px;
+            top: 139px;
+            width: 84px;
+            height: 11px;
+        }
+
+        .ok-shadow img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .moli-character {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 84px;
+            height: 131px;
+            box-shadow: -7px -2px 7px 0px rgba(0,0,0,0.1);
+        }
+
+        .moli-character img {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ok-text {
+            position: absolute;
+            left: calc(50% + 60px);
+            top: 33px;
+            transform: translateX(-50%);
+            color: #121619;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 24px;
+            letter-spacing: -0.5px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Content Body */
+        .content-body {
+            flex: 1 1 0%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 0px;
+            min-width: 0px;
+            overflow: hidden;
+            padding: clamp(12px, 4.3vw, 16px) 0px clamp(24px, 8.5vw, 32px) 0px;
+            position: relative;
+            width: 100%;
+            z-index: 3;
+        }
+
+        .title-section {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 4.3vw, 16px);
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+        }
+
+        .main-title {
+            display: flex;
+            flex-direction: column;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            justify-content: center;
+            line-height: clamp(26px, 8.8vw, 33px);
+            font-style: normal;
+            position: relative;
+            color: #101828;
+            font-size: clamp(18px, 5.9vw, 22px);
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: clamp(-0.36px, -0.12vw, -0.44px);
+            white-space: pre;
+            margin: 0;
+        }
+
+        .dot-indicators {
+            display: flex;
+            gap: 6px;
+            align-items: flex-start;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .dot-active {
+            background: #667085;
+            height: 8px;
+            max-width: 20px;
+            min-width: 20px;
+            border-radius: 9999px;
+            width: 20px;
+        }
+
+        .dot-inactive {
+            background: white;
+            max-width: 8px;
+            min-width: 8px;
+            position: relative;
+            border-radius: 9999px;
+            width: 8px;
+            height: 8px;
+            border: 1px solid #d0d5dd;
+        }
+
+        /* Background Circle */
+        .bg-circle {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            top: 240px;
+            left: calc(50% + 0.5px);
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .bg-circle img {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Footer CTA */
+        .footer-cta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .scroll-dim {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), #ffffff);
+            height: clamp(20px, 6.4vw, 24px);
+            width: 100%;
+        }
+
+        .footer-content {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+        }
+
+        .button-area {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0px clamp(16px, 5.3vw, 20px) clamp(24px, 8.5vw, 32px) clamp(16px, 5.3vw, 20px);
+            position: relative;
+            width: 100%;
+        }
+
+        .start-button {
+            min-width: 65px;
+            min-height: clamp(48px, 14.9vw, 56px);
+            padding: 2px clamp(10px, 3.2vw, 12px) 2px clamp(10px, 3.2vw, 12px);
+            background: #005DF9;
+            overflow: hidden;
+            border-radius: clamp(12px, 4.3vw, 16px);
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .start-button-text {
+            padding: 0px clamp(3px, 1.1vw, 4px) 0px clamp(3px, 1.1vw, 4px);
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        .start-button-label {
+            text-align: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            font-size: clamp(16px, 4.8vw, 18px);
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            line-height: clamp(25px, 7.7vw, 29px);
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 375px) {
+            .page-container {
+                width: 100vw;
+                max-width: none;
+            }
+
+            .header,
+            .content-body,
+            .footer-cta {
+                width: 100vw;
+            }
+        }
+
+        @media (min-width: 376px) {
+            .page-container {
+                max-width: 375px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Character Container (z-index: 6) -->
+        <div class="character-container">
+            <div class="bear-image"></div>
+            <div class="ok-group">
+                <div class="ok-shadow">
+                    <img src="../../../../images/icon/face_service_ok_shadow.svg" alt="" />
+                </div>
+                <div class="moli-character">
+                    <img src="../../../../images/icon/face_service_moli_ok.png" alt="" />
+                </div>
+                <div class="ok-text">ok!</div>
+            </div>
+        </div>
+
+        <!-- Header (z-index: 5) -->
+        <div class="header">
+            <div class="status-bar">
+                <!-- Status bar content omitted for simplicity -->
+            </div>
+            <div class="navigation">
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Body (z-index: 3) -->
+        <div class="content-body">
+            <div class="title-section">
+                <h1 class="main-title">프레임에 얼굴을
+맞춰주세요</h1>
+                <div class="dot-indicators">
+                    <div class="dot-inactive"></div>
+                    <div class="dot-active"></div>
+                    <div class="dot-inactive"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background Circle (z-index: 2) -->
+        <div class="bg-circle">
+            <img src="../../../../images/icon/face_service_bg_circle_frame.svg" alt="" />
+        </div>
+
+        <!-- Footer CTA (z-index: 1) -->
+        <div class="footer-cta">
+            <div class="scroll-dim"></div>
+            <div class="footer-content">
+                <div class="button-area">
+                    <button class="start-button" id="startButton">
+                        <div class="start-button-text">
+                            <div class="start-button-label">시작하기</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Start button handler
+        document.getElementById('startButton').addEventListener('click', () => {
+            console.log('Start button clicked');
+            // Navigate to next screen in face service definition flow
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the face service definition flow
+        });
+
+        console.log('Face service frame guide screen loaded');
+    </script>
+</body>
+</html>

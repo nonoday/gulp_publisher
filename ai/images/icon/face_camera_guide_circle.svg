@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 242 242" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="camera">
+<path id="Ellipse 422" d="M241 121C241 187.274 187.274 241 121 241C54.7258 241 1 187.274 1 121C1 54.7258 54.7258 1 121 1C151.433 1 179.221 12.3291 200.375 31C225.287 52.9883 241 85.1592 241 121Z" stroke="var(--stroke-0, #C3DDFA)" stroke-width="1.5"/>
+<path id="Ellipse 423" d="M241 121C241 187.274 187.274 241 121 241C54.7258 241 1 187.274 1 121C1 54.7258 54.7258 1 121 1" stroke="url(#paint0_linear_5488_48999)" stroke-width="1.5"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_5488_48999" x1="1" y1="1" x2="245.243" y2="5.39867" gradientUnits="userSpaceOnUse">
+<stop stop-color="#71A3FF"/>
+<stop offset="1" stop-color="#7C64FA"/>
+</linearGradient>
+</defs>
+</svg>

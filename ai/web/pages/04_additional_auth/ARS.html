@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARS 인증</title>
+    <link rel="stylesheet" href="../../css/tokens.css" />
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+          sans-serif;
+        background-color: var(--bg-canvas-white);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 375px;
+        margin: 0 auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-canvas-white);
+        position: relative;
+      }
+
+      /* Header Navigation */
+      .header-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 56px;
+        padding: 0 var(--spacing-2xl);
+        background: var(--bg-canvas-white);
+        border-bottom: 1px solid var(--border-tertiary);
+      }
+
+      .nav-title {
+        font-family: Pretendard;
+        font-size: var(--typography-fontSize-lg);
+        font-weight: var(--typography-fontWeight-medium);
+        color: var(--text-primary);
+        letter-spacing: -0.36px;
+        flex-grow: 1;
+        text-align: center;
+      }
+
+      .nav-button {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .nav-button svg {
+        width: 24px;
+        height: 24px;
+        color: var(--text-primary);
+      }
+
+      .nav-back {
+        transform: rotate(180deg);
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: var(--spacing-xl) var(--spacing-2xl) 140px;
+        gap: var(--spacing-4xl);
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .main-content::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Title Section */
+      .title-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .main-title {
+        font-family: OneShinhan, Pretendard;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 33px;
+        letter-spacing: -0.44px;
+        color: var(--text-primary);
+      }
+
+      .main-title .highlight {
+        color: var(--text-brand);
+      }
+
+      /* Phone Icon Section */
+      .phone-icon-section {
+        display: flex;
+        justify-content: center;
+        padding: var(--spacing-lg) 0;
+      }
+
+      .phone-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          rgba(235, 240, 255, 0.8) 0%,
+          rgba(194, 211, 255, 0.3) 100%
+        );
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .phone-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--brand-500);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .phone-icon svg {
+        width: 32px;
+        height: 32px;
+        color: var(--white);
+      }
+
+      /* Pulse Animation */
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 93, 249, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 20px rgba(0, 93, 249, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 93, 249, 0);
+        }
+      }
+
+      .phone-icon.calling {
+        animation: pulse 2s infinite;
+      }
+
+      /* Dropdown Section */
+      .dropdown-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .dropdown-label {
+        font-family: Pretendard;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 22px;
+        letter-spacing: -0.28px;
+        color: var(--text-brand);
+      }
+
+      .dropdown-wrapper {
+        position: relative;
+      }
+
+      .dropdown-select {
+        width: 100%;
+        height: 56px;
+        padding: 0 40px 0 var(--spacing-xl);
+        background: var(--bg-canvas-white);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        font-family: OneShinhan, Pretendard;
+        font-size: 18px;
+        font-weight: 300;
+        line-height: 29px;
+        letter-spacing: -0.36px;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        outline: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .dropdown-select:hover {
+        border-color: var(--border-brand);
+      }
+
+      .dropdown-select:focus {
+        border-color: var(--border-brand);
+        box-shadow: 0 0 0 3px rgba(0, 93, 249, 0.1);
+      }
+
+      .dropdown-icon {
+        position: absolute;
+        right: var(--spacing-xl);
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+      }
+
+      .dropdown-wrapper.open .dropdown-icon {
+        transform: translateY(-50%) rotate(180deg);
+      }
+
+      /* Notice Section */
+      .notice-section {
+        margin-top: auto;
+        background: var(--bg-canvas-white);
+      }
+
+      .notice-item {
+        position: relative;
+        padding-left: var(--spacing-xl);
+        font-family: OneShinhan, Pretendard;
+        font-size: 12px;
+        font-weight: 300;
+        line-height: 22px;
+        letter-spacing: -0.26px;
+        color: var(--text-tertiary);
+      }
+
+      .notice-item::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--fg-tertiary);
+      }
+
+      /* CTA Area */
+      .cta-container {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 375px;
+        background: var(--bg-canvas-white);
+        z-index: 100;
+      }
+
+      .scroll-dim {
+        height: 24px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0) 0%,
+          var(--white) 100%
+        );
+      }
+
+      .button-area {
+        padding: 0 var(--spacing-2xl) var(--spacing-2xl);
+        background: var(--bg-canvas-white);
+      }
+
+      .auth-button {
+        width: 100%;
+        min-height: 56px;
+        background: var(--bg-brand-strong-same);
+        color: var(--text-ondark-primary-same);
+        border: none;
+        border-radius: var(--radius-xl);
+        font-family: OneShinhan, Pretendard, sans-serif;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 29px;
+        letter-spacing: -0.36px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-md);
+        position: relative;
+      }
+
+      .auth-button:hover {
+        background: var(--brand-700);
+      }
+
+      .auth-button:active {
+        transform: scale(0.98);
+      }
+
+      .auth-button:disabled {
+        background: var(--bg-brand-selected-disabled);
+        cursor: not-allowed;
+      }
+
+      /* Loading Animation */
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-spinner {
+        width: 24px;
+        height: 24px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: var(--white);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .auth-button.loading {
+        pointer-events: none;
+      }
+
+      /* Help Link */
+      .help-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-md) 0;
+        font-family: OneShinhan, Pretendard;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 24px;
+        letter-spacing: -0.28px;
+        color: var(--text-tertiary);
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .help-link:hover {
+        color: var(--text-secondary);
+      }
+
+      .help-link svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Timer and Retry Section */
+      .timer-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-xl);
+        margin-top: var(--spacing-lg);
+      }
+
+      .timer {
+        font-family: OneShinhan, Pretendard;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 22px;
+        letter-spacing: -0.28px;
+        color: var(--text-brand);
+      }
+
+      .retry-button {
+        padding: var(--spacing-sm) var(--spacing-xl);
+        background: var(--bg-brand);
+        color: var(--text-brand);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: OneShinhan, Pretendard;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 22px;
+        letter-spacing: -0.26px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .retry-button:hover:not(:disabled) {
+        background: var(--brand-200);
+      }
+
+      .retry-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Success state */
+      .auth-button.success {
+        background: var(--bg-brand-strong-same);
+      }
+
+      /* Bottom Sheet Overlay */
+      .bottom-sheet-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: 200;
+      }
+
+      .bottom-sheet-overlay.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* Bottom Sheet Container */
+      .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%) translateY(100%);
+        width: 100%;
+        max-width: 375px;
+        background: var(--bg-canvas-white-elevated);
+        border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        transition: transform 0.3s ease;
+        z-index: 201;
+        max-height: 70vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .bottom-sheet.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* Bottom Sheet Header */
+      .bottom-sheet-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--spacing-2xl) var(--spacing-2xl) 0;
+        background: var(--bg-canvas-white);
+        border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+      }
+
+      .bottom-sheet-title {
+        font-family: OneShinhan, Pretendard;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 29px;
+        letter-spacing: -0.36px;
+        color: var(--text-primary);
+        padding-bottom: var(--spacing-2xl);
+      }
+
+      .bottom-sheet-close {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .bottom-sheet-close svg {
+        width: 24px;
+        height: 24px;
+        color: var(--fg-primary);
+      }
+
+      /* Phone List */
+      .phone-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .phone-item {
+        display: flex;
+        flex-direction: column;
+        padding: var(--spacing-lg) var(--spacing-2xl);
+        cursor: pointer;
+        transition: background 0.2s ease;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      .phone-item:hover {
+        background: var(--bg-graylight);
+      }
+
+      .phone-item.selected {
+        background: var(--bg-brand);
+      }
+
+      .phone-number {
+        font-family: OneShinhan, Pretendard;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 22px;
+        letter-spacing: -0.28px;
+        color: var(--text-secondary);
+      }
+
+      .phone-type {
+        font-family: OneShinhan, Pretendard;
+        font-size: 12px;
+        font-weight: 300;
+        line-height: 22px;
+        letter-spacing: -0.26px;
+        color: var(--fg-tertiary);
+        margin-top: var(--spacing-xs);
+      }
+
+      /* Bottom Sheet Footer */
+      .bottom-sheet-footer {
+        padding: var(--spacing-2xl);
+        background: var(--bg-canvas-white);
+        border-top: 1px solid var(--border-tertiary);
+      }
+
+      .confirm-button {
+        width: 100%;
+        min-height: 56px;
+        background: var(--bg-brand-strong-same);
+        color: var(--text-ondark-primary-same);
+        border: none;
+        border-radius: var(--radius-xl);
+        font-family: OneShinhan, Pretendard;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 29px;
+        letter-spacing: -0.36px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .confirm-button:hover {
+        background: var(--brand-700);
+      }
+
+      /* Auth Method Bottom Sheet */
+      .auth-method-list {
+        padding: var(--spacing-md) 0;
+      }
+
+      .auth-method-item {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-lg);
+        padding: var(--spacing-lg) var(--spacing-2xl);
+        width: 100%;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        text-align: left;
+      }
+
+      .auth-method-item:hover {
+        background: var(--bg-graylight);
+      }
+
+      .auth-method-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(102, 112, 133, 0.05);
+        border-radius: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .auth-method-badge {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 15px;
+        height: 15px;
+        background: var(--palette-new-green-500);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .auth-method-badge svg {
+        width: 8px;
+        height: 6px;
+      }
+
+      .auth-method-text {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xs);
+        padding-top: var(--spacing-xs);
+      }
+
+      .auth-method-title {
+        font-family: OneShinhan, Pretendard;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 22px;
+        letter-spacing: -0.28px;
+        color: var(--text-secondary);
+      }
+
+      .auth-method-desc {
+        font-family: OneShinhan, Pretendard;
+        font-size: 12px;
+        font-weight: 300;
+        line-height: 22px;
+        letter-spacing: -0.26px;
+        color: var(--fg-tertiary);
+      }
+
+      /* Dark mode support */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: var(--bg-canvas-white);
+        }
+
+        .container {
+          background-color: var(--bg-canvas-white);
+        }
+
+        .header-nav {
+          background: var(--bg-canvas-white);
+          border-bottom-color: var(--border-tertiary);
+        }
+
+        .main-title {
+          color: var(--text-primary);
+        }
+
+        .dropdown-select {
+          background: var(--bg-canvas-white);
+          border-color: var(--border-primary);
+          color: var(--text-primary);
+        }
+
+        .notice-item {
+          color: var(--text-tertiary);
+        }
+
+        .cta-container {
+          background: var(--bg-canvas-white);
+        }
+
+        .help-link {
+          color: var(--text-tertiary);
+        }
+      }
+
+      /* Responsive */
+      @media (min-width: 768px) {
+        .container {
+          max-width: 768px;
+        }
+
+        .cta-container {
+          max-width: 768px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header Navigation -->
+      <header class="header-nav">
+        <button class="nav-button nav-back" aria-label="뒤로">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 18L9 12L15 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <h1 class="nav-title">ARS 인증</h1>
+        <button class="nav-button" aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M18 6L6 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M6 6L18 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Title Section -->
+        <div class="title-section">
+          <h2 class="main-title">ARS 전화 통화로 인증할게요</h2>
+        </div>
+
+        <!-- Phone Icon -->
+        <div class="phone-icon-section">
+          <div class="phone-icon-wrapper">
+            <div class="phone-icon calling" id="phoneIcon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path
+                  d="M22 23.5C22 16.5 16.5 11 9.5 11"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M9.5 11C9.5 11 8 11 8 12.5V16.5C8 18 9.5 18 9.5 18C10.5 18 14 18 18 22C22 26 22 29.5 22 30.5C22 30.5 22 32 23.5 32H27.5C29 32 29 30.5 29 30.5C29 23.5 23.5 18 16.5 18"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Number Dropdown -->
+        <div class="dropdown-section">
+          <label class="dropdown-label">전화번호</label>
+          <div class="dropdown-wrapper" id="dropdownWrapper">
+            <div class="dropdown-select" id="phoneSelect" tabindex="0">
+              <span id="selectedPhone">010-1234-●●●●</span>
+            </div>
+            <svg
+              class="dropdown-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+            >
+              <path
+                d="M5 7.5L10 12.5L15 7.5"
+                stroke="var(--text-primary)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <!-- Timer and Retry Button -->
+          <div class="timer-section" id="timerSection" style="display: none">
+            <span class="timer" id="timer">00:00</span>
+            <button class="retry-button" id="retryButton">인증재요청</button>
+          </div>
+        </div>
+
+        <!-- Notice -->
+        <div class="notice-section">
+          <ul style="list-style: none; padding: 0">
+            <li class="notice-item">
+              검사/경찰/금융감독원 등에서 금융사고나 낮은 금리 대출 상품으로
+              변경 등 사유로 모바일 OTP 발급을 요청한 경우, 신한은행과
+              고객센터(1588-8000)로 바로 신고해주세요.
+            </li>
+          </ul>
+        </div>
+      </main>
+
+      <!-- CTA Area -->
+      <div class="cta-container">
+        <div class="scroll-dim"></div>
+        <div class="button-area">
+          <button class="auth-button" id="authButton">
+            <span>인증 진행중</span>
+            <div class="loading-spinner"></div>
+          </button>
+          <a href="#" class="help-link">
+            ARS 전화를 받을 수 없나요?
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M6 12L10 8L6 4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Sheet Overlay -->
+    <div class="bottom-sheet-overlay" id="bottomSheetOverlay"></div>
+
+    <!-- Phone Number Bottom Sheet -->
+    <div class="bottom-sheet" id="phoneBottomSheet">
+      <div class="bottom-sheet-header">
+        <h3 class="bottom-sheet-title">전화번호 선택</h3>
+        <button
+          class="bottom-sheet-close"
+          id="bottomSheetClose"
+          aria-label="닫기"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M18 6L6 18M6 6L18 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <ul class="phone-list" id="phoneList">
+        <li>
+          <button
+            class="phone-item"
+            data-phone="010-1234-●●●●"
+            data-type="휴대폰"
+          >
+            <span class="phone-number">010-1234-●●●●</span>
+            <span class="phone-type">휴대폰</span>
+          </button>
+        </li>
+        <li>
+          <button
+            class="phone-item"
+            data-phone="010-1234-●●●●"
+            data-type="자택"
+          >
+            <span class="phone-number">010-1234-●●●●</span>
+            <span class="phone-type">자택</span>
+          </button>
+        </li>
+        <li>
+          <button class="phone-item" data-phone="02-1234-●●●●" data-type="직장">
+            <span class="phone-number">02-1234-●●●●</span>
+            <span class="phone-type">직장</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="bottom-sheet-footer">
+        <button class="confirm-button" id="confirmPhoneButton">확인</button>
+      </div>
+    </div>
+
+    <!-- Auth Method Bottom Sheet -->
+    <div class="bottom-sheet auth-method-sheet" id="authMethodBottomSheet">
+      <div class="bottom-sheet-header">
+        <h3 class="bottom-sheet-title">인증방법 선택</h3>
+        <button
+          class="bottom-sheet-close"
+          id="authMethodClose"
+          aria-label="닫기"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M18 6L6 18M6 6L18 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="auth-method-list">
+        <!-- 문자메시지 인증 -->
+        <button class="auth-method-item" data-method="sms">
+          <div class="auth-method-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <path
+                d="M9 11C9 9.89543 9.89543 9 11 9H25C26.1046 9 27 9.89543 27 11V20C27 21.1046 26.1046 22 25 22H19L15 27V22H11C9.89543 22 9 21.1046 9 20V11Z"
+                stroke="#667085"
+                stroke-width="1.5"
+              />
+              <circle cx="13" cy="15.5" r="1" fill="#667085" />
+              <circle cx="18" cy="15.5" r="1" fill="#667085" />
+              <circle cx="23" cy="15.5" r="1" fill="#667085" />
+            </svg>
+          </div>
+          <div class="auth-method-text">
+            <div class="auth-method-title">문자메시지 인증</div>
+            <div class="auth-method-desc">
+              휴대폰 문자메시지로 받은 인증번호를 입력해<br />인증할 수
+              있습니다.
+            </div>
+          </div>
+        </button>
+
+        <!-- 휴대폰번호 변경 후 인증 -->
+        <button class="auth-method-item" data-method="change-phone">
+          <div class="auth-method-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <path
+                d="M23 24.5C23 17.5 17.5 12 10.5 12"
+                stroke="#667085"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M10.5 12C10.5 12 9 12 9 13.5V17.5C9 19 10.5 19 10.5 19C11.5 19 15 19 19 23C23 27 23 30.5 23 31.5C23 31.5 23 33 24.5 33H28.5C30 33 30 31.5 30 31.5C30 24.5 24.5 19 17.5 19"
+                stroke="#667085"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="auth-method-badge">
+              <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+                <path
+                  d="M1 3L3 5L7 1"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="auth-method-text">
+            <div class="auth-method-title">휴대폰번호 변경 후 인증</div>
+            <div class="auth-method-desc">
+              휴대폰번호를 변경할 때 비대면 실명인증을 해야<br />합니다.
+              (신분증필요)
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Elements
+      const dropdownWrapper = document.getElementById("dropdownWrapper");
+      const phoneSelect = document.getElementById("phoneSelect");
+      const selectedPhone = document.getElementById("selectedPhone");
+      const timerSection = document.getElementById("timerSection");
+      const timerDisplay = document.getElementById("timer");
+      const retryButton = document.getElementById("retryButton");
+      const authButton = document.getElementById("authButton");
+      const phoneIcon = document.getElementById("phoneIcon");
+      const mainTitle = document.querySelector(".main-title");
+
+      // Bottom Sheet Elements
+      const bottomSheetOverlay = document.getElementById("bottomSheetOverlay");
+      const phoneBottomSheet = document.getElementById("phoneBottomSheet");
+      const bottomSheetClose = document.getElementById("bottomSheetClose");
+      const phoneList = document.getElementById("phoneList");
+      const confirmPhoneButton = document.getElementById("confirmPhoneButton");
+
+      // Auth Method Bottom Sheet Elements
+      const authMethodBottomSheet = document.getElementById(
+        "authMethodBottomSheet"
+      );
+      const authMethodClose = document.getElementById("authMethodClose");
+      const helpLink = document.querySelector(".help-link");
+
+      let timerInterval = null;
+      let authState = "initial"; // initial, authenticating, completed
+      let seconds = 0;
+      let selectedPhoneNumber = "010-1234-●●●●";
+
+      // Bottom Sheet Functions
+      function openPhoneBottomSheet() {
+        bottomSheetOverlay.classList.add("show");
+        phoneBottomSheet.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closePhoneBottomSheet() {
+        bottomSheetOverlay.classList.remove("show");
+        phoneBottomSheet.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+
+      function openAuthMethodSheet() {
+        bottomSheetOverlay.classList.add("show");
+        authMethodBottomSheet.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeAuthMethodSheet() {
+        bottomSheetOverlay.classList.remove("show");
+        authMethodBottomSheet.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+
+      function closeAllBottomSheets() {
+        bottomSheetOverlay.classList.remove("show");
+        phoneBottomSheet.classList.remove("show");
+        authMethodBottomSheet.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+
+      // Open bottom sheet on phone select click
+      phoneSelect.addEventListener("click", function () {
+        openPhoneBottomSheet();
+      });
+
+      phoneSelect.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openPhoneBottomSheet();
+        }
+      });
+
+      // Close bottom sheets
+      bottomSheetOverlay.addEventListener("click", closeAllBottomSheets);
+      bottomSheetClose.addEventListener("click", closePhoneBottomSheet);
+      authMethodClose.addEventListener("click", closeAuthMethodSheet);
+
+      // Phone item selection
+      phoneList.addEventListener("click", function (e) {
+        const phoneItem = e.target.closest(".phone-item");
+        if (phoneItem) {
+          // Remove previous selection
+          phoneList.querySelectorAll(".phone-item").forEach((item) => {
+            item.classList.remove("selected");
+          });
+          // Add selection to clicked item
+          phoneItem.classList.add("selected");
+          selectedPhoneNumber = phoneItem.dataset.phone;
+        }
+      });
+
+      // Confirm phone selection
+      confirmPhoneButton.addEventListener("click", function () {
+        selectedPhone.textContent = selectedPhoneNumber;
+        closePhoneBottomSheet();
+      });
+
+      // Auth method selection
+      const authMethodItems = document.querySelectorAll(".auth-method-item");
+      authMethodItems.forEach((item) => {
+        item.addEventListener("click", function () {
+          const method = this.dataset.method;
+          console.log("선택된 인증 방법:", method);
+
+          if (method === "sms") {
+            // 문자메시지 인증 페이지로 이동
+            console.log("문자메시지 인증 페이지로 이동");
+          } else if (method === "change-phone") {
+            // 휴대폰번호 변경 페이지로 이동
+            console.log("휴대폰번호 변경 페이지로 이동");
+          }
+
+          closeAuthMethodSheet();
+        });
+      });
+
+      // Start authentication
+      function startAuth() {
+        authState = "authenticating";
+        seconds = 0;
+
+        // Update UI
+        mainTitle.innerHTML = "ARS 전화 통화로 인증할게요";
+        authButton.innerHTML =
+          '<span>인증 진행중</span><div class="loading-spinner"></div>';
+        authButton.classList.add("loading");
+        authButton.disabled = true;
+        phoneIcon.classList.add("calling");
+
+        // Show timer section
+        timerSection.style.display = "flex";
+        retryButton.disabled = true;
+
+        // Start timer
+        startTimer();
+
+        // Simulate authentication completion after 5 seconds
+        setTimeout(() => {
+          completeAuth();
+        }, 5000);
+      }
+
+      // Complete authentication
+      function completeAuth() {
+        authState = "completed";
+
+        // Update title
+        mainTitle.innerHTML =
+          '인증이 끝나면,<br><span class="highlight">인증완료</span> 버튼을 눌러주세요';
+
+        // Update button
+        authButton.innerHTML = "<span>인증완료</span>";
+        authButton.classList.remove("loading");
+        authButton.classList.add("success");
+        authButton.disabled = false;
+
+        // Stop animation
+        phoneIcon.classList.remove("calling");
+
+        // Enable retry button
+        retryButton.disabled = false;
+      }
+
+      // Start timer
+      function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+          seconds++;
+          const minutes = Math.floor(seconds / 60);
+          const secs = seconds % 60;
+          timerDisplay.textContent = `${minutes
+            .toString()
+            .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+
+          // Enable retry button after 30 seconds
+          if (seconds >= 30 && authState === "authenticating") {
+            retryButton.disabled = false;
+          }
+        }, 1000);
+      }
+
+      // Stop timer
+      function stopTimer() {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+      }
+
+      // Retry authentication
+      retryButton.addEventListener("click", function () {
+        if (!this.disabled) {
+          stopTimer();
+          startAuth();
+        }
+      });
+
+      // Auth button click
+      authButton.addEventListener("click", function () {
+        if (authState === "initial") {
+          startAuth();
+        } else if (authState === "completed") {
+          console.log("인증 완료 처리");
+          // TODO: 다음 단계로 진행
+        }
+      });
+
+      // Navigation buttons
+      document
+        .querySelector(".nav-back")
+        .addEventListener("click", function () {
+          stopTimer();
+          history.back();
+        });
+
+      document
+        .querySelector(".nav-button:not(.nav-back)")
+        .addEventListener("click", function () {
+          stopTimer();
+          console.log("페이지 닫기");
+          // window.close() 또는 history.back()
+        });
+
+      // Help link - open auth method bottom sheet
+      document
+        .querySelector(".help-link")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          openAuthMethodSheet();
+        });
+
+      // Initial state
+      startAuth();
+    </script>
+  </body>
+</html>

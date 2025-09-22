@@ -1,0 +1,318 @@
+<!--
+Figma Layer: 영상통화 중 상담사와 연결이 끊어진 경우 노출
+Node ID: 4642-139862
+Description: 상담사 연결 끊김 모달 - 재연결 선택 옵션
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담사 연결 끊김</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 17, 29, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-container {
+            width: clamp(279px, 87.2vw, 327px);
+            max-height: clamp(420px, 133.3vw, 500px);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 3.2vw, 12px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            border-radius: clamp(14px, 4.3vw, 16px);
+        }
+
+        .modal-content {
+            width: 100%;
+            background-color: #ffffff;
+            padding: clamp(27px, 8.5vw, 32px) clamp(17px, 5.3vw, 20px) clamp(17px, 5.3vw, 20px) clamp(17px, 5.3vw, 20px);
+            border-radius: clamp(14px, 4.3vw, 16px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(20px, 6.4vw, 24px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            max-height: clamp(420px, 133.3vw, 500px);
+        }
+
+        .content-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .text-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .modal-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 6.9vw, 26px);
+            letter-spacing: clamp(-0.4px, -0.09vw, -0.32px);
+            color: #101828;
+            margin: clamp(0px, 0vw, 0px);
+            width: 100%;
+        }
+
+        .modal-description {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: clamp(-0.35px, -0.08vw, -0.28px);
+            color: #475467;
+            margin: clamp(0px, 0vw, 0px);
+            width: min-content;
+            min-width: 100%;
+        }
+
+        .button-section {
+            width: 100%;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            height: clamp(40px, 12.8vw, 48px);
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .secondary-button {
+            width: 35%;
+            height: 100%;
+            background-color: #ebf0ff;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #005df9;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: clamp(-0.4px, -0.09vw, -0.32px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .secondary-button:hover {
+            background-color: #d6e4ff;
+        }
+
+        .secondary-button:active {
+            background-color: #c2d3ff;
+        }
+
+        .secondary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+
+        .primary-button {
+            width: 65%;
+            height: 100%;
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: clamp(-0.4px, -0.09vw, -0.32px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .primary-button:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+
+        /* Modal animation */
+        .modal-overlay {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-container {
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(clamp(20px, 5.3vw, 20px));
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <div class="modal-content">
+                <!-- Content Section -->
+                <div class="content-section">
+                    <div class="text-section">
+                        <h2 class="modal-title">
+                            상담사와 연결이 끊어졌습니다.
+                        </h2>
+                        <p class="modal-description">
+                            다시 연결하시겠어요?
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Button Section -->
+                <div class="button-section">
+                    <button class="secondary-button" id="noButton">
+                        아니요
+                    </button>
+                    <button class="primary-button" id="reconnectButton">
+                        다시 연결
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // No button handler (exit video call)
+        document.getElementById('noButton').addEventListener('click', () => {
+            console.log('No button clicked - Exit video call');
+            // Close modal and exit video call flow
+            closeModal();
+            // Navigate to exit or main screen
+        });
+
+        // Reconnect button handler (try to reconnect)
+        document.getElementById('reconnectButton').addEventListener('click', () => {
+            console.log('Reconnect button clicked - Attempt to reconnect');
+            // Close modal and attempt to reconnect to consultant
+            closeModal();
+            // Navigate back to connecting screen or retry connection
+        });
+
+        // Modal overlay click handler (close modal)
+        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Modal overlay clicked');
+                closeModal();
+            }
+        });
+
+        // Close modal function
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.style.animation = 'fadeOut 0.3s ease';
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Add fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ESC key handler
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        console.log('Consultant disconnected modal loaded');
+    </script>
+</body>
+</html>

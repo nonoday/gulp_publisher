@@ -1,0 +1,573 @@
+<!--
+Figma Layer: 영상통화를 걸고 있어요
+Node ID: 4642-139681
+Description: 상담사와 영상통화 연결 중 화면 - 대기 상태와 로딩 애니메이션
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영상통화 연결중</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: flex-start;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: clamp(52px, 14.9vw, 56px);
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .nav-back {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            padding: clamp(16px, 5.3vw, 20px) 0 clamp(24px, 8.5vw, 32px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 22px);
+            line-height: clamp(28px, 8.8vw, 33px);
+            letter-spacing: -0.44px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Character Section */
+        .character-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-container {
+            position: relative;
+            width: clamp(238px, 74.7vw, 280px);
+            height: clamp(142px, 44.8vw, 168px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-background {
+            position: absolute;
+            width: clamp(142px, 44.8vw, 168px);
+            height: clamp(142px, 44.8vw, 168px);
+            background: linear-gradient(135deg, #f0f4fa 0%, #e9edf5 100%);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .character-image {
+            position: absolute;
+            width: clamp(142px, 44.8vw, 168px);
+            height: clamp(142px, 44.8vw, 168px);
+            border-radius: 50%;
+            background-image: url('../../../../images/icon/consultant_character.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .loading-dot {
+            position: absolute;
+            width: clamp(14px, 4.5vw, 16px);
+            height: clamp(14px, 4.5vw, 16px);
+            background-color: #005df9;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .loading-dot.left {
+            left: 0;
+            animation-delay: -0.3s;
+        }
+
+        .loading-dot.right {
+            right: 0;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: translateY(-50%) scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-50%) scale(1.2);
+            }
+        }
+
+        /* Info Box Section */
+        .info-box-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 3.2vw, 12px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .info-box {
+            width: 100%;
+            background-color: #ebf0ff;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            padding: clamp(14px, 4.3vw, 16px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .info-content {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: clamp(6px, 2.1vw, 8px);
+        }
+
+        .info-label {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(19px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: #101828;
+            margin: 0;
+        }
+
+        .info-value {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(19px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: #005df9;
+            margin: 0;
+        }
+
+        /* Notice Section */
+        .notice-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-top: clamp(16px, 5.3vw, 20px);
+        }
+
+        .divider {
+            width: 100%;
+            height: clamp(6px, 2.1vw, 8px);
+            background-color: #f0f4fa;
+            border: none;
+            margin: 0;
+        }
+
+        .notice-text {
+            width: 100%;
+            padding: clamp(14px, 4.3vw, 16px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .notice-text span {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(19px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: #101828;
+            margin: 0;
+        }
+
+        .notice-arrow {
+            width: clamp(16px, 5.1vw, 20px);
+            height: clamp(16px, 5.1vw, 20px);
+            transform: rotate(90deg);
+            transition: transform 0.2s ease;
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            z-index: 1;
+            position: relative;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px) 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(14px, 4.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .primary-button {
+            width: 100%;
+            min-height: clamp(48px, 14.9vw, 56px);
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(14px, 4.3vw, 16px);
+            color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(15px, 4.8vw, 18px);
+            line-height: clamp(24px, 7.7vw, 29px);
+            letter-spacing: -0.36px;
+            cursor: not-allowed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+            padding: clamp(1px, 0.5vw, 2px) clamp(10px, 3.2vw, 12px);
+            overflow: hidden;
+            gap: clamp(6px, 2.1vw, 8px);
+            flex-direction: row;
+            position: relative;
+        }
+
+        .primary-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(12, 17, 29, 0.20);
+            border-radius: clamp(14px, 4.3vw, 16px);
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: clamp(16px, 5.1vw, 20px);
+            height: clamp(16px, 5.1vw, 20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1;
+            position: relative;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .button-group {
+            width: 100%;
+            min-height: clamp(27px, 8.5vw, 32px);
+            padding: 0 clamp(6px, 2.1vw, 8px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .secondary-button {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(19px, 5.9vw, 22px);
+            letter-spacing: -0.28px;
+            color: #667085;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: clamp(3px, 1.1vw, 4px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" style="width: 100%; height: 100%;" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" style="width: 100%; height: 100%;" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">영상통화를 걸고 있어요</h1>
+            </div>
+
+            <!-- Character Section -->
+            <div class="character-section">
+                <div class="character-container">
+                    <div class="character-background"></div>
+                    <div class="character-image"></div>
+                    <div class="loading-dot left"></div>
+                    <div class="loading-dot right"></div>
+                </div>
+            </div>
+
+            <!-- Info Box Section -->
+            <div class="info-box-section">
+                <div class="info-box">
+                    <div class="info-content">
+                        <div class="info-item">
+                            <span class="info-label">대기자수</span>
+                            <span class="info-value">999명</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">예상대기시간</span>
+                            <span class="info-value">00:15</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notice Section -->
+            <div class="notice-section">
+                <hr class="divider">
+                <button class="notice-text" id="noticeButton">
+                    <span>꼭! 알아두세요</span>
+                    <img src="../../../../images/icon/icon_chevron_right.svg" alt="펼치기" class="notice-arrow" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <div class="button-area">
+                <button class="primary-button" id="connectingButton">
+                    상담사 연결중
+                    <div class="loading-spinner"></div>
+                </button>
+                <div class="button-group">
+                    <button class="secondary-button" id="alternativeButton">
+                        다른 방식으로 인증
+                        <img src="../../../../images/icon/icon_chevron_right.svg" alt="이동" style="width: clamp(14px, 4.5vw, 16px); height: clamp(14px, 4.5vw, 16px);" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        // Notice button handler
+        document.getElementById('noticeButton').addEventListener('click', () => {
+            console.log('Notice button clicked');
+            // Toggle notice content
+            const arrow = document.querySelector('.notice-arrow');
+            arrow.style.transform = arrow.style.transform === 'rotate(270deg)' ? 'rotate(90deg)' : 'rotate(270deg)';
+        });
+
+        // Alternative button handler
+        document.getElementById('alternativeButton').addEventListener('click', () => {
+            console.log('Alternative authentication clicked');
+            // Navigate to alternative authentication methods
+        });
+
+        // Simulate connection update
+        let waitingCount = 999;
+        let waitingTime = 15; // seconds
+
+        function updateWaitingInfo() {
+            // Randomly decrease waiting count
+            if (Math.random() < 0.3 && waitingCount > 0) {
+                waitingCount = Math.max(0, waitingCount - Math.floor(Math.random() * 5) - 1);
+                document.querySelector('.info-value').textContent = `${waitingCount}명`;
+            }
+
+            // Decrease waiting time
+            if (waitingTime > 0) {
+                waitingTime--;
+                const minutes = Math.floor(waitingTime / 60);
+                const seconds = waitingTime % 60;
+                document.querySelectorAll('.info-value')[1].textContent =
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            // Continue updating if not connected
+            if (waitingTime > 0) {
+                setTimeout(updateWaitingInfo, 1000);
+            } else {
+                // Simulate connection success
+                console.log('Connected to consultant');
+                // Navigate to video call screen
+            }
+        }
+
+        // Start waiting info updates
+        setTimeout(updateWaitingInfo, 2000);
+
+        console.log('Video call connecting screen loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!--
+Figma Layer: CO0708S0015P01
+Node ID: 4642-140985
+Description: 운전면허증 정보 확인 화면 - OCR로 인식된 운전면허증 정보를 사용자가 확인하고 수정할 수 있는 폼 화면 (면허번호 필드 포함)
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인식된 정보를 확인해주세요</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        /* Header Section - exclude status bar per guidelines */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .nav-back {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            padding: clamp(12px, 4.3vw, 16px) 0 clamp(24px, 8.5vw, 32px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Top Title Area */
+        .top-title-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 22px);
+            line-height: clamp(28px, 8.8vw, 33px);
+            letter-spacing: -0.44px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .sub-description {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: #667085;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Image Section */
+        .image-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .image-container {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 3.2vw, 12px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .id-card-image {
+            width: 100%;
+            height: clamp(160px, 53.3vw, 200px);
+            background-color: #c2d3ff;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-placeholder {
+            font-family: 'Pretendard', sans-serif;
+            font-weight: 500;
+            font-size: clamp(24px, 8.5vw, 32px);
+            line-height: 1;
+            letter-spacing: -0.64px;
+            color: #005df9;
+            text-align: center;
+        }
+
+        /* Form Section */
+        .form-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* Input Field Styles */
+        .input-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+        }
+
+        .input-label {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary, #475467);
+            margin: 0;
+        }
+
+        .input-field {
+            width: 100%;
+            height: clamp(44px, 13.9vw, 52px);
+            padding: 0 clamp(12px, 3.2vw, 16px);
+            border: 1px solid #e4e7ec;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            background-color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            color: #101828;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: #005df9;
+            box-shadow: 0 0 0 1px rgba(0, 93, 249, 0.25);
+        }
+
+        .input-field:disabled {
+            background-color: #f0f4fa;
+            color: #818da2;
+            border-color: #e4e7ec;
+        }
+
+        /* Unified ID Number Input Field - matches Figma exactly */
+        .id-number-container {
+            width: 100%;
+            height: clamp(44px, 13.9vw, 52px);
+            border: 1px solid #e4e7ec;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            background-color: var(--bg-disabled, #f0f4fa);
+            padding: 0 clamp(12px, 3.2vw, 16px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: clamp(8px, 2.7vw, 12px);
+        }
+
+        .id-number-left {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            color: var(--text-disabled-same, #818da2);
+            flex: none;
+        }
+
+        .id-number-separator {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            color: var(--text-disabled-same, #818da2);
+            flex: none;
+        }
+
+        .id-number-dots {
+            display: flex;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: center;
+            flex: none;
+        }
+
+        .id-dot {
+            width: clamp(6px, 1.9vw, 8px);
+            height: clamp(6px, 1.9vw, 8px);
+            background-color: var(--text-disabled-same, #818da2);
+            border-radius: 50%;
+        }
+
+        /* Date Input with Calendar Icon */
+        .date-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: clamp(12px, 3.2vw, 16px);
+            top: 50%;
+            transform: translateY(-50%);
+            width: clamp(18px, 5.9vw, 22px);
+            height: clamp(18px, 5.9vw, 22px);
+            pointer-events: none;
+        }
+
+        /* Button Section */
+        .button-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 1;
+            position: relative;
+        }
+
+        .button-container {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .button-group {
+            width: 100%;
+            display: flex;
+            gap: clamp(8px, 2.7vw, 12px);
+            height: clamp(48px, 14.9vw, 56px);
+        }
+
+        .secondary-button {
+            flex: 0 0 35%;
+            height: 100%;
+            background-color: #ebf0ff;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #005df9;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .secondary-button:hover {
+            background-color: #d6e4ff;
+        }
+
+        .secondary-button:active {
+            background-color: #c7d9ff;
+        }
+
+        .secondary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+
+        .primary-button {
+            flex: 0 0 65%;
+            height: 100%;
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .primary-button:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" width="24" height="24" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" width="24" height="24" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Top Title Area -->
+            <div class="top-title-area">
+                <div class="title-section">
+                    <h1 class="main-title">인식된 정보를<br>확인해주세요</h1>
+                    <p class="sub-description">신분증 정보와 다른 경우 다시 촬영하거나<br>정보를 수정해주세요</p>
+                </div>
+            </div>
+
+            <!-- Image Section -->
+            <div class="image-section">
+                <div class="image-container">
+                    <div class="id-card-image">
+                        <div class="image-placeholder">image</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <!-- Name Input -->
+                <div class="input-group">
+                    <label class="input-label" for="nameInput">이름</label>
+                    <input type="text" id="nameInput" class="input-field" value="신한모" readonly />
+                </div>
+
+                <!-- ID Number Input (Unified) -->
+                <div class="input-group">
+                    <label class="input-label" for="idNumberInput">주민등록번호</label>
+                    <div class="id-number-container">
+                        <span class="id-number-left">123456</span>
+                        <span class="id-number-separator">–</span>
+                        <div class="id-number-dots">
+                            <div class="id-dot"></div>
+                            <div class="id-dot"></div>
+                            <div class="id-dot"></div>
+                            <div class="id-dot"></div>
+                            <div class="id-dot"></div>
+                            <div class="id-dot"></div>
+                            <div class="id-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- License Number Input -->
+                <div class="input-group">
+                    <label class="input-label" for="licenseNumberInput">면허번호</label>
+                    <input type="text" id="licenseNumberInput" class="input-field" value="09-00-872-480-00" readonly />
+                </div>
+
+                <!-- Issue Date Input -->
+                <div class="input-group">
+                    <label class="input-label" for="issueDateInput">발급일자</label>
+                    <div class="date-input-container">
+                        <input type="text" id="issueDateInput" class="input-field" value="2016-05-09" readonly />
+                        <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4Z" stroke="#667085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button Section -->
+        <div class="button-section">
+            <div class="button-container">
+                <div class="button-area">
+                    <div class="button-group">
+                        <button class="secondary-button" id="retakeButton">다시촬영</button>
+                        <button class="primary-button" id="nextButton">다음</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        // Retake button handler
+        document.getElementById('retakeButton').addEventListener('click', () => {
+            console.log('Retake photo selected');
+            // Navigate back to camera screen
+        });
+
+        // Next button handler
+        document.getElementById('nextButton').addEventListener('click', () => {
+            console.log('Next button clicked');
+            // Proceed to next step
+        });
+
+        console.log('Drivers license information confirmation screen loaded');
+    </script>
+</body>
+</html>

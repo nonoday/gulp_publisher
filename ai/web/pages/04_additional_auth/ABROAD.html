@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>해외체류 인증</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-canvas-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas-white);
+            position: relative;
+        }
+
+        /* Header Navigation */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+            border-bottom: 1px solid var(--border-tertiary);
+        }
+
+        .nav-title {
+            font-family: Pretendard;
+            font-size: var(--typography-fontSize-lg);
+            font-weight: var(--typography-fontWeight-medium);
+            color: var(--text-primary);
+            letter-spacing: -0.36px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .nav-button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-button svg {
+            width: 24px;
+            height: 24px;
+            color: var(--text-primary);
+        }
+
+        .nav-back {
+            transform: rotate(180deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-xl) var(--spacing-2xl) var(--spacing-4xl);
+            gap: var(--spacing-4xl);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Title Section */
+        .title-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .main-title {
+            font-family: OneShinhan, Pretendard;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 33px;
+            letter-spacing: -0.44px;
+            color: var(--text-primary);
+        }
+
+        .main-title .highlight {
+            color: var(--text-brand);
+        }
+
+        /* Call Icon Section */
+        .call-icon-section {
+            display: flex;
+            justify-content: center;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .call-icon-wrapper {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(194, 211, 255, 0.3) 0%, rgba(235, 240, 255, 0.8) 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .call-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--brand-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .call-icon svg {
+            width: 32px;
+            height: 32px;
+            color: var(--white);
+        }
+
+        /* Notice Section */
+        .notice-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+            margin-top: auto;
+            padding-bottom: 140px;
+        }
+
+        .notice-item {
+            position: relative;
+            padding-left: var(--spacing-xl);
+            font-family: OneShinhan, Pretendard;
+            font-size: 12px;
+            font-weight: 300;
+            line-height: 22px;
+            letter-spacing: -0.26px;
+            color: var(--text-tertiary);
+        }
+
+        .notice-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--fg-tertiary);
+        }
+
+        /* CTA Area */
+        .cta-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background: var(--bg-canvas-white);
+            z-index: 100;
+        }
+
+        .scroll-dim {
+            height: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--white) 100%);
+        }
+
+        .button-area {
+            padding: 0 var(--spacing-2xl) var(--spacing-2xl);
+            background: var(--bg-canvas-white);
+        }
+
+        .auth-button {
+            width: 100%;
+            min-height: 56px;
+            background: var(--bg-brand-strong-same);
+            color: var(--text-ondark-primary-same);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-family: OneShinhan, Pretendard, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-button:hover {
+            background: var(--brand-700);
+        }
+
+        .auth-button:active {
+            transform: scale(0.98);
+        }
+
+        .auth-button:disabled {
+            background: var(--bg-brand-selected-disabled);
+            cursor: not-allowed;
+        }
+
+        /* Help Link */
+        .help-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) 0;
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .help-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .help-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Bottom Sheet Overlay */
+        .bottom-sheet-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(12, 17, 29, 0.6);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .bottom-sheet-overlay.show {
+            display: block;
+        }
+
+        /* Bottom Sheet Container */
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 375px;
+            background-color: var(--bg-canvas-white);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.14);
+            z-index: 1001;
+            transition: transform 0.3s ease-out;
+        }
+
+        .bottom-sheet.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Bottom Sheet Header */
+        .bottom-sheet-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-2xl) var(--spacing-2xl) 0;
+            background: var(--bg-canvas-white);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        }
+
+        .bottom-sheet-title {
+            flex: 1;
+            padding-bottom: var(--spacing-2xl);
+        }
+
+        .bottom-sheet-title h2 {
+            font-family: OneShinhan, Pretendard;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .bottom-sheet-close {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bottom-sheet-close svg {
+            width: 24px;
+            height: 24px;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Sheet Body */
+        .bottom-sheet-body {
+            background: var(--bg-canvas-white);
+            padding: 0 var(--spacing-2xl) var(--spacing-2xl);
+        }
+
+        /* Agreement Card */
+        .agreement-card {
+            background: var(--bg-canvas-white);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .agreement-item {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: flex-start;
+        }
+
+        .checkbox-wrapper {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .checkbox-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-brand-strong-same);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-icon svg {
+            width: 14px;
+            height: 14px;
+            color: var(--text-ondark-primary-same);
+        }
+
+        .agreement-text {
+            flex: 1;
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            color: var(--text-secondary);
+        }
+
+        /* Bottom Sheet Notice */
+        .bottom-sheet-notice {
+            position: relative;
+            padding-left: var(--spacing-xl);
+            font-family: OneShinhan, Pretendard;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-4xl);
+        }
+
+        .bottom-sheet-notice::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--text-tertiary);
+        }
+
+        /* Bottom Sheet CTA */
+        .bottom-sheet-cta {
+            width: 100%;
+            background: var(--bg-canvas-white);
+        }
+
+        .bottom-sheet-button {
+            width: 100%;
+            min-height: 56px;
+            background: var(--bg-brand-strong-same);
+            color: var(--text-ondark-primary-same);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-family: OneShinhan, Pretendard;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .bottom-sheet-button:hover {
+            background: var(--brand-700);
+        }
+
+        .bottom-sheet-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .container {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .header-nav {
+                background: var(--bg-canvas-white);
+                border-bottom-color: var(--border-tertiary);
+            }
+
+            .main-title {
+                color: var(--text-primary);
+            }
+
+            .main-title .highlight {
+                color: var(--text-brand);
+            }
+
+            .notice-item {
+                color: var(--text-tertiary);
+            }
+
+            .cta-container {
+                background: var(--bg-canvas-white);
+            }
+
+            .help-link {
+                color: var(--text-tertiary);
+            }
+
+            .bottom-sheet {
+                background-color: var(--bg-canvas-white);
+            }
+
+            .bottom-sheet-header,
+            .bottom-sheet-body,
+            .bottom-sheet-cta {
+                background: var(--bg-canvas-white);
+            }
+
+            .agreement-card {
+                background: var(--bg-canvas-white);
+                border-color: var(--border-secondary);
+            }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+
+            .main-content {
+                padding: var(--spacing-3xl) var(--spacing-5xl) var(--spacing-4xl);
+            }
+
+            .cta-container {
+                max-width: 768px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Navigation -->
+        <header class="header-nav">
+            <button class="nav-button nav-back" aria-label="뒤로">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <h1 class="nav-title">해외체류 인증</h1>
+            <button class="nav-button" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h2 class="main-title">
+                    해외에서는 <span class="highlight">'출국정보 확인'</span>으로<br>
+                    인증을 대신할 수 있어요
+                </h2>
+            </div>
+
+            <!-- Call Icon -->
+            <div class="call-icon-section">
+                <div class="call-icon-wrapper">
+                    <div class="call-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M22 23.5C22 16.5 16.5 11 9.5 11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M9.5 11C9.5 11 8 11 8 12.5V16.5C8 18 9.5 18 9.5 18C10.5 18 14 18 18 22C22 26 22 29.5 22 30.5C22 30.5 22 32 23.5 32H27.5C29 32 29 30.5 29 30.5C29 23.5 23.5 18 16.5 18"
+                                  stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notice -->
+            <div class="notice-section">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="notice-item">
+                        주민등록말소자는 서비스를 이용할 수 없습니다. (R, PR여권소지)
+                    </li>
+                    <li class="notice-item">
+                        출국정보조회는 추가 본인인증 절차 생략을 위해 사용됩니다. 전자금융거래기록의 생성 및 보존을 위해 금융회사에 5년 동안 보관됩니다.
+                    </li>
+                    <li class="notice-item">
+                        법무부 출입국관리사무소 시스템에 장애가 발생하거나 출입국정보 업데이트가 지연될 경우 출국정보 이용이 제한될 수 있습니다. (정보업데이트 : 출입국 후 12~36시간)
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- CTA Area -->
+        <div class="cta-container">
+            <div class="scroll-dim"></div>
+            <div class="button-area">
+                <button class="auth-button" id="authButton">
+                    인증요청
+                </button>
+                <a href="#" class="help-link">
+                    출국정보를 확인할 수 없나요?
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Bottom Sheet -->
+        <div class="bottom-sheet-overlay" id="bottomSheetOverlay"></div>
+        <div class="bottom-sheet" id="agreementBottomSheet">
+            <!-- Bottom Sheet Header -->
+            <div class="bottom-sheet-header">
+                <div class="bottom-sheet-title">
+                    <h2>출국정보를 확인하려면,<br>동의가 필요해요</h2>
+                </div>
+                <button class="bottom-sheet-close" id="closeBottomSheet" aria-label="닫기">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Bottom Sheet Body -->
+            <div class="bottom-sheet-body">
+                <!-- Agreement Card -->
+                <div class="agreement-card">
+                    <div class="agreement-item">
+                        <div class="checkbox-wrapper">
+                            <div class="checkbox-icon">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M11.6667 3.5L5.25 9.91667L2.33333 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="agreement-text">
+                            주민등록번호 및 성명 등을 운영하고 있는 금융결제원을 통하여 법무부 출입국관리사무소로 전송하고, 확인 받는데 동의합니다.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notice -->
+                <div class="bottom-sheet-notice">
+                    동의하지 않을 수 있으니, 동의 후 서비스를 이용할 수 있습니다.
+                </div>
+            </div>
+
+            <!-- Bottom Sheet CTA -->
+            <div class="bottom-sheet-cta">
+                <div style="padding: 0 20px 20px;">
+                    <button class="bottom-sheet-button" id="agreeButton">
+                        다음
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const authButton = document.getElementById('authButton');
+        const helpLink = document.querySelector('.help-link');
+        const bottomSheetOverlay = document.getElementById('bottomSheetOverlay');
+        const agreementBottomSheet = document.getElementById('agreementBottomSheet');
+        const closeBottomSheet = document.getElementById('closeBottomSheet');
+        const agreeButton = document.getElementById('agreeButton');
+
+        // Open bottom sheet
+        function openBottomSheet() {
+            bottomSheetOverlay.classList.add('show');
+            agreementBottomSheet.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close bottom sheet
+        function closeBottomSheetModal() {
+            bottomSheetOverlay.classList.remove('show');
+            agreementBottomSheet.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Auth button click event - opens bottom sheet
+        authButton.addEventListener('click', function() {
+            console.log('출국정보 확인 동의 요청');
+            openBottomSheet();
+        });
+
+        // Close bottom sheet button
+        closeBottomSheet.addEventListener('click', closeBottomSheetModal);
+
+        // Overlay click to close
+        bottomSheetOverlay.addEventListener('click', closeBottomSheetModal);
+
+        // Agree button click event
+        agreeButton.addEventListener('click', function() {
+            console.log('출국정보 확인 동의 완료');
+            closeBottomSheetModal();
+
+            // 동의 후 실제 인증 진행
+            authButton.disabled = true;
+            authButton.textContent = '확인 중...';
+
+            setTimeout(() => {
+                // 성공 시
+                alert('출국정보가 확인되었습니다.');
+                // 실패 시
+                // alert('출국정보를 확인할 수 없습니다. 다른 인증 방법을 이용해주세요.');
+
+                authButton.disabled = false;
+                authButton.textContent = '인증요청';
+            }, 2000);
+        });
+
+        // Help link click event
+        helpLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('다른 인증 방법 안내');
+            // TODO: 도움말 페이지 또는 다른 인증 방법 안내
+        });
+
+        // Navigation buttons
+        document.querySelector('.nav-back').addEventListener('click', function() {
+            history.back();
+        });
+
+        document.querySelector('.nav-button:not(.nav-back)').addEventListener('click', function() {
+            console.log('페이지 닫기');
+            // window.close() 또는 history.back()
+        });
+    </script>
+</body>
+</html>

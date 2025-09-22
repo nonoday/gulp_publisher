@@ -1,0 +1,486 @@
+<!--
+Figma Layer: (-)계좌번호 입력후
+Node ID: 4642-139649
+Description: 2단계 본인인증 계좌번호 입력 완료 화면 - 계좌번호 입력 후 다음 버튼과 성공 토스트
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계좌번호 입력 완료</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary, #101828);
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 4;
+        }
+
+        .navigation {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .nav-back {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-close {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Main Content Body */
+        .content-body {
+            width: 100%;
+            flex: 1;
+            padding: clamp(12px, 4.3vw, 16px) 0 clamp(24px, 8.5vw, 32px) 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 8.5vw, 32px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 3;
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: clamp(18px, 5.9vw, 22px);
+            line-height: clamp(28px, 8.8vw, 33px);
+            letter-spacing: -0.44px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .description {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: var(--text-quaternary, #667085);
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Input Section */
+        .input-section {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 3.2vw, 12px);
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .input-label {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary, #475467);
+            margin: 0;
+        }
+
+        .input-field {
+            width: 100%;
+            height: clamp(44px, 13.9vw, 52px);
+            padding: 0 clamp(14px, 4.3vw, 16px);
+            background-color: #ffffff;
+            border: 1px solid var(--border-tertiary, #f0f4fa);
+            border-radius: clamp(10px, 3.2vw, 12px);
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            color: #101828;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field::placeholder {
+            color: var(--text-placeholder, #98a2b3);
+        }
+
+        .input-field:focus {
+            border-color: var(--border-brand, #005df9);
+        }
+
+        /* Footer Section */
+        .footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            z-index: 2;
+            position: relative;
+        }
+
+        .scroll-dim {
+            width: 100%;
+            height: clamp(20px, 6.4vw, 24px);
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff);
+        }
+
+        .button-container {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .button-area {
+            width: 100%;
+            padding: 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .primary-button {
+            width: 100%;
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: #005df9;
+            border: none;
+            border-radius: clamp(10px, 3.2vw, 12px);
+            color: #ffffff;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 4.3vw, 16px);
+            line-height: clamp(22px, 7.2vw, 27px);
+            letter-spacing: -0.32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        .primary-button:hover {
+            background-color: #0046ff;
+        }
+
+        .primary-button:active {
+            background-color: #0040e8;
+        }
+
+        .primary-button:focus {
+            box-shadow: 0 0 0 2px rgba(0, 93, 249, 0.25);
+        }
+
+        .text-button-group {
+            width: 100%;
+            min-height: clamp(28px, 8.5vw, 32px);
+            padding: 0 clamp(6px, 2.1vw, 8px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .text-button {
+            background: none;
+            border: none;
+            color: var(--text-tertiary, #667085);
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(2px, 0.8vw, 4px);
+        }
+
+        .text-button:hover {
+            color: var(--text-primary, #101828);
+        }
+
+        .text-button:active {
+            color: var(--text-secondary, #344054);
+        }
+
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: clamp(120px, 32vw, 140px);
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: clamp(240px, 74.7vw, 280px);
+            padding: clamp(10px, 3.2vw, 12px) clamp(14px, 4.3vw, 16px);
+            background-color: rgba(24, 34, 48, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: clamp(20px, 6.4vw, 24px);
+            box-sizing: border-box;
+            display: flex;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            animation: toastSlideIn 0.3s ease-out;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .toast-icon {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-text {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: #ffffff;
+            margin: 0;
+            padding: 0 clamp(3px, 1.1vw, 4px);
+            white-space: nowrap;
+        }
+
+        /* Bottom padding for mobile safe area */
+        .content-body {
+            padding-bottom: clamp(16px, 5.3vw, 20px);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="navigation">
+                <button class="nav-back" id="backButton">
+                    <img src="../../../../images/icon/icon_chevron_left.svg" alt="뒤로가기" width="24" height="24" />
+                </button>
+                <button class="nav-close" id="closeButton">
+                    <img src="../../../../images/icon/icon_x.svg" alt="닫기" width="24" height="24" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Body -->
+        <div class="content-body">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">신한은행 계좌로<br>한 번 더 본인을 확인할게요</h1>
+                <p class="description">비밀번호를 틀려서 잠겨있는 계좌로는<br>인증할 수 없으니 유의해주세요.</p>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section">
+                <label class="input-label" for="accountNumber">계좌번호</label>
+                <input type="text" id="accountNumber" class="input-field" value="123-000-456789" />
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <div class="scroll-dim"></div>
+            <div class="button-container">
+                <div class="button-area">
+                    <button class="primary-button" id="nextButton">
+                        다음
+                    </button>
+                    <div class="text-button-group">
+                        <button class="text-button" id="alternativeButton">
+                            다른 방식으로 인증
+                            <img src="../../../../images/icon/icon_chevron_right.svg" alt="" width="16" height="16" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast-notification" id="successToast">
+            <div class="toast-icon">
+                <img src="../../../../images/icon/icon_success_check.svg" alt="성공" width="20" height="20" />
+            </div>
+            <p class="toast-text">비대면 실명확인을 완료했어요</p>
+        </div>
+    </div>
+
+    <script>
+        // Back button handler
+        document.getElementById('backButton').addEventListener('click', () => {
+            console.log('Back button clicked');
+            // Navigate back to previous screen
+        });
+
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close the entire flow
+        });
+
+        // Next button handler
+        document.getElementById('nextButton').addEventListener('click', () => {
+            console.log('Next button clicked');
+            // Navigate to next step
+        });
+
+        // Account number input handler
+        document.getElementById('accountNumber').addEventListener('input', (e) => {
+            const value = e.target.value;
+            console.log('Account number input:', value);
+            // Handle account number validation and formatting
+        });
+
+        // Alternative authentication button handler
+        document.getElementById('alternativeButton').addEventListener('click', () => {
+            console.log('Alternative authentication button clicked');
+            // Navigate to alternative authentication methods
+        });
+
+        // Auto-hide toast after 3 seconds
+        setTimeout(() => {
+            const toast = document.getElementById('successToast');
+            if (toast) {
+                toast.style.animation = 'toastSlideOut 0.3s ease-in forwards';
+                toast.addEventListener('animationend', () => {
+                    toast.style.display = 'none';
+                });
+            }
+        }, 3000);
+
+        // Add slide out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes toastSlideOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(20px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('Account number input completed screen loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!--
+Figma Layer: -(AOS 추저 샘플)
+Node ID: 4642-139573
+Description: 모바일 신분증 앱 선택 bottom sheet - 발급받은 앱을 선택하는 하단 모달
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모바일 신분증 앱 선택</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        /* DigitalOneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "DigitalOneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/DigitalOneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', sans-serif;
+            background-color: rgba(12, 17, 29, 0.6);
+            color: var(--text-primary, #101828);
+            overflow: hidden;
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(12, 17, 29, 0.6);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+            justify-content: flex-end;
+            align-items: stretch;
+        }
+
+        /* Bottom Sheet Container */
+        .bottom-sheet {
+            width: 100%;
+            max-width: none;
+            background-color: #ffffff;
+            border-radius: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px) 0 0;
+            box-shadow: 0px 4px 16px 0px rgba(12, 17, 29, 0.14);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Header Section */
+        .bottom-sheet-header {
+            width: 100%;
+            border-radius: clamp(20px, 6.4vw, 24px) clamp(20px, 6.4vw, 24px) 0 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        .header-content {
+            width: 100%;
+            background-color: #ffffff;
+            padding: clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) 0 clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            gap: clamp(6px, 2.1vw, 8px);
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+
+        .title-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(3px, 1.1vw, 4px);
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 0 0 clamp(16px, 5.3vw, 20px) 0;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: clamp(16px, 4.8vw, 18px);
+            line-height: clamp(24px, 7.7vw, 29px);
+            letter-spacing: -0.36px;
+            color: #101828;
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .close-button {
+            width: clamp(20px, 6.4vw, 24px);
+            height: clamp(20px, 6.4vw, 24px);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            outline: none;
+        }
+
+        /* Content Section */
+        .content-section {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 0 clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px) clamp(16px, 5.3vw, 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 5.3vw, 20px);
+            align-items: stretch;
+            justify-content: flex-end;
+            overflow: hidden;
+        }
+
+        /* App Grid */
+        .app-grid {
+            width: 100%;
+            display: flex;
+            gap: clamp(8px, 2.7vw, 10px);
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .app-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2.7vw, 10px);
+            align-items: center;
+            justify-content: flex-start;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .app-item:hover {
+            transform: scale(1.05);
+        }
+
+        .app-item:active {
+            transform: scale(0.95);
+        }
+
+        .app-icon {
+            width: clamp(48px, 14.9vw, 56px);
+            height: clamp(48px, 14.9vw, 56px);
+            background-color: transparent;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-icon-inner {
+            width: clamp(32px, 9.6vw, 36px);
+            height: clamp(32px, 9.6vw, 36px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-label {
+            font-family: 'DigitalOneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: clamp(12px, 3.7vw, 14px);
+            line-height: clamp(20px, 6.4vw, 24px);
+            letter-spacing: -0.28px;
+            color: var(--text-tertiary, #475467);
+            margin: 0;
+            text-align: center;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        /* Footer with safe area */
+        .footer-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(20px, 6.4vw, 24px);
+            align-items: stretch;
+            justify-content: flex-end;
+        }
+
+        .footer-cta {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-end;
+        }
+
+        .footer-container {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* Safe area indicator (hidden as per requirements) */
+        .safe-area {
+            height: clamp(28px, 9.1vw, 34px);
+            width: 100%;
+            /* Hidden as per iOS element exclusion requirements */
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Bottom Sheet -->
+        <div class="bottom-sheet">
+            <!-- Header Section -->
+            <div class="bottom-sheet-header">
+                <div class="header-content">
+                    <div class="title-section">
+                        <h1 class="main-title">모바일 신분증 발급받은 앱을<br>선택해주세요</h1>
+                    </div>
+                    <button class="close-button" id="closeButton">
+                        <img src="../../../../images/icon/icon_close_x.svg" alt="닫기" width="20" height="20" />
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="content-section">
+                <div class="app-grid">
+                    <div class="app-item" data-app="app1">
+                        <div class="app-icon">
+                            <div class="app-icon-inner">
+                                <img src="../../../../images/icon/icon_mobile_id_app1.svg" alt="앱1 아이콘" style="width: 100%; height: 100%;" />
+                            </div>
+                        </div>
+                        <p class="app-label">설치한<br>APP1</p>
+                    </div>
+                    <div class="app-item" data-app="app2">
+                        <div class="app-icon">
+                            <div class="app-icon-inner">
+                                <img src="../../../../images/icon/icon_mobile_id_app2.svg" alt="앱2 아이콘" style="width: 100%; height: 100%;" />
+                            </div>
+                        </div>
+                        <p class="app-label">설치한<br>APP2</p>
+                    </div>
+                    <div class="app-item" data-app="app3">
+                        <div class="app-icon">
+                            <div class="app-icon-inner">
+                                <img src="../../../../images/icon/icon_mobile_id_app3.svg" alt="앱3 아이콘" style="width: 100%; height: 100%;" />
+                            </div>
+                        </div>
+                        <p class="app-label">설치한<br>APP3</p>
+                    </div>
+                    <div class="app-item" data-app="app4">
+                        <div class="app-icon">
+                            <div class="app-icon-inner">
+                                <img src="../../../../images/icon/icon_mobile_id_app1.svg" alt="앱4 아이콘" style="width: 100%; height: 100%;" />
+                            </div>
+                        </div>
+                        <p class="app-label">설치한<br>APP4</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="footer-section">
+                <div class="footer-cta">
+                    <div class="footer-container">
+                        <div class="safe-area"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Close button handler
+        document.getElementById('closeButton').addEventListener('click', () => {
+            console.log('Close button clicked');
+            // Close bottom sheet
+            document.querySelector('.bottom-sheet').style.animation = 'slideDown 0.3s ease-in forwards';
+            setTimeout(() => {
+                // Hide bottom sheet or navigate away
+            }, 300);
+        });
+
+        // App selection handlers
+        document.querySelectorAll('.app-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const appId = e.currentTarget.getAttribute('data-app');
+                console.log('App selected:', appId);
+                // Handle app selection
+            });
+        });
+
+        // Close when clicking overlay
+        document.querySelector('.page-container').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                console.log('Close bottom sheet by clicking overlay');
+                // Close bottom sheet
+            }
+        });
+
+        // Prevent bottom sheet content click from closing
+        document.querySelector('.bottom-sheet').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Add slide down animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from {
+                    transform: translateY(0);
+                }
+                to {
+                    transform: translateY(100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('Mobile ID app selection bottom sheet loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leading Development</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+</head>
+<body>
+
+    <div id="wrap" class="new-wrap">
+
+        <div class="header-area">
+            <navigation-component id="mainNavigation">
+
+                <div slot="header">
+                    <a href="#" class="navigation-header-link" aria-label="홈으로 이동">
+                        <img src="../../../images/icon/icon_chevron_left.svg" alt="챗봇 아이콘" />
+                    </a>
+                    <h1 class="navigation-title">
+                        출석퀴즈
+                    </h1>
+                </div>
+                
+                <!-- Function 슬롯 -->
+                <div slot="function">
+                    <button class="navigation-button" type="button" tabindex="0" aria-label="챗봇">
+                        <img src="../../../images/icon/icon_chatbot.svg" alt="챗봇 아이콘" />
+                    </button>
+                </div>
+            </navigation-component>
+        </div>
+        
+        <div class="content-area-2">
+            <h2 class="content-area-2-title">내 출석퀴즈 현황(월 기준)</h2>
+
+            <div class="content-box">
+                <ul class="content-box-list">
+                    <li>
+                        <h3 class="content-box-list-title">이번달 출석일</h3>
+                        <p class="content-box-list-value">10일</p>
+                    </li>
+                    <li>
+                        <h3 class="content-box-list-title">출석퀴즈 포인트</h3>
+                        <p class="content-box-list-value">1000P</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-box">
+                <p class="content-box-title">마이데이터 서비스에서 내 소비내역을 카테고리별로 한 눈에 보여주는 서비스는 무엇일까요?
+                </p>
+                <ul class="content-box-checklist">
+                    <li>
+                        <input type="radio" name="answer" id="answer1">
+                        <label for="answer1">
+                            소비달력
+                        </label>
+                    </li>
+                    <li>
+                        <input type="radio" name="answer" id="answer2">
+                        <label for="answer2">
+                            소비분류
+                        </label>
+                    </li>
+                    <li>
+                        <input type="radio" name="answer" id="answer3"> 
+                        <label for="answer3">
+                            소비리포트
+                        </label>
+                    </li>
+                    <li>
+                        <input type="radio" name="answer" id="answer4"> 
+                        <label for="answer4">
+                            내소비
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-button">
+                <solid-button label="정답제출" color="primary" size="xl" full-width></solid-button>
+            </div>
+        </div>
+        <div class="content-notice">
+            <h2 class="content-notice-title">
+                출석퀴즈3종->어드민에서 등록/관리
+            </h2>
+            <ul class="content-notice-list">
+                <li>주관식, 객관식,OX선택 中 1가지</li>
+                <li>질문, 선택 문항 노출 후 정답 제출</li>
+                <li>정답으로 확인되면 포인트 보상</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="../../script/modules/navigation/navigation-component.js"></script>
+    <script src="../../script/components/button/solid-button.js"></script>
+    
+</body>
+</html>

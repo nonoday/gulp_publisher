@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>폰트 테스트</title>
+    <style>
+        /* OneShinhan 폰트 정의 */
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 300;
+            src: url("../../../../images/web/fonts/OneShinhanLight.woff") format("woff");
+        }
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 500;
+            src: url("../../../../images/web/fonts/OneShinhanMedium.woff") format("woff");
+        }
+        @font-face {
+            font-family: "OneShinhan";
+            font-style: normal;
+            font-weight: 700;
+            src: url("../../../../images/web/fonts/OneShinhanBold.woff") format("woff");
+        }
+
+        body {
+            font-family: 'OneShinhan', 'DigitalOneShinhan', sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .font-test {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .weight-300 { font-weight: 300; }
+        .weight-500 { font-weight: 500; }
+        .weight-700 { font-weight: 700; }
+
+        .fallback {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>신한디지털 폰트 테스트</h1>
+
+        <div class="font-test">
+            <h3>OneShinhan Light (300)</h3>
+            <p class="weight-300">신분증 촬영 안내 - OneShinhan Light</p>
+            <p class="weight-300">어두운 배경 위에 신분증을 놓아주세요.</p>
+        </div>
+
+        <div class="font-test">
+            <h3>OneShinhan Medium (500)</h3>
+            <p class="weight-500">신분증 촬영 안내 - OneShinhan Medium</p>
+            <p class="weight-500">Step1, Step2, Step3, Step4</p>
+        </div>
+
+        <div class="font-test">
+            <h3>OneShinhan Bold (700)</h3>
+            <p class="weight-700">신분증 촬영 안내 - OneShinhan Bold</p>
+            <p class="weight-700">케이스가 있다면 분리해주세요.</p>
+        </div>
+
+        <div class="font-test">
+            <h3>폴백 폰트 (sans-serif)</h3>
+            <p class="fallback">신분증 촬영 안내 - 시스템 기본 폰트</p>
+            <p class="fallback">이 텍스트는 OneShinhan이 아닌 시스템 폰트로 표시됩니다.</p>
+        </div>
+    </div>
+
+    <script>
+        // 폰트 로딩 확인
+        document.fonts.ready.then(() => {
+            console.log('모든 폰트 로딩 완료');
+
+            // 각 폰트의 로딩 상태 확인
+            const fonts = [
+                { family: 'OneShinhan', weight: '300' },
+                { family: 'OneShinhan', weight: '500' },
+                { family: 'OneShinhan', weight: '700' }
+            ];
+
+            fonts.forEach(font => {
+                const isLoaded = document.fonts.check(`${font.weight} 12px ${font.family}`);
+                console.log(`${font.family} ${font.weight}: ${isLoaded ? '로딩됨' : '로딩 실패'}`);
+            });
+        });
+    </script>
+</body>
+</html>

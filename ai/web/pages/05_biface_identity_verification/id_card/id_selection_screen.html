@@ -1,0 +1,320 @@
+<!--
+Figma Layer: (먼저, 신분증을 선택해주세요)
+Node ID: 4642-140809
+Description: 신분증 선택 화면 - 실물/모바일 탭과 신분증 옵션 리스트
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신분증 선택</title>
+    <link rel="stylesheet" href="../../../css/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/new_css/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            background-color: var(--bg-canvas_white, #ffffff);
+            color: var(--text-primary, #101828);
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-canvas_white, #ffffff);
+            position: relative;
+            isolation: isolate;
+            padding: 0;
+        }
+
+        /* Header Section */
+        .header {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 3;
+        }
+
+        .navigation {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('../../../../images/icon/icon_chevron_left.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .nav-close {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('../../../../images/icon/icon_x.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            position: relative;
+            z-index: 2;
+            min-height: 0;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        /* Title Section */
+        .title-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .main-title {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 36px;
+            letter-spacing: -0.48px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+            width: 100%;
+            text-align: left;
+        }
+
+        /* Tab Section */
+        .tab-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tab-container {
+            width: 100%;
+            display: flex;
+            background-color: var(--bg-canvas_gray, #f0f4fa);
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .tab-button {
+            flex: 1;
+            height: 44px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            background-color: transparent;
+            color: var(--text-quaternary, #667085);
+            outline: none;
+        }
+
+        .tab-button.active {
+            background-color: var(--bg-canvas_white, #ffffff);
+            color: var(--text-primary, #101828);
+            box-shadow: 0px 1px 3px 0px rgba(12, 17, 29, 0.1);
+        }
+
+        /* ID Options Section */
+        .id-options-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .id-option {
+            width: 100%;
+            background-color: var(--bg-canvas_white, #ffffff);
+            border: 1px solid var(--border-secondary, #e4e7ec);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .id-option.selected {
+            border-color: var(--border-brand, #005df9);
+            border-width: 2px;
+            background-color: var(--bg-brand_weak, #f8faff);
+        }
+
+        .id-option-title {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            color: var(--text-primary, #101828);
+            margin: 0;
+            text-align: left;
+        }
+
+        .id-option-description {
+            font-family: 'DigitalOneShinhan', 'OneShinhan', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.24px;
+            color: var(--text-quaternary, #667085);
+            margin: 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="navigation">
+                <div class="nav-back"></div>
+                <div class="nav-close"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">먼저, 신분증을 선택해주세요</h1>
+            </div>
+
+            <!-- Tab Section -->
+            <div class="tab-section">
+                <div class="tab-container">
+                    <button class="tab-button active" id="realTab">실물</button>
+                    <button class="tab-button" id="mobileTab">모바일</button>
+                </div>
+
+                <!-- ID Options Section -->
+                <div class="id-options-section">
+                    <!-- 주민등록증 -->
+                    <button class="id-option selected" data-id="resident-card">
+                        <div class="id-option-title">주민등록증</div>
+                    </button>
+
+                    <!-- 여권+학생증 -->
+                    <button class="id-option" data-id="passport-student">
+                        <div class="id-option-title">여권+학생증</div>
+                    </button>
+
+                    <!-- 여권+청소년증 -->
+                    <button class="id-option" data-id="passport-youth">
+                        <div class="id-option-title">여권+청소년증</div>
+                    </button>
+
+                    <!-- 외국인 신분증 -->
+                    <button class="id-option" data-id="foreign-id">
+                        <div class="id-option-title">외국인 신분증</div>
+                        <div class="id-option-description">외국인등록증, 영주증, 외국국적동포 국내거소신고증</div>
+                    </button>
+
+                    <!-- 여권 -->
+                    <button class="id-option" data-id="passport">
+                        <div class="id-option-title">여권</div>
+                    </button>
+
+                    <!-- 운전면허증 -->
+                    <button class="id-option" data-id="drivers-license">
+                        <div class="id-option-title">운전면허증</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        const realTab = document.getElementById('realTab');
+        const mobileTab = document.getElementById('mobileTab');
+        const idOptions = document.querySelectorAll('.id-option');
+
+        // Tab switching
+        realTab.addEventListener('click', () => {
+            realTab.classList.add('active');
+            mobileTab.classList.remove('active');
+            console.log('Real ID tab selected');
+            // Update ID options for real IDs
+        });
+
+        mobileTab.addEventListener('click', () => {
+            mobileTab.classList.add('active');
+            realTab.classList.remove('active');
+            console.log('Mobile ID tab selected');
+            // Navigate to mobile ID selection screen
+        });
+
+        // ID option selection
+        idOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selected state from all options
+                idOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected state to clicked option
+                option.classList.add('selected');
+                const idType = option.dataset.id;
+                console.log('ID option selected:', idType);
+            });
+        });
+
+        // Navigation handlers
+        document.querySelector('.nav-back').addEventListener('click', () => {
+            console.log('Navigate back');
+            // Navigate to previous screen
+        });
+
+        document.querySelector('.nav-close').addEventListener('click', () => {
+            console.log('Close flow');
+            // Navigate to main screen or close modal
+        });
+
+        console.log('ID selection screen loaded');
+    </script>
+</body>
+</html>
