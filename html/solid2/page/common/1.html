@@ -6,6 +6,148 @@
     <title>Leading Development</title>
     <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
     <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        /* 라디오 버튼 스타일 초기화 */
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            background: #fff;
+            position: relative;
+            cursor: pointer;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        /* 호버 효과 */
+        input[type="radio"]:hover {
+            border-color: #007bff;
+        }
+
+        /* 체크된 상태의 기본 스타일 */
+        input[type="radio"]:checked {
+            border-color: #007bff;
+            background: #007bff;
+        }
+
+        /* 회전하는 보더 효과 */
+        input[type="radio"]:checked::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 2px solid transparent;
+            border-top-color: #007bff;
+            border-radius: 50%;
+            animation: borderRotate 0.6s ease-in-out;
+        }
+
+        /* 회전 애니메이션 */
+        @keyframes borderRotate {
+            0% {
+                transform: rotate(0deg);
+                border-top-color: #007bff;
+                border-right-color: transparent;
+                border-bottom-color: transparent;
+                border-left-color: transparent;
+            }
+            25% {
+                transform: rotate(90deg);
+                border-top-color: #007bff;
+                border-right-color: #007bff;
+                border-bottom-color: transparent;
+                border-left-color: transparent;
+            }
+            50% {
+                transform: rotate(180deg);
+                border-top-color: #007bff;
+                border-right-color: #007bff;
+                border-bottom-color: #007bff;
+                border-left-color: transparent;
+            }
+            75% {
+                transform: rotate(270deg);
+                border-top-color: #007bff;
+                border-right-color: #007bff;
+                border-bottom-color: #007bff;
+                border-left-color: #007bff;
+            }
+            100% {
+                transform: rotate(360deg);
+                border-top-color: #007bff;
+                border-right-color: #007bff;
+                border-bottom-color: #007bff;
+                border-left-color: #007bff;
+            }
+        }
+
+        /* 체크 마크 */
+        input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: checkmarkAppear 0.3s ease-in-out 0.3s both;
+        }
+
+        /* 체크 마크 나타나는 애니메이션 */
+        @keyframes checkmarkAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* 라벨 스타일 */
+        label {
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1.5;
+            vertical-align: middle;
+        }
+
+        /* 리스트 아이템 스타일 */
+        li {
+            margin-bottom: 12px;
+            list-style: none;
+        }
+
+        /* 포커스 접근성 */
+        input[type="radio"]:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+
+        /* AOS6 호환성을 위한 추가 스타일 */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            input[type="radio"] {
+                -webkit-appearance: none;
+            }
+        }
+
+        /* 구형 브라우저 대응 */
+        @supports not (appearance: none) {
+            input[type="radio"] {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    </style>
 </head>
 <body class="has-sticky-button">
 
