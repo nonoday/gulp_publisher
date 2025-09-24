@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@use '../tokens/scss/variables' as *;
+@use '../tokens/scss/_variables' as *;
 
 @font-face {
   font-family: "OneShinhan";
@@ -225,7 +225,7 @@ body {
 
 
 
-@import '../tokens/scss/variables';
+@import '../tokens/scss/_variables';
 
 /* */
 .navigation {
@@ -407,64 +407,40 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
 
 //폰트 가이드에 있는 css 작성
 .headline-large {
-  font-size: $font-size-headline-s;
-  line-height: $lineheight-headline-s;
-  letter-spacing: $letterspace-headline-s;
+  @include headline-large;
 }
 .headline-medium {
-  font-size: $font-size-headline-m;
-  line-height: $lineheight-headline-s;
-  letter-spacing: $letterspace-headline-m;
+  @include headline-medium;
 }
 .headline-small {
-  font-size: $font-size-headline-s;
-  line-height: $lineheight-headline-s;
-  letter-spacing: $letterspace-headline-s;
+  @include headline-small;
 }        
 .title-xl {
-  font-size: $font-size-title-xl;
-  line-height: $lineheight-title-xl;
-  letter-spacing: $letterspace-title-xl;
+  @include title-xl;
 }
-.title-large     {
-  font-size: $font-size-title-l;
-  line-height: $lineheight-title-l;
-  letter-spacing: $letterspace-title-l;
+.title-large {
+  @include title-large;
 }
 .title-medium {
-  font-size: $font-size-title-m;
-  line-height: $lineheight-title-m;
-  letter-spacing: $letterspace-title-m;
+  @include title-medium;
 }
 .title-small {
-  font-size: $font-size-title-s;
-  line-height: $lineheight-title-s;
-  letter-spacing: $letterspace-title-s;
+  @include title-small;
 }
 .body-large {
-  font-size: $font-size-body-l;
-  line-height: $lineheight-body-l;
-  letter-spacing: $letterspace-body-l;
+  @include body-large;
 }
 .body-medium {
-  font-size: $font-size-body-m;
-  line-height: $lineheight-body-m;
-  letter-spacing: $letterspace-body-m;
+  @include body-medium;
 }
 .body-small {
-  font-size: $font-size-body-s;
-  line-height: $lineheight-body-s;
-  letter-spacing: $letterspace-body-s;
+  @include body-small;
 }
 .detail-large {
-  font-size: $font-size-detail-l;
-  line-height: $lineheight-detail-l;
-  letter-spacing: $letterspace-detail-l;
+  @include detail-large;
 }
 .detail-small { 
-  font-size: $font-size-detail-s;
-  line-height: $lineheight-detail-s;
-  letter-spacing: $letterspace-detail-s;
+  @include detail-small;
 }
 // 텍스트컬러 가이드에 있는 css 작성
 .text-tertiary {
@@ -1512,4 +1488,77 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
       }
     }
   }
+}
+
+// 폰트 스타일 믹스인들
+@mixin headline-large {
+  font-size: $font-size-headline-s;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-s;
+}
+
+@mixin headline-medium {
+  font-size: $font-size-headline-m;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-m;
+}
+
+@mixin headline-small {
+  font-size: $font-size-headline-s;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-s;
+}
+
+@mixin title-xl {
+  font-size: $font-size-title-xl;
+  line-height: $lineheight-title-xl;
+  letter-spacing: $letterspace-title-xl;
+}
+
+@mixin title-large {
+  font-size: $font-size-title-l;
+  line-height: $lineheight-title-l;
+  letter-spacing: $letterspace-title-l;
+}
+
+@mixin title-medium {
+  font-size: $font-size-title-m;
+  line-height: $lineheight-title-m;
+  letter-spacing: $letterspace-title-m;
+}
+
+@mixin title-small {
+  font-size: $font-size-title-s;
+  line-height: $lineheight-title-s;
+  letter-spacing: $letterspace-title-s;
+}
+
+@mixin body-large {
+  font-size: $font-size-body-l;
+  line-height: $lineheight-body-l;
+  letter-spacing: $letterspace-body-l;
+}
+
+@mixin body-medium {
+  font-size: $font-size-body-m;
+  line-height: $lineheight-body-m;
+  letter-spacing: $letterspace-body-m;
+}
+
+@mixin body-small {
+  font-size: $font-size-body-s;
+  line-height: $lineheight-body-s;
+  letter-spacing: $letterspace-body-s;
+}
+
+@mixin detail-large {
+  font-size: $font-size-detail-l;
+  line-height: $lineheight-detail-l;
+  letter-spacing: $letterspace-detail-l;
+}
+
+@mixin detail-small {
+  font-size: $font-size-detail-s;
+  line-height: $lineheight-detail-s;
+  letter-spacing: $letterspace-detail-s;
 }
