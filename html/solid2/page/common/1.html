@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,48 +9,53 @@
 </head>
 <body class="has-sticky-button">
 
-    <ul>
+    <fieldset>
+        <legend>본인확인 방법 선택</legend>
+        <ul role="radiogroup" aria-labelledby="auth-method-legend">
         <li>
-            <input type="radio" id="ars" name="auth_method" value="ars">
+            <input type="radio" id="ars" name="auth_method" value="ars" aria-describedby="ars-desc">
             <label for="ars">ARS</label>
         </li>
         <li>
-            <input type="radio" id="sms" name="auth_method" value="sms">
+            <input type="radio" id="sms" name="auth_method" value="sms" aria-describedby="sms-desc">
             <label for="sms">문자메시지</label>
         </li>
         <li>
-            <input type="radio" id="consultant" name="auth_method" value="consultant">
+            <input type="radio" id="consultant" name="auth_method" value="consultant" aria-describedby="consultant-desc">
             <label for="consultant">상담사를 통한 본인확인</label>
         </li>
         <li>
-            <input type="radio" id="overseas" name="auth_method" value="overseas">
+            <input type="radio" id="overseas" name="auth_method" value="overseas" aria-describedby="overseas-desc">
             <label for="overseas">해외출국사실확인</label>
         </li>
         <li>
-            <input type="radio" id="mobile_otp" name="auth_method" value="mobile_otp">
+            <input type="radio" id="mobile_otp" name="auth_method" value="mobile_otp" aria-describedby="mobile-otp-desc">
             <label for="mobile_otp">모바일 OTP 인증</label>
         </li>
         <li>
-            <input type="radio" id="non_face" name="auth_method" value="non_face">
+            <input type="radio" id="non_face" name="auth_method" value="non_face" aria-describedby="non-face-desc">
             <label for="non_face">비대면 실명확인</label>
         </li>
         <li>
-            <input type="radio" id="face_auth" name="auth_method" value="face_auth">
+            <input type="radio" id="face_auth" name="auth_method" value="face_auth" aria-describedby="face-auth-desc">
             <label for="face_auth">얼굴인증</label>
         </li>
     </ul>
+    </fieldset>
 
-    꼭! 알아두세요
+    <section aria-labelledby="important-notice">
+        <h2 id="important-notice">꼭! 알아두세요</h2>
 
-    <p>해외 IP로 접속한 고객님께서 예금 해지 또는 예금 담보대출 신청 시 ARS 인증이 불가능한 경우, 한국 시간 오전9시~ 오후 6시에 거래하시면, 상담사가 입력하신 해외 연락처로 직접 연락드리는 ‘상담사를 통한 본인확인’이 가능합니다. (070 번호 제외)</p>
+        <p id="consultant-desc">해외 IP로 접속한 고객님께서 예금 해지 또는 예금 담보대출 신청 시 ARS 인증이 불가능한 경우, 한국 시간 오전9시~ 오후 6시에 거래하시면, 상담사가 입력하신 해외 연락처로 직접 연락드리는 '상담사를 통한 본인확인'이 가능합니다. (070 번호 제외)</p>
 
-    ARS 전화 통화로 인증할게요
+        <p id="ars-desc">ARS 전화 통화로 인증할게요</p>
 
-    검사/경찰/금융감독원 등에서 금융사고나 낮은 금리 대출 상품으로 변경 등 사유로 모바일 OTP 발급을 요청한 경우, 신한은행과 고객센터(1588-8000)로 바로 신고해주세요.
+        <p id="mobile-otp-desc">검사/경찰/금융감독원 등에서 금융사고나 낮은 금리 대출 상품으로 변경 등 사유로 모바일 OTP 발급을 요청한 경우, 신한은행과 고객센터(1588-8000)로 바로 신고해주세요.</p>
 
-    전화를 걸고 있어요
+        <p id="sms-desc">전화를 걸고 있어요</p>
 
-    전화가 오지 않는 경우 전화번호를 다시 확인해 주세요.
+        <p id="overseas-desc">전화가 오지 않는 경우 전화번호를 다시 확인해 주세요.</p>
+    </section>
     
 </body>
 </html>
