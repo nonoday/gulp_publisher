@@ -34,7 +34,7 @@
             background: #007bff;
         }
 
-        /* 회전하는 보더 효과 */
+        /* 그려지는 보더 효과 */
         input[type="radio"]:checked::before {
             content: '';
             position: absolute;
@@ -43,48 +43,11 @@
             right: -2px;
             bottom: -2px;
             border: 2px solid transparent;
-            border-top-color: #007bff;
             border-radius: 50%;
-            animation: borderRotate 0.6s ease-in-out;
-        }
-
-        /* 회전 애니메이션 */
-        @keyframes borderRotate {
-            0% {
-                transform: rotate(0deg);
-                border-top-color: #007bff;
-                border-right-color: transparent;
-                border-bottom-color: transparent;
-                border-left-color: transparent;
-            }
-            25% {
-                transform: rotate(90deg);
-                border-top-color: #007bff;
-                border-right-color: #007bff;
-                border-bottom-color: transparent;
-                border-left-color: transparent;
-            }
-            50% {
-                transform: rotate(180deg);
-                border-top-color: #007bff;
-                border-right-color: #007bff;
-                border-bottom-color: #007bff;
-                border-left-color: transparent;
-            }
-            75% {
-                transform: rotate(270deg);
-                border-top-color: #007bff;
-                border-right-color: #007bff;
-                border-bottom-color: #007bff;
-                border-left-color: #007bff;
-            }
-            100% {
-                transform: rotate(360deg);
-                border-top-color: #007bff;
-                border-right-color: #007bff;
-                border-bottom-color: #007bff;
-                border-left-color: #007bff;
-            }
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%23007bff' stroke-width='2' stroke-dasharray='62.83' stroke-dashoffset='62.83'%3E%3Canimate attributeName='stroke-dashoffset' values='62.83;0' dur='0.8s' fill='freeze'/%3E%3C/circle%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         /* 체크 마크 */
