@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>컴포넌트 가이드</title>
-    <link rel="stylesheet" href="../../../images/web/css/solid2/all.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
 
 </head>
 <body>
@@ -12,21 +13,89 @@
     <div style="width: 100%;padding:50px;">
         <div class="input-container">
             <div class="input-field input-field-quad">  
-                <input type="text" class="input">
+                <input type="text" placeholder="첫 번째 입력">
                 <span class="input-dash">-</span>
-                <input type="text" class="input">
+                <input type="text" placeholder="두 번째 입력">
                 <span class="input-dash">-</span>
-                <input type="text" class="input">
+                <input type="text" placeholder="세 번째 입력">
                 <span class="input-dash">-</span>
-                <input type="text" class="input">
+                <input type="text" placeholder="네 번째 입력">
+            </div>
+        </div>
+        
+        <!-- 추가 테스트용 input-field들 -->
+        <div style="margin-top: 30px;">
+            <h3>단일 입력 필드</h3>
+            <div class="input-field">
+                <input type="text" class="input" placeholder="단일 입력 필드">
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <h3>두 개 입력 필드</h3>
+            <div class="input-field">
+                <input type="text" class="input" placeholder="첫 번째">
+                <span class="input-dash">-</span>
+                <input type="text" class="input" placeholder="두 번째">
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <h3>에러 상태 입력 필드</h3>
+            <div class="input-field error">
+                <input type="text" class="input" placeholder="에러 상태" value="잘못된 값">
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <h3>비활성화 입력 필드</h3>
+            <div class="input-field disabled">
+                <input type="text" class="input" placeholder="비활성화" value="수정할 수 없음" disabled>
             </div>
         </div>
     </div>
     
-    <style>
-        .input-container {
-            display: flex;
-        }
-    </style>
+    <!-- Animated Border Script -->
+    <script src="../../../../script/components/input-field/animated-border.js"></script>
+    
+    <script>
+        // 이 파일의 클래스 구조에 맞게 애니메이션 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 기존 애니메이션 인스턴스가 있다면 정리
+            if (window.animatedBorderInputField) {
+                window.animatedBorderInputField.cleanup();
+            }
+            
+            // 이 파일의 클래스 구조에 맞게 새로운 인스턴스 생성
+            window.animatedBorderInputField = new AnimatedBorderInputField({
+                borderColor: '#005DF9',           // 기본 border 색상
+                errorColor: '#E53838',            // 에러 상태 border 색상
+                borderWidth: 2,                   // border 두께
+                animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
+                borderRadius: 6,                  // 기본 border-radius (px)
+                disabledClass: 'disabled',        // 비활성화 클래스
+                errorClass: 'error',              // 에러 클래스
+                containerSelector: '.input-field', // 컨테이너 셀렉터
+                inputSelector: 'input'            // input 태그 셀렉터 (클래스가 아닌 태그)
+            });
+            
+            console.log('애니메이션 스크립트가 적용되었습니다!');
+            console.log('입력 필드에 포커스를 주면 애니메이션을 확인할 수 있습니다.');
+        });
+        
+        // 포커스 이벤트 로깅
+        document.addEventListener('focusin', (e) => {
+            if (e.target.matches('input')) {
+                console.log('포커스됨:', e.target.placeholder || '입력 필드');
+            }
+        });
+
+        document.addEventListener('focusout', (e) => {
+            if (e.target.matches('input')) {
+                console.log('포커스 해제됨:', e.target.placeholder || '입력 필드');
+            }
+        });
+    </script>
+    
 </body>
 </html>
