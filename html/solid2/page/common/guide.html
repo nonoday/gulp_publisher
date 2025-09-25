@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../images/web/css/solid2/all.css">
+    <style>
+        .guide-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "OneShinhan", sans-serif;
+        }
+
+        .guide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .guide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .guide-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .component-section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .component-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .component-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .component-demo {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-source {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .component-source.show {
+            display: block;
+        }
+
+        /* 예제 컴포넌트 스타일 */
+        .example-button {
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .example-button.large {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+
+        .example-button.small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .example-button.secondary {
+            background: #6b7280;
+        }
+
+        .example-button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .example-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .example-card.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border-color: #374151;
+        }
+
+        .example-card.compact {
+            padding: 16px;
+        }
+
+        .example-card.large {
+            padding: 32px;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .example-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+
+        .example-list.compact li {
+            padding: 8px 12px;
+        }
+
+        .example-list.large li {
+            padding: 16px 20px;
+        }
+
+        .example-list.dark li {
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 15px;
+            }
+            
+            .component-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .component-demo {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1 class="guide-title">컴포넌트 가이드</h1>
+            <p class="guide-description">
+                다양한 컴포넌트의 구현 예제와 소스 코드를 확인할 수 있습니다. 
+                상단 버튼을 클릭하여 다양한 스타일을 적용해보세요.
+            </p>
+        </div>
+
+        <!-- 버튼 컴포넌트 예제 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Button 컴포넌트</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="button-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="button-demo" data-class="large">Large</button>
+                    <button class="control-btn" data-target="button-demo" data-class="small">Small</button>
+                    <button class="control-btn" data-target="button-demo" data-class="secondary">Secondary</button>
+                    <button class="control-btn copy-btn" data-copy="button-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <button class="example-button" id="button-demo">버튼</button>
+            </div>
+            <div class="component-source" id="button-source">
+&lt;button class="example-button"&gt;버튼&lt;/button&gt;
+
+/* CSS 클래스 */
+.example-button {
+    padding: 12px 24px;
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.example-button:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.example-button.large {
+    padding: 16px 32px;
+    font-size: 18px;
+}
+
+.example-button.small {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.example-button.secondary {
+    background: #6b7280;
+}
+
+.example-button.secondary:hover {
+    background: #4b5563;
+}
+            </div>
+        </div>
+
+        <!-- 카드 컴포넌트 예제 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Card 컴포넌트</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="card-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="card-demo" data-class="dark">Dark</button>
+                    <button class="control-btn" data-target="card-demo" data-class="compact">Compact</button>
+                    <button class="control-btn" data-target="card-demo" data-class="large">Large</button>
+                    <button class="control-btn copy-btn" data-copy="card-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="example-card" id="card-demo">
+                    <h3>카드 제목</h3>
+                    <p>카드 내용입니다. 다양한 스타일을 적용할 수 있습니다.</p>
+                </div>
+            </div>
+            <div class="component-source" id="card-source">
+&lt;div class="example-card"&gt;
+    &lt;h3&gt;카드 제목&lt;/h3&gt;
+    &lt;p&gt;카드 내용입니다. 다양한 스타일을 적용할 수 있습니다.&lt;/p&gt;
+&lt;/div&gt;
+
+/* CSS 클래스 */
+.example-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+}
+
+.example-card.dark {
+    background: #1f2937;
+    color: #f9fafb;
+    border-color: #374151;
+}
+
+.example-card.compact {
+    padding: 16px;
+}
+
+.example-card.large {
+    padding: 32px;
+}
+            </div>
+        </div>
+
+        <!-- 리스트 컴포넌트 예제 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">List 컴포넌트</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="list-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="list-demo" data-class="compact">Compact</button>
+                    <button class="control-btn" data-target="list-demo" data-class="large">Large</button>
+                    <button class="control-btn" data-target="list-demo" data-class="dark">Dark</button>
+                    <button class="control-btn copy-btn" data-copy="list-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <ul class="example-list" id="list-demo">
+                    <li>리스트 아이템 1</li>
+                    <li>리스트 아이템 2</li>
+                    <li>리스트 아이템 3</li>
+                </ul>
+            </div>
+            <div class="component-source" id="list-source">
+&lt;ul class="example-list"&gt;
+    &lt;li&gt;리스트 아이템 1&lt;/li&gt;
+    &lt;li&gt;리스트 아이템 2&lt;/li&gt;
+    &lt;li&gt;리스트 아이템 3&lt;/li&gt;
+&lt;/ul&gt;
+
+/* CSS 클래스 */
+.example-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.example-list li {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.example-list li:last-child {
+    border-bottom: none;
+}
+
+.example-list.compact li {
+    padding: 8px 12px;
+}
+
+.example-list.large li {
+    padding: 16px 20px;
+}
+
+.example-list.dark li {
+    border-color: #374151;
+    color: #f9fafb;
+}
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 클래스 토글 기능
+            const controlButtons = document.querySelectorAll('.control-btn:not(.copy-btn)');
+            
+            controlButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const className = this.getAttribute('data-class');
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // 같은 섹션의 다른 버튼들 비활성화
+                        const section = this.closest('.component-section');
+                        const sectionButtons = section.querySelectorAll('.control-btn:not(.copy-btn)');
+                        sectionButtons.forEach(btn => btn.classList.remove('active'));
+                        
+                        // 현재 버튼 활성화
+                        this.classList.add('active');
+                        
+                        // 클래스 적용
+                        if (className) {
+                            targetElement.className = targetElement.className.split(' ')[0] + ' ' + className;
+                        } else {
+                            targetElement.className = targetElement.className.split(' ')[0];
+                        }
+                    }
+                });
+            });
+
+            // 소스 복사 기능
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sourceId = this.getAttribute('data-copy');
+                    const sourceElement = document.getElementById(sourceId);
+                    
+                    if (sourceElement) {
+                        // 소스 코드를 클립보드에 복사
+                        navigator.clipboard.writeText(sourceElement.textContent).then(function() {
+                            showToast('소스 코드가 복사되었습니다!', 'success');
+                        }).catch(function(err) {
+                            // 폴백: 텍스트 선택 후 복사
+                            const range = document.createRange();
+                            range.selectNode(sourceElement);
+                            window.getSelection().removeAllRanges();
+                            window.getSelection().addRange(range);
+                            
+                            try {
+                                document.execCommand('copy');
+                                showToast('소스 코드가 복사되었습니다!', 'success');
+                            } catch (err) {
+                                showToast('복사에 실패했습니다.', 'error');
+                            }
+                            
+                            window.getSelection().removeAllRanges();
+                        });
+                    }
+                });
+            });
+
+            // 토스트 메시지 표시
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = `toast ${type}`;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // 초기 상태 설정 (첫 번째 버튼 활성화)
+            const sections = document.querySelectorAll('.component-section');
+            sections.forEach(section => {
+                const firstButton = section.querySelector('.control-btn:not(.copy-btn)');
+                if (firstButton) {
+                    firstButton.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
