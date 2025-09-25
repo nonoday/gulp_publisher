@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@use '../tokens/scss/_variables' as *;
+@import '../tokens/scss/_variables';
 
 @font-face {
   font-family: "OneShinhan";
@@ -45,6 +45,80 @@
        url("../fonts/otf/OneShinhanDigital-ExtraBold_20250919.otf") format("opentype");
   font-display: swap;
 }
+
+// 폰트 스타일 믹스인들
+@mixin headline-large {
+  font-size: $font-size-headline-s;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-s;
+}
+
+@mixin headline-medium {
+  font-size: $font-size-headline-m;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-m;
+}
+
+@mixin headline-small {
+  font-size: $font-size-headline-s;
+  line-height: $lineheight-headline-s;
+  letter-spacing: $letterspace-headline-s;
+}
+
+@mixin title-xl {
+  font-size: $font-size-title-xl;
+  line-height: $lineheight-title-xl;
+  letter-spacing: $letterspace-title-xl;
+}
+
+@mixin title-large {
+  font-size: $font-size-title-l;
+  line-height: $lineheight-title-l;
+  letter-spacing: $letterspace-title-l;
+}
+
+@mixin title-medium {
+  font-size: $font-size-title-m;
+  line-height: $lineheight-title-m;
+  letter-spacing: $letterspace-title-m;
+}
+
+@mixin title-small {
+  font-size: $font-size-title-s;
+  line-height: $lineheight-title-s;
+  letter-spacing: $letterspace-title-s;
+}
+
+@mixin body-large {
+  font-size: $font-size-body-l;
+  line-height: $lineheight-body-l;
+  letter-spacing: $letterspace-body-l;
+}
+
+@mixin body-medium {
+  font-size: $font-size-body-m;
+  line-height: $lineheight-body-m;
+  letter-spacing: $letterspace-body-m;
+}
+
+@mixin body-small {
+  font-size: $font-size-body-s;
+  line-height: $lineheight-body-s;
+  letter-spacing: $letterspace-body-s;
+}
+
+@mixin detail-large {
+  font-size: $font-size-detail-l;
+  line-height: $lineheight-detail-l;
+  letter-spacing: $letterspace-detail-l;
+}
+
+@mixin detail-small {
+  font-size: $font-size-detail-s;
+  line-height: $lineheight-detail-s;
+  letter-spacing: $letterspace-detail-s;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -224,9 +298,6 @@ body {
 .button-group .button-row + .button-row {margin-top: -8px; } 
 
 
-
-@import '../tokens/scss/_variables';
-
 /* */
 .navigation {
   display: flex;
@@ -329,7 +400,25 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 50%;
+  width: 25%;
+  
+  // 내부 div를 정사각형으로 만들기 (iOS 6 완전 호환)
+  div {
+    width: 100%;
+    padding-bottom: 100%; // 정사각형 비율 유지 (높이 = 너비)
+    position: relative;
+    
+    // 내용을 중앙에 배치 (구형 브라우저 호환)
+    > * {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90%; // 여백을 위해 90%로 설정
+      margin-top: -10px; // 대략적인 중앙 정렬 (내용 높이의 절반)
+      margin-left: -45%; // 대략적인 중앙 정렬 (너비의 절반)
+      text-align: center;
+    }
+  }
 }
 .content-box-list li + li {
   border-left:1px solid  var(-Border-border-tertiary, #F0F4FA);
@@ -1490,75 +1579,29 @@ letter-spacing: var(-letterspace-body-M, -0.28px);
   }
 }
 
-// 폰트 스타일 믹스인들
-@mixin headline-large {
-  font-size: $font-size-headline-s;
-  line-height: $lineheight-headline-s;
-  letter-spacing: $letterspace-headline-s;
-}
 
-@mixin headline-medium {
-  font-size: $font-size-headline-m;
-  line-height: $lineheight-headline-s;
-  letter-spacing: $letterspace-headline-m;
-}
 
-@mixin headline-small {
-  font-size: $font-size-headline-s;
-  line-height: $lineheight-headline-s;
-  letter-spacing: $letterspace-headline-s;
-}
 
-@mixin title-xl {
-  font-size: $font-size-title-xl;
-  line-height: $lineheight-title-xl;
-  letter-spacing: $letterspace-title-xl;
-}
 
-@mixin title-large {
-  font-size: $font-size-title-l;
-  line-height: $lineheight-title-l;
-  letter-spacing: $letterspace-title-l;
-}
+.input {
+  &-container {
+    display: flex;
+    flex-direction: column;
+  }
+  &-field {
+    display: flex;
 
-@mixin title-medium {
-  font-size: $font-size-title-m;
-  line-height: $lineheight-title-m;
-  letter-spacing: $letterspace-title-m;
-}
-
-@mixin title-small {
-  font-size: $font-size-title-s;
-  line-height: $lineheight-title-s;
-  letter-spacing: $letterspace-title-s;
-}
-
-@mixin body-large {
-  font-size: $font-size-body-l;
-  line-height: $lineheight-body-l;
-  letter-spacing: $letterspace-body-l;
-}
-
-@mixin body-medium {
-  font-size: $font-size-body-m;
-  line-height: $lineheight-body-m;
-  letter-spacing: $letterspace-body-m;
-}
-
-@mixin body-small {
-  font-size: $font-size-body-s;
-  line-height: $lineheight-body-s;
-  letter-spacing: $letterspace-body-s;
-}
-
-@mixin detail-large {
-  font-size: $font-size-detail-l;
-  line-height: $lineheight-detail-l;
-  letter-spacing: $letterspace-detail-l;
-}
-
-@mixin detail-small {
-  font-size: $font-size-detail-s;
-  line-height: $lineheight-detail-s;
-  letter-spacing: $letterspace-detail-s;
+    &-quad {
+      input {
+        width: calc(25% - 10px);
+      }
+    }
+    &-dash {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 10px;
+      min-width: 10px;
+    }
+  }
 }
