@@ -71,7 +71,7 @@
                 <label class="blind" for="error-input4">카드번호 네 번째 자리</label>
                 <input type="password" id="error-input4" placeholder="네 번째 입력" inputmode="numeric" pattern="[0-9]" aria-invalid="true">
             </div>
-            <div id="error-message-1" class="blind" role="alert" aria-live="polite">
+            <div id="error-message-1" class="" role="alert" aria-live="polite">
                 입력값이 올바르지 않습니다. 다시 확인해주세요.
             </div>
         </div>
@@ -120,7 +120,6 @@
     <script src="../../../../script/components/input-field/animated-border.js"></script>
     
     <script>
-        // 이 파일의 클래스 구조에 맞게 애니메이션 초기화
         document.addEventListener('DOMContentLoaded', function() {
             // 기존 애니메이션 인스턴스가 있다면 정리
             if (window.animatedBorderInputField) {
@@ -141,8 +140,6 @@
                 inputSelector: 'input'            // input 태그 셀렉터 (클래스가 아닌 태그)
             });
             
-            console.log('애니메이션 스크립트가 적용되었습니다!');
-            console.log('입력 필드에 포커스를 주면 애니메이션을 확인할 수 있습니다.');
         });
         
         // 포커스 이벤트 로깅 및 클래스 관리
@@ -160,7 +157,7 @@
             if (e.target.matches('input')) {
                 const inputField = e.target.closest('.input-field');
                 if (inputField) {
-                    // 약간의 지연을 두고 포커스 상태를 확인
+                    // 약간의 지연을 두고 포커스 상태를 확인 =  포커스를 빠르게 이동할때(블랙테스트) 이슈
                     setTimeout(() => {
                         const otherInputs = inputField.querySelectorAll('input');
                         const hasFocus = Array.from(otherInputs).some(inputEl => 

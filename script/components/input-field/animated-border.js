@@ -1,13 +1,10 @@
-/**
- * Input Field Animated Border Script
- * 여러 곳에서 사용할 수 있는 input-field 포커스 애니메이션 스크립트
- * 
+/** 
  * 기능:
  * - 포커스 시 SVG 기반 border 애니메이션 실행
  * - 왼쪽 위에서 시작해서 한 바퀴 돌며 border 채우기
- * - border-radius 옵션 지원
+ * - border-radius 옵션 지원 - 옵션값 변경을 대비
  * - 포커스/에러/비활성화 상태 구분
- * - 포커스 해제 시 SVG 제거
+ * - 포커스 해제 시 SVG 제거 - css로 애니메이션 불가능(AOS6 지원이 안됨)
  */
 
 class AnimatedBorderInputField {
@@ -228,13 +225,11 @@ class AnimatedBorderInputField {
             path.style.strokeDashoffset = '0';
         });
 
-        // 활성 애니메이션 추적
         this.activeAnimations.set(container, svg);
-        container.dataset.animationActive = 'true'; // 중복 실행 방지 플래그
+        container.dataset.animationActive = 'true'; 
 
         // 애니메이션 완료 후에도 선은 유지 (포커스 해제 시에만 제거)
         // 시간 기반 자동 제거는 하지 않음 - 오직 포커스 해제 시에만 제거
-        console.log('애니메이션 시작됨 - 컨테이너당 1번만 실행, 포커스 해제 시에만 제거됩니다');
     }
 
     /**
@@ -244,11 +239,9 @@ class AnimatedBorderInputField {
         const svg = this.activeAnimations.get(container);
         if (svg && svg.parentNode) {
             svg.parentNode.removeChild(svg);
-            console.log('애니메이션 제거됨 - 포커스 해제로 인한 제거');
         }
         this.activeAnimations.delete(container);
         container.dataset.animationActive = 'false'; // 중복 실행 방지 플래그 제거
-        console.log('stopAnimation 완료 - 플래그 리셋됨, 다음 포커스에서 새 애니메이션 가능');
     }
 
     /**

@@ -1,5 +1,8 @@
 @charset "UTF-8";
 
+// 변수 import (최신 Sass 문법)
+@use "../tokens/scss/variables" as *;
+
 @font-face {
   font-family: "OneShinhan";
   font-style: normal;
@@ -542,4 +545,8 @@ body {
     width: 10px;
     min-width: 10px;
   }
+}
+
+
+.clear-button {
 }
