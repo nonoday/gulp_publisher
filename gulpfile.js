@@ -11,6 +11,10 @@ const fs = require('fs');
 const path = require('path');
 const sourcemaps = require('gulp-sourcemaps');
 
+// 환경 설정
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const isWatch = process.argv.includes('--watch');
+
 // 경로 설정
 /*
 tokens json위치
@@ -31,9 +35,18 @@ const paths = {
     './images/web/tokens/css/large-typo.css'
   ],
   variablesScss: './images/web/tokens/scss/_variables.scss',
+  // 와치 최적화를 위한 제외 패턴
+  watchIgnore: [
+    '!./images/web/scss/**/_*.scss', // 파셜 파일 제외
+    '!./images/web/scss/**/node_modules/**',
+    '!./images/web/scss/**/.git/**'
+  ]
 };
 
-// SCSS 파일들을 solid2 CSS 폴더로 컴파일하는 함수
+// 디바운싱을 위한 타이머
+let watchTimer = null;
+
+// SCSS 파일들을 solid2 CSS 폴더로 컴파일하는 함수 (최적화됨)
 function scssToSolid2CSS() {
   console.log('🔄 SCSS 컴파일을 시작합니다...');
   
@@ -51,21 +64,42 @@ function scssToSolid2CSS() {
     console.log('📁 Minify 폴더를 생성했습니다:', solid2MinDir);
   }
   
-  return gulp.src(paths.scssToSolid2)
+  let stream = gulp.src(paths.scssToSolid2)
     .pipe(plumber())
-    .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(sourcemaps.write('.'))
+    .pipe(changed(paths.solid2CssDest, { hasChanged: changed.compareContents }))
+    .pipe(sass({
+      outputStyle: isDevelopment ? 'expanded' : 'compressed',
+      precision: 10
+    }).on('error', sass.logError));
+  
+  // 개발 환경에서만 소스맵 생성
+  if (isDevelopment && !isWatch) {
+    stream = stream
+      .pipe(sourcemaps.init())
+      .pipe(sourcemaps.write('.'));
+  }
+  
+  stream = stream
     .pipe(gulp.dest(paths.solid2CssDest))
     .on('end', () => {
       console.log('✅ SCSS 컴파일이 완료되었습니다.');
-    })
-    .pipe(cleanCSS())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(paths.solid2MinDest))
-    .on('end', () => {
-      console.log('✅ Minify CSS 생성이 완료되었습니다.');
     });
+  
+  // 프로덕션 빌드에서만 minify
+  if (!isDevelopment) {
+    stream = stream
+      .pipe(cleanCSS({
+        level: 2,
+        format: 'beautify'
+      }))
+      .pipe(rename({ suffix: '.min' }))
+      .pipe(gulp.dest(paths.solid2MinDest))
+      .on('end', () => {
+        console.log('✅ Minify CSS 생성이 완료되었습니다.');
+      });
+  }
+  
+  return stream;
 }
 
 // tokens CSS 파일들을 읽어서 _variables.scss에 변수로 매칭하는 함수 (별도 실행용)
@@ -261,24 +295,104 @@ function cleanUnmatchedCSS() {
 }
 
 
-// watch
+// 디바운싱된 컴파일 함수
+function debouncedCompile() {
+  if (watchTimer) {
+    clearTimeout(watchTimer);
+  }
+  
+  watchTimer = setTimeout(() => {
+    console.log('🎨 SCSS 파일이 변경되었습니다. 컴파일 중...');
+    scssToSolid2CSS();
+  }, 300); // 300ms 디바운싱
+}
+
+// 최적화된 watch 함수
 function watchFiles() {
   console.log('👀 파일 감시를 시작합니다...');
   
-  // SCSS 파일 변경 감시 (solid2 CSS 폴더로 컴파일)
-  watch(paths.scssToSolid2, { ignoreInitial: false }, function(cb) {
-    console.log('🎨 SCSS 파일이 변경되었습니다. 컴파일 중...');
-    scssToSolid2CSS();
+  // 와치 옵션 설정
+  const watchOptions = {
+    ignoreInitial: true, // 초기 실행 방지
+    delay: 100, // 파일 변경 후 100ms 대기
+    usePolling: false, // 폴링 비활성화 (성능 향상)
+    interval: 1000, // 폴링 간격 (폴링 사용 시)
+    binaryInterval: 1000,
+    alwaysStat: false,
+    depth: 10, // 하위 디렉토리 깊이 제한
+    awaitWriteFinish: {
+      stabilityThreshold: 200,
+      pollInterval: 100
+    }
+  };
+  
+  // SCSS 파일 변경 감시 (최적화됨)
+  const scssWatcher = watch(paths.scssToSolid2, watchOptions, function(cb) {
+    debouncedCompile();
     if (typeof cb === 'function') {
       cb();
     }
   });
   
+  // 프로세스 종료 시 와처 정리
+  process.on('SIGINT', () => {
+    console.log('🛑 와치를 종료합니다...');
+    if (scssWatcher && typeof scssWatcher.close === 'function') {
+      scssWatcher.close();
+    }
+    if (watchTimer) {
+      clearTimeout(watchTimer);
+    }
+    process.exit(0);
+  });
+  
+  process.on('SIGTERM', () => {
+    console.log('🛑 와치를 종료합니다...');
+    if (scssWatcher && typeof scssWatcher.close === 'function') {
+      scssWatcher.close();
+    }
+    if (watchTimer) {
+      clearTimeout(watchTimer);
+    }
+    process.exit(0);
+  });
+}
+
+// 최적화된 빌드 함수
+function optimizedBuild() {
+  console.log('🚀 최적화된 빌드를 시작합니다...');
+  return gulp.series(
+    scssToSolid2CSS,
+    cleanUnmatchedCSS
+  )();
+}
+
+// 개발용 와치 함수 (소스맵 포함)
+function devWatch() {
+  console.log('🔧 개발 모드 와치를 시작합니다...');
+  process.env.NODE_ENV = 'development';
+  return gulp.series(
+    scssToSolid2CSS,
+    watchFiles
+  )();
+}
+
+// 프로덕션 빌드 함수
+function productionBuild() {
+  console.log('🏭 프로덕션 빌드를 시작합니다...');
+  process.env.NODE_ENV = 'production';
+  return gulp.series(
+    scssToSolid2CSS,
+    cleanUnmatchedCSS
+  )();
 }
 
 // task 등록
 exports.scssToSolid2 = scssToSolid2CSS;
 exports.tokensToVariables = tokensToVariables;
 exports.cleanCSS = cleanUnmatchedCSS;
+exports.build = optimizedBuild;
+exports.dev = devWatch;
+exports.prod = productionBuild;
 exports.watch = gulp.series(scssToSolid2CSS, cleanUnmatchedCSS, watchFiles);
-exports.default = gulp.series(scssToSolid2CSS, cleanUnmatchedCSS); 
+exports.default = optimizedBuild; 
