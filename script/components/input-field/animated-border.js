@@ -21,6 +21,7 @@ class AnimatedBorderInputField {
             borderRadius: 6,                  // 기본 border-radius (px)
             disabledClass: 'disabled',        // 비활성화 클래스
             errorClass: 'error',              // 에러 클래스
+            readonlyClass: 'readonly',        // 읽기전용 클래스
             containerSelector: '.input-field', // 컨테이너 셀렉터
             inputSelector: 'input',           // input 태그 셀렉터
             ...options
@@ -167,10 +168,11 @@ class AnimatedBorderInputField {
     }
 
     /**
-     * 비활성화 상태 확인
+     * 비활성화 상태 확인 (disabled 또는 readonly)
      */
     isDisabled(container) {
-        return container.classList.contains(this.options.disabledClass);
+        return container.classList.contains(this.options.disabledClass) || 
+               container.classList.contains(this.options.readonlyClass);
     }
 
     /**

@@ -280,6 +280,198 @@ body {
 }
 
 
+// 텍스트 색상 믹스인들
+@mixin text-tertiary {
+  color: $text-tertiary;
+}
+@mixin text-primary {
+  color: $text-primary;
+}
+@mixin text-primary-same {
+  color: $text-primary-same;
+}
+@mixin text-secondary {
+  color: $text-secondary;
+}
+@mixin text-quaternary {
+  color: $text-quaternary;
+}
+@mixin text-disabled-same {
+  color: $text-disabled-same;
+}
+@mixin text-placeholder-same {
+  color: $text-placeholder-same;
+}
+@mixin text-brand {
+  color: $text-brand;
+}
+@mixin text-brand-disabled-alt {
+  color: $text-brand-disabled-alt;
+}
+@mixin text-brand-disabled {
+  color: $text-brand-disabled;
+}
+@mixin text-ondark-primary {
+  color: $text-ondark-primary;
+}
+@mixin text-ondark-primary-same {
+  color: $text-ondark-primary-same;
+}
+@mixin text-ondark-secondary-same {
+  color: $text-ondark-secondary-same;
+}
+@mixin text-ondark-brand-same {
+  color: $text-ondark-brand-same;
+}
+@mixin text-negative-same {
+  color: $text-negative-same;
+}
+@mixin text-negative-alt {
+  color: $text-negative-alt;
+}
+@mixin text-new-same {
+  color: $text-new-same;
+}
+@mixin text-decrease {
+  color: $text-decrease;
+}
+@mixin text-increase-same {
+  color: $text-increase-same;
+}
+@mixin text-steady {
+  color: $text-steady;
+}
+
+// 폰트 두께 믹스인들
+@mixin font-weight-eb {
+  font-weight: $font-weight-eb;
+}
+@mixin font-weight-b {
+  font-weight: $font-weight-b;
+}
+@mixin font-weight-sb-b {
+  font-weight: $font-weight-sb-b;
+}
+@mixin font-weight-sb-m {
+  font-weight: $font-weight-sb-m;
+}
+@mixin font-weight-m-m {
+  font-weight: $font-weight-m-m;
+}
+@mixin font-weight-m-l {
+  font-weight: $font-weight-m-l;
+}
+@mixin font-weight-r {
+  font-weight: $font-weight-r;
+}
+
+// 텍스트 정렬 믹스인들
+@mixin align-center {
+  text-align: center;
+}
+@mixin align-left {
+  text-align: left;
+}
+@mixin align-right {
+  text-align: right;
+}
+
+// 텍스트 색상 클래스들 (믹스인 사용)
+.text-tertiary {
+  @include text-tertiary;
+}
+.text-primary {
+  @include text-primary;
+}
+.text-primary-same {
+  @include text-primary-same;
+}
+.text-secondary {
+  @include text-secondary;
+}
+.text-quaternary {
+  @include text-quaternary;
+}
+.text-disabled-same {
+  @include text-disabled-same;
+}
+.text-placeholder-same {
+  @include text-placeholder-same;
+}
+.text-brand {
+  @include text-brand;
+}
+.text-brand-disabled-alt {
+  @include text-brand-disabled-alt;
+}
+.text-brand-disabled {
+  @include text-brand-disabled;
+}
+.text-ondark-primary {
+  @include text-ondark-primary;
+}
+.text-ondark-primary-same {
+  @include text-ondark-primary-same;
+}
+.text-ondark-secondary-same {
+  @include text-ondark-secondary-same;
+}
+.text-ondark-brand-same {
+  @include text-ondark-brand-same;
+}
+.text-negative-same {
+  @include text-negative-same;
+}
+.text-negative-alt {
+  @include text-negative-alt;
+}
+.text-new-same {
+  @include text-new-same;
+}
+.text-decrease {
+  @include text-decrease;
+}
+.text-increase-same {
+  @include text-increase-same;
+}
+.text-steady {
+  @include text-steady;
+}
+
+// 폰트 두께 클래스들 (믹스인 사용)
+.font-weight-eb {
+  @include font-weight-eb;
+}
+.font-weight-b {
+  @include font-weight-b;
+}
+.font-weight-sb-b {
+  @include font-weight-sb-b;
+}
+.font-weight-sb-m {
+  @include font-weight-sb-m;
+}
+.font-weight-m-m {
+  @include font-weight-m-m;
+}
+.font-weight-m-l {
+  @include font-weight-m-l;
+}
+.font-weight-r {
+  @include font-weight-r;
+}
+
+// 텍스트 정렬 클래스들 (믹스인 사용)
+.align-center {
+  @include align-center;
+}
+.align-left {
+  @include align-left;
+}
+.align-right {
+  @include align-right;
+}
+
 
 /* asis 소스 */
 #contents-area {position: relative;min-height: calc(100vh - 56px - var(-safeAreaInsetBottom));display: -webkit-box;display: -ms-flexbox;display: flex;-webkit-box-orient: vertical;-webkit-box-direction: normal;-ms-flex-direction: column;flex-direction: column; } 
@@ -301,8 +493,8 @@ body {
 .input {
   &-container {
     display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-md);
   }
   &-field {
     display: flex;
@@ -315,7 +507,31 @@ body {
       input {
         flex:1;
         width: calc(25% - 7.5px); // 30px(dash 3개) ÷ 4 = 7.5px씩 분배
+        border:none;
+        color: var(--text-primary);
+        font-size: var(--font-size-body-m);
         text-align: center;
+        line-height: var(--lineheight-body-m);
+        letter-spacing: var(--letterspace-body-m);
+
+        &::placeholder {
+          color: var(--text-placeholder-same);
+          font-weight: 300;
+          font-size: var(--font-size-body-m);
+          line-height: var(--lineheight-body-m);
+          letter-spacing: var(--letterspace-body-m);
+
+        }
+      }
+    }
+    &.disabled {
+      background-color: var(--bg-disabled);
+    }
+    &.readonly {
+      background-color: var(--bg-disabled);
+
+      input {
+        background-color: transparent;
       }
     }
   }
