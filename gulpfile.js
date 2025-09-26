@@ -13,7 +13,6 @@ const sourcemaps = require('gulp-sourcemaps');
 
 // 환경 설정
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const isWatch = process.argv.includes('--watch');
 
 // 경로 설정
 /*
@@ -66,17 +65,23 @@ function scssToSolid2CSS() {
   
   let stream = gulp.src(paths.scssToSolid2)
     .pipe(plumber())
-    .pipe(changed(paths.solid2CssDest, { hasChanged: changed.compareContents }))
+    .pipe(changed(paths.solid2CssDest));
+  
+  // 개발 환경에서만 소스맵 생성 (와치 모드 포함)
+  if (isDevelopment) {
+    stream = stream.pipe(sourcemaps.init());
+  }
+  
+  stream = stream
     .pipe(sass({
       outputStyle: isDevelopment ? 'expanded' : 'compressed',
-      precision: 10
+      precision: 10,
+      includePaths: ['./images/web/tokens/scss'] // 변수 파일 경로 추가
     }).on('error', sass.logError));
   
-  // 개발 환경에서만 소스맵 생성
-  if (isDevelopment && !isWatch) {
-    stream = stream
-      .pipe(sourcemaps.init())
-      .pipe(sourcemaps.write('.'));
+  // 소스맵 쓰기 (개발 환경에서만)
+  if (isDevelopment) {
+    stream = stream.pipe(sourcemaps.write('.'));
   }
   
   stream = stream
@@ -359,32 +364,32 @@ function watchFiles() {
 }
 
 // 최적화된 빌드 함수
-function optimizedBuild() {
+function optimizedBuild(done) {
   console.log('🚀 최적화된 빌드를 시작합니다...');
   return gulp.series(
     scssToSolid2CSS,
     cleanUnmatchedCSS
-  )();
+  )(done);
 }
 
 // 개발용 와치 함수 (소스맵 포함)
-function devWatch() {
+function devWatch(done) {
   console.log('🔧 개발 모드 와치를 시작합니다...');
   process.env.NODE_ENV = 'development';
   return gulp.series(
     scssToSolid2CSS,
     watchFiles
-  )();
+  )(done);
 }
 
 // 프로덕션 빌드 함수
-function productionBuild() {
+function productionBuild(done) {
   console.log('🏭 프로덕션 빌드를 시작합니다...');
   process.env.NODE_ENV = 'production';
   return gulp.series(
     scssToSolid2CSS,
     cleanUnmatchedCSS
-  )();
+  )(done);
 }
 
 // task 등록
