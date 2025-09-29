@@ -86,6 +86,17 @@
                     텍스트
                 </span>
             </div>
+            <div class="input-function">
+                <p class="input-function-message">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.91406 0.3125C9.05635 0.312529 11.6016 2.8577 11.6016 6C11.6015 9.14227 9.05633 11.6875 5.91406 11.6875C2.77177 11.6875 0.226591 9.14229 0.226562 6C0.226562 2.85769 2.77175 0.3125 5.91406 0.3125ZM6.01874 8.04181C5.71671 8.04181 5.47186 8.28665 5.47186 8.58868C5.47195 8.89064 5.71676 9.13556 6.01874 9.13556C6.32064 9.13547 6.56553 8.89059 6.56561 8.58868C6.56561 8.28671 6.32069 8.0419 6.01874 8.04181ZM5.47186 3.375V7.16681H6.56561V3.375H5.47186Z" fill="#E53838"/>
+                    </svg>
+                    안내메시지
+                </p>
+                <div class="input-function-count">
+                    <span class="input-function-number">0</span>/00자
+                </div>
+            </div>
         </div>
 
         <p>Basic/Box/InputField 인풋 텍스트</p>
@@ -353,6 +364,10 @@
                     <input type="text" class="input" id="auth-code-input-6" class="input align-center" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 여섯 번째 자리" autocomplete="one-time-code" />
                     <label class="blind" for="auth-code-input-6">인증번호 여섯 번째 자리</label>
                 </div>
+            </div>
+            <div class="certification">
+                <span class="certification-timer" role="timer" aria-live="polite" aria-label="인증번호 유효시간">00:00</span>
+                <button type="button" class="certification-button" aria-label="인증번호 재요청">인증번호 재요청</button>
             </div>
         </div>  
 

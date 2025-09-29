@@ -1,0 +1,2440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입력 필드 컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        .guide-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "OneShinhan", sans-serif;
+        }
+
+        .guide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .guide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .guide-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .component-section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .component-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .component-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .component-demo {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-source {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .component-source.show {
+            display: block;
+        }
+
+        /* 예제 컴포넌트 스타일 */
+        .example-button {
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .example-button.large {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+
+        .example-button.small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .example-button.secondary {
+            background: #6b7280;
+        }
+
+        .example-button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .example-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .example-card.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border-color: #374151;
+        }
+
+        .example-card.compact {
+            padding: 16px;
+        }
+
+        .example-card.large {
+            padding: 32px;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .example-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+
+        .example-list.compact li {
+            padding: 8px 12px;
+        }
+
+        .example-list.large li {
+            padding: 16px 20px;
+        }
+
+        .example-list.dark li {
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 15px;
+            }
+            
+            .component-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .component-demo {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1 class="guide-title">입력 필드 컴포넌트 가이드</h1>
+            <p class="guide-description">
+                다양한 입력 필드 컴포넌트의 구현 예제와 소스 코드를 확인할 수 있습니다. 
+                각 케이스별로 다양한 스타일과 상태를 확인해보세요.
+            </p>
+        </div>
+
+        <!-- 
+        box type
+        Basic/Box/InputField
+        Basic/Box/InputFieldDual
+        Basic/Box/InputFieldTriple
+        Basic/Box/InputFieldQuad
+        Basic/Box/InputFieldText
+        Basic/Box/InputFieldDualText
+        Basic/Box/InputFieldSubText   << 금액부분 스크립트 필요  - 금액이 입력되면(value)가 있을때 원표시 노출 + value클래스 추가 
+        Basic/Box/InputFieldDropdown
+        Basic/Box/InputFieldInnerButton
+
+        Basic/Box/InputFieldCell   << 6개 별도 케이스 
+        Basic/Box/InputFieldSegment  << 조합케이스
+        Basic/Box/InputFieldDecimal
+        Basic/Box/InputFieldTwoLine
+        Basic/Box/InputFieldThreeLine
+
+        Basic/Box/InputFieldTextArea << 별도 케이스
+
+        Inline/Box/InputInlineField
+        Inline/Box/InputInlineFieldDual
+        Inline/Box/InputInlineFieldText
+        Inline/Box/InputFieldInnerButton
+        Inline/Box/InputInlineFieldTwoLine
+        Inline/Box/InputInlineFieldThreeLine
+
+        ============================================
+        개발 시 주의사항
+        ============================================
+        
+        [접근성 관련 중요 사항]
+        - id와 for 속성은 정적으로 작성해야 함
+        - DOM 로드 후 동적으로 id/for 값을 변경하면 안됨
+        - 이유: 낮은 버전의 보이스오버(VoiceOver)에서 매치 인식 실패
+        
+        [카드번호 입력 필드 구성]
+        - 4개의 input 필드로 구성 (XXXX-XXXX-XXXX-XXXX)
+        - 각 필드는 숫자만 입력 가능 (inputmode="numeric", pattern="[0-9]")
+        - 스크린 리더용 label은 blind 클래스로 숨김 처리
+        
+        [상태별 클래스] (자동 추가/제거)
+        - 에러: error
+        - 비활성화: disabled  
+        - 읽기전용:  readonly
+        - 포커스: focus
+        
+        [애니메이션] 드롭다운 인풋 레이블 등 다양하게 쓸수있게 분리
+        - 포커스 시 SVG border 애니메이션 실행
+        - 에러/비활성화/읽기전용 상태에서는 애니메이션 비활성화
+        - 애니메이션 속도: 1000ms, easing: cubic-bezier(0.2, 0, 0, 1.0)
+
+        [드롭다운박스 - 통신사 등 선택할때]
+        - solid-dropdown의 경우 파텀시트등 여러 상황에서 사용됨  바텀시트가 열려있을때 active 클래스가 추가되서 애니메이션 동작됨  바텀시트에서 선택해서 바텀시트 닫히면 active클래스 제거됨
+        
+        ============================================
+        -->
+
+        <!-- Basic/Box/InputField 케이스 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputField</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-demo">  
+                        <input type="text" class="input" id="guide-input-field-1" placeholder="입력하세요" />
+                        <label class="blind" for="guide-input-field-1">입력 필드</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+
+                    <div class="input-function">
+                        <p class="input-function-message">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.91406 0.3125C9.05635 0.312529 11.6016 2.8577 11.6016 6C11.6015 9.14227 9.05633 11.6875 5.91406 11.6875C2.77177 11.6875 0.226591 9.14229 0.226562 6C0.226562 2.85769 2.77175 0.3125 5.91406 0.3125ZM6.01874 8.04181C5.71671 8.04181 5.47186 8.28665 5.47186 8.58868C5.47195 8.89064 5.71676 9.13556 6.01874 9.13556C6.32064 9.13547 6.56553 8.89059 6.56561 8.58868C6.56561 8.28671 6.32069 8.0419 6.01874 8.04181ZM5.47186 3.375V7.16681H6.56561V3.375H5.47186Z" fill="#E53838"/>
+                            </svg>
+                            안내메시지
+                        </p>
+                        <div class="input-function-count">
+                            <span class="input-function-number">0</span>/00자
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="input-field-1" placeholder="입력하세요" /&gt;
+        &lt;label class="blind" for="input-field-1"&gt;입력 필드&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDual 케이스 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDual</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-dual-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-dual-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-dual-demo" data-class="disabled">비활성화</button>
+                    <button class="control-btn copy-btn" data-copy="input-dual-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-dual-demo">  
+                        <input type="text" class="input" id="guide-input-field-2" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-2">첫 번째 입력</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input" id="guide-input-field-3" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-3">두 번째 입력</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-dual-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="input-field-2" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-2"&gt;첫 번째 입력&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-3" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-3"&gt;두 번째 입력&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldCell 케이스 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldCell</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-cell-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-cell-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-cell-demo" data-class="disabled">비활성화</button>
+                    <button class="control-btn copy-btn" data-copy="input-cell-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-row cell" role="group" aria-label="인증번호 입력" id="input-cell-demo">
+                        <div class="input-field svg-animated">  
+                            <input type="text" class="input align-center" id="guide-auth-code-input-1" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 첫 번째 자리" autocomplete="one-time-code" />
+                            <label class="blind" for="guide-auth-code-input-1">인증번호 첫 번째 자리</label>
+                        </div>
+                        <div class="input-field svg-animated">  
+                            <input type="text" class="input align-center" id="guide-auth-code-input-2" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 두 번째 자리" autocomplete="one-time-code" />
+                            <label class="blind" for="guide-auth-code-input-2">인증번호 두 번째 자리</label>
+                        </div>
+                        <div class="input-field svg-animated">  
+                            <input type="text" class="input align-center" id="guide-auth-code-input-3" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 세 번째 자리" autocomplete="one-time-code" />
+                            <label class="blind" for="guide-auth-code-input-3">인증번호 세 번째 자리</label>
+                        </div>
+                        <div class="input-field svg-animated">  
+                            <input type="text" class="input align-center" id="guide-auth-code-input-4" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 네 번째 자리" autocomplete="one-time-code" />
+                            <label class="blind" for="guide-auth-code-input-4">인증번호 네 번째 자리</label>
+                        </div>
+                        <div class="input-field svg-animated">  
+                            <input type="text" class="input align-center" id="guide-auth-code-input-5" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 다섯 번째 자리" autocomplete="one-time-code" />
+                            <label class="blind" for="guide-auth-code-input-5">인증번호 다섯 번째 자리</label>
+                        </div>
+                        <div class="input-field svg-animated">  
+                            <input type="text" class="input align-center" id="guide-auth-code-input-6" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 여섯 번째 자리" autocomplete="one-time-code" />
+                            <label class="blind" for="guide-auth-code-input-6">인증번호 여섯 번째 자리</label>
+                        </div>
+                    </div>
+                    
+                    <div class="certification">
+                        <span class="certification-timer" role="timer" aria-live="polite" aria-label="인증번호 유효시간">00:00</span>
+                        <button type="button" class="certification-button" aria-label="인증번호 재요청">인증번호 재요청</button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-cell-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-row cell" role="group" aria-label="인증번호 입력"&gt;
+        &lt;div class="input-field svg-animated"&gt;  
+            &lt;input type="text" class="input align-center" id="auth-code-input-1" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="인증번호 첫 번째 자리" autocomplete="one-time-code" /&gt;
+            &lt;label class="blind" for="auth-code-input-1"&gt;인증번호 첫 번째 자리&lt;/label&gt;
+        &lt;/div&gt;
+        &lt;!-- 6개 필드 반복 --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputField 변형들 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputField - 텍스트 인풋 텍스트</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-text-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-text-demo">  
+                        <span class="input-text">텍스트</span>
+                        <input type="text" class="input" id="guide-input-field-text-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-text-1">입력 필드</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-text">텍스트</span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-text-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;span class="input-text"&gt;텍스트&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-text-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-text-1"&gt;입력 필드&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-text"&gt;텍스트&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputField - 인풋 텍스트 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputField - 인풋 텍스트</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-input-text-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-input-text-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-input-text-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-input-text-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-input-text-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-input-text-demo">  
+                        <input type="text" class="input" id="guide-input-field-input-text-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-input-text-1">입력 필드</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-text">텍스트</span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-input-text-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="input-field-input-text-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-input-text-1"&gt;입력 필드&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-text"&gt;텍스트&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputField - 텍스트 인풋 오른쪽정렬 텍스트 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputField - 텍스트 인풋 오른쪽정렬 텍스트</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-right-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-right-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-right-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-right-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-right-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-right-demo">  
+                        <span class="input-text">텍스트</span>
+                        <input type="text" class="input align-right" id="guide-input-field-right-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-right-1">입력 필드</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-text">텍스트</span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-right-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;span class="input-text"&gt;텍스트&lt;/span&gt;
+        &lt;input type="text" class="input align-right" id="input-field-right-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-right-1"&gt;입력 필드&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-text"&gt;텍스트&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputField - 아이콘 인풋 아이콘 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputField - 아이콘 인풋 아이콘</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-icon-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-icon-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-icon-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-icon-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-icon-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-icon-demo">  
+                        <span class="input-icon">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <input type="text" class="input" id="guide-input-field-icon-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-icon-1">입력 필드</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-icon">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-icon-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;span class="input-icon"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+            &lt;/svg&gt;
+        &lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-icon-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-icon-1"&gt;입력 필드&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-icon"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+            &lt;/svg&gt;
+        &lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDual - 인풋 인풋 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDual - 인풋 인풋</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dual-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dual-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dual-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dual-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dual-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dual-demo">  
+                        <input type="text" class="input" id="guide-input-field-dual-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-1">첫 번째 입력</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input" id="guide-input-field-dual-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-2">두 번째 입력</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dual-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="input-field-dual-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-1"&gt;첫 번째 입력&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-2"&gt;두 번째 입력&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDual - 인풋 인풋 텍스트 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDual - 인풋 인풋 텍스트</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dual-text-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dual-text-demo">  
+                        <input type="text" class="input" id="guide-input-field-dual-text-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-text-1">첫 번째 입력</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input" id="guide-input-field-dual-text-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-text-2">두 번째 입력</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-unit">텍</span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dual-text-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="input-field-dual-text-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-text-1"&gt;첫 번째 입력&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-text-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-text-2"&gt;두 번째 입력&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-unit"&gt;텍&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDual - 인풋 인풋 텍 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDual - 인풋 인풋 텍</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dual-tek-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dual-tek-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dual-tek-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dual-tek-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dual-tek-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dual-tek-demo">  
+                        <input type="text" class="input" id="guide-input-field-dual-tek-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-tek-1">첫 번째 입력</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input" id="guide-input-field-dual-tek-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-tek-2">두 번째 입력</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-unit">텍</span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dual-tek-source">
+                <pre><code>&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="input-field-dual-tek-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-tek-1"&gt;첫 번째 입력&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-tek-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-tek-2"&gt;두 번째 입력&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-unit"&gt;텍&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDual - 아이콘 인풋 인풋 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDual - 아이콘 인풋 인풋</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dual-icon-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dual-icon-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dual-icon-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dual-icon-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dual-icon-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dual-icon-demo">  
+                        <span class="input-icon">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <input type="text" class="input" id="guide-input-field-dual-icon-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-icon-1">첫 번째 입력</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input" id="guide-input-field-dual-icon-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-icon-2">두 번째 입력</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dual-icon-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;span class="input-icon"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+            &lt;/svg&gt;
+        &lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-icon-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-icon-1"&gt;첫 번째 입력&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-icon-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-icon-2"&gt;두 번째 입력&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDual - 인풋 인풋 아이콘 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDual - 인풋 인풋 아이콘</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dual-input-icon-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dual-input-icon-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dual-input-icon-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dual-input-icon-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dual-input-icon-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dual-input-icon-demo">  
+                        <input type="text" class="input" id="guide-input-field-dual-input-icon-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-input-icon-1">첫 번째 입력</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input" id="guide-input-field-dual-input-icon-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-input-icon-2">두 번째 입력</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-icon">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dual-input-icon-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="input-field-dual-input-icon-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-input-icon-1"&gt;첫 번째 입력&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-input-icon-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-input-icon-2"&gt;두 번째 입력&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-icon"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+            &lt;/svg&gt;
+        &lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldQuad -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldQuad</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-quad-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-quad-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-quad-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-quad-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-quad-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-quad-demo">  
+                        <input type="number" class="input align-center" id="guide-input-field-quad-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-quad-1">카드번호 첫 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="number" class="input align-center" id="guide-input-field-quad-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-quad-2">카드번호 두 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="number" class="input align-center" id="guide-input-field-quad-3" placeholder="세 번째 입력" />
+                        <label class="blind" for="guide-input-field-quad-3">카드번호 세 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="number" class="input align-center" id="guide-input-field-quad-4" placeholder="네 번째 입력" />
+                        <label class="blind" for="guide-input-field-quad-4">카드번호 네 번째 자리</label>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-quad-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="number" class="input align-center" id="input-field-quad-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-quad-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="number" class="input align-center" id="input-field-quad-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-quad-2"&gt;카드번호 두 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="number" class="input align-center" id="input-field-quad-3" placeholder="세 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-quad-3"&gt;카드번호 세 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="number" class="input align-center" id="input-field-quad-4" placeholder="네 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-quad-4"&gt;카드번호 네 번째 자리&lt;/label&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldInnerButton 통신사, 국가 등 함께 선택 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldInnerButton 통신사, 국가 등 함께 선택</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-inner-button-carrier-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-inner-button-carrier-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-inner-button-carrier-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-inner-button-carrier-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-inner-button-carrier-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-inner-button-carrier-demo">  
+                        <input type="text" class="input" id="guide-inner-button-carrier-input-field-1" placeholder="플레이스홀더" />
+                        <label class="blind" for="guide-inner-button-carrier-input-field-1">레이블값</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-timer" aria-label="남은 시간 10분" role="timer" aria-live="polite">10:00</span>
+                        <button type="button" class="solid-button neutral outline small" aria-label="인증번호 재요청">텍스트</button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-inner-button-carrier-source">
+                <pre><code>&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="inner-button-carrier-input-field-1" placeholder="플레이스홀더" /&gt;
+        &lt;label class="blind" for="inner-button-carrier-input-field-1"&gt;레이블값&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-timer" aria-label="남은 시간 10분" role="timer" aria-live="polite"&gt;10:00&lt;/span&gt;
+        &lt;button type="button" class="solid-button neutral outline small" aria-label="인증번호 재요청"&gt;텍스트&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldInnerButton -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldInnerButton</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-inner-button-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-inner-button-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-inner-button-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-inner-button-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-inner-button-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-inner-button-demo">  
+                        <input type="text" class="input" id="guide-inner-button-input-field-1" placeholder="플레이스홀더" />
+                        <label class="blind" for="guide-inner-button-input-field-1">레이블값</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-timer" aria-label="남은 시간 10분" role="timer" aria-live="polite">10:00</span>
+                        <button type="button" class="solid-button neutral outline small" aria-label="인증번호 재요청">텍스트</button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-inner-button-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input" id="inner-button-input-field-1" placeholder="플레이스홀더" /&gt;
+        &lt;label class="blind" for="inner-button-input-field-1"&gt;레이블값&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-timer" aria-label="남은 시간 10분" role="timer" aria-live="polite"&gt;10:00&lt;/span&gt;
+        &lt;button type="button" class="solid-button neutral outline small" aria-label="인증번호 재요청"&gt;텍스트&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldSubText -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldSubText</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-sub-text-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-sub-text-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-sub-text-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-sub-text-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-sub-text-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-sub-text-demo">  
+                        <div class="input-field-sub-text">
+                            <div class="input-field-sub-text-box">
+                                <input type="text" class="input-field-sub-text-form" id="guide-sub-text-input-field-1" placeholder="금액을 입력하세요" inputmode="numeric" />
+                                <span class="input-field-sub-text-input-unit">원</span>
+                                <label class="blind" for="guide-sub-text-input-field-1">금액 입력</label>
+                            </div>
+                            <div class="input-field-sub-text-amount"><span class="amount-value">0</span> 만원</div>
+                        </div>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-sub-text-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;div class="input-field-sub-text"&gt;
+            &lt;div class="input-field-sub-text-box"&gt;
+                &lt;input type="text" class="input-field-sub-text-form" id="sub-text-input-field-1" placeholder="금액을 입력하세요" inputmode="numeric" /&gt;
+                &lt;span class="input-field-sub-text-input-unit"&gt;원&lt;/span&gt;
+                &lt;label class="blind" for="sub-text-input-field-1"&gt;금액 입력&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div class="input-field-sub-text-amount"&gt;&lt;span class="amount-value"&gt;0&lt;/span&gt; 만원&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDropdown -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDropdown</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dropdown-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dropdown-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dropdown-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dropdown-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dropdown-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dropdown-demo">  
+                        <button type="button" class="solid-dropdown" aria-label="통신사선택">
+                            <span class="solid-dropdown-text">sk</span>
+                            <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M4.13802 5.95036L8 9.81234L11.862 5.95036L12.8047 6.89307L8 11.6978L3.19531 6.89307L4.13802 5.95036Z" fill="#101828"/>
+                            </svg>
+                        </button>
+                        <input type="text" class="input" id="guide-dropdown-input-field-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-dropdown-input-field-1">카드번호 첫 번째 자리</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-text">텍스트</span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dropdown-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;button type="button" class="solid-dropdown" aria-label="통신사선택"&gt;
+            &lt;span class="solid-dropdown-text"&gt;sk&lt;/span&gt;
+            &lt;svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"&gt;
+                &lt;path d="M4.13802 5.95036L8 9.81234L11.862 5.95036L12.8047 6.89307L8 11.6978L3.19531 6.89307L4.13802 5.95036Z" fill="#101828"/&gt;
+            &lt;/svg&gt;
+        &lt;/button&gt;
+        &lt;input type="text" class="input" id="dropdown-input-field-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="dropdown-input-field-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12 2C6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-text"&gt;텍스트&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldTextArea -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldTextArea</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-textarea-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-textarea-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-textarea-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-textarea-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-textarea-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-textarea-from svg-animated" id="input-field-textarea-demo">  
+                        <textarea class="input-textarea" id="guide-text-area-input-field-1" placeholder="플레이스홀더"></textarea>
+                        <label class="blind" for="guide-text-area-input-field-1">텍스트 영역</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-textarea-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-textarea-from svg-animated"&gt;  
+        &lt;textarea class="input-textarea" id="text-area-input-field-1" placeholder="플레이스홀더"&gt;&lt;/textarea&gt;
+        &lt;label class="blind" for="text-area-input-field-1"&gt;텍스트 영역&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldSegment -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldSegment</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-segment-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-segment-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-segment-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-segment-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-segment-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-row segment" id="input-field-segment-demo">
+                        <div class="input-swich">
+                            스위치
+                            <!-- 기존에 만든 스위치 컴포넌트 사용 --> 
+                        </div>
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-segment-switch-input-field-1" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-segment-switch-input-field-1">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-segment-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-row segment"&gt;
+        &lt;div class="input-swich"&gt;
+            스위치
+            &lt;!-- 기존에 만든 스위치 컴포넌트 사용 --&gt; 
+        &lt;/div&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="segment-switch-input-field-1" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="segment-switch-input-field-1"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDecimal (두 번째) -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDecimal (두 번째)</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-decimal-2-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-decimal-2-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-decimal-2-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-decimal-2-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-decimal-2-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-row decimal">
+                        <div class="input-field svg-animated" role="group" id="input-field-decimal-2-demo">
+                            <span class="input-unit">텍</span>
+                            <input type="text" class="input" id="guide-decimal-input-field-2-1" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-decimal-input-field-2-1">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                        </div>
+                        <div class="input-comma">.</div>
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-decimal-input-field-2-2" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-decimal-input-field-2-2">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-decimal-2-source">
+                <pre><code>&lt;div class="input-container"&gt;
+    &lt;div class="input-row decimal"&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;
+            &lt;span class="input-unit"&gt;텍&lt;/span&gt;
+            &lt;input type="text" class="input" id="decimal-input-field-2-1" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="decimal-input-field-2-1"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="input-comma"&gt;.&lt;/div&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="decimal-input-field-2-2" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="decimal-input-field-2-2"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDecimal -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDecimal</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-decimal-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-decimal-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-decimal-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-decimal-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-decimal-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-row decimal" id="input-field-decimal-demo">
+                        <div class="input-field svg-animated" role="group">
+                            <span class="input-unit">텍</span>
+                            <input type="text" class="input" id="guide-decimal-input-field-1" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-decimal-input-field-1">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                        </div>
+                        <div class="input-comma">.</div>
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-decimal-input-field-2" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-decimal-input-field-2">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                            <span class="input-unit">g</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-decimal-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-row decimal"&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;
+            &lt;span class="input-unit"&gt;텍&lt;/span&gt;
+            &lt;input type="text" class="input" id="decimal-input-field-1" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="decimal-input-field-1"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="input-comma"&gt;.&lt;/div&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="decimal-input-field-2" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="decimal-input-field-2"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+            &lt;span class="input-unit"&gt;g&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldTwoLine -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldTwoLine</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-two-line-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-two-line-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-two-line-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-two-line-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-two-line-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-form-column" id="input-field-two-line-demo">
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-two-line-input-field-1" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-two-line-input-field-1">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                            <span class="input-icon">
+                                <!-- 임시 아이콘 -->
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                                           
+                            </span>
+                        </div>
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-two-line-input-field-2" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-two-line-input-field-2">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                            <span class="input-icon">
+                                <!-- 임시 아이콘 -->
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                                           
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-two-line-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-form-column"&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="two-line-input-field-1" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="two-line-input-field-1"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+            &lt;span class="input-icon"&gt;
+                &lt;!-- 임시 아이콘 --&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+                &lt;/svg&gt;                                           
+            &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="two-line-input-field-2" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="two-line-input-field-2"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+            &lt;span class="input-icon"&gt;
+                &lt;!-- 임시 아이콘 --&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+                &lt;/svg&gt;                                           
+            &lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldThreeLine -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldThreeLine</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-three-line-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-three-line-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-three-line-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-three-line-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-three-line-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-form-column" id="input-field-three-line-demo">
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-three-line-input-field-1" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-three-line-input-field-1">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                            <span class="input-icon">
+                                <!-- 임시 아이콘 -->
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                                           
+                            </span>
+                        </div>
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-three-line-input-field-2" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-three-line-input-field-2">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                            <span class="input-icon">
+                                <!-- 임시 아이콘 -->
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                                           
+                            </span>
+                        </div>
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-three-line-input-field-3" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-three-line-input-field-3">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                            <span class="input-icon">
+                                <!-- 임시 아이콘 -->
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                                           
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-three-line-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-form-column"&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="three-line-input-field-1" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="three-line-input-field-1"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+            &lt;span class="input-icon"&gt;
+                &lt;!-- 임시 아이콘 --&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+                &lt;/svg&gt;                                           
+            &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="three-line-input-field-2" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="three-line-input-field-2"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+            &lt;span class="input-icon"&gt;
+                &lt;!-- 임시 아이콘 --&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+                &lt;/svg&gt;                                           
+            &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="three-line-input-field-3" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="three-line-input-field-3"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+            &lt;span class="input-icon"&gt;
+                &lt;!-- 임시 아이콘 --&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/&gt;
+                &lt;/svg&gt;                                           
+            &lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldTriple -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldTriple</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-triple-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-triple-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-triple-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-triple-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-triple-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-triple-demo">  
+                        <input type="text" class="input align-center" id="guide-input-field-triple-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-triple-1">카드번호 첫 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input align-center" id="guide-input-field-triple-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-triple-2">카드번호 두 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input align-center" id="guide-input-field-triple-3" placeholder="세 번째 입력" />
+                        <label class="blind" for="guide-input-field-triple-3">카드번호 세 번째 자리</label>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-triple-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;input type="text" class="input align-center" id="input-field-triple-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-triple-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input align-center" id="input-field-triple-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-triple-2"&gt;카드번호 두 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input align-center" id="input-field-triple-3" placeholder="세 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-triple-3"&gt;카드번호 세 번째 자리&lt;/label&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldText -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldText</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-text-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-text-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-text-demo">  
+                        <span class="input-text">
+                            텍스트
+                        </span>
+                        <input type="text" class="input" id="guide-input-field-text-1" placeholder="플레이스홀더" />
+                        <label class="blind" for="guide-input-field-text-1">레이블값</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-text-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;span class="input-text"&gt;
+            텍스트
+        &lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-text-1" placeholder="플레이스홀더" /&gt;
+        &lt;label class="blind" for="input-field-text-1"&gt;레이블값&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDualText -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDualText</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dual-text-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dual-text-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dual-text-demo">  
+                        <span class="input-text">
+                            텍스트
+                        </span>
+                        <input type="text" class="input" id="guide-input-field-dual-text-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-text-1">카드번호 첫 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input" id="guide-input-field-dual-text-2" placeholder="두 번째 입력" />
+                        <label class="blind" for="guide-input-field-dual-text-2">카드번호 두 번째 자리</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-text">
+                            텍스트
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dual-text-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;span class="input-text"&gt;
+            텍스트
+        &lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-text-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-text-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input" id="input-field-dual-text-2" placeholder="두 번째 입력" /&gt;
+        &lt;label class="blind" for="input-field-dual-text-2"&gt;카드번호 두 번째 자리&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-text"&gt;
+            텍스트
+        &lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldQuad 에러 password 2개 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldQuad 에러 password 2개</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-quad-error-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-quad-error-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-quad-error-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-quad-error-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-quad-error-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated error" role="group" id="input-field-quad-error-demo">  
+                        <input type="number" class="input align-center" id="guide-error-input-field-1" placeholder="첫 번째 입력" aria-invalid="true">
+                        <label class="blind" for="guide-error-input-field-1">카드번호 첫 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="number" class="input align-center" id="guide-error-input-field-2" placeholder="두 번째 입력" aria-invalid="true">
+                        <label class="blind" for="guide-error-input-field-2">카드번호 두 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="password" class="input align-center" id="guide-error-input-field-3" placeholder="세 번째 입력" aria-invalid="true">
+                        <label class="blind" for="guide-error-input-field-3">카드번호 세 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="password" class="input align-center" id="guide-error-input-field-4" placeholder="네 번째 입력" aria-invalid="true">
+                        <label class="blind" for="guide-error-input-field-4">카드번호 네 번째 자리</label>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-quad-error-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated error" role="group"&gt;  
+        &lt;input type="number" class="input align-center" id="error-input-field-1" placeholder="첫 번째 입력" aria-invalid="true"&gt;
+        &lt;label class="blind" for="error-input-field-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="number" class="input align-center" id="error-input-field-2" placeholder="두 번째 입력" aria-invalid="true"&gt;
+        &lt;label class="blind" for="error-input-field-2"&gt;카드번호 두 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="password" class="input align-center" id="error-input-field-3" placeholder="세 번째 입력" aria-invalid="true"&gt;
+        &lt;label class="blind" for="error-input-field-3"&gt;카드번호 세 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="password" class="input align-center" id="error-input-field-4" placeholder="네 번째 입력" aria-invalid="true"&gt;
+        &lt;label class="blind" for="error-input-field-4"&gt;카드번호 네 번째 자리&lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div id="error-message-1" class="error-message" role="alert" aria-live="polite"&gt;
+        입력값이 올바르지 않습니다. 다시 확인해주세요.
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldQuad 디세이블 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldQuad 디세이블</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-quad-disabled-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-quad-disabled-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-quad-disabled-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-quad-disabled-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-quad-disabled-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated disabled" role="group" id="input-field-quad-disabled-demo">  
+                        <input type="text" class="input align-center" id="guide-disabled-input-field-1" placeholder="첫 번째 입력" disabled>
+                        <label class="blind" for="guide-disabled-input-field-1">카드번호 첫 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input align-center" id="guide-disabled-input-field-2" placeholder="두 번째 입력" disabled>
+                        <label class="blind" for="guide-disabled-input-field-2">카드번호 두 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="password" class="input align-center" id="guide-disabled-input-field-3" placeholder="세 번째 입력" disabled>
+                        <label class="blind" for="guide-disabled-input-field-3">카드번호 세 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="password" class="input align-center" id="guide-disabled-input-field-4" placeholder="네 번째 입력" disabled>
+                        <label class="blind" for="guide-disabled-input-field-4">카드번호 네 번째 자리</label>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-quad-disabled-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated disabled" role="group"&gt;  
+        &lt;input type="text" class="input align-center" id="disabled-input-field-1" placeholder="첫 번째 입력" disabled&gt;
+        &lt;label class="blind" for="disabled-input-field-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input align-center" id="disabled-input-field-2" placeholder="두 번째 입력" disabled&gt;
+        &lt;label class="blind" for="disabled-input-field-2"&gt;카드번호 두 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="password" class="input align-center" id="disabled-input-field-3" placeholder="세 번째 입력" disabled&gt;
+        &lt;label class="blind" for="disabled-input-field-3"&gt;카드번호 세 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="password" class="input align-center" id="disabled-input-field-4" placeholder="네 번째 입력" disabled&gt;
+        &lt;label class="blind" for="disabled-input-field-4"&gt;카드번호 네 번째 자리&lt;/label&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldQuad 리드온리 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldQuad 리드온리</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-quad-readonly-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-quad-readonly-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-quad-readonly-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-quad-readonly-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-quad-readonly-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated readonly" role="group" id="input-field-quad-readonly-demo">  
+                        <input type="text" class="input align-center" id="guide-readonly-input-field-1" placeholder="첫 번째 입력" readonly>
+                        <label class="blind" for="guide-readonly-input-field-1">카드번호 첫 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="text" class="input align-center" id="guide-readonly-input-field-2" placeholder="두 번째 입력" readonly>
+                        <label class="blind" for="guide-readonly-input-field-2">카드번호 두 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="password" class="input align-center" id="guide-readonly-input-field-3" placeholder="세 번째 입력" readonly>
+                        <label class="blind" for="guide-readonly-input-field-3">카드번호 세 번째 자리</label>
+                        <span class="input-dash" aria-hidden="true">-</span>
+                        <input type="password" class="input align-center" id="guide-readonly-input-field-4" placeholder="네 번째 입력" readonly>
+                        <label class="blind" for="guide-readonly-input-field-4">카드번호 네 번째 자리</label>
+                    </div>
+                    <div id="readonly-message" class="blind" aria-live="polite">
+                        읽기 전용입니다. 수정할 수 없습니다.
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-quad-readonly-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated readonly" role="group"&gt;  
+        &lt;input type="text" class="input align-center" id="readonly-input-field-1" placeholder="첫 번째 입력" readonly&gt;
+        &lt;label class="blind" for="readonly-input-field-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="text" class="input align-center" id="readonly-input-field-2" placeholder="두 번째 입력" readonly&gt;
+        &lt;label class="blind" for="readonly-input-field-2"&gt;카드번호 두 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="password" class="input align-center" id="readonly-input-field-3" placeholder="세 번째 입력" readonly&gt;
+        &lt;label class="blind" for="readonly-input-field-3"&gt;카드번호 세 번째 자리&lt;/label&gt;
+        &lt;span class="input-dash" aria-hidden="true"&gt;-&lt;/span&gt;
+        &lt;input type="password" class="input align-center" id="readonly-input-field-4" placeholder="네 번째 입력" readonly&gt;
+        &lt;label class="blind" for="readonly-input-field-4"&gt;카드번호 네 번째 자리&lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div id="readonly-message" class="blind" aria-live="polite"&gt;
+        읽기 전용입니다. 수정할 수 없습니다.
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDropdown disabled -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDropdown disabled</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dropdown-disabled-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dropdown-disabled-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dropdown-disabled-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dropdown-disabled-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dropdown-disabled-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field disabled svg-animated" role="group" id="input-field-dropdown-disabled-demo">  
+                        <button type="button" class="solid-dropdown" aria-label="통신사선택" disabled>
+                            <span class="solid-dropdown-text">sk</span>
+                            <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M4.13802 5.95036L8 9.81234L11.862 5.95036L12.8047 6.89307L8 11.6978L3.19531 6.89307L4.13802 5.95036Z" fill="#101828"/>
+                            </svg>
+                        </button>
+                        <input type="text" class="input" id="guide-dropdown-disabled-input-field-1" placeholder="첫 번째 입력" disabled />
+                        <label class="blind" for="guide-dropdown-disabled-input-field-1">카드번호 첫 번째 자리</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-text">
+                            텍스트
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dropdown-disabled-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field disabled svg-animated" role="group"&gt;  
+        &lt;button type="button" class="solid-dropdown" aria-label="통신사선택" disabled&gt;
+            &lt;span class="solid-dropdown-text"&gt;sk&lt;/span&gt;
+            &lt;svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"&gt;
+                &lt;path d="M4.13802 5.95036L8 9.81234L11.862 5.95036L12.8047 6.89307L8 11.6978L3.19531 6.89307L4.13802 5.95036Z" fill="#101828"/&gt;
+            &lt;/svg&gt;
+        &lt;/button&gt;
+        &lt;input type="text" class="input" id="dropdown-disabled-input-field-1" placeholder="첫 번째 입력" disabled /&gt;
+        &lt;label class="blind" for="dropdown-disabled-input-field-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-text"&gt;
+            텍스트
+        &lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldDropdown 텍스트 길때 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldDropdown 텍스트 길때</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-dropdown-long-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-dropdown-long-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-dropdown-long-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-dropdown-long-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-dropdown-long-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-field svg-animated" role="group" id="input-field-dropdown-long-demo">  
+                        <button type="button" class="solid-dropdown" aria-label="통신사선택">
+                            <span class="solid-dropdown-text">통신사선택</span>
+                            <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M4.13802 5.95036L8 9.81234L11.862 5.95036L12.8047 6.89307L8 11.6978L3.19531 6.89307L4.13802 5.95036Z" fill="#101828"/>
+                            </svg>
+                        </button>
+                        <input type="text" class="input" id="guide-dropdown-long-input-field-1" placeholder="첫 번째 입력" />
+                        <label class="blind" for="guide-dropdown-long-input-field-1">카드번호 첫 번째 자리</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                        <span class="input-text">
+                            텍스트
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-dropdown-long-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-field svg-animated" role="group"&gt;  
+        &lt;button type="button" class="solid-dropdown" aria-label="통신사선택"&gt;
+            &lt;span class="solid-dropdown-text"&gt;통신사선택&lt;/span&gt;
+            &lt;svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"&gt;
+                &lt;path d="M4.13802 5.95036L8 9.81234L11.862 5.95036L12.8047 6.89307L8 11.6978L3.19531 6.89307L4.13802 5.95036Z" fill="#101828"/&gt;
+            &lt;/svg&gt;
+        &lt;/button&gt;
+        &lt;input type="text" class="input" id="dropdown-long-input-field-1" placeholder="첫 번째 입력" /&gt;
+        &lt;label class="blind" for="dropdown-long-input-field-1"&gt;카드번호 첫 번째 자리&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+        &lt;span class="input-text"&gt;
+            텍스트
+        &lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldSegment 스위치 인풋 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldSegment 스위치 인풋</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-segment-switch-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-segment-switch-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-segment-switch-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-segment-switch-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-segment-switch-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-row segment">
+                        <div class="input-swich">
+                            스위치
+                            <!-- 기존에 만든 스위치 컴포넌트 사용 --> 
+                        </div>
+                        <div class="input-field svg-animated" role="group" id="input-field-segment-switch-demo">  
+                            <input type="text" class="input" id="guide-segment-switch-input-field-1" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-segment-switch-input-field-1">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-segment-switch-source">
+                <pre><code>&lt;div class="input-container"&gt;
+    &lt;div class="input-row segment"&gt;
+        &lt;div class="input-swich"&gt;
+            스위치
+            &lt;!-- 기존에 만든 스위치 컴포넌트 사용 --&gt; 
+        &lt;/div&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="segment-switch-input-field-1" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="segment-switch-input-field-1"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldSegment 인풋 스위치 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldSegment 인풋 스위치</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-segment-input-switch-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-segment-input-switch-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-segment-input-switch-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-segment-input-switch-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-segment-input-switch-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-row segment" id="input-field-segment-input-switch-demo">
+                        <div class="input-field svg-animated" role="group">  
+                            <input type="text" class="input" id="guide-segment-input-switch-field-1" placeholder="플레이스홀더" />
+                            <label class="blind" for="guide-segment-input-switch-field-1">레이블값</label>
+                            <button class="clear-button active" aria-label="입력 내용 지우기">
+                                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                                </svg>                                              
+                            </button>
+                        </div>
+                        <div class="input-swich">
+                            스위치
+                            <!-- 기존에 만든 스위치 컴포넌트 사용 --> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-segment-input-switch-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-row segment"&gt;
+        &lt;div class="input-field svg-animated" role="group"&gt;  
+            &lt;input type="text" class="input" id="segment-input-switch-field-1" placeholder="플레이스홀더" /&gt;
+            &lt;label class="blind" for="segment-input-switch-field-1"&gt;레이블값&lt;/label&gt;
+            &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+                &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                    &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+                &lt;/svg&gt;                                              
+            &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="input-swich"&gt;
+            스위치
+            &lt;!-- 기존에 만든 스위치 컴포넌트 사용 --&gt; 
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldTextArea error -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldTextArea error</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-textarea-error-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-textarea-error-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-textarea-error-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-textarea-error-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-textarea-error-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-textarea-from error svg-animated" id="input-field-textarea-error-demo">  
+                        <textarea class="input-textarea" id="guide-text-area-error-input-field-1" placeholder="플레이스홀더"></textarea>
+                        <label class="blind" for="guide-text-area-error-input-field-1">텍스트 영역</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-textarea-error-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-textarea-from error svg-animated"&gt;  
+        &lt;textarea class="input-textarea" id="text-area-error-input-field-1" placeholder="플레이스홀더"&gt;&lt;/textarea&gt;
+        &lt;label class="blind" for="text-area-error-input-field-1"&gt;텍스트 영역&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldTextArea disabled -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldTextArea disabled</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-textarea-disabled-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-textarea-disabled-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-textarea-disabled-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-textarea-disabled-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-textarea-disabled-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-textarea-from disabled svg-animated" id="input-field-textarea-disabled-demo">  
+                        <textarea class="input-textarea" id="guide-text-area-disabled-input-field-1" placeholder="플레이스홀더" disabled></textarea>
+                        <label class="blind" for="guide-text-area-disabled-input-field-1">텍스트 영역</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-textarea-disabled-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-textarea-from disabled svg-animated"&gt;  
+        &lt;textarea class="input-textarea" id="text-area-disabled-input-field-1" placeholder="플레이스홀더" disabled&gt;&lt;/textarea&gt;
+        &lt;label class="blind" for="text-area-disabled-input-field-1"&gt;텍스트 영역&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Basic/Box/InputFieldTextArea readonly -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputFieldTextArea readonly</h2>
+                <div class="control-buttons">
+                    <button class="control-btn" data-target="input-field-textarea-readonly-demo" data-class="">기본</button>
+                    <button class="control-btn" data-target="input-field-textarea-readonly-demo" data-class="error">에러</button>
+                    <button class="control-btn" data-target="input-field-textarea-readonly-demo" data-class="disabled">디세이블</button>
+                    <button class="control-btn" data-target="input-field-textarea-readonly-demo" data-class="readonly">읽기전용</button>
+                    <button class="control-btn copy-btn" data-copy="input-field-textarea-readonly-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <div class="input-container">
+                    <div class="input-textarea-from readonly svg-animated" id="input-field-textarea-readonly-demo">  
+                        <textarea class="input-textarea" id="guide-text-area-readonly-input-field-1" placeholder="플레이스홀더" readonly></textarea>
+                        <label class="blind" for="guide-text-area-readonly-input-field-1">텍스트 영역</label>
+                        <button class="clear-button active" aria-label="입력 내용 지우기">
+                            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                            </svg>                                              
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="component-source" id="input-field-textarea-readonly-source">
+&lt;div class="input-container"&gt;
+    &lt;div class="input-textarea-from readonly svg-animated"&gt;  
+        &lt;textarea class="input-textarea" id="text-area-readonly-input-field-1" placeholder="플레이스홀더" readonly&gt;&lt;/textarea&gt;
+        &lt;label class="blind" for="text-area-readonly-input-field-1"&gt;텍스트 영역&lt;/label&gt;
+        &lt;button class="clear-button active" aria-label="입력 내용 지우기"&gt;
+            &lt;svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                &lt;path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/&gt;
+            &lt;/svg&gt;                                              
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 모듈 스크립트들 -->
+    <script src="../../../../script/components/focus-manager.js"></script>
+    <script src="../../../../script/components/svg-border-animation.js"></script>
+    <script src="../../../../script/components/input-field/input-field-animation.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 기존 애니메이션 인스턴스가 있다면 정리
+            if (window.animatedBorderInputField) {
+                window.animatedBorderInputField.cleanup();
+            }
+            
+            // svg-animated 클래스가 있는 컨테이너만 선택하여 애니메이션 인스턴스 생성
+            const svgAnimatedContainers = document.querySelectorAll('.svg-animated');
+            console.log('애니메이션 컨테이너 개수:', svgAnimatedContainers.length);
+            
+            if (svgAnimatedContainers.length > 0) {
+                window.animatedBorderInputField = new AnimatedBorderInputField({
+                    borderColor: '#005DF9',           // 기본 border 색상
+                    errorColor: '#E53838',            // 에러 상태 border 색상
+                    borderWidth: 2,                   // border 두께
+                    animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
+                    borderRadius: 12,                 // 기본 border-radius (px)
+                    disabledClass: 'disabled',        // 비활성화 클래스
+                    errorClass: 'error',              // 에러 클래스
+                    readonlyClass: 'readonly',        // 읽기전용 클래스
+                    containerSelector: '.svg-animated', // 컨테이너 셀렉터
+                    inputSelector: 'input, textarea'  // input, textarea 태그 셀렉터
+                });
+                console.log('애니메이션 인스턴스 생성 완료');
+            }
+
+            // 클래스 토글 기능
+            const controlButtons = document.querySelectorAll('.control-btn:not(.copy-btn)');
+            
+            controlButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const className = this.getAttribute('data-class');
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // 같은 섹션의 다른 버튼들 비활성화
+                        const section = this.closest('.component-section');
+                        const sectionButtons = section.querySelectorAll('.control-btn:not(.copy-btn)');
+                        sectionButtons.forEach(btn => btn.classList.remove('active'));
+                        
+                        // 현재 버튼 활성화
+                        this.classList.add('active');
+                        
+                        // 클래스 적용
+                        if (className) {
+                            // svg-animated 클래스는 유지하고 다른 클래스만 변경
+                            const baseClasses = targetElement.className.split(' ').filter(cls => 
+                                cls !== 'error' && cls !== 'disabled' && cls !== 'readonly'
+                            );
+                            targetElement.className = baseClasses.join(' ') + ' ' + className;
+                            
+                            // 입력 필드 상태에 따른 처리
+                            const inputs = targetElement.querySelectorAll('input');
+                            inputs.forEach(input => {
+                                if (className === 'disabled') {
+                                    input.disabled = true;
+                                    input.readOnly = false;
+                                } else if (className === 'readonly') {
+                                    input.readOnly = true;
+                                    input.disabled = false;
+                                } else if (className === 'error') {
+                                    input.setAttribute('aria-invalid', 'true');
+                                    input.disabled = false;
+                                    input.readOnly = false;
+                                } else {
+                                    input.disabled = false;
+                                    input.readOnly = false;
+                                    input.removeAttribute('aria-invalid');
+                                }
+                            });
+                        } else {
+                            // 기본 상태로 복원 (svg-animated 클래스는 유지)
+                            const baseClasses = targetElement.className.split(' ').filter(cls => 
+                                cls !== 'error' && cls !== 'disabled' && cls !== 'readonly'
+                            );
+                            targetElement.className = baseClasses.join(' ');
+                            
+                            // 기본 상태로 복원
+                            const inputs = targetElement.querySelectorAll('input');
+                            inputs.forEach(input => {
+                                input.disabled = false;
+                                input.readOnly = false;
+                                input.removeAttribute('aria-invalid');
+                            });
+                        }
+                    }
+                });
+            });
+
+            // 소스 복사 기능
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sourceId = this.getAttribute('data-copy');
+                    const sourceElement = document.getElementById(sourceId);
+                    
+                    if (sourceElement) {
+                        // 소스 코드를 클립보드에 복사
+                        navigator.clipboard.writeText(sourceElement.textContent).then(function() {
+                            showToast('소스 코드가 복사되었습니다!', 'success');
+                        }).catch(function(err) {
+                            // 폴백: 텍스트 선택 후 복사
+                            const range = document.createRange();
+                            range.selectNode(sourceElement);
+                            window.getSelection().removeAllRanges();
+                            window.getSelection().addRange(range);
+                            
+                            try {
+                                document.execCommand('copy');
+                                showToast('소스 코드가 복사되었습니다!', 'success');
+                            } catch (err) {
+                                showToast('복사에 실패했습니다.', 'error');
+                            }
+                            
+                            window.getSelection().removeAllRanges();
+                        });
+                    }
+                });
+            });
+
+            // 토스트 메시지 표시
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = `toast ${type}`;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // 초기 상태 설정 (첫 번째 버튼 활성화)
+            const sections = document.querySelectorAll('.component-section');
+            sections.forEach(section => {
+                const firstButton = section.querySelector('.control-btn:not(.copy-btn)');
+                if (firstButton) {
+                    firstButton.classList.add('active');
+                }
+            });
+
+            // 인증번호 입력 필드 자동 포커스 이동
+            const authCodeInputs = document.querySelectorAll('#guide-auth-code-input-1, #guide-auth-code-input-2, #guide-auth-code-input-3, #guide-auth-code-input-4, #guide-auth-code-input-5, #guide-auth-code-input-6');
+            
+            authCodeInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    
+                    // 숫자가 아닌 문자 제거
+                    if (!/^[0-9]$/.test(value)) {
+                        e.target.value = '';
+                        return;
+                    }
+                    
+                    // 다음 필드로 자동 이동
+                    if (value && index < authCodeInputs.length - 1) {
+                        authCodeInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    // 백스페이스 키 처리
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        authCodeInputs[index - 1].focus();
+                    }
+                });
+                
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text');
+                    const numbers = pastedData.replace(/\D/g, '').slice(0, 6);
+                    
+                    // 각 필드에 숫자 할당
+                    numbers.split('').forEach((num, i) => {
+                        if (authCodeInputs[i]) {
+                            authCodeInputs[i].value = num;
+                        }
+                    });
+                    
+                    // 마지막 입력된 필드로 포커스 이동
+                    const lastIndex = Math.min(numbers.length - 1, authCodeInputs.length - 1);
+                    authCodeInputs[lastIndex].focus();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

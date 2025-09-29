@@ -882,6 +882,7 @@ body {
   &-container {
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
   &-row {
     display: flex;
@@ -958,6 +959,7 @@ body {
       border:none;
       background: transparent;
       color: var(--text-primary);
+      resize: none;
 
       @include body-large;
     }
@@ -969,6 +971,27 @@ body {
       background-color: var(--bg-disabled);
     }
   }
+  &-function {
+    display: flex;
+    justify-content: space-between;
+    width:100%;
+    margin-top:var(--spacing-md);
+
+    &-message {
+      color:var(--text-quaternary);
+      font-weight: 300;
+      @include detail-large;
+
+      svg {
+        display: none;
+      }
+    }
+    &-count {
+      color:var(--text-quaternary);
+      font-weight: 300;
+      @include detail-large;
+    }
+  }
   &-field {
     display: flex;
     align-items: center;
@@ -978,7 +1001,6 @@ body {
     padding:0 var(--spacing-xl);
     border: 1px solid var(--border-secondary);
     border-radius: var(--radius-md);
-
 
     &.line {
       padding:0;
@@ -1118,12 +1140,34 @@ body {
         color: var(--text-brand);
         @include body-small;
       }
+      & + .input-function .input-function-message,
+      & + .input-function .input-function-number {
+        color: var(--text-brand) !important;
+      }
+    }
+    &.error {
+      
+      & + .input-function .input-function-message {
+        
+        color: #e53838 !important;
+
+        svg {
+          display: inline-block;
+        }
+      }
+      & + .input-function .input-function-number {
+        color: #e53838 !important;
+      }
     }
     &.typing {
       .input-field-inner-label {
         position: static;
         color: var(--text-brand);
         @include body-small;
+      }
+      & + .input-function .input-function-message,
+      & + .input-function .input-function-number {
+        color: var(--text-brand) !important;
       }
     }
 
