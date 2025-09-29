@@ -76,10 +76,6 @@
             background-color: #f8f9fa;
         }
         
-        .calendar-day.other-month {
-            color: #ccc;
-            background-color: #fafafa;
-        }
         
         .calendar-day.today {
             background-color: #e3f2fd;
@@ -99,7 +95,7 @@
         }
         
         /* 마지막 줄의 하단 테두리 제거 */
-        .calendar-day:nth-child(n+36) {
+        .calendar-day:nth-child(n+29) {
             border-bottom: none;
         }
         
@@ -161,10 +157,10 @@
 
 </head>
 <body>
-    <div class="calendar" role="widget" aria-label="2024년 9월 달력">
+    <div class="calendar" role="table" aria-label="2025년 9월 출석체크 달력">
         <!-- 월 표시 헤더 -->
         <div class="calendar-header">
-            <h2 class="calendar-month" id="calendar-title">9월 2024</h2>
+            <h2 class="calendar-month" id="calendar-title">9월 2025</h2>
         </div>
         
         <!-- 요일 표시 -->
@@ -178,49 +174,41 @@
             <div class="calendar-weekday" role="columnheader" aria-label="토요일">토</div>
         </div>
         
-        <!-- 날짜 그리드 -->
-        <div class="calendar-days" role="grid" aria-labelledby="calendar-title">
-            <!-- 8월 말 일부 날짜 (회색) -->
-            <div class="calendar-day other-month" role="gridcell" tabindex="-1" aria-label="8월 31일">31</div>
-            
-            <!-- 9월 날짜 -->
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 1일">1</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 2일">2</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 3일">3</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 4일">4</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 5일">5</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 6일">6</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 7일">7</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 8일">8</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 9일">9</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 10일">10</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 11일">11</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 12일">12</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 13일">13</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 14일">14</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 15일">15</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 16일">16</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 17일">17</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 18일">18</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 19일">19</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 20일">20</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 21일">21</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 22일">22</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 23일">23</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 24일">24</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 25일">25</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 26일">26</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 27일">27</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 28일">28</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 29일">29</div>
-            <div class="calendar-day" role="gridcell" tabindex="-1" aria-label="9월 30일">30</div>
-            
-            <!-- 10월 첫 주 일부 날짜 (회색) -->
-            <div class="calendar-day other-month" role="gridcell" tabindex="-1" aria-label="10월 1일">1</div>
-            <div class="calendar-day other-month" role="gridcell" tabindex="-1" aria-label="10월 2일">2</div>
-            <div class="calendar-day other-month" role="gridcell" tabindex="-1" aria-label="10월 3일">3</div>
-            <div class="calendar-day other-month" role="gridcell" tabindex="-1" aria-label="10월 4일">4</div>
-            <div class="calendar-day other-month" role="gridcell" tabindex="-1" aria-label="10월 5일">5</div>
+        <!-- 출석체크 날짜 그리드 -->
+        <div class="calendar-days" role="rowgroup" aria-labelledby="calendar-title">
+            <!-- 9월 출석체크 날짜 -->
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 1일 출석체크" data-date="2025-09-01"><span>1</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 2일 출석체크" data-date="2025-09-02"><span>2</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 3일 출석체크" data-date="2025-09-03"><span>3</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 4일 출석체크" data-date="2025-09-04"><span>4</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 5일 출석체크" data-date="2025-09-05"><span>5</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 6일 출석체크" data-date="2025-09-06"><span>6</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 7일 출석체크" data-date="2025-09-07"><span>7</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 8일 출석체크" data-date="2025-09-08"><span>8</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 9일 출석체크" data-date="2025-09-09"><span>9</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 10일 출석체크" data-date="2025-09-10"><span>10</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 11일 출석체크" data-date="2025-09-11"><span>11</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 12일 출석체크" data-date="2025-09-12"><span>12</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 13일 출석체크" data-date="2025-09-13"><span>13</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 14일 출석체크" data-date="2025-09-14"><span>14</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 15일 출석체크" data-date="2025-09-15"><span>15</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 16일 출석체크" data-date="2025-09-16"><span>16</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 17일 출석체크" data-date="2025-09-17"><span>17</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 18일 출석체크" data-date="2025-09-18"><span>18</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 19일 출석체크" data-date="2025-09-19"><span>19</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 20일 출석체크" data-date="2025-09-20"><span>20</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 21일 출석체크" data-date="2025-09-21"><span>21</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 22일 출석체크" data-date="2025-09-22"><span>22</span></div>
+
+
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 23일 출석체크" data-date="2025-09-23"><span>23</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 24일 출석체크" data-date="2025-09-24"><span>24</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 25일 출석체크" data-date="2025-09-25"><span>25</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 26일 출석체크" data-date="2025-09-26"><span>26</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 27일 출석체크" data-date="2025-09-27"><span>27</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 28일 출석체크" data-date="2025-09-28"><span>28</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 29일 출석체크" data-date="2025-09-29"><span>29</span></div>
+            <div class="calendar-day" role="cell" tabindex="0" aria-label="9월 30일 출석체크" data-date="2025-09-30"><span>30</span></div>
         </div>
     </div>
 </body>
