@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입력 필드 컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        .guide-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "OneShinhan", sans-serif;
+        }
+
+        .guide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .guide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .guide-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .component-section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .component-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .component-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .control-select {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .control-select:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .component-demo {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-source {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .component-source.show {
+            display: block;
+        }
+
+        /* 예제 컴포넌트 스타일 */
+        .example-button {
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .example-button.large {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+
+        .example-button.small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .example-button.secondary {
+            background: #6b7280;
+        }
+
+        .example-button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .example-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .example-card.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border-color: #374151;
+        }
+
+        .example-card.compact {
+            padding: 16px;
+        }
+
+        .example-card.large {
+            padding: 32px;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .example-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+
+        .example-list.compact li {
+            padding: 8px 12px;
+        }
+
+        .example-list.large li {
+            padding: 16px 20px;
+        }
+
+        .example-list.dark li {
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 15px;
+            }
+            
+            .component-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .component-demo {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1 class="guide-title">상단 영역 bg 케이스</h1>
+            <p class="guide-description">
+                각 케이스별로 다양한 스타일과 상태를 확인해보세요.
+            </p>
+        </div>
+      
+
+        <!-- Basic/Box/InputField 케이스 -->
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">Basic/Box/InputField</h2>
+                <div class="control-buttons">
+                    <select class="control-select" id="background-type-selector">
+                        <option value="background-type01">타입01</option>
+                        <option value="background-type02">타입02</option>
+                    </select>
+                    <button class="control-btn copy-btn" data-copy="input-field-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <!--  -->
+                <div class="top-header background-type01">
+                    <div class="inner-box">1</div>
+                    <div class="inner-box">2</div>
+                </div>
+                <!--  -->
+            </div>
+            <div class="component-source" id="input-field-source">
+&lt;div class="top-header background-type01"&gt;
+    &lt;div class="inner-box"&gt;1&lt;/div&gt;
+    &lt;div class="inner-box"&gt;2&lt;/div&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 셀렉트박스 변경 이벤트
+            const backgroundTypeSelector = document.getElementById('background-type-selector');
+            const backgroundElement = document.querySelector('.top-header');
+            const sourceElement = document.getElementById('input-field-source');
+            
+            function updateSourceCode() {
+                const currentClass = backgroundElement.className;
+                const sourceCode = `&lt;div class="${currentClass}"&gt;
+    &lt;div class="inner-box"&gt;1&lt;/div&gt;
+    &lt;div class="inner-box"&gt;2&lt;/div&gt;
+&lt;/div&gt;`;
+                sourceElement.innerHTML = sourceCode;
+            }
+            
+            if (backgroundTypeSelector && backgroundElement && sourceElement) {
+                backgroundTypeSelector.addEventListener('change', function() {
+                    const selectedClass = this.value;
+                    
+                    // 배경 타입 클래스들만 제거 (top-header는 유지)
+                    backgroundElement.classList.remove('background-type01', 'background-type02');
+                    
+                    // 선택된 클래스 추가
+                    if (selectedClass) {
+                        backgroundElement.classList.add(selectedClass);
+                    } else {
+                        // 기본값이면 background-type01 추가
+                        backgroundElement.classList.add('background-type01');
+                    }
+                    
+                    // 소스 코드 업데이트
+                    updateSourceCode();
+                });
+                
+                // 초기 소스 코드 설정
+                updateSourceCode();
+                
+                // 초기 상태 설정 (셀렉트박스 기본값 설정)
+                backgroundTypeSelector.value = 'background-type01';
+            }
+
+            // 소스 복사 기능
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sourceId = this.getAttribute('data-copy');
+                    const sourceElement = document.getElementById(sourceId);
+                    
+                    if (sourceElement) {
+                        // HTML 엔티티를 실제 HTML로 변환
+                        const htmlContent = sourceElement.innerHTML
+                            .replace(/&lt;/g, '<')
+                            .replace(/&gt;/g, '>')
+                            .replace(/&amp;/g, '&');
+                        
+                        // 소스 코드를 클립보드에 복사
+                        navigator.clipboard.writeText(htmlContent).then(function() {
+                            alert('소스 코드가 복사되었습니다!');
+                        }).catch(function(err) {
+                            // 폴백: 텍스트 선택 후 복사
+                            const range = document.createRange();
+                            range.selectNode(sourceElement);
+                            window.getSelection().removeAllRanges();
+                            window.getSelection().addRange(range);
+                            
+                            try {
+                                document.execCommand('copy');
+                                alert('소스 코드가 복사되었습니다!');
+                            } catch (err) {
+                                alert('복사에 실패했습니다.');
+                            }
+                            
+                            window.getSelection().removeAllRanges();
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
