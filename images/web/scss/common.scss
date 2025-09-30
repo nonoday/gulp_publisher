@@ -1432,3 +1432,48 @@ body {
   @include body-medium;
 }
 
+.certification {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top:var(--spacing-md);
+
+  &-timer {
+    margin-right:var(--spacing-md);
+
+    color:var(--text-brand);
+
+    @include body-small;
+  }
+
+  &-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 32px;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-xs);
+    background: var(--bg-brand);
+    color: var(--text-brand);
+    
+    @include body-small;
+  }
+
+  &-center {
+    justify-content: center;
+  }
+
+  &.disabled {
+
+    .certification-timer {
+      color: var(--text-disabled-same);
+    }
+
+    .certification-button {
+      background: var(--bg-disabled);
+      color: var(--text-disabled-same);
+    }
+  }
+
+}
