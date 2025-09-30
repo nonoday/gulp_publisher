@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>만보걷기 현황</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../../images/web/new_css/common.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "DigitalOneShinhan", "OneShinhan", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--bg-canvas-white, #ffffff);
+            color: var(--text-primary, #101828);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        #wrap {
+            min-height: 100vh;
+            max-width: 375px;
+            margin: 0 auto;
+            background: var(--bg-canvas-white, #ffffff);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 44px;
+            padding: 0 var(--spacing-2xl, 20px);
+            font-size: 12px;
+            letter-spacing: 0.02em;
+            color: var(--text-primary, #101828);
+        }
+
+        .status-bar__icons {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm, 4px);
+        }
+
+        .status-bar__battery {
+            position: relative;
+            width: 24px;
+            height: 12px;
+            border: 1.5px solid var(--text-primary, #101828);
+            border-radius: 3px;
+        }
+
+        .status-bar__battery::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -3px;
+            width: 2px;
+            height: 6px;
+            border-radius: 1px;
+            background: var(--text-primary, #101828);
+            transform: translateY(-50%);
+        }
+
+        .status-bar__battery-level {
+            position: absolute;
+            inset: 2px;
+            border-radius: 1px;
+            background: var(--text-primary, #101828);
+        }
+
+        .status-icon {
+            width: 16px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--text-primary, #101828);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-icon::before,
+        .status-icon::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            width: 3px;
+            background: var(--text-primary, #101828);
+        }
+
+        .status-icon::before {
+            left: 3px;
+            height: 60%;
+        }
+
+        .status-icon::after {
+            left: 8px;
+            height: 90%;
+        }
+
+        .header-area {
+            padding: 0 var(--spacing-2xl, 20px);
+            border-bottom: 1px solid var(--border-tertiary, #f0f4fa);
+        }
+
+        .navigation-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+
+        .navigation-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 26px;
+            letter-spacing: -0.36px;
+            color: var(--text-primary, #101828);
+        }
+
+        .icon-button {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .content-area {
+            flex: 1;
+            padding-bottom: var(--spacing-6xl, 48px);
+            background: var(--bg-canvas-gray, #f0f4fa);
+        }
+
+        .hero-section {
+            background: linear-gradient(180deg, var(--bg-canvas-white, #ffffff) 0%, var(--bg-canvas-gray, #f0f4fa) 100%);
+            padding: var(--spacing-3xl, 24px) var(--spacing-2xl, 20px) var(--spacing-4xl, 32px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-3xl, 24px);
+        }
+
+        .hero-summary {
+            width: 100%;
+            max-width: 335px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-lg, 12px);
+            text-align: center;
+        }
+
+        .hero-label {
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            font-weight: 500;
+            color: var(--text-brand, #005df9);
+        }
+
+        .hero-value {
+            font-size: 32px;
+            line-height: 48px;
+            letter-spacing: -0.64px;
+            font-weight: 800;
+            color: var(--text-primary, #101828);
+        }
+
+        .hero-message {
+            margin: 0;
+            font-size: 14px;
+            line-height: 24px;
+            letter-spacing: -0.28px;
+            font-weight: 300;
+            color: var(--text-tertiary, #475467);
+        }
+
+        .hero-illustration {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-illustration img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .progress-area {
+            width: 100%;
+            max-width: 335px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md, 8px);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            border-radius: var(--radius-xxs, 4px);
+            background: var(--bg-ongray-gray_a10, rgba(102, 112, 133, 0.1));
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #94abfa 0%, var(--brand-500, #005df9) 100%);
+            width: 52.37%;
+        }
+
+        .progress-scale {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            font-size: 12px;
+            line-height: 20px;
+            color: var(--text-quaternary, #667085);
+        }
+
+        .progress-milestones {
+            display: flex;
+            gap: var(--spacing-md, 8px);
+        }
+
+        .milestone-chip {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            padding: 0 var(--spacing-lg, 12px);
+            border-radius: var(--radius-full, 9999px);
+            border: 1px solid var(--border-secondary, #e4e7ec);
+            background: var(--bg-canvas-white, #ffffff);
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.24px;
+            color: var(--text-quaternary, #667085);
+            font-weight: 500;
+        }
+
+        .milestone-chip.is-active {
+            background: var(--bg-brand, #ebf0ff);
+            border-color: transparent;
+            color: var(--text-brand, #005df9);
+        }
+
+        .hero-actions {
+            width: 100%;
+            max-width: 335px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md, 8px);
+        }
+
+        .cta-button {
+            width: 100%;
+            border: none;
+            border-radius: var(--radius-xl, 16px);
+            background: var(--brand-500, #005df9);
+            color: var(--text-ondark-primary-same, #ffffff);
+            font-size: 16px;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            font-weight: 600;
+            padding: var(--spacing-lg, 12px) var(--spacing-2xl, 20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm, 4px);
+            box-shadow: 0px 10px 24px rgba(0, 93, 249, 0.25);
+            cursor: pointer;
+        }
+
+        .cta-indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1.6px solid var(--text-ondark-primary-same, #ffffff);
+            display: inline-flex;
+        }
+
+        .cta-helper {
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
+            color: var(--text-quaternary, #667085);
+            text-align: center;
+        }
+
+        .main-section {
+            padding: 0 var(--spacing-2xl, 20px);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-4xl, 32px);
+        }
+
+        .integration-card {
+            width: 100%;
+            padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+            border-radius: var(--radius-xl, 16px);
+            background: rgba(82, 144, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg, 12px);
+        }
+
+        .integration-card__content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs, 2px);
+        }
+
+        .integration-card__title {
+            margin: 0;
+            font-size: 16px;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            font-weight: 500;
+            color: var(--text-primary, #101828);
+        }
+
+        .integration-card__description {
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.26px;
+            color: var(--text-brand, #005df9);
+        }
+
+        .integration-card__media {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-xl, 16px);
+            overflow: hidden;
+            background: var(--bg-canvas-white, #ffffff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100%;
+            background: var(--bg-canvas-white, #ffffff);
+            border-radius: var(--radius-xl, 16px);
+            box-shadow: 0px 4px 16px rgba(12, 17, 29, 0.06);
+        }
+
+        .card--placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-lg, 12px);
+            padding: var(--spacing-3xl, 24px) var(--spacing-2xl, 20px);
+            text-align: center;
+        }
+
+        .card--placeholder__image {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card--placeholder__title {
+            margin: 0;
+            font-size: 16px;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            font-weight: 500;
+            color: var(--text-secondary, #344054);
+        }
+
+        .card--placeholder__description {
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.26px;
+            color: var(--text-quaternary, #667085);
+        }
+
+        .stats-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-2xl, 20px);
+            padding: var(--spacing-3xl, 24px) var(--spacing-2xl, 20px);
+        }
+
+        .stats-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 var(--spacing-lg, 12px);
+            height: 24px;
+            border-radius: var(--radius-full, 9999px);
+            background: var(--bg-ongray-graylight_a5, rgba(102, 112, 133, 0.05));
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.24px;
+            font-weight: 500;
+            color: var(--text-quaternary, #667085);
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs, 2px);
+            text-align: center;
+        }
+
+        .stats-total {
+            margin: 0;
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            font-weight: 700;
+            color: var(--text-secondary, #344054);
+        }
+
+        .stats-total span {
+            font-weight: 500;
+        }
+
+        .stats-description {
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.26px;
+            color: var(--text-quaternary, #667085);
+        }
+
+        .stats-description span {
+            color: var(--text-brand, #005df9);
+            font-weight: 500;
+        }
+
+        .stats-banner {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm, 4px);
+            padding: var(--spacing-sm, 4px) var(--spacing-lg, 12px);
+            border-radius: var(--radius-md, 12px);
+            background: var(--bg-graylight, #f8f9fc);
+        }
+
+        .stats-banner__icon {
+            width: 24px;
+            height: 24px;
+            background: url("http://localhost:3845/assets/fa77f6cb4c40dc6b934d28f758c8a042401735f1.svg") center/contain no-repeat;
+            flex-shrink: 0;
+        }
+
+        .stats-banner p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.26px;
+            font-weight: 500;
+            color: var(--text-tertiary, #475467);
+        }
+
+        .stats-chart {
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            gap: var(--spacing-lg, 12px);
+            position: relative;
+        }
+
+        .stats-chart__scale {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-self: stretch;
+            font-size: 11px;
+            line-height: 18px;
+            letter-spacing: -0.22px;
+            color: var(--text-tertiary, #475467);
+            padding-right: var(--spacing-sm, 4px);
+        }
+
+        .stats-chart__scale span:first-child {
+            margin-top: 2px;
+        }
+
+        .stats-chart__bars {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            gap: var(--spacing-md, 8px);
+            height: 168px;
+            padding: var(--spacing-md, 8px) 0 var(--spacing-lg, 12px);
+            border-bottom: 1px solid var(--border-secondary, #e4e7ec);
+        }
+
+        .stats-chart__bars::before,
+        .stats-chart__bars::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-secondary, #e4e7ec);
+        }
+
+        .stats-chart__bars::before {
+            bottom: 50%;
+        }
+
+        .stats-chart__bars::after {
+            top: 0;
+        }
+
+        .stats-bar {
+            --bar-height: 20;
+            position: relative;
+            flex: 1;
+            max-width: 32px;
+            height: calc(var(--bar-height) * 1%);
+            border-radius: var(--radius-xs, 8px) var(--radius-xs, 8px) var(--radius-xxs, 4px) var(--radius-xxs, 4px);
+            background: var(--bg-brand, #ebf0ff);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: var(--spacing-sm, 4px);
+            padding-bottom: var(--spacing-sm, 4px);
+        }
+
+        .stats-bar--low {
+            background: rgba(0, 155, 219, 0.7);
+        }
+
+        .stats-bar--mid {
+            background: var(--brand-400, #4c7dff);
+        }
+
+        .stats-bar--high {
+            background: rgba(133, 133, 255, 0.95);
+        }
+
+        .stats-bar__day {
+            font-size: 11px;
+            line-height: 18px;
+            letter-spacing: -0.22px;
+            color: var(--text-tertiary, #475467);
+        }
+
+        .stats-bar__tooltip {
+            position: absolute;
+            top: -36px;
+            display: inline-flex;
+            padding: 6px 12px;
+            border-radius: var(--radius-xs, 8px);
+            background: var(--bg-canvas-white, #ffffff);
+            color: var(--text-tertiary, #475467);
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.24px;
+            font-weight: 500;
+            box-shadow: 0px 4px 16px rgba(12, 17, 29, 0.06);
+            border: 1px solid var(--border-primary, #d0d5dd);
+        }
+
+        .stats-bar__tooltip::after {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--bg-canvas-white, #ffffff) transparent transparent transparent;
+        }
+
+        .stats-legend {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: var(--spacing-xl, 16px);
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.24px;
+            color: var(--text-tertiary, #475467);
+        }
+
+        .stats-legend li {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm, 4px);
+        }
+
+        .stats-legend__swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .stats-legend__swatch--low {
+            background: rgba(0, 155, 219, 0.7);
+        }
+
+        .stats-legend__swatch--mid {
+            background: var(--brand-400, #4c7dff);
+        }
+
+        .stats-legend__swatch--high {
+            background: rgba(133, 133, 255, 0.95);
+        }
+
+        .card-header {
+            padding: var(--spacing-2xl, 20px) var(--spacing-2xl, 20px) 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-md, 8px);
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: -0.36px;
+            font-weight: 500;
+            color: var(--text-primary, #101828);
+        }
+
+        .text-button {
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            font-weight: 500;
+            color: var(--text-brand, #005df9);
+            text-decoration: underline;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .challenge-list {
+            list-style: none;
+            margin: 0;
+            padding: var(--spacing-2xl, 20px) 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .challenge-item {
+            display: flex;
+            gap: var(--spacing-lg, 12px);
+            padding: var(--spacing-xl, 16px) var(--spacing-2xl, 20px);
+        }
+
+        .challenge-item + .challenge-item {
+            border-top: 1px solid var(--border-tertiary, #f0f4fa);
+        }
+
+        .challenge-icon {
+            flex: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background: var(--bg-ongray-graylight_a5, rgba(102, 112, 133, 0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-sm, 4px);
+        }
+
+        .challenge-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm, 4px);
+        }
+
+        .challenge-title {
+            margin: 0;
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            font-weight: 500;
+            color: var(--text-secondary, #344054);
+        }
+
+        .challenge-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm, 4px);
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 var(--spacing-md, 8px);
+            height: 22px;
+            border-radius: var(--radius-full, 9999px);
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.24px;
+            font-weight: 500;
+        }
+
+        .badge--blue {
+            background: var(--bg-brand, #ebf0ff);
+            color: var(--text-brand, #005df9);
+        }
+
+        .badge--red {
+            background: var(--bg-negative, #fff6f5);
+            color: var(--text-new-same, #f44f4f);
+        }
+
+        .badge--gray {
+            background: var(--bg-ongray-graylight_a5, rgba(102, 112, 133, 0.05));
+            color: var(--text-quaternary, #667085);
+        }
+
+        .meta-text {
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.26px;
+            color: var(--text-quaternary, #667085);
+            font-weight: 300;
+        }
+
+        .info-card {
+            width: 100%;
+            background: var(--bg-canvas-white, #ffffff);
+            border-radius: var(--radius-xl, 16px);
+            padding: var(--spacing-xl, 16px) 0;
+            box-shadow: 0px 4px 16px rgba(12, 17, 29, 0.06);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm, 4px);
+            position: relative;
+        }
+
+        .info-card__item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg, 12px);
+            padding: var(--spacing-md, 8px) var(--spacing-2xl, 20px);
+        }
+
+        .info-card__item + .info-card__item {
+            border-top: 1px solid var(--border-tertiary, #f0f4fa);
+        }
+
+        .info-icon {
+            flex: none;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-texts {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs, 2px);
+        }
+
+        .info-title {
+            margin: 0;
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            font-weight: 500;
+            color: var(--text-secondary, #344054);
+        }
+
+        .info-description {
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.26px;
+            color: var(--text-quaternary, #667085);
+            font-weight: 300;
+        }
+
+        .info-card__mascot {
+            position: absolute;
+            top: -18px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-action {
+            flex: none;
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.24px;
+            font-weight: 500;
+            color: var(--text-brand, #005df9);
+            background: rgba(0, 93, 249, 0.1);
+            border-radius: var(--radius-full, 9999px);
+            padding: 4px var(--spacing-md, 8px);
+            border: none;
+            cursor: pointer;
+        }
+
+        .enjoy-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl, 16px);
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 16px;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            font-weight: 500;
+            color: var(--text-primary, #101828);
+        }
+
+        .enjoy-card {
+            background: var(--bg-canvas-white, #ffffff);
+            border-radius: var(--radius-xl, 16px);
+            padding: var(--spacing-2xl, 20px);
+            box-shadow: 0px 4px 16px rgba(12, 17, 29, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg, 12px);
+        }
+
+        .enjoy-subtitle {
+            margin: 0;
+            font-size: 14px;
+            line-height: 22px;
+            letter-spacing: -0.28px;
+            font-weight: 500;
+            color: var(--text-secondary, #344054);
+        }
+
+        .bullet-list {
+            margin: 0;
+            padding-left: var(--spacing-3xl, 24px);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md, 8px);
+        }
+
+        .bullet-list li {
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: -0.26px;
+            color: var(--text-quaternary, #667085);
+        }
+
+        .notice-card {
+            background: var(--bg-canvas-white, #ffffff);
+            border-radius: var(--radius-xl, 16px);
+            padding: var(--spacing-2xl, 20px);
+            box-shadow: 0px 4px 16px rgba(12, 17, 29, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-md, 8px);
+        }
+
+        .notice-title {
+            margin: 0;
+            font-size: 16px;
+            line-height: 26px;
+            letter-spacing: -0.32px;
+            font-weight: 500;
+            color: var(--text-secondary, #344054);
+        }
+
+        .notice-icon {
+            width: 20px;
+            height: 20px;
+            background: url("../../../images/icon/icon_chevron_right.svg") center/contain no-repeat;
+            transform: rotate(90deg);
+        }
+
+        .home-indicator {
+            margin: var(--spacing-3xl, 24px) auto var(--spacing-lg, 12px);
+            width: 134px;
+            height: 4px;
+            border-radius: 100px;
+            background: var(--text-primary, #101828);
+        }
+
+        @media (min-width: 768px) {
+            body {
+                background: linear-gradient(135deg, #edf1ff 0%, #ffffff 100%);
+            }
+
+            #wrap {
+                margin-top: var(--spacing-4xl, 32px);
+                margin-bottom: var(--spacing-4xl, 32px);
+                border-radius: var(--radius-2xl, 24px);
+                box-shadow: 0px 24px 48px rgba(12, 17, 29, 0.12);
+            }
+
+            .content-area {
+                border-radius: 0 0 var(--radius-2xl, 24px) var(--radius-2xl, 24px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap" class="new-wrap step-dashboard">
+        <div class="status-bar" aria-hidden="true">
+            <span class="status-bar__time">9:41</span>
+            <div class="status-bar__icons">
+                <span class="status-icon"></span>
+                <div class="status-bar__battery"><span class="status-bar__battery-level"></span></div>
+            </div>
+        </div>
+
+        <header class="header-area">
+            <div class="navigation-bar">
+                <button type="button" class="icon-button" aria-label="이전으로">
+                    <img src="../../../images/icon/icon_chevron_left.svg" alt="이전" width="24" height="24">
+                </button>
+                <h1 class="navigation-title">만보걷기</h1>
+                <button type="button" class="icon-button" aria-label="홈으로">
+                    <img src="../../../images/icon/icon_home.svg" alt="홈" width="24" height="24">
+                </button>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <section class="hero-section">
+                <div class="hero-summary">
+                    <p class="hero-label">오늘 걸음수</p>
+                    <p class="hero-value">5,237</p>
+                    <p class="hero-message">오랜만이에요!<br>6일만에 다시오셨네요.</p>
+                </div>
+
+                <figure class="hero-illustration" aria-hidden="true">
+                    <img src="http://localhost:3845/assets/ad1990ff6188bdb537e80a34707a18c0d4daeb5b.png" alt="신한 프렌즈 캐릭터가 걷는 일러스트">
+                </figure>
+
+                <div class="progress-area" aria-label="오늘 걸음수 진행률">
+                    <div class="progress-track">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="progress-scale">
+                        <span>0</span>
+                        <div class="progress-milestones">
+                            <span class="milestone-chip is-active">5,000</span>
+                            <span class="milestone-chip">10,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button type="button" class="cta-button">출석 포인트 받기<span class="cta-indicator" aria-hidden="true"></span></button>
+                    <p class="cta-helper">만보걷기로 포인트 받는 중</p>
+                </div>
+            </section>
+
+            <div class="main-section">
+                <article class="integration-card" aria-label="삼성헬스 연결 안내">
+                    <div class="integration-card__content">
+                        <h2 class="integration-card__title">삼성헬스를 연결해보세요!</h2>
+                        <p class="integration-card__description">좀 더 편리하게 걸음 수를 확인할 수 있어요.</p>
+                    </div>
+                    <div class="integration-card__media">
+                        <img src="http://localhost:3845/assets/dbe68fa8ac125ef9e4d420457eede840ac1a15c4.png" alt="삼성헬스 로고">
+                    </div>
+                </article>
+
+                <section class="card card--placeholder" aria-label="챌린지 준비중 안내">
+                    <div class="card--placeholder__image" aria-hidden="true">
+                        <img src="http://localhost:3845/assets/3e99774bcd496ef82083df912fcab4a9da113e5b.png" alt="준비 중인 챌린지 캐릭터">
+                    </div>
+                    <div>
+                        <p class="card--placeholder__title">준비 중이에요!</p>
+                        <p class="card--placeholder__description">새로운 챌린지를 기대해 주세요.</p>
+                    </div>
+                </section>
+
+                <section class="card stats-card" aria-labelledby="weekly-stats-title">
+                    <span class="stats-badge">지난 주</span>
+                    <div class="stats-summary">
+                        <p id="weekly-stats-title" class="stats-total">49,000<span>걸음</span></p>
+                        <p class="stats-description"><span>1일 평균 7,000걸음</span>을 걸었어요!</p>
+                    </div>
+                    <div class="stats-banner" aria-hidden="true">
+                        <span class="stats-banner__icon"></span>
+                        <p>걷기 미션 성공!</p>
+                    </div>
+                    <div class="stats-chart" role="img" aria-describedby="weekly-stats-summary">
+                        <span id="weekly-stats-summary" class="sr-only">일요일 1,200걸음, 월요일 5,800걸음, 화요일 6,800걸음, 수요일 6,300걸음, 목요일 10,800걸음, 금요일 12,539걸음, 토요일 2,400걸음</span>
+                        <div class="stats-chart__scale" aria-hidden="true">
+                            <span>1만보</span>
+                            <span>5천보</span>
+                        </div>
+                        <div class="stats-chart__bars">
+                            <div class="stats-bar stats-bar--low" style="--bar-height: 20">
+                                <span class="stats-bar__day">일</span>
+                            </div>
+                            <div class="stats-bar stats-bar--mid" style="--bar-height: 58">
+                                <span class="stats-bar__day">월</span>
+                            </div>
+                            <div class="stats-bar stats-bar--mid" style="--bar-height: 68">
+                                <span class="stats-bar__day">화</span>
+                            </div>
+                            <div class="stats-bar stats-bar--mid" style="--bar-height: 64">
+                                <span class="stats-bar__day">수</span>
+                            </div>
+                            <div class="stats-bar stats-bar--high" style="--bar-height: 90">
+                                <span class="stats-bar__day">목</span>
+                            </div>
+                            <div class="stats-bar stats-bar--high" style="--bar-height: 100">
+                                <span class="stats-bar__tooltip">12,539</span>
+                                <span class="stats-bar__day">금</span>
+                            </div>
+                            <div class="stats-bar stats-bar--low" style="--bar-height: 24">
+                                <span class="stats-bar__day">토</span>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="stats-legend" aria-label="걸음수 범례">
+                        <li><span class="stats-legend__swatch stats-legend__swatch--low"></span>5천보 미만</li>
+                        <li><span class="stats-legend__swatch stats-legend__swatch--mid"></span>5천보 이상</li>
+                        <li><span class="stats-legend__swatch stats-legend__swatch--high"></span>1만보 이상</li>
+                    </ul>
+                </section>
+
+                <section class="card" aria-label="함께 걷기 챌린지">
+                    <div class="card-header">
+                        <h2 class="card-title">함께 걷기 챌린지</h2>
+                        <button type="button" class="text-button">한번에 보기</button>
+                    </div>
+                    <ul class="challenge-list">
+                        <li class="challenge-item">
+                            <div class="challenge-icon">
+                                <img src="http://localhost:3845/assets/4309ef81e1f985c61dbaf7a60181dc231243207f.svg" alt="운동화 아이콘">
+                            </div>
+                            <div class="challenge-content">
+                                <p class="challenge-title">음악 들으며 걷기 챌린지명이 최대 2줄까지 노출됩니다.</p>
+                                <div class="challenge-meta">
+                                    <span class="badge badge--blue">신청중</span>
+                                    <span class="meta-text">1,500명 신청</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="challenge-item">
+                            <div class="challenge-icon">
+                                <img src="http://localhost:3845/assets/e9dc1692ce4d24145a887ce34dfeb4f673b7784d.svg" alt="트로피 아이콘">
+                            </div>
+                            <div class="challenge-content">
+                                <p class="challenge-title">챌린지명이 최대 2줄까지 노출됩니다. 챌린지명이 최대 2줄까지 노출됩니다.</p>
+                                <div class="challenge-meta">
+                                    <span class="badge badge--red">참여중</span>
+                                    <span class="meta-text">3일 후 시작 or 70% 달성</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="challenge-item">
+                            <div class="challenge-icon">
+                                <img src="http://localhost:3845/assets/61c54a28e164f7bd580de28f6c3c3df3fd17462d.svg" alt="타깃 아이콘">
+                            </div>
+                            <div class="challenge-content">
+                                <p class="challenge-title">챌린지명이 최대 2줄까지 노출됩니다. 챌린지명이 최대 2줄까지 노출됩니다.</p>
+                                <div class="challenge-meta">
+                                    <span class="badge badge--gray">신청마감</span>
+                                    <span class="meta-text">선착순 500명</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="info-card" aria-label="만보걷기 정보">
+                    <div class="info-card__mascot" aria-hidden="true">
+                        <img src="http://localhost:3845/assets/c5a16ee7587fe40a32e02e6e3fa7ce3031ee56d8.png" alt="" width="36" height="36">
+                    </div>
+                    <div class="info-card__item">
+                        <div class="info-icon">
+                            <img src="http://localhost:3845/assets/f27c2787a419fae17a861d614857557300c5ec18.svg" alt="리워드 아이콘">
+                        </div>
+                        <div class="info-texts">
+                            <p class="info-title">매주 밀어서 행복포인트 드려요</p>
+                            <p class="info-description">원하는 요일마다 행복포인트를 쌓아보세요.</p>
+                        </div>
+                        <button type="button" class="info-action">설정</button>
+                    </div>
+                    <div class="info-card__item">
+                        <div class="info-icon">
+                            <img src="http://localhost:3845/assets/0c5636e34c0e46784ee879e2977d4a0c5e74d02d.svg" alt="달력 아이콘">
+                        </div>
+                        <div class="info-texts">
+                            <p class="info-title">나는 잘 걷고 있을까?</p>
+                            <p class="info-description">걸음리포트 보기</p>
+                        </div>
+                    </div>
+                    <div class="info-card__item">
+                        <div class="info-icon">
+                            <img src="http://localhost:3845/assets/47122df5b640871eb8d6cf1534495f082f955d96.svg" alt="포인트 아이콘">
+                        </div>
+                        <div class="info-texts">
+                            <p class="info-title">9월 내가 받은 포인트는?</p>
+                            <p class="info-description">적립포인트 보기</p>
+                        </div>
+                    </div>
+                    <div class="info-card__item">
+                        <div class="info-icon">
+                            <img src="http://localhost:3845/assets/e03644f842b1a49b01367b3986f7f3820a0b2607.svg" alt="물음표 아이콘">
+                        </div>
+                        <div class="info-texts">
+                            <p class="info-title">궁금한 점이 있다면?</p>
+                            <p class="info-description">자주하는 질문</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="enjoy-section" aria-label="만보걷기 이용 안내">
+                    <h2 class="section-title">이렇게 즐기세요!</h2>
+                    <div class="enjoy-card">
+                        <h3 class="enjoy-subtitle">참여방법</h3>
+                        <ul class="bullet-list">
+                            <li>만보걷기 당일 걸음 수와 포인트 적립현황은 만보걷기를 이용중인 신한 앱*에서만 확인 가능해요.</li>
+                            <li>신한 앱 : 신한 SOL뱅크, 신한 SOL페이, 신한 SOL증권, 신한 SOL라이프</li>
+                            <li>만보걷기 걸음 수는 이용중인 신한 앱이 설치된 휴대폰에서 측정된 걸음 수를 기준으로 하며 스마트워치의 걸음 수는 지원되지 않아요.</li>
+                            <li>걸음 수는 슈퍼SOL 만보걷기에 접속하면 적용돼요.</li>
+                            <li>본 서비스는 신한 슈퍼SOL 사정에 따라 변경 및 중단될 수 있어요.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="notice-card" aria-label="꼭 알아두세요">
+                    <h2 class="notice-title">꼭! 알아두세요</h2>
+                    <span class="notice-icon" aria-hidden="true"></span>
+                </section>
+            </div>
+
+            <div class="home-indicator" aria-hidden="true"></div>
+        </main>
+    </div>
+
+    <script src="../../script/modules/navigation/navigation-component.js"></script>
+    <script src="../../script/components/button/solid-button.js"></script>
+</body>
+</html>
+
