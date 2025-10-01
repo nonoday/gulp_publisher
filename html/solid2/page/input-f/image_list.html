@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지리스트</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        .guide-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "OneShinhan", sans-serif;
+        }
+
+        .guide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .guide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .guide-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .component-section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .component-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .component-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .reset-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        .reset-btn:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+
+        .component-demo {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-source {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .component-source.show {
+            display: block;
+        }
+
+        /* 예제 컴포넌트 스타일 */
+        .example-button {
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .example-button.large {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+
+        .example-button.small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .example-button.secondary {
+            background: #6b7280;
+        }
+
+        .example-button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .example-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .example-card.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border-color: #374151;
+        }
+
+        .example-card.compact {
+            padding: 16px;
+        }
+
+        .example-card.large {
+            padding: 32px;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .example-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+
+        .example-list.compact li {
+            padding: 8px 12px;
+        }
+
+        .example-list.large li {
+            padding: 16px 20px;
+        }
+
+        .example-list.dark li {
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        /* 이미지 그리드 스타일 */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .image-item {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .image-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .image-preview {
+            cursor: pointer;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            border-radius: 6px;
+        }
+
+        .image-info {
+            cursor: pointer;
+        }
+
+        .image-item .image-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .image-path {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        /* 이미지 등록 폼 스타일 */
+        .image-form-section {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .image-form h3 {
+            margin: 0 0 20px 0;
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .form-actions .control-btn {
+            padding: 10px 20px;
+        }
+
+        /* 파일 선택 스타일 */
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .file-picker-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .file-picker-btn:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .file-picker-icon {
+            font-size: 16px;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: #6b7280;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .file-name.has-file {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        /* 파일 미리보기 */
+        .file-preview {
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .file-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* 이미지 아이템에 삭제 버튼 추가 */
+        .image-item {
+            position: relative;
+        }
+
+        .image-delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .image-item:hover .image-delete-btn {
+            opacity: 1;
+        }
+
+        .image-delete-btn:hover {
+            background: #dc2626;
+        }
+
+
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 15px;
+            }
+            
+            .component-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .component-demo {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1 class="guide-title">이미지 리스트</h1>
+        </div>
+    </div>
+
+    <!-- 이미지 리스트 섹션 -->
+    <div class="component-section">
+        <div class="component-header">
+            <h2 class="component-title">프로젝트 이미지 리스트</h2>
+            <div class="control-buttons" id="filterButtons">
+                <button class="control-btn" onclick="showAddImageForm()">이미지 추가</button>
+                <button class="control-btn copy-btn" onclick="exportImageList()">목록 내보내기</button>
+                <button class="control-btn reset-btn" onclick="resetImageList()">목록 초기화</button>
+            </div>
+        </div>
+        
+        <!-- 이미지 등록 폼 -->
+        <div class="image-form-section" id="imageFormSection" style="display: none;">
+            <div class="image-form">
+                <h3>새 이미지 등록</h3>
+                <form id="imageForm">
+                    <div class="form-group">
+                        <label for="imageFile">이미지 파일 선택:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="imageFile" accept="image/*" onchange="handleFileSelect(event)" style="display: none;">
+                            <button type="button" class="file-picker-btn" onclick="document.getElementById('imageFile').click()">
+                                <span class="file-picker-icon">📁</span>
+                                파일 선택
+                            </button>
+                            <span class="file-name" id="fileName">선택된 파일이 없습니다</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="control-btn">등록</button>
+                        <button type="button" class="control-btn" onclick="hideAddImageForm()">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="component-demo">
+            <div class="image-grid" id="imageGrid">
+                <!-- 이미지들이 동적으로 로드됩니다 -->
+            </div>
+        </div>
+        
+        <div class="component-source" id="imageSource">
+            <!-- 소스 코드가 여기에 표시됩니다 -->
+        </div>
+    </div>
+
+
+    <!-- 토스트 메시지 -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // 이미지 데이터 저장소
+        let imageList = [];
+
+        // 샘플 이미지 데이터 (실제 프로젝트 이미지들)
+        const sampleImages = [
+            // Solid2 Common 폴더 (현재 비어있음)
+            // Solid2 Icons 폴더
+            
+        ];
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 로컬 스토리지에서 이미지 리스트 불러오기
+            const savedImages = localStorage.getItem('projectImageList');
+            if (savedImages) {
+                imageList = JSON.parse(savedImages);
+            } else {
+                // 샘플 데이터로 초기화
+                imageList = [...sampleImages];
+                saveImageList();
+            }
+
+            // 이미지 그리드 렌더링
+            renderImageGrid();
+            
+            // 폼 이벤트 리스너 등록
+            document.getElementById('imageForm').addEventListener('submit', handleImageSubmit);
+        });
+
+        // 이미지 등록 폼 표시/숨김
+        function showAddImageForm() {
+            document.getElementById('imageFormSection').style.display = 'block';
+        }
+
+        function hideAddImageForm() {
+            document.getElementById('imageFormSection').style.display = 'none';
+            document.getElementById('imageForm').reset();
+            // 파일 미리보기 제거
+            const previewContainer = document.querySelector('.file-preview');
+            if (previewContainer) {
+                previewContainer.remove();
+            }
+            // 파일명 상태 초기화
+            document.getElementById('fileName').textContent = '선택된 파일이 없습니다';
+            document.getElementById('fileName').classList.remove('has-file');
+        }
+
+        // 파일 선택 처리
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileName = file.name;
+            const fileNameElement = document.getElementById('fileName');
+            
+            // 파일명 표시
+            fileNameElement.textContent = fileName;
+            fileNameElement.classList.add('has-file');
+            
+            // 파일 미리보기
+            showFilePreview(file);
+        }
+
+        // 파일 미리보기 표시
+        function showFilePreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewContainer = document.querySelector('.file-preview');
+                if (!previewContainer) {
+                    // 미리보기 컨테이너가 없으면 생성
+                    const formGroup = document.querySelector('.file-input-wrapper').parentElement;
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'file-preview';
+                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="미리보기">`;
+                    formGroup.appendChild(previewDiv);
+                } else {
+                    previewContainer.innerHTML = `<img src="${e.target.result}" alt="미리보기">`;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 이미지 등록 폼 처리
+        function handleImageSubmit(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('imageFile');
+            
+            // 파일 선택 확인
+            if (!fileInput.files[0]) {
+                showToast('이미지 파일을 선택해주세요.', 'error');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const fileName = file.name;
+            const imagePath = `images/solid2/icons/${fileName}`;
+            
+            // 중복 체크
+            const existingImage = imageList.find(img => img.path === imagePath);
+            if (existingImage) {
+                showToast('이미 등록된 이미지입니다.', 'error');
+                return;
+            }
+            
+            // 새 이미지 추가
+            const newImage = {
+                name: fileName,
+                path: imagePath,
+                description: `${fileName} (파일 등록)`,
+                tags: ['파일등록']
+            };
+            
+            imageList.push(newImage);
+            saveImageList();
+            renderImageGrid();
+            hideAddImageForm();
+            
+            showToast(`이미지 "${fileName}"이 성공적으로 등록되었습니다.`, 'success');
+        }
+
+        // 이미지 삭제
+        function deleteImage(imageName) {
+            if (confirm(`"${imageName}" 이미지를 삭제하시겠습니까?`)) {
+                const index = imageList.findIndex(img => img.name === imageName);
+                if (index > -1) {
+                    imageList.splice(index, 1);
+                    saveImageList();
+                    renderImageGrid();
+                    showToast(`이미지 "${imageName}"이 삭제되었습니다.`, 'success');
+                }
+            }
+        }
+
+        // 이미지 목록 내보내기
+        function exportImageList() {
+            const dataStr = JSON.stringify(imageList, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'project-image-list.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showToast('이미지 목록이 다운로드되었습니다.', 'success');
+        }
+
+        // 이미지 목록 초기화
+        function resetImageList() {
+            if (confirm('모든 이미지 목록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+                imageList = [];
+                saveImageList();
+                renderImageGrid();
+                showToast('이미지 목록이 초기화되었습니다.', 'success');
+            }
+        }
+
+        // 이미지 그리드 렌더링
+        function renderImageGrid() {
+            const grid = document.getElementById('imageGrid');
+
+            if (imageList.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 40px;">등록된 이미지가 없습니다. "이미지 추가" 버튼을 클릭하여 이미지를 등록해보세요.</div>';
+                return;
+            }
+
+            grid.innerHTML = imageList.map(image => `
+                <div class="image-item">
+                    <button class="image-delete-btn" onclick="deleteImage('${image.name}')" title="삭제">×</button>
+                    <div class="image-preview" onclick="showImageDetails('${image.name}')">
+                        <img src="../../../../${image.path}" alt="${image.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MCA0MEw1MCA1MEwzMCA1MEw0MCA0MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+Cg=='">
+                    </div>
+                    <div class="image-info" onclick="showImageDetails('${image.name}')">
+                        <div class="image-name">${image.name}</div>
+                        <div class="image-path">${image.path}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        // 이미지 상세 정보 표시
+        function showImageDetails(imageName) {
+            const image = imageList.find(img => img.name === imageName);
+            if (!image) return;
+
+            const details = `
+이미지 이름: ${image.name}
+경로: ${image.path}
+카테고리: ${getCategoryName(image.category)}
+설명: ${image.description || '설명 없음'}
+태그: ${image.tags ? image.tags.join(', ') : '태그 없음'}
+
+HTML 사용 예시:
+<img src="${image.path}" alt="${image.name}">
+
+CSS 사용 예시:
+background-image: url('${image.path}');
+            `;
+
+            document.getElementById('imageSource').textContent = details;
+            document.getElementById('imageSource').classList.add('show');
+            
+            showToast('이미지 정보를 소스 코드 영역에 표시했습니다.', 'success');
+        }
+
+
+        // 이미지 리스트 저장
+        function saveImageList() {
+            localStorage.setItem('projectImageList', JSON.stringify(imageList));
+        }
+
+
+
+
+        // 토스트 메시지 표시
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
