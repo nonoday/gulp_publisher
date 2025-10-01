@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스트 케이스 리스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .case-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .case-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .case-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .copy-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        .html-source {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: #28a745;
+        }
+        
+        .toast.error {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>토스트 케이스 리스트</h1>
+        
+        <div class="case-list" id="caseList">
+            <!-- 케이스들이 여기에 동적으로 추가됩니다 -->
+                </div>
+                    </div>
+
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        // 토스트 케이스 데이터
+        const toastCases = [
+            {
+                id: "toast-basic",
+                title: "기본 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "기본 토스트 메시지입니다.",
+        duration: 3000
+    });
+}`
+            },
+            {
+                id: "toast-success",
+                title: "성공 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "성공적으로 처리되었습니다!",
+        type: "success",
+        duration: 3000
+    });
+}`
+            },
+            {
+                id: "toast-error",
+                title: "에러 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "오류가 발생했습니다.",
+        type: "error",
+        duration: 5000
+    });
+}`
+            },
+            {
+                id: "toast-warning",
+                title: "경고 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "주의가 필요합니다.",
+        type: "warning",
+        duration: 4000
+    });
+}`
+            },
+            {
+                id: "toast-info",
+                title: "정보 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "정보를 확인해주세요.",
+        type: "info",
+        duration: 3000
+    });
+}`
+            },
+            {
+                id: "toast-custom",
+                title: "커스텀 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "커스텀 스타일의 토스트입니다.",
+        type: "custom",
+        duration: 3000,
+        position: "top-center",
+        backgroundColor: "#6f42c1",
+        textColor: "#ffffff"
+    });
+}`
+            },
+            {
+                id: "toast-action",
+                title: "액션 버튼 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "액션이 완료되었습니다.",
+        type: "success",
+        duration: 0,
+        action: {
+            text: "확인",
+            onClick: function() {
+                console.log("액션 버튼 클릭됨");
+            }
+        }
+    });
+}`
+            },
+            {
+                id: "toast-multiple",
+                title: "다중 토스트",
+                script: `function run() {
+    new ui.solidtoast({
+        message: "첫 번째 토스트",
+        type: "info",
+        duration: 2000
+    });
+    
+    setTimeout(() => {
+        new ui.solidtoast({
+            message: "두 번째 토스트",
+            type: "success",
+            duration: 2000
+        });
+    }, 1000);
+}`
+            }
+        ];
+        
+        // 케이스 리스트 렌더링
+        function renderCases() {
+            const caseList = document.getElementById('caseList');
+            caseList.innerHTML = '';
+            
+            toastCases.forEach(caseItem => {
+                const caseElement = document.createElement('div');
+                caseElement.className = 'case-item';
+                caseElement.id = caseItem.id;
+                
+                caseElement.innerHTML = `
+                    <div class="case-header">
+                        <h3 class="case-title">${escapeHtml(caseItem.title)}</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('${caseItem.id}', this)">
+                            소스 복사
+                        </button>
+                    </div>
+                    <div class="html-source">${escapeHtml(caseItem.script)}</div>
+                `;
+                
+                caseList.appendChild(caseElement);
+            });
+        }
+        
+        // HTML 이스케이프 함수
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 클립보드 복사 함수
+        function copyToClipboard(caseId, button) {
+            const caseItem = toastCases.find(item => item.id === caseId);
+            if (!caseItem) {
+                showToast('복사할 케이스를 찾을 수 없습니다.', 'error');
+                return;
+            }
+            
+            const scriptContent = caseItem.script;
+            
+            if (!scriptContent.trim()) {
+                showToast('복사할 스크립트가 없습니다.', 'error');
+                return;
+            }
+            
+            // 클립보드 API 사용 시도
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(scriptContent).then(() => {
+                    handleCopySuccess(button);
+                }).catch(err => {
+                    console.error('클립보드 API 실패:', err);
+                    fallbackCopy(scriptContent, button);
+                });
+            } else {
+                // 클립보드 API를 사용할 수 없는 경우 대체 방법 사용
+                fallbackCopy(scriptContent, button);
+            }
+        }
+        
+        // 대체 복사 방법 (클립보드 API를 사용할 수 없는 경우)
+        function fallbackCopy(text, button) {
+            try {
+                // 임시 textarea 생성
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-999999px';
+                textarea.style.top = '-999999px';
+                document.body.appendChild(textarea);
+                
+                // 텍스트 선택 및 복사
+                textarea.focus();
+                textarea.select();
+                const successful = document.execCommand('copy');
+                
+                // 임시 요소 제거
+                document.body.removeChild(textarea);
+                
+                if (successful) {
+                    handleCopySuccess(button);
+                                } else {
+                    throw new Error('execCommand 실패');
+                }
+            } catch (err) {
+                console.error('대체 복사 방법 실패:', err);
+                showToast('복사에 실패했습니다. 브라우저를 확인해주세요.', 'error');
+            }
+        }
+        
+        // 복사 성공 처리
+        function handleCopySuccess(button) {
+            // 버튼 상태 변경
+            const originalText = button.textContent;
+            button.textContent = '복사됨!';
+            button.classList.add('copied');
+            
+            // 토스트 메시지 표시
+            showToast('스크립트가 클립보드에 복사되었습니다!', 'success');
+            
+            // 2초 후 버튼 상태 복원
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
+        }
+
+            // 토스트 메시지 표시
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = `toast ${type}`;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCases();
+        });
+    </script>
+</body>
+</html>
