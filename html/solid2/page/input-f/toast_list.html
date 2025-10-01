@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast HTML 케이스 리스트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .case-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .case-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .case-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .copy-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        .html-source {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            background: #28a745;
+        }
+        
+        .toast.error {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Toast HTML 케이스 리스트</h1>
+        
+        <div class="case-list" id="caseList">
+            <!-- 케이스들이 여기에 동적으로 추가됩니다 -->
+        </div>
+    </div>
+
+    
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        // 케이스 데이터
+        const cases = [
+            {
+                title: "Basic/Box/InputField",
+                sourceId: "input-field-source",
+                html: `<div class="input-container">
+    <div class="input-field svg-animated" role="group">  
+        <input type="text" class="input" id="input-field-1" placeholder="입력하세요" />
+        <label class="blind" for="input-field-1">입력 필드</label>
+        <button class="clear-button active" aria-label="입력 내용 지우기">
+            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+            </svg>                                              
+        </button>
+    </div>
+</div>`
+            },
+            {
+                title: "Basic/Box/InputFieldDual",
+                sourceId: "input-dual-source",
+                html: `<div class="input-container">
+    <div class="input-field svg-animated" role="group">  
+        <input type="text" class="input" id="input-field-2" placeholder="첫 번째 입력" />
+        <label class="blind" for="input-field-2">첫 번째 입력</label>
+        <span class="input-dash" aria-hidden="true">-</span>
+        <input type="text" class="input" id="input-field-3" placeholder="두 번째 입력" />
+        <label class="blind" for="input-field-3">두 번째 입력</label>
+        <button class="clear-button active" aria-label="입력 내용 지우기">
+            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+            </svg>                                              
+        </button>
+    </div>
+</div>`
+            }
+        ];
+        
+        // 케이스 리스트 렌더링
+        function renderCases() {
+            const caseList = document.getElementById('caseList');
+            caseList.innerHTML = '';
+            
+            cases.forEach((caseItem, index) => {
+                const caseElement = document.createElement('div');
+                caseElement.className = 'case-item';
+                caseElement.innerHTML = `
+                    <div class="case-header">
+                        <h3 class="case-title">${caseItem.title}</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('${caseItem.sourceId}', this)">
+                            소스 복사
+                        </button>
+                    </div>
+                    <div class="html-source" id="${caseItem.sourceId}">${caseItem.html}</div>
+                `;
+                caseList.appendChild(caseElement);
+            });
+        }
+        
+        // 클립보드 복사 함수
+        function copyToClipboard(sourceId, button) {
+            const sourceElement = document.getElementById(sourceId);
+            if (!sourceElement) {
+                showToast('복사할 소스를 찾을 수 없습니다.', 'error');
+                return;
+            }
+            
+            // HTML 내용을 텍스트로 변환 (HTML 태그 포함)
+            const htmlContent = sourceElement.innerHTML;
+            
+            // 클립보드 API 사용 시도
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(htmlContent).then(() => {
+                    handleCopySuccess(button);
+                }).catch(err => {
+                    console.error('클립보드 API 실패:', err);
+                    fallbackCopy(htmlContent, button);
+                });
+            } else {
+                // 클립보드 API를 사용할 수 없는 경우 대체 방법 사용
+                fallbackCopy(htmlContent, button);
+            }
+        }
+        
+        // 대체 복사 방법 (클립보드 API를 사용할 수 없는 경우)
+        function fallbackCopy(text, button) {
+            try {
+                // 임시 textarea 생성
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-999999px';
+                textarea.style.top = '-999999px';
+                document.body.appendChild(textarea);
+                
+                // 텍스트 선택 및 복사
+                textarea.focus();
+                textarea.select();
+                const successful = document.execCommand('copy');
+                
+                // 임시 요소 제거
+                document.body.removeChild(textarea);
+                
+                if (successful) {
+                    handleCopySuccess(button);
+                } else {
+                    throw new Error('execCommand 실패');
+                }
+            } catch (err) {
+                console.error('대체 복사 방법 실패:', err);
+                showToast('복사에 실패했습니다. 브라우저를 확인해주세요.', 'error');
+            }
+        }
+        
+        // 복사 성공 처리
+        function handleCopySuccess(button) {
+            // 버튼 상태 변경
+            const originalText = button.textContent;
+            button.textContent = '복사됨!';
+            button.classList.add('copied');
+            
+            // 토스트 메시지 표시
+            showToast('HTML 소스가 클립보드에 복사되었습니다!');
+            
+            // 2초 후 버튼 상태 복원
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
+        }
+        
+        // 토스트 메시지 표시
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 페이지 로드 시 케이스 렌더링
+        document.addEventListener('DOMContentLoaded', renderCases);
+    </script>
+</body>
+</html>
