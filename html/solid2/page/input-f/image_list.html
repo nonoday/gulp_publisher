@@ -662,8 +662,8 @@
             const directoryInput = document.getElementById('imageDirectory');
             let directoryPath = directoryInput.value.trim().replace(/\\/g, '/');
 
-            if (directoryPath && !directoryPath.endsWith('/')) {
-                directoryPath += '/';
+            if (directoryPath) {
+                directoryPath = directoryPath.replace(/^\/+/, '').replace(/\/+$/, '') + '/';
             }
 
             const imagePath = `/images/web/img/solid2/${directoryPath}${fileName}`;
@@ -742,7 +742,7 @@
                 <div class="image-item" data-image-name="${image.name}">
                     <button class="image-delete-btn" onclick="deleteImage('${image.name}')" title="삭제">×</button>
                     <div class="image-preview" onclick="showImageDetails('${image.name}')">
-                        <img src="${image.path}" alt="${image.name}">
+                        <img src="${getImageSrc(image.path)}" alt="${image.name}" data-original-path="${image.path}">
                     </div>
                     <div class="image-info" onclick="showImageDetails('${image.name}')">
                         <div class="image-name">${image.name}</div>
@@ -776,6 +776,14 @@
             } else {
                 item.classList.remove('error');
             }
+        }
+
+        function getImageSrc(path) {
+            if (!path) return '';
+            if (path.startsWith('/')) {
+                return `../../../../${path.slice(1)}`;
+            }
+            return path;
         }
 
 
