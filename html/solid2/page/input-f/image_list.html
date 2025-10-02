@@ -536,8 +536,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="imageDirectory">하위 폴더 (기본 경로: /images/web/img/solid2/)</label>
-                        <input type="text" id="imageDirectory" placeholder="예: common/ 또는 common/icons/">
+                        <label for="imageDirectory">폴더명 입력 (기본 경로: /images/web/img/solid2/)</label>
+                        <input type="text" id="imageDirectory" placeholder="예: common 또는 common/icons">
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="control-btn">등록</button>
@@ -565,6 +565,7 @@
     <script>
         // 이미지 데이터 저장소
         let imageList = [];
+        let selectedFileMeta = { directory: '', fullPath: '' };
 
         // 샘플 이미지 데이터 (실제 프로젝트 이미지들)
         const sampleImages = [
@@ -608,6 +609,7 @@
             // 파일명 상태 초기화
             document.getElementById('fileName').textContent = '선택된 파일이 없습니다';
             document.getElementById('fileName').classList.remove('has-file');
+            selectedFileMeta = { directory: '', fullPath: '' };
         }
 
         // 파일 선택 처리
@@ -621,6 +623,16 @@
             // 파일명 표시
             fileNameElement.textContent = fileName;
             fileNameElement.classList.add('has-file');
+
+            selectedFileMeta.fullPath = typeof file.webkitRelativePath === 'string' && file.webkitRelativePath ? file.webkitRelativePath : file.name;
+            selectedFileMeta.directory = selectedFileMeta.fullPath.includes('/') ? selectedFileMeta.fullPath.substring(0, selectedFileMeta.fullPath.lastIndexOf('/')) : '';
+
+            if (selectedFileMeta.directory) {
+                const directoryInput = document.getElementById('imageDirectory');
+                if (directoryInput && !directoryInput.value.trim()) {
+                    directoryInput.value = selectedFileMeta.directory;
+                }
+            }
             
             // 파일 미리보기
             showFilePreview(file);
@@ -660,30 +672,25 @@
             const file = fileInput.files[0];
             const fileName = file.name;
             const directoryInput = document.getElementById('imageDirectory');
-            let directoryPath = directoryInput.value.trim().replace(/\\/g, '/');
-            directoryPath = directoryPath.replace(/\/\//g, '/');
+            const folderInput = directoryInput.value.trim();
 
-            let imagePath;
-            if (!directoryPath) {
-                imagePath = `/images/web/img/solid2/${fileName}`;
+            let folderPath = folderInput || selectedFileMeta.directory || '';
+            folderPath = folderPath.replace(/\\/g, '/');
+            folderPath = folderPath.replace(/\/\//g, '/');
+            folderPath = folderPath.replace(/^\/+|\/+$/g, '');
+
+            const basePath = '/images/web/img/solid2';
+            const hasProtocol = /^(https?:)?\/\//.test(folderPath);
+            const isAbsolute = folderPath.startsWith('/');
+
+            if (!folderPath) {
+                imagePath = `${basePath}/${fileName}`;
+            } else if (hasProtocol) {
+                imagePath = folderPath.endsWith('/') ? `${folderPath}${fileName}` : `${folderPath}/${fileName}`;
+            } else if (isAbsolute) {
+                imagePath = folderPath.endsWith('/') ? `${folderPath}${fileName}` : `${folderPath}/${fileName}`;
             } else {
-                if (/^(https?:)?\/\//.test(directoryPath)) {
-                    if (!directoryPath.endsWith('/')) {
-                        directoryPath += '/';
-                    }
-                    imagePath = `${directoryPath}${fileName}`;
-                } else if (directoryPath.startsWith('/')) {
-                    directoryPath = directoryPath.replace(/\/+$/, '');
-                    if (!directoryPath.endsWith('/')) {
-                        directoryPath += '/';
-                    }
-                    imagePath = `${directoryPath}${fileName}`;
-                } else {
-                    if (!directoryPath.endsWith('/')) {
-                        directoryPath += '/';
-                    }
-                    imagePath = `/images/web/img/solid2/${directoryPath}${fileName}`;
-                }
+                imagePath = `${basePath}/${folderPath}/${fileName}`;
             }
             
             // 중복 체크
