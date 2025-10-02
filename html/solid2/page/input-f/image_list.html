@@ -270,6 +270,11 @@
             position: relative;
         }
 
+        .image-item.error {
+            border-color: #ef4444;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+        }
+
         .image-item:hover {
             border-color: #3b82f6;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
@@ -305,6 +310,21 @@
             color: #6b7280;
             margin-bottom: 8px;
             word-break: break-all;
+        }
+
+        .image-item.error .image-path {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .image-status {
+            font-size: 12px;
+            color: #ef4444;
+            display: none;
+        }
+
+        .image-item.error .image-status {
+            display: block;
         }
 
         /* 이미지 등록 폼 스타일 */
@@ -450,7 +470,8 @@
             transition: opacity 0.2s ease;
         }
 
-        .image-item:hover .image-delete-btn {
+        .image-item:hover .image-delete-btn,
+        .image-item.error .image-delete-btn {
             opacity: 1;
         }
 
@@ -513,6 +534,10 @@
                             </button>
                             <span class="file-name" id="fileName">선택된 파일이 없습니다</span>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="imageDirectory">저장 경로 (프로젝트 기준 상대 경로):</label>
+                        <input type="text" id="imageDirectory" value="images/web/img/solid2/" placeholder="예: images/web/img/solid2/common/">
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="control-btn">등록</button>
@@ -634,7 +659,15 @@
             
             const file = fileInput.files[0];
             const fileName = file.name;
-            const imagePath = `images/solid2/icons/${fileName}`;
+            const directoryInput = document.getElementById('imageDirectory');
+            let directoryPath = directoryInput.value.trim() || 'images/web/img/solid2/';
+            directoryPath = directoryPath.replace(/\\/g, '/');
+
+            if (!directoryPath.endsWith('/')) {
+                directoryPath += '/';
+            }
+
+            const imagePath = `${directoryPath}${fileName}`;
             
             // 중복 체크
             const existingImage = imageList.find(img => img.path === imagePath);
@@ -707,17 +740,43 @@
             }
 
             grid.innerHTML = imageList.map(image => `
-                <div class="image-item">
+                <div class="image-item" data-image-name="${image.name}">
                     <button class="image-delete-btn" onclick="deleteImage('${image.name}')" title="삭제">×</button>
                     <div class="image-preview" onclick="showImageDetails('${image.name}')">
-                        <img src="../../../../${image.path}" alt="${image.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MCA0MEw1MCA1MEwzMCA1MEw0MCA0MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+Cg=='">
+                        <img src="../../../../${image.path}" alt="${image.name}">
                     </div>
                     <div class="image-info" onclick="showImageDetails('${image.name}')">
                         <div class="image-name">${image.name}</div>
                         <div class="image-path">${image.path}</div>
+                        <div class="image-status">이미지를 불러올 수 없습니다.</div>
                     </div>
                 </div>
             `).join('');
+
+            requestAnimationFrame(validateImages);
+        }
+
+        function validateImages() {
+            const items = document.querySelectorAll('.image-item');
+            items.forEach(item => {
+                const img = item.querySelector('img');
+                if (!img) return;
+
+                if (img.complete) {
+                    toggleImageErrorState(item, !img.naturalWidth);
+                }
+
+                img.addEventListener('load', () => toggleImageErrorState(item, false), { once: true });
+                img.addEventListener('error', () => toggleImageErrorState(item, true), { once: true });
+            });
+        }
+
+        function toggleImageErrorState(item, hasError) {
+            if (hasError) {
+                item.classList.add('error');
+            } else {
+                item.classList.remove('error');
+            }
         }
 
 
