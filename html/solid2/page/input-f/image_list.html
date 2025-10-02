@@ -660,13 +660,31 @@
             const file = fileInput.files[0];
             const fileName = file.name;
             const directoryInput = document.getElementById('imageDirectory');
+            const basePath = '/images/web/img/solid2/';
+
             let directoryPath = directoryInput.value.trim().replace(/\\/g, '/');
+            directoryPath = directoryPath.replace(/\/\//g, '/');
 
-            if (directoryPath) {
-                directoryPath = directoryPath.replace(/^\/+/, '').replace(/\/+$/, '') + '/';
+            let imagePath;
+            if (!directoryPath) {
+                imagePath = `${basePath}${fileName}`;
+            } else {
+                if (!directoryPath.endsWith('/')) {
+                    directoryPath += '/';
+                }
+
+                if (/^(https?:)?\/\//.test(directoryPath)) {
+                    imagePath = `${directoryPath}${fileName}`;
+                } else if (directoryPath.startsWith('/')) {
+                    imagePath = `${directoryPath}${fileName}`;
+                } else if (directoryPath.startsWith('images/')) {
+                    imagePath = `/${directoryPath}${fileName}`;
+                } else if (directoryPath.startsWith('./') || directoryPath.startsWith('../')) {
+                    imagePath = `${directoryPath}${fileName}`;
+                } else {
+                    imagePath = `${basePath}${directoryPath}${fileName}`;
+                }
             }
-
-            const imagePath = `/images/web/img/solid2/${directoryPath}${fileName}`;
             
             // 중복 체크
             const existingImage = imageList.find(img => img.path === imagePath);
