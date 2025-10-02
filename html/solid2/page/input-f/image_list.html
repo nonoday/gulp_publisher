@@ -660,29 +660,29 @@
             const file = fileInput.files[0];
             const fileName = file.name;
             const directoryInput = document.getElementById('imageDirectory');
-            const basePath = '/images/web/img/solid2/';
-
             let directoryPath = directoryInput.value.trim().replace(/\\/g, '/');
             directoryPath = directoryPath.replace(/\/\//g, '/');
 
             let imagePath;
             if (!directoryPath) {
-                imagePath = `${basePath}${fileName}`;
+                imagePath = `/images/web/img/solid2/${fileName}`;
             } else {
-                if (!directoryPath.endsWith('/')) {
-                    directoryPath += '/';
-                }
-
                 if (/^(https?:)?\/\//.test(directoryPath)) {
+                    if (!directoryPath.endsWith('/')) {
+                        directoryPath += '/';
+                    }
                     imagePath = `${directoryPath}${fileName}`;
                 } else if (directoryPath.startsWith('/')) {
-                    imagePath = `${directoryPath}${fileName}`;
-                } else if (directoryPath.startsWith('images/')) {
-                    imagePath = `/${directoryPath}${fileName}`;
-                } else if (directoryPath.startsWith('./') || directoryPath.startsWith('../')) {
+                    directoryPath = directoryPath.replace(/\/+$/, '');
+                    if (!directoryPath.endsWith('/')) {
+                        directoryPath += '/';
+                    }
                     imagePath = `${directoryPath}${fileName}`;
                 } else {
-                    imagePath = `${basePath}${directoryPath}${fileName}`;
+                    if (!directoryPath.endsWith('/')) {
+                        directoryPath += '/';
+                    }
+                    imagePath = `/images/web/img/solid2/${directoryPath}${fileName}`;
                 }
             }
             
@@ -798,10 +798,13 @@
 
         function getImageSrc(path) {
             if (!path) return '';
+            if (/^(https?:)?\/\//.test(path)) {
+                return path;
+            }
             if (path.startsWith('/')) {
                 return `../../../../${path.slice(1)}`;
             }
-            return path;
+            return `../../../../${path}`;
         }
 
 
