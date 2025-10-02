@@ -588,14 +588,14 @@
             </div>
         </div>
 
+        <div class="folder-tabs-section">
+            <div id="folderTabs" class="folder-tabs"></div>
+        </div>
+
         <div class="component-demo">
             <div class="image-grid" id="imageGrid">
                 <!-- 이미지들이 동적으로 로드됩니다 -->
             </div>
-        </div>
-
-        <div class="folder-tabs-section">
-            <div id="folderTabs" class="folder-tabs"></div>
         </div>
         
         <div class="component-source" id="imageSource">
@@ -612,24 +612,9 @@
         let imageList = [];
         let selectedFileMeta = { directory: '', fullPath: '' };
 
-        // 샘플 이미지 데이터 (실제 프로젝트 이미지들)
-        const sampleImages = [
-            // Solid2 Common 폴더 (현재 비어있음)
-            // Solid2 Icons 폴더
-            
-        ];
-
         // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            // 로컬 스토리지에서 이미지 리스트 불러오기
-            const savedImages = localStorage.getItem('projectImageList');
-            if (savedImages) {
-                imageList = JSON.parse(savedImages);
-            } else {
-                // 샘플 데이터로 초기화
-                imageList = [...sampleImages];
-                saveImageList();
-            }
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeImageList();
 
             // 이미지 그리드 렌더링
             renderImageGrid();
@@ -638,6 +623,66 @@
             // 폼 이벤트 리스너 등록
             document.getElementById('imageForm').addEventListener('submit', handleImageSubmit);
         });
+
+        async function initializeImageList() {
+            const savedImages = localStorage.getItem('projectImageList');
+
+            if (savedImages) {
+                try {
+                    const parsed = JSON.parse(savedImages);
+                    imageList = sanitizeImageList(parsed);
+                    saveImageList();
+                    return;
+                } catch (error) {
+                    console.warn('로컬 스토리지 이미지 목록 파싱 실패:', error);
+                }
+            }
+
+            const fetchedList = await loadImageListFromJson();
+            if (fetchedList) {
+                imageList = fetchedList;
+                saveImageList();
+            } else {
+                imageList = [];
+            }
+        }
+
+        async function loadImageListFromJson() {
+            try {
+                const response = await fetch('../../../../json/image.json', { cache: 'no-cache' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (!Array.isArray(data)) {
+                    throw new Error('JSON 데이터가 배열 형태가 아닙니다.');
+                }
+
+                return sanitizeImageList(data);
+            } catch (error) {
+                console.warn('기본 이미지 JSON을 불러오는 데 실패했습니다:', error);
+                return null;
+            }
+        }
+
+        function sanitizeImageList(list) {
+            if (!Array.isArray(list)) return [];
+
+            return list
+                .filter(item => item && typeof item === 'object')
+                .map(item => {
+                    const sanitized = {
+                        name: item.name || '이름없음',
+                        path: item.path || '',
+                        description: item.description || '',
+                        tags: Array.isArray(item.tags) ? item.tags : []
+                    };
+
+                    sanitized.folder = extractFolderFromPath(sanitized.path);
+                    return sanitized;
+                });
+        }
 
         // 이미지 등록 폼 표시/숨김
         function showAddImageForm() {
