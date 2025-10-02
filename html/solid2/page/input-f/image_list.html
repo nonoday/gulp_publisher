@@ -260,6 +260,44 @@
             width: 100%;
         }
 
+        .folder-tabs-section {
+            margin-top: 10px;
+            padding: 0 20px 20px;
+        }
+
+        .folder-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .folder-tab {
+            padding: 8px 14px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+
+        .folder-tab:hover {
+            border-color: #3b82f6;
+            color: #2563eb;
+        }
+
+        .folder-tab.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 3px 8px rgba(59, 130, 246, 0.2);
+        }
+
         .image-item {
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -514,10 +552,13 @@
             <h2 class="component-title">프로젝트 이미지 리스트</h2>
             <div class="control-buttons" id="filterButtons">
                 <button class="control-btn" onclick="showAddImageForm()">이미지 추가</button>
+                <button class="control-btn" onclick="triggerImportDialog()">목록 가져오기</button>
                 <button class="control-btn copy-btn" onclick="exportImageList()">목록 내보내기</button>
                 <button class="control-btn reset-btn" onclick="resetImageList()">목록 초기화</button>
             </div>
         </div>
+
+        <input type="file" id="imageListFile" accept="application/json" style="display: none;" onchange="handleImageListImport(event)">
         
         <!-- 이미지 등록 폼 -->
         <div class="image-form-section" id="imageFormSection" style="display: none;">
@@ -551,6 +592,10 @@
             <div class="image-grid" id="imageGrid">
                 <!-- 이미지들이 동적으로 로드됩니다 -->
             </div>
+        </div>
+
+        <div class="folder-tabs-section">
+            <div id="folderTabs" class="folder-tabs"></div>
         </div>
         
         <div class="component-source" id="imageSource">
@@ -588,6 +633,7 @@
 
             // 이미지 그리드 렌더링
             renderImageGrid();
+            renderFolderTabs();
             
             // 폼 이벤트 리스너 등록
             document.getElementById('imageForm').addEventListener('submit', handleImageSubmit);
@@ -708,9 +754,12 @@
                 tags: ['파일등록']
             };
             
+            newImage.folder = extractFolderFromPath(imagePath);
+
             imageList.push(newImage);
             saveImageList();
             renderImageGrid();
+            renderFolderTabs();
             hideAddImageForm();
             
             showToast(`이미지 "${fileName}"이 성공적으로 등록되었습니다.`, 'success');
@@ -724,6 +773,7 @@
                     imageList.splice(index, 1);
                     saveImageList();
                     renderImageGrid();
+                    renderFolderTabs();
                     showToast(`이미지 "${imageName}"이 삭제되었습니다.`, 'success');
                 }
             }
@@ -744,12 +794,82 @@
             showToast('이미지 목록이 다운로드되었습니다.', 'success');
         }
 
+        function triggerImportDialog() {
+            const fileInput = document.getElementById('imageListFile');
+            if (!fileInput) return;
+            fileInput.value = '';
+            fileInput.click();
+        }
+
+        function handleImageListImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (!Array.isArray(importedData)) {
+                        showToast('JSON 형식이 올바르지 않습니다. 배열 형태여야 합니다.', 'error');
+                        return;
+                    }
+
+                    const sanitizedList = importedData
+                        .filter(item => typeof item === 'object' && item !== null)
+                        .map(item => ({
+                            name: item.name || '이름없음',
+                            path: item.path || '',
+                            description: item.description || '',
+                            tags: Array.isArray(item.tags) ? item.tags : [],
+                            folder: extractFolderFromPath(item.path || '')
+                        }));
+
+                    if (sanitizedList.length === 0) {
+                        showToast('가져올 이미지가 없습니다.', 'error');
+                        return;
+                    }
+
+                    if (confirm('기존 목록에 추가하시겠습니까?\n"취소"를 누르면 기존 목록을 덮어씁니다.')) {
+                        imageList = mergeImageLists(imageList, sanitizedList);
+                    } else {
+                        imageList = sanitizedList;
+                    }
+
+                    saveImageList();
+                    activeFolderFilter = '전체';
+                    renderFolderTabs();
+                    renderImageGrid();
+                    showToast('이미지 목록을 가져왔습니다.', 'success');
+                } catch (error) {
+                    console.error(error);
+                    showToast('JSON 파일을 읽는 중 오류가 발생했습니다.', 'error');
+                }
+            };
+
+            reader.readAsText(file, 'utf-8');
+        }
+
+        function mergeImageLists(existing, imported) {
+            const existingPaths = new Set(existing.map(item => item.path));
+            const merged = [...existing];
+
+            imported.forEach(item => {
+                if (!item.path || existingPaths.has(item.path)) return;
+                merged.push(item);
+                existingPaths.add(item.path);
+            });
+
+            return merged;
+        }
+
         // 이미지 목록 초기화
         function resetImageList() {
             if (confirm('모든 이미지 목록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
                 imageList = [];
                 saveImageList();
+                activeFolderFilter = '전체';
                 renderImageGrid();
+                renderFolderTabs();
                 showToast('이미지 목록이 초기화되었습니다.', 'success');
             }
         }
@@ -763,7 +883,14 @@
                 return;
             }
 
-            grid.innerHTML = imageList.map(image => `
+            const filteredImages = getFilteredImages();
+
+            if (filteredImages.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 40px;">선택한 폴더에 이미지가 없습니다.</div>';
+                return;
+            }
+
+            grid.innerHTML = filteredImages.map(image => `
                 <div class="image-item" data-image-name="${image.name}">
                     <button class="image-delete-btn" onclick="deleteImage('${image.name}')" title="삭제">×</button>
                     <div class="image-preview" onclick="showImageDetails('${image.name}')">
@@ -844,6 +971,55 @@ background-image: url('${image.path}');
         // 이미지 리스트 저장
         function saveImageList() {
             localStorage.setItem('projectImageList', JSON.stringify(imageList));
+        }
+
+        function extractFolderFromPath(path) {
+            if (!path) return '기타';
+            const normalized = path.replace(/\\/g, '/');
+            const withoutProtocol = normalized.replace(/^(https?:)?\/\//, '');
+            const segments = withoutProtocol.split('/').filter(Boolean);
+            if (segments.length <= 1) return '기타';
+            if (segments[0] === 'images' && segments[1] === 'web' && segments[2] === 'img' && segments[3] === 'solid2') {
+                return segments.slice(4, segments.length - 1).join('/') || 'root';
+            }
+            return segments.slice(0, segments.length - 1).join('/') || '기타';
+        }
+
+        let activeFolderFilter = '전체';
+
+        function getFilteredImages() {
+            if (activeFolderFilter === '전체') return imageList;
+            return imageList.filter(image => extractFolderFromPath(image.path) === activeFolderFilter);
+        }
+
+        function renderFolderTabs() {
+            const tabsContainer = document.getElementById('folderTabs');
+            if (!tabsContainer) return;
+
+            const folders = new Set(['전체']);
+            imageList.forEach(image => {
+                const folder = extractFolderFromPath(image.path);
+                folders.add(folder);
+                image.folder = folder;
+            });
+
+            const sortedFolders = Array.from(folders).sort((a, b) => {
+                if (a === '전체') return -1;
+                if (b === '전체') return 1;
+                return a.localeCompare(b, 'ko');
+            });
+
+            tabsContainer.innerHTML = sortedFolders.map(folder => `
+                <button class="folder-tab ${folder === activeFolderFilter ? 'active' : ''}" onclick="setActiveFolder('${folder}')">
+                    ${folder}
+                </button>
+            `).join('');
+        }
+
+        function setActiveFolder(folder) {
+            activeFolderFilter = folder;
+            renderFolderTabs();
+            renderImageGrid();
         }
 
 
