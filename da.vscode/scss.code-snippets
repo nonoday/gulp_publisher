@@ -1,0 +1,194 @@
+{
+  "Font Weight 300": {
+    "prefix": "fw300",
+    "scope": "scss",
+    "body": [
+      "font-weight: 300;"
+    ],
+    "description": "font-weight 300"
+  },
+  "Font Weight 500": {
+    "prefix": "fw500",
+    "scope": "scss",
+    "body": [
+      "font-weight: 500;"
+    ],
+    "description": "font-weight 500"
+  },
+  "Font Weight 700": {
+    "prefix": "fw700",
+    "scope": "scss",
+    "body": [
+      "font-weight: 700;"
+    ],
+    "description": "font-weight 700"
+  },
+  "Font Weight 800": {
+    "prefix": "fw800",
+    "scope": "scss",
+    "body": [
+      "font-weight: 800;"
+    ],
+    "description": "font-weight 800"
+  },
+  "Text Primary Color": {
+    "prefix": "text-primary",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-primary);"
+    ],
+    "description": "color var(--text-primary)"
+  },
+  "Text Primary Same Color": {
+    "prefix": "text-primary-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-primary-same);"
+    ],
+    "description": "color var(--text-primary-same)"
+  },
+  "Text Secondary Color": {
+    "prefix": "text-secondary",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-secondary);"
+    ],
+    "description": "color var(--text-secondary)"
+  },
+  "Text Tertiary Color": {
+    "prefix": "text-tertiary",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-tertiary);"
+    ],
+    "description": "color var(--text-tertiary)"
+  },
+  "Text Quaternary Color": {
+    "prefix": "text-quaternary",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-quaternary);"
+    ],
+    "description": "color var(--text-quaternary)"
+  },
+  "Text Disabled Same Color": {
+    "prefix": "text-disabled-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-disabled-same);"
+    ],
+    "description": "color var(--text-disabled-same)"
+  },
+  "Text Placeholder Same Color": {
+    "prefix": "text-placeholder-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-placeholder-same);"
+    ],
+    "description": "color var(--text-placeholder-same)"
+  },
+  "Text Brand Color": {
+    "prefix": "text-brand",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-brand);"
+    ],
+    "description": "color var(--text-brand)"
+  },
+  "Text Brand Disabled Color": {
+    "prefix": "text-brand-disabled",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-brand-disabled);"
+    ],
+    "description": "color var(--text-brand-disabled)"
+  },
+  "Text Brand Disabled Alt Color": {
+    "prefix": "text-brand-disabled-alt",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-brand-disabled-alt);"
+    ],
+    "description": "color var(--text-brand-disabled-alt)"
+  },
+  "Text Ondark Primary Color": {
+    "prefix": "text-ondark-primary",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-ondark-primary);"
+    ],
+    "description": "color var(--text-ondark-primary)"
+  },
+  "Text Ondark Primary Same Color": {
+    "prefix": "text-ondark-primary-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-ondark-primary-same);"
+    ],
+    "description": "color var(--text-ondark-primary-same)"
+  },
+  "Text Ondark Secondary Same Color": {
+    "prefix": "text-ondark-secondary-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-ondark-secondary-same);"
+    ],
+    "description": "color var(--text-ondark-secondary-same)"
+  },
+  "Text Ondark Brand Same Color": {
+    "prefix": "text-ondark-brand-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-ondark-brand-same);"
+    ],
+    "description": "color var(--text-ondark-brand-same)"
+  },
+  "Text Negative Same Color": {
+    "prefix": "text-negative-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-negative-same);"
+    ],
+    "description": "color var(--text-negative-same)"
+  },
+  "Text Negative Alt Color": {
+    "prefix": "text-negative-alt",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-negative-alt);"
+    ],
+    "description": "color var(--text-negative-alt)"
+  },
+  "Text New Same Color": {
+    "prefix": "text-new-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-new-same);"
+    ],
+    "description": "color var(--text-new-same)"
+  },
+  "Text Decrease Color": {
+    "prefix": "text-decrease",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-decrease);"
+    ],
+    "description": "color var(--text-decrease)"
+  },
+  "Text Increase Same Color": {
+    "prefix": "text-increase-same",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-increase-same);"
+    ],
+    "description": "color var(--text-increase-same)"
+  },
+  "Text Steady Color": {
+    "prefix": "text-steady",
+    "scope": "scss",
+    "body": [
+      "color: var(--text-steady);"
+    ],
+    "description": "color var(--text-steady)"
+  }
+}
