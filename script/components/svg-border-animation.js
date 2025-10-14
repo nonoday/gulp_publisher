@@ -17,6 +17,7 @@ class AnimatedBorder {
             errorColor: '#E53838',            // 에러 상태 border 색상
             borderWidth: 2,                   // border 두께
             animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
+            errorAnimationDuration: 500,      // 에러 상태 애니메이션 지속 시간 (ms) - 더 빠르게
             borderRadius: 6,                  // 기본 border-radius (px)
             ...options
         };
@@ -119,6 +120,53 @@ class AnimatedBorder {
     }
 
     /**
+     * 에러 상태 SVG 추가 (포커스 상태에서 에러 발생 시)
+     * @param {HTMLElement} container - 컨테이너 요소
+     * @param {Object} options - 애니메이션 옵션
+     * @returns {HTMLElement} 생성된 에러 SVG 요소
+     */
+    addErrorSVG(container, options = {}) {
+        const animationOptions = { ...this.options, ...options };
+        
+        // 기존 에러 SVG가 있으면 제거
+        this.removeErrorSVG(container);
+
+        const borderRadius = this.getBorderRadius(container, animationOptions.borderRadius);
+        const errorSvg = this.createAnimatedSVG(container, borderRadius, {
+            ...animationOptions,
+            borderColor: animationOptions.errorColor,
+            isErrorSVG: true
+        });
+        
+        // 에러 SVG는 포커스 SVG 위에 표시되도록 z-index 설정
+        errorSvg.style.zIndex = '2';
+        errorSvg.classList.add('error-border-svg');
+        
+        container.appendChild(errorSvg);
+
+        // 에러 SVG 애니메이션 시작 (에러 전용 속도 사용)
+        this.executeAnimation(errorSvg, {
+            ...animationOptions,
+            animationDuration: animationOptions.errorAnimationDuration || animationOptions.animationDuration
+        });
+
+        return errorSvg;
+    }
+
+    /**
+     * 에러 상태 SVG 제거
+     * @param {HTMLElement} container - 컨테이너 요소
+     */
+    removeErrorSVG(container) {
+        const existingErrorSvgs = container.querySelectorAll('svg.error-border-svg');
+        existingErrorSvgs.forEach(svg => {
+            if (svg.parentNode) {
+                svg.parentNode.removeChild(svg);
+            }
+        });
+    }
+
+    /**
      * 애니메이션 중지
      * @param {HTMLElement} container - 애니메이션을 중지할 컨테이너 요소
      */
@@ -128,6 +176,9 @@ class AnimatedBorder {
             svg.parentNode.removeChild(svg);
         }
         this.activeAnimations.delete(container);
+        
+        // 에러 SVG도 함께 제거
+        this.removeErrorSVG(container);
     }
 
     /**

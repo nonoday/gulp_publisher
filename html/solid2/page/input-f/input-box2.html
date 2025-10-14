@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+  
+
+</head>
+<body>
+    
+    <div style="width: 100%;padding:50px;">
+
+
+        <p>Basic/Box/InputField  텍스트 인풋 텍스트</p>
+        <div class="input-container">
+            <div class="input-field svg-animated" role="group">  
+                <input type="text" class="input" id="basic-input-field-1" placeholder="첫 번째 입력" />
+                <label class="blind" for="basic-input-field-1">카드번호 첫 번째 자리</label>
+
+                <button id="error-toggle-btn" style="margin-left: 10px; padding: 5px 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">에러 테스트</button>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+                <span class="input-text">
+                    텍스트
+                </span>
+            </div>
+            <div class="input-function">
+                <p class="input-function-message">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.91406 0.3125C9.05635 0.312529 11.6016 2.8577 11.6016 6C11.6015 9.14227 9.05633 11.6875 5.91406 11.6875C2.77177 11.6875 0.226591 9.14229 0.226562 6C0.226562 2.85769 2.77175 0.3125 5.91406 0.3125ZM6.01874 8.04181C5.71671 8.04181 5.47186 8.28665 5.47186 8.58868C5.47195 8.89064 5.71676 9.13556 6.01874 9.13556C6.32064 9.13547 6.56553 8.89059 6.56561 8.58868C6.56561 8.28671 6.32069 8.0419 6.01874 8.04181ZM5.47186 3.375V7.16681H6.56561V3.375H5.47186Z" fill="#E53838"/>
+                    </svg>
+                    안내메시지
+                </p>
+                <div class="input-function-count">
+                    <span class="input-function-number">0</span>/00자
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- 모듈 스크립트들 -->
+    <script src="../../../../script/components/focus-manager.js"></script>
+    <script src="../../../../script/components/svg-border-animation.js"></script>
+    <script src="../../../../script/components/input-field/input-field-animation.js"></script>
+    
+    <!-- 에러 테스트 스크립트 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorToggleBtn = document.getElementById('error-toggle-btn');
+            const inputContainer = document.querySelector('.input-field.svg-animated');
+            let isErrorState = false;
+
+            errorToggleBtn.addEventListener('click', function() {
+                isErrorState = !isErrorState;
+                
+                if (isErrorState) {
+                    errorToggleBtn.textContent = '에러 해제';
+                    errorToggleBtn.style.background = '#ffebee';
+                    errorToggleBtn.style.borderColor = '#e53838';
+                    errorToggleBtn.style.color = '#e53838';
+                } else {
+                    errorToggleBtn.textContent = '에러 테스트';
+                    errorToggleBtn.style.background = '#f0f0f0';
+                    errorToggleBtn.style.borderColor = '#ccc';
+                    errorToggleBtn.style.color = '#000';
+                }
+
+                // 애니메이션 인스턴스가 생성된 후 에러 상태 토글
+                if (window.animatedBorderInputField) {
+                    window.animatedBorderInputField.toggleErrorState(inputContainer, isErrorState);
+                }
+            });
+        });
+    </script>
+        
+</body>
+</html>

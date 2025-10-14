@@ -18,6 +18,7 @@ class AnimatedBorderInputField {
             errorColor: '#E53838',            // 에러 상태 border 색상
             borderWidth: 2,                   // border 두께
             animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
+            errorAnimationDuration: 500,      // 에러 상태 애니메이션 지속 시간 (ms) - 더 빠르게
             borderRadius: 12,                  // 기본 border-radius (px)
             disabledClass: 'disabled',        // 비활성화 클래스
             errorClass: 'error',              // 에러 클래스
@@ -85,15 +86,37 @@ class AnimatedBorderInputField {
             return;
         }
 
-        // 에러 상태 확인
-        const isError = this.focusManager.isError(container);
-        const color = isError ? this.options.errorColor : this.options.borderColor;
-
-        // 애니메이션 실행
+        // 포커스 상태에서는 항상 파란색으로 시작
         this.animatedBorder.startAnimation(container, {
-            borderColor: color,
+            borderColor: this.options.borderColor,
             animationDuration: this.options.animationDuration
         });
+
+        // 에러 상태라면 에러 SVG 추가
+        const isError = this.focusManager.isError(container);
+        if (isError) {
+            this.addErrorSVG(container);
+        }
+    }
+
+    /**
+     * 에러 상태 SVG 추가
+     */
+    addErrorSVG(container) {
+        // 포커스 상태에서만 에러 SVG 추가
+        if (this.animatedBorder.isAnimationActive(container)) {
+            this.animatedBorder.addErrorSVG(container, {
+                borderColor: this.options.errorColor,
+                animationDuration: this.options.errorAnimationDuration
+            });
+        }
+    }
+
+    /**
+     * 에러 상태 SVG 제거
+     */
+    removeErrorSVG(container) {
+        this.animatedBorder.removeErrorSVG(container);
     }
 
     /**
@@ -124,6 +147,7 @@ class AnimatedBorderInputField {
             errorColor: this.options.errorColor,
             borderWidth: this.options.borderWidth,
             animationDuration: this.options.animationDuration,
+            errorAnimationDuration: this.options.errorAnimationDuration,
             borderRadius: this.options.borderRadius
         });
     }
@@ -141,6 +165,23 @@ class AnimatedBorderInputField {
      */
     forceStopAnimation(container) {
         this.stopAnimation(container);
+    }
+
+    /**
+     * 에러 상태 토글 (테스트용)
+     * @param {HTMLElement} container - 컨테이너 요소
+     * @param {boolean} isError - 에러 상태 여부
+     */
+    toggleErrorState(container, isError) {
+        if (isError) {
+            // 에러 상태 추가
+            container.classList.add(this.options.errorClass);
+            this.addErrorSVG(container);
+        } else {
+            // 에러 상태 제거
+            container.classList.remove(this.options.errorClass);
+            this.removeErrorSVG(container);
+        }
     }
 }
 
