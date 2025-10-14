@@ -18,12 +18,13 @@ class AnimatedBorderInputField {
             errorColor: '#E53838',            // 에러 상태 border 색상
             borderWidth: 2,                   // border 두께
             animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
-            borderRadius: 6,                  // 기본 border-radius (px)
+            borderRadius: 12,                  // 기본 border-radius (px)
             disabledClass: 'disabled',        // 비활성화 클래스
             errorClass: 'error',              // 에러 클래스
             readonlyClass: 'readonly',        // 읽기전용 클래스
-            containerSelector: '.svg-animated', // 컨테이너 셀렉터
-            inputSelector: 'input',           // input 태그 셀렉터
+            containerSelector: '.svg-animated, .input-textarea-from', // 컨테이너 셀렉터
+            inputSelector: 'input, select, textarea, button, label, [tabindex], [role="button"], [role="menuitem"]',           // 포커스 가능한 요소 셀렉터
+            focusedClass: 'focus',            // 포커스 상태 클래스
             ...options
         };
         
@@ -33,7 +34,8 @@ class AnimatedBorderInputField {
             inputSelector: this.options.inputSelector,
             disabledClass: this.options.disabledClass,
             readonlyClass: this.options.readonlyClass,
-            errorClass: this.options.errorClass
+            errorClass: this.options.errorClass,
+            focusedClass: this.options.focusedClass
         });
         
         this.animatedBorder = new AnimatedBorder({
@@ -113,7 +115,8 @@ class AnimatedBorderInputField {
             inputSelector: this.options.inputSelector,
             disabledClass: this.options.disabledClass,
             readonlyClass: this.options.readonlyClass,
-            errorClass: this.options.errorClass
+            errorClass: this.options.errorClass,
+            focusedClass: this.options.focusedClass
         });
         
         this.animatedBorder.updateOptions({

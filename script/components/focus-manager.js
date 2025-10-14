@@ -12,11 +12,12 @@ class FocusManager {
     constructor(options = {}) {
         this.options = {
             // 기본 옵션
-            containerSelector: '.focusable',     // 포커스 가능한 컨테이너 셀렉터
+            containerSelector: '.svg-animated, .input-textarea-from',     // 포커스 가능한 컨테이너 셀렉터
             inputSelector: 'input, select, textarea, button, label, [tabindex], [role="button"], [role="menuitem"]', // 포커스 가능한 요소 셀렉터
             disabledClass: 'disabled',           // 비활성화 클래스
             readonlyClass: 'readonly',          // 읽기전용 클래스
             errorClass: 'error',                // 에러 클래스
+            focusedClass: 'focused',              // 포커스 상태 클래스
             focusDelay: 10,                     // 포커스 상태 확인 지연 시간 (ms)
             ...options
         };
@@ -132,6 +133,8 @@ class FocusManager {
         // 비활성화 상태 확인
         if (this.isDisabled(container)) return;
 
+        container.classList.add(this.options.focusedClass);
+
         // 이미 포커스가 있는 경우 (컨테이너 내 다른 요소로 포커스 이동)
         if (focusState.hasFocus) {
             focusState.focusedElement = element;
@@ -175,6 +178,8 @@ class FocusManager {
             focusState.lastFocusedElement = focusState.focusedElement;
             focusState.focusedElement = null;
             this.focusStates.set(container, focusState);
+
+            container.classList.remove(this.options.focusedClass);
 
             // 포커스 해제 콜백 실행
             if (this.callbacks.onBlur) {
