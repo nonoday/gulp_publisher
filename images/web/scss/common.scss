@@ -1095,6 +1095,7 @@ body {
     &-inner {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       position: relative;
       flex:1;
       width: 1%;
@@ -1118,6 +1119,7 @@ body {
         }
       }
 
+   
       &-label {
         position: absolute;
         top: 0;
@@ -1141,6 +1143,25 @@ body {
     }
     &.focus {
       .input-field-inner-label {
+        height: 20px;
+        position: static;
+        color: var(--text-brand);
+        @include body-small;
+      }
+      & + .input-function .input-function-message,
+      & + .input-function .input-function-number {
+        color: var(--text-brand) !important;
+      }
+      .inline-input {
+        height: 29px;;
+      }
+      .blind + .inline-input {
+        height: 100%;
+      }
+    }
+    &.focused {
+      .input-field-inner-label {
+        height: 20px;
         position: static;
         color: var(--text-brand);
         @include body-small;
@@ -1192,11 +1213,13 @@ body {
 
       .input-field-inner-label {
         position: static;
+        height: 20px;
         padding:0;
         background-color: transparent;
         @include body-small;
       }
       .inline-input {
+        height: 29px;
         margin:0;
         padding:0;
       }
