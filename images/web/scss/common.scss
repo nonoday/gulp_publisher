@@ -1137,7 +1137,7 @@ body {
     }
     &-inline {
       height: 76px;
-      padding:13px  var(--spacing-xl);
+      padding:0  var(--spacing-xl);
     }
     &.focus {
       .input-field-inner-label {
