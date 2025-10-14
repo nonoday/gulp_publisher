@@ -69,6 +69,13 @@
     -->
     <div style="width: 100%;padding:50px;">
 
+        <div>
+            테스트
+        </div>
+        <button type="button" class="input-field svg-animated">
+            테스트
+        </button>
+
         <p>Basic/Box/InputField  텍스트 인풋 텍스트</p>
         <div class="input-container">
             <div class="input-field svg-animated" role="group">  
@@ -893,6 +900,22 @@
                 </button>
             </div>
         </div>
+
+        <p>Inline/Box/InputInlineField  텍스트 인풋 텍스트2</p>
+        <div class="input-container">
+            <div class="input-field svg-animated readonly">
+                <div class="input-field-inner">
+                    <label class="input-field-inner-label" for="inline-input-field-133">레이블</label>
+                    <input type="text" class="inline-input" id="inline-input-field-133" value="010-3333-3333" />
+                </div>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                                  
+                </button>
+            </div>
+        </div>
+
         <p>Inline/Box/InputInlineField </p>
         <div class="input-container">
             <div class="input-field svg-animated" role="group">  
@@ -949,137 +972,6 @@
     <script src="../../../../script/components/focus-manager.js"></script>
     <script src="../../../../script/components/svg-border-animation.js"></script>
     <script src="../../../../script/components/input-field/input-field-animation.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 기존 애니메이션 인스턴스가 있다면 정리  -- 애니메이션 분리
-            if (window.animatedBorderInputField) {
-                window.animatedBorderInputField.cleanup();
-            }
-            
-            // svg-animated 클래스가 있는 컨테이너만 선택하여 애니메이션 인스턴스 생성
-            const svgAnimatedContainers = document.querySelectorAll('.svg-animated, .input-textarea-from');
-            
-            if (svgAnimatedContainers.length > 0) {
-            window.animatedBorderInputField = new AnimatedBorderInputField({
-                borderColor: '#005DF9',           // 기본 border 색상
-                errorColor: '#E53838',            // 에러 상태 border 색상
-                borderWidth: 2,                   // border 두께
-                animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
-                    borderRadius: 12,                  // 기본 border-radius (px)
-                disabledClass: 'disabled',        // 비활성화 클래스
-                errorClass: 'error',              // 에러 클래스
-                readonlyClass: 'readonly',        // 읽기전용 클래스
-                    containerSelector: '.svg-animated, .input-textarea-from', // 컨테이너 셀렉터
-                    inputSelector: 'input, textarea' // input과 textarea 태그 셀렉터
-            });
-            }
-            
-            // 포커스 이벤트 처리
-        document.addEventListener('focusin', (e) => {
-                if (e.target.matches('input, textarea')) {
-                    const container = e.target.closest('.input-field, .input-textarea-from');
-                    if (container) {
-                        container.classList.add('focus');
-                    console.log('포커스됨:', e.target.placeholder || '입력 필드');
-                }
-            }
-        });
-
-        document.addEventListener('focusout', (e) => {
-                if (e.target.matches('input, textarea')) {
-                    const container = e.target.closest('.input-field, .input-textarea-from');
-                    if (container) {
-                        // 즉시 focus 클래스 제거
-                        container.classList.remove('focus');
-                            console.log('포커스 해제됨:', e.target.placeholder || '입력 필드');
-                        }
-                }
-            });
-
-            // 입력 필드 라벨 애니메이션 관리
-            const inlineInputs = document.querySelectorAll('.inline-input');
-            inlineInputs.forEach(input => {
-                const container = input.closest('.input-field');
-                const label = input.previousElementSibling;
-                
-                if (label && label.classList.contains('input-field-inner-label')) {
-                    // 포커스 이벤트
-                    input.addEventListener('focus', () => {
-                        container.classList.add('focus');
-                    });
-                    
-                    // 블러 이벤트
-                    input.addEventListener('blur', () => {
-                        container.classList.remove('focus');
-                        if (input.value.trim() === '') {
-                            container.classList.remove('typing');
-                        } else {
-                            container.classList.add('typing');
-                        }
-                    });
-                    
-                    // 입력 이벤트
-                    input.addEventListener('input', () => {
-                        if (input.value.trim() === '') {
-                            container.classList.remove('typing');
-                        } else {
-                            container.classList.add('typing');
-                        }
-                    });
-                    
-                    // 초기 상태 설정
-                    if (input.value.trim() !== '') {
-                        container.classList.add('typing');
-                    }
-                }
-            });
-
-            // 인증번호 입력 필드 자동 포커스 이동
-            const authCodeInputs = document.querySelectorAll('#auth-code-input-1, #auth-code-input-2, #auth-code-input-3, #auth-code-input-4, #auth-code-input-5, #auth-code-input-6');
-            
-            authCodeInputs.forEach((input, index) => {
-                input.addEventListener('input', (e) => {
-                    const value = e.target.value;
-                    
-                    // 숫자가 아닌 문자 제거
-                    if (!/^[0-9]$/.test(value)) {
-                        e.target.value = '';
-                        return;
-                    }
-                    
-                    // 다음 필드로 자동 이동
-                    if (value && index < authCodeInputs.length - 1) {
-                        authCodeInputs[index + 1].focus();
-                    }
-                });
-                
-                input.addEventListener('keydown', (e) => {
-                    // 백스페이스 키 처리
-                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                        authCodeInputs[index - 1].focus();
-                    }
-                });
-                
-                input.addEventListener('paste', (e) => {
-                    e.preventDefault();
-                    const pastedData = e.clipboardData.getData('text');
-                    const numbers = pastedData.replace(/\D/g, '').slice(0, 6);
-                    
-                    // 각 필드에 숫자 할당
-                    numbers.split('').forEach((num, i) => {
-                        if (authCodeInputs[i]) {
-                            authCodeInputs[i].value = num;
-                        }
-                    });
-                    
-                    // 마지막 입력된 필드로 포커스 이동
-                    const lastIndex = Math.min(numbers.length - 1, authCodeInputs.length - 1);
-                    authCodeInputs[lastIndex].focus();
-                });
-            });
-        });
-    </script>
-    
+        
 </body>
 </html>
