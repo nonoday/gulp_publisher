@@ -1098,6 +1098,7 @@ body {
       position: relative;
       flex:1;
       width: 1%;
+      height: 100%;
 
       .inline-input {
         width: 100%;
@@ -1133,6 +1134,10 @@ body {
         align-items: center;
       }
 
+    }
+    &-inline {
+      height: 76px;
+      padding:13px  var(--spacing-xl);
     }
     &.focus {
       .input-field-inner-label {
