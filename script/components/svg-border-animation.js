@@ -126,7 +126,8 @@ class AnimatedBorder {
      * @returns {HTMLElement} 생성된 에러 SVG 요소
      */
     addErrorSVG(container, options = {}) {
-        const animationOptions = { ...this.options, ...options };
+        const { skipAnimation = false, ...restOptions } = options;
+        const animationOptions = { ...this.options, ...restOptions };
         
         // 기존 에러 SVG가 있으면 제거
         this.removeErrorSVG(container);
@@ -145,12 +146,58 @@ class AnimatedBorder {
         container.appendChild(errorSvg);
 
         // 에러 SVG 애니메이션 시작 (에러 전용 속도 사용)
-        this.executeAnimation(errorSvg, {
-            ...animationOptions,
-            animationDuration: animationOptions.errorAnimationDuration || animationOptions.animationDuration
-        });
+        if (skipAnimation) {
+            const path = errorSvg.querySelector('path');
+            const pathLength = path.getTotalLength();
+            path.style.strokeDasharray = pathLength;
+            path.style.strokeDashoffset = '0';
+        } else {
+            this.executeAnimation(errorSvg, {
+                ...animationOptions,
+                animationDuration: animationOptions.errorAnimationDuration || animationOptions.animationDuration
+            });
+        }
 
         return errorSvg;
+    }
+
+    addFocusMaintainSVG(container, options = {}) {
+        const { skipAnimation = false, ...restOptions } = options;
+        const animationOptions = { ...this.options, ...restOptions };
+
+        // 기존 포커스 유지 SVG 제거
+        this.removeFocusMaintainSVG(container);
+
+        const borderRadius = this.getBorderRadius(container, animationOptions.borderRadius);
+        const maintainSvg = this.createAnimatedSVG(container, borderRadius, {
+            ...animationOptions,
+            borderColor: animationOptions.borderColor
+        });
+        maintainSvg.style.zIndex = '2';
+        maintainSvg.classList.add('focus-maintain-border-svg');
+
+        container.appendChild(maintainSvg);
+
+        if (skipAnimation) {
+            const path = maintainSvg.querySelector('path');
+            const pathLength = path.getTotalLength();
+            path.style.strokeDasharray = pathLength;
+            path.style.strokeDashoffset = '0';
+            path.style.transition = 'none';
+        } else {
+            this.executeAnimation(maintainSvg, animationOptions);
+        }
+
+        return maintainSvg;
+    }
+
+    removeFocusMaintainSVG(container) {
+        const existingMaintainSvgs = container.querySelectorAll('svg.focus-maintain-border-svg');
+        existingMaintainSvgs.forEach(svg => {
+            if (svg.parentNode) {
+                svg.parentNode.removeChild(svg);
+            }
+        });
     }
 
     /**
@@ -179,6 +226,8 @@ class AnimatedBorder {
         
         // 에러 SVG도 함께 제거
         this.removeErrorSVG(container);
+        // 포커스 유지 SVG도 함께 제거
+        this.removeFocusMaintainSVG(container);
     }
 
     /**

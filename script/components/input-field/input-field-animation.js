@@ -26,6 +26,7 @@ class AnimatedBorderInputField {
             containerSelector: '.svg-animated, .input-textarea-from', // 컨테이너 셀렉터
             inputSelector: 'input, select, textarea, button, label, [tabindex], [role="button"], [role="menuitem"]',           // 포커스 가능한 요소 셀렉터
             focusedClass: 'focus',            // 포커스 상태 클래스
+            focusMaintainClass: 'focus-maintain', // 포커스 유지 클래스
             ...options
         };
         
@@ -48,6 +49,26 @@ class AnimatedBorderInputField {
         });
         
         this.init();
+    }
+
+    getTargetContainer(container) {
+        if (!container) return null;
+
+        let target = container;
+
+        if (typeof container === 'string') {
+            target = document.querySelector(container);
+        }
+
+        if (!(target instanceof Element)) {
+            return null;
+        }
+
+        if (!target.matches(this.options.containerSelector)) {
+            return null;
+        }
+
+        return target;
     }
 
     /**
@@ -80,11 +101,17 @@ class AnimatedBorderInputField {
      * 애니메이션 시작
      */
     startAnimation(container) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
         // 이미 애니메이션이 실행 중인 경우 스킵
         if (this.animatedBorder.isAnimationActive(container)) {
             console.log('애니메이션 이미 실행 중 - 스킵');
             return;
         }
+
+        const wasError = this.focusManager.isError(container);
+        const wasFocusMaintain = container.classList.contains(this.options.focusMaintainClass);
 
         // 포커스 상태에서는 항상 파란색으로 시작
         this.animatedBorder.startAnimation(container, {
@@ -95,27 +122,73 @@ class AnimatedBorderInputField {
         // 에러 상태라면 에러 SVG 추가
         const isError = this.focusManager.isError(container);
         if (isError) {
-            this.addErrorSVG(container);
+            this.addErrorSVG(container, {
+                skipAnimation: wasError
+            });
+        } else if (wasFocusMaintain) {
+            this.addFocusMaintainSVG(container, {
+                skipAnimation: true
+            });
         }
     }
 
     /**
      * 에러 상태 SVG 추가
      */
-    addErrorSVG(container) {
+    addErrorSVG(container, options = {}) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
         // 포커스 상태에서만 에러 SVG 추가
-        if (this.animatedBorder.isAnimationActive(container)) {
-            this.animatedBorder.addErrorSVG(container, {
-                borderColor: this.options.errorColor,
-                animationDuration: this.options.errorAnimationDuration
-            });
+        this.animatedBorder.addErrorSVG(container, {
+            borderColor: this.options.errorColor,
+            animationDuration: this.options.errorAnimationDuration,
+            ...options
+        });
+    }
+
+    addFocusMaintainSVG(container, options = {}) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
+        this.animatedBorder.addFocusMaintainSVG(container, {
+            borderColor: this.options.borderColor,
+            animationDuration: this.options.animationDuration,
+            ...options
+        });
+    }
+
+    toggleFocusMaintainState(container, shouldMaintain) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
+        if (shouldMaintain) {
+            container.classList.add(this.options.focusMaintainClass);
+            container.classList.add(this.options.focusedClass);
+            this.addFocusMaintainSVG(container, { skipAnimation: true });
+        } else {
+            this.removeFocusMaintainState(container);
+            if (!this.focusManager.hasFocus(container)) {
+                container.classList.remove(this.options.focusedClass);
+            }
         }
+    }
+
+    removeFocusMaintainState(container) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
+        container.classList.remove(this.options.focusMaintainClass);
+        this.animatedBorder.removeFocusMaintainSVG(container);
     }
 
     /**
      * 에러 상태 SVG 제거
      */
     removeErrorSVG(container) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
         this.animatedBorder.removeErrorSVG(container);
     }
 
@@ -123,7 +196,17 @@ class AnimatedBorderInputField {
      * 애니메이션 중지
      */
     stopAnimation(container) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
         this.animatedBorder.stopAnimation(container);
+        const isError = this.focusManager.isError(container);
+        const isFocusMaintain = container.classList.contains(this.options.focusMaintainClass);
+        if (isError) {
+            this.addErrorSVG(container, { skipAnimation: true });
+        } else if (isFocusMaintain) {
+            this.addFocusMaintainSVG(container, { skipAnimation: true });
+        }
     }
 
     /**
@@ -173,6 +256,9 @@ class AnimatedBorderInputField {
      * @param {boolean} isError - 에러 상태 여부
      */
     toggleErrorState(container, isError) {
+        container = this.getTargetContainer(container);
+        if (!container) return;
+
         if (isError) {
             // 에러 상태 추가
             container.classList.add(this.options.errorClass);
