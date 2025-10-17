@@ -19,7 +19,7 @@
             <div class="input-field svg-animated" role="group">  
                 <input type="text" class="input" id="basic-input-field-1" placeholder="첫 번째 입력" />
                 <label class="blind" for="basic-input-field-1">카드번호 첫 번째 자리</label>
-
+                <button id="focus-maintain-btn" style="margin-left: 10px; padding: 5px 10px; background: #e8f1ff; border: 1px solid #005df9; border-radius: 4px; color: #005df9; cursor: pointer;">파란색 유지</button>
                 <button id="error-toggle-btn" style="margin-left: 10px; padding: 5px 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">에러 테스트</button>
                 <button class="clear-button active" aria-label="입력 내용 지우기">
                     <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,6 +55,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const errorToggleBtn = document.getElementById('error-toggle-btn');
             const inputContainer = document.querySelector('.input-field.svg-animated');
+            const focusMaintainBtn = document.getElementById('focus-maintain-btn');
             let isErrorState = false;
 
             errorToggleBtn.addEventListener('click', function() {
@@ -75,6 +76,22 @@
                 // 애니메이션 인스턴스가 생성된 후 에러 상태 토글
                 if (window.animatedBorderInputField) {
                     window.animatedBorderInputField.toggleErrorState(inputContainer, isErrorState);
+                }
+            });
+
+            focusMaintainBtn.addEventListener('click', function() {
+                if (!window.animatedBorderInputField) return;
+
+                const shouldMaintain = !inputContainer.classList.contains('focus-maintain');
+
+                window.animatedBorderInputField.toggleFocusMaintainState(inputContainer, shouldMaintain);
+
+                if (shouldMaintain) {
+                    focusMaintainBtn.textContent = '파란색 해제';
+                    focusMaintainBtn.style.background = '#cfe0ff';
+                } else {
+                    focusMaintainBtn.textContent = '파란색 유지';
+                    focusMaintainBtn.style.background = '#e8f1ff';
                 }
             });
         });
