@@ -19,10 +19,16 @@ class AnimatedBorder {
             animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
             errorAnimationDuration: 500,      // 에러 상태 애니메이션 지속 시간 (ms) - 더 빠르게
             borderRadius: 6,                  // 기본 border-radius (px)
+            instanceId: null,                 // 인스턴스 ID (독립적인 처리용)
             ...options
         };
         
         this.activeAnimations = new Map(); // 활성 애니메이션 추적
+        
+        // 인스턴스 ID 생성 (없는 경우)
+        if (!this.options.instanceId) {
+            this.options.instanceId = `animated-border-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
         
         // 리사이즈 이벤트 리스너 등록
         this.setupResizeListener();
@@ -56,8 +62,8 @@ class AnimatedBorder {
                 const currentDashOffset = path.style.strokeDashoffset;
                 const isAnimating = currentDashOffset !== '0';
                 
-                // 컨테이너에서 기존 애니메이션 SVG 요소들만 제거 (안전장치)
-                const existingAnimationSvgs = container.querySelectorAll('svg.animated-border-svg');
+                // 컨테이너에서 이 인스턴스의 애니메이션 SVG 요소들만 제거
+                const existingAnimationSvgs = container.querySelectorAll(`svg.animated-border-svg.instance-${this.options.instanceId}`);
                 existingAnimationSvgs.forEach(existingSvg => {
                     if (existingSvg.parentNode) {
                         existingSvg.parentNode.removeChild(existingSvg);
@@ -97,8 +103,8 @@ class AnimatedBorder {
             this.stopAnimation(container);
         }
 
-        // 컨테이너에서 기존 애니메이션 SVG 요소들만 제거 (안전장치)
-        const existingAnimationSvgs = container.querySelectorAll('svg.animated-border-svg');
+        // 컨테이너에서 이 인스턴스의 애니메이션 SVG 요소들만 제거
+        const existingAnimationSvgs = container.querySelectorAll(`svg.animated-border-svg.instance-${this.options.instanceId}`);
         existingAnimationSvgs.forEach(svg => {
             if (svg.parentNode) {
                 svg.parentNode.removeChild(svg);
@@ -142,6 +148,8 @@ class AnimatedBorder {
         // 에러 SVG는 포커스 SVG 위에 표시되도록 z-index 설정
         errorSvg.style.zIndex = '2';
         errorSvg.classList.add('error-border-svg');
+        errorSvg.classList.add(`instance-${this.options.instanceId}`);
+        errorSvg.dataset.instanceId = this.options.instanceId;
         
         container.appendChild(errorSvg);
 
@@ -175,6 +183,8 @@ class AnimatedBorder {
         });
         maintainSvg.style.zIndex = '2';
         maintainSvg.classList.add('focus-maintain-border-svg');
+        maintainSvg.classList.add(`instance-${this.options.instanceId}`);
+        maintainSvg.dataset.instanceId = this.options.instanceId;
 
         container.appendChild(maintainSvg);
 
@@ -192,7 +202,7 @@ class AnimatedBorder {
     }
 
     removeFocusMaintainSVG(container) {
-        const existingMaintainSvgs = container.querySelectorAll('svg.focus-maintain-border-svg');
+        const existingMaintainSvgs = container.querySelectorAll(`svg.focus-maintain-border-svg.instance-${this.options.instanceId}`);
         existingMaintainSvgs.forEach(svg => {
             if (svg.parentNode) {
                 svg.parentNode.removeChild(svg);
@@ -205,7 +215,7 @@ class AnimatedBorder {
      * @param {HTMLElement} container - 컨테이너 요소
      */
     removeErrorSVG(container) {
-        const existingErrorSvgs = container.querySelectorAll('svg.error-border-svg');
+        const existingErrorSvgs = container.querySelectorAll(`svg.error-border-svg.instance-${this.options.instanceId}`);
         existingErrorSvgs.forEach(svg => {
             if (svg.parentNode) {
                 svg.parentNode.removeChild(svg);
@@ -266,6 +276,8 @@ class AnimatedBorder {
         // SVG 요소 생성
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.classList.add('animated-border-svg'); // 애니메이션용 SVG 식별 클래스
+        svg.classList.add(`instance-${this.options.instanceId}`); // 인스턴스별 클래스 추가
+        svg.dataset.instanceId = this.options.instanceId; // 인스턴스 ID 데이터 속성
         svg.style.position = 'absolute';
         svg.style.top = '-1px';      // 내부로 1px 이동
         svg.style.left = '-1px';     // 내부로 1px 이동
@@ -384,7 +396,7 @@ class AnimatedBorder {
     }
 }
 
-// 전역 인스턴스 생성
+// 전역 클래스 등록
 window.AnimatedBorder = AnimatedBorder;
 
 // 모듈 내보내기 (ES6 모듈 환경에서)

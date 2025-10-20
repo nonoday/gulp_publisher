@@ -43,12 +43,17 @@
             </div>
         </div>
 
+        <div>
+            <button class="svg-animated" style="position: relative;width:100px;height: 100px;border:1px solid #000;border-radius:12px;border:1px solid #bebebe;">테스트 svg</button>
+        </div>
+
     </div>
     
     <!-- 모듈 스크립트들 -->
     <script src="../../../../script/components/focus-manager.js"></script>
     <script src="../../../../script/components/svg-border-animation.js"></script>
     <script src="../../../../script/components/input-field/input-field-animation.js"></script>
+    <script src="../../../../script/components/input-field/instance-manager.js"></script>
     
     <!-- 에러 테스트 스크립트 -->
     <script>
@@ -58,6 +63,13 @@
             const focusMaintainBtn = document.getElementById('focus-maintain-btn');
             let isErrorState = false;
 
+            // 테스트 버튼 관련 요소들
+            const testErrorToggleBtn = document.getElementById('test-error-toggle-btn');
+            const testFocusMaintainBtn = document.getElementById('test-focus-maintain-btn');
+            const testButton = document.querySelector('.svg-animated');
+            let isTestErrorState = false;
+
+            // 기존 input 컨테이너 이벤트
             errorToggleBtn.addEventListener('click', function() {
                 isErrorState = !isErrorState;
                 
@@ -73,18 +85,19 @@
                     errorToggleBtn.style.color = '#000';
                 }
 
-                // 애니메이션 인스턴스가 생성된 후 에러 상태 토글
-                if (window.animatedBorderInputField) {
-                    window.animatedBorderInputField.toggleErrorState(inputContainer, isErrorState);
+                // 새로운 인스턴스 관리자를 통해 에러 상태 토글
+                if (window.svgAnimationInstanceManager) {
+                    window.svgAnimationInstanceManager.toggleErrorState(inputContainer, isErrorState);
                 }
             });
 
             focusMaintainBtn.addEventListener('click', function() {
-                if (!window.animatedBorderInputField) return;
+                if (!window.svgAnimationInstanceManager) return;
 
                 const shouldMaintain = !inputContainer.classList.contains('focus-maintain');
 
-                window.animatedBorderInputField.toggleFocusMaintainState(inputContainer, shouldMaintain);
+                // 새로운 인스턴스 관리자를 통해 포커스 유지 상태 토글
+                window.svgAnimationInstanceManager.toggleFocusMaintainState(inputContainer, shouldMaintain);
 
                 if (shouldMaintain) {
                     focusMaintainBtn.textContent = '파란색 해제';
@@ -92,6 +105,45 @@
                 } else {
                     focusMaintainBtn.textContent = '파란색 유지';
                     focusMaintainBtn.style.background = '#e8f1ff';
+                }
+            });
+
+            // 테스트 버튼 이벤트
+            testErrorToggleBtn.addEventListener('click', function() {
+                isTestErrorState = !isTestErrorState;
+                
+                if (isTestErrorState) {
+                    testErrorToggleBtn.textContent = '테스트 에러 해제';
+                    testErrorToggleBtn.style.background = '#ffebee';
+                    testErrorToggleBtn.style.borderColor = '#e53838';
+                    testErrorToggleBtn.style.color = '#e53838';
+                } else {
+                    testErrorToggleBtn.textContent = '테스트 에러';
+                    testErrorToggleBtn.style.background = '#f0f0f0';
+                    testErrorToggleBtn.style.borderColor = '#ccc';
+                    testErrorToggleBtn.style.color = '#000';
+                }
+
+                // 테스트 버튼에 에러 상태 토글
+                if (window.svgAnimationInstanceManager) {
+                    window.svgAnimationInstanceManager.toggleErrorState(testButton, isTestErrorState);
+                }
+            });
+
+            testFocusMaintainBtn.addEventListener('click', function() {
+                if (!window.svgAnimationInstanceManager) return;
+
+                const shouldMaintain = !testButton.classList.contains('focus-maintain');
+
+                // 테스트 버튼에 포커스 유지 상태 토글
+                window.svgAnimationInstanceManager.toggleFocusMaintainState(testButton, shouldMaintain);
+
+                if (shouldMaintain) {
+                    testFocusMaintainBtn.textContent = '테스트 유지 해제';
+                    testFocusMaintainBtn.style.background = '#cfe0ff';
+                } else {
+                    testFocusMaintainBtn.textContent = '테스트 유지';
+                    testFocusMaintainBtn.style.background = '#e8f1ff';
                 }
             });
         });

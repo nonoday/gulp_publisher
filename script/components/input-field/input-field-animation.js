@@ -27,17 +27,24 @@ class AnimatedBorderInputField {
             inputSelector: 'input, select, textarea, button, label, [tabindex], [role="button"], [role="menuitem"]',           // 포커스 가능한 요소 셀렉터
             focusedClass: 'focus',            // 포커스 상태 클래스
             focusMaintainClass: 'focus-maintain', // 포커스 유지 클래스
+            instanceId: null,                 // 인스턴스 ID (독립적인 처리용)
             ...options
         };
         
-        // 모듈 인스턴스 생성
+        // 인스턴스 ID 생성 (없는 경우)
+        if (!this.options.instanceId) {
+            this.options.instanceId = `animated-input-field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
+        
+        // 모듈 인스턴스 생성 (인스턴스 ID 전달)
         this.focusManager = new FocusManager({
             containerSelector: this.options.containerSelector,
             inputSelector: this.options.inputSelector,
             disabledClass: this.options.disabledClass,
             readonlyClass: this.options.readonlyClass,
             errorClass: this.options.errorClass,
-            focusedClass: this.options.focusedClass
+            focusedClass: this.options.focusedClass,
+            instanceId: this.options.instanceId
         });
         
         this.animatedBorder = new AnimatedBorder({
@@ -45,7 +52,8 @@ class AnimatedBorderInputField {
             errorColor: this.options.errorColor,
             borderWidth: this.options.borderWidth,
             animationDuration: this.options.animationDuration,
-            borderRadius: this.options.borderRadius
+            borderRadius: this.options.borderRadius,
+            instanceId: this.options.instanceId
         });
         
         this.init();
@@ -72,6 +80,55 @@ class AnimatedBorderInputField {
     }
 
     /**
+     * 특정 컨테이너를 이 인스턴스에 등록
+     */
+    registerContainer(container) {
+        container = this.getTargetContainer(container);
+        if (!container) return false;
+
+        // FocusManager에 등록
+        const focusRegistered = this.focusManager.registerContainer(container);
+        
+        if (focusRegistered) {
+            console.log(`컨테이너 등록됨: ${this.options.instanceId}`, container);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 특정 컨테이너를 이 인스턴스에서 해제
+     */
+    unregisterContainer(container) {
+        container = this.getTargetContainer(container);
+        if (!container) return false;
+
+        // 애니메이션 중지
+        this.stopAnimation(container);
+        
+        // FocusManager에서 해제
+        const focusUnregistered = this.focusManager.unregisterContainer(container);
+        
+        if (focusUnregistered) {
+            console.log(`컨테이너 해제됨: ${this.options.instanceId}`, container);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 특정 컨테이너가 이 인스턴스에 등록되어 있는지 확인
+     */
+    isRegisteredContainer(container) {
+        container = this.getTargetContainer(container);
+        if (!container) return false;
+
+        return this.focusManager.isManagedContainer(container);
+    }
+
+    /**
      * 스크립트 초기화
      */
     init() {
@@ -84,15 +141,15 @@ class AnimatedBorderInputField {
     setupCallbacks() {
         this.focusManager.setCallbacks({
             onFocus: (element, container) => {
-                console.log('컨테이너 첫 포커스 - 애니메이션 시작', element.placeholder || 'input');
+                console.log(`컨테이너 첫 포커스 - 애니메이션 시작 [${this.options.instanceId}]`, element.placeholder || 'input');
                 this.startAnimation(container);
             },
             onBlur: (element, container) => {
-                console.log('컨테이너 포커스 완전 해제 - 애니메이션 제거', element.placeholder || 'input');
+                console.log(`컨테이너 포커스 완전 해제 - 애니메이션 제거 [${this.options.instanceId}]`, element.placeholder || 'input');
                 this.stopAnimation(container);
             },
             onFocusChange: (element, container, type) => {
-                console.log('컨테이너 내부 input 포커스 이동 - 애니메이션 유지', element.placeholder || 'input');
+                console.log(`컨테이너 내부 input 포커스 이동 - 애니메이션 유지 [${this.options.instanceId}]`, element.placeholder || 'input');
             }
         });
     }
@@ -271,17 +328,8 @@ class AnimatedBorderInputField {
     }
 }
 
-// 전역 인스턴스 생성
+// 전역 클래스 등록
 window.AnimatedBorderInputField = AnimatedBorderInputField;
-
-// 자동 초기화 (DOM 로드 완료 후)
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        window.animatedBorderInputField = new AnimatedBorderInputField();
-    });
-} else {
-    window.animatedBorderInputField = new AnimatedBorderInputField();
-}
 
 // 모듈 내보내기 (ES6 모듈 환경에서)
 if (typeof module !== 'undefined' && module.exports) {

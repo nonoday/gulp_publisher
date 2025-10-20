@@ -6,6 +6,7 @@
  * - 포커스 상태 추적 및 관리
  * - 포커스 콜백 함수 실행
  * - 동적 요소 감지 및 초기화
+ * - 인스턴스별 독립적인 처리 지원
  */
 
 class FocusManager {
@@ -19,6 +20,7 @@ class FocusManager {
             errorClass: 'error',                // 에러 클래스
             focusedClass: 'focused',              // 포커스 상태 클래스
             focusDelay: 10,                     // 포커스 상태 확인 지연 시간 (ms)
+            instanceId: null,                   // 인스턴스 ID (독립적인 처리용)
             ...options
         };
         
@@ -28,6 +30,11 @@ class FocusManager {
             onBlur: null,    // 포커스 해제 시 콜백
             onFocusChange: null // 포커스 상태 변경 시 콜백
         };
+        
+        // 인스턴스 ID 생성 (없는 경우)
+        if (!this.options.instanceId) {
+            this.options.instanceId = `focus-manager-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
         
         this.init();
     }
@@ -48,7 +55,7 @@ class FocusManager {
         document.addEventListener('focusin', (e) => {
             if (this.isTargetElement(e.target)) {
                 const container = e.target.closest(this.options.containerSelector);
-                if (container) {
+                if (container && this.isManagedContainer(container)) {
                     this.handleFocus(e.target, container);
                 }
             }
@@ -58,7 +65,7 @@ class FocusManager {
         document.addEventListener('focusout', (e) => {
             if (this.isTargetElement(e.target)) {
                 const container = e.target.closest(this.options.containerSelector);
-                if (container) {
+                if (container && this.isManagedContainer(container)) {
                     // 약간의 지연을 두고 포커스 상태를 확인 (다른 요소로 포커스 이동 시간 고려)
                     setTimeout(() => {
                         this.handleBlur(e.target, container);
@@ -106,8 +113,8 @@ class FocusManager {
         // 이미 초기화된 경우 스킵
         if (container.dataset.focusManagerInitialized) return;
 
-        // 초기화 마크
-        container.dataset.focusManagerInitialized = 'true';
+        // 초기화 마크 (인스턴스 ID 포함)
+        container.dataset.focusManagerInitialized = this.options.instanceId;
         
         // 초기 포커스 상태 설정
         this.focusStates.set(container, {
@@ -115,6 +122,58 @@ class FocusManager {
             focusedElement: null,
             lastFocusedElement: null
         });
+    }
+
+    /**
+     * 관리되는 컨테이너인지 확인
+     */
+    isManagedContainer(container) {
+        return container.dataset.focusManagerInitialized === this.options.instanceId;
+    }
+
+    /**
+     * 특정 컨테이너를 이 인스턴스에 등록
+     */
+    registerContainer(container) {
+        if (!container) return false;
+        
+        // 이미 다른 인스턴스에 등록된 경우 제외
+        if (container.dataset.focusManagerInitialized && 
+            container.dataset.focusManagerInitialized !== this.options.instanceId) {
+            return false;
+        }
+
+        // 초기화 마크
+        container.dataset.focusManagerInitialized = this.options.instanceId;
+        
+        // 초기 포커스 상태 설정
+        this.focusStates.set(container, {
+            hasFocus: false,
+            focusedElement: null,
+            lastFocusedElement: null
+        });
+
+        return true;
+    }
+
+    /**
+     * 특정 컨테이너를 이 인스턴스에서 해제
+     */
+    unregisterContainer(container) {
+        if (!container) return false;
+        
+        // 이 인스턴스에 등록되지 않은 경우 제외
+        if (container.dataset.focusManagerInitialized !== this.options.instanceId) {
+            return false;
+        }
+
+        // 초기화 마크 제거
+        delete container.dataset.focusManagerInitialized;
+        
+        // 포커스 상태 제거
+        this.focusStates.delete(container);
+
+        return true;
     }
 
     /**
@@ -256,7 +315,7 @@ class FocusManager {
     }
 }
 
-// 전역 인스턴스 생성
+// 전역 클래스 등록
 window.FocusManager = FocusManager;
 
 // 모듈 내보내기 (ES6 모듈 환경에서)
