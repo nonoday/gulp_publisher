@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <script src="slide-in-animation.js"></script>
+  
+    <style>
+        /* 기본 상태 - li 요소들을 왼쪽으로 숨김 */
+        .slide-in-list li {
+            transform: translateX(-100%);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+        
+        /* 활성화 상태 - li 요소들이 오른쪽으로 슬라이드 인 */
+        .slide-in-list.active li {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        /* 기본 딜레이 설정 (스크립트로 동적 변경 가능) */
+        .slide-in-list.active li:nth-child(1) { transition-delay: 0.1s; }
+        .slide-in-list.active li:nth-child(2) { transition-delay: 0.2s; }
+        .slide-in-list.active li:nth-child(3) { transition-delay: 0.3s; }
+        .slide-in-list.active li:nth-child(4) { transition-delay: 0.4s; }
+        .slide-in-list.active li:nth-child(5) { transition-delay: 0.5s; }
+        .slide-in-list.active li:nth-child(6) { transition-delay: 0.6s; }
+        .slide-in-list.active li:nth-child(7) { transition-delay: 0.7s; }
+        .slide-in-list.active li:nth-child(8) { transition-delay: 0.8s; }
+        .slide-in-list.active li:nth-child(9) { transition-delay: 0.9s; }
+        .slide-in-list.active li:nth-child(10) { transition-delay: 1.0s; }
+        
+        /* 커스텀 클래스 옵션들 */
+        .slide-in-list.fast li { transition-duration: 0.3s; }
+        .slide-in-list.slow li { transition-duration: 0.8s; }
+        .slide-in-list.bounce li { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .slide-in-list.ease-in li { transition-timing-function: ease-in; }
+        .slide-in-list.ease-out li { transition-timing-function: ease-out; }
+        
+        /* 테스트용 버튼 스타일 */
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div style="width: 100%;padding:50px;">
+
+        <p>Basic/Box/InputField  텍스트 인풋 텍스트</p>
+
+        <!-- 옵션 기반 자동 애니메이션 예시들 -->
+        <div style="margin-bottom: 30px;">
+            <h4>옵션 기반 자동 애니메이션 예시</h4>
+            <p>아래 리스트들은 data 속성으로 옵션이 설정되어 자동으로 애니메이션이 실행됩니다.</p>
+        </div>
+
+        <!-- 첫 번째 리스트 - 기본 옵션 -->
+        <h3>첫 번째 리스트 (기본 옵션)</h3>
+        <ul id="list1" class="slide-in-list" 
+            data-slide-delay="0.1" 
+            data-slide-duration="0.5" 
+            data-slide-timing="ease-out"
+            data-slide-auto="true">
+            <li>첫 번째 항목</li>
+            <li>두 번째 항목</li>
+            <li>세 번째 항목</li>
+            <li>네 번째 항목</li>
+            <li>다섯 번째 항목</li>
+        </ul>
+
+        <!-- 다섯 번째 리스트 - li 개별 옵션 -->
+        <h3>다섯 번째 리스트 (li 개별 옵션)</h3>
+        <ul id="list5" class="slide-in-list" 
+            data-slide-delay="0.1" 
+            data-slide-duration="0.5" 
+            data-slide-timing="ease-out"
+            data-slide-auto="true">
+            <li data-slide-delay="0.05" data-slide-duration="0.3">빠른 첫 번째</li>
+            <li data-slide-delay="0.2" data-slide-duration="0.8" data-slide-timing="ease-in">느린 두 번째</li>
+            <li data-slide-delay="0.1" data-slide-timing="cubic-bezier(0.68, -0.55, 0.265, 1.55)">바운스 세 번째</li>
+            <li data-slide-delay="0.3" data-slide-duration="1.0" data-slide-timing="ease-in-out">매우 느린 네 번째</li>
+            <li>기본 다섯 번째</li>
+        </ul>
+
+        <!-- 두 번째 리스트 - 빠른 바운스 효과 -->
+        <h3>두 번째 리스트 (빠른 바운스)</h3>
+        <ol id="list2" class="slide-in-list" 
+            data-slide-delay="0.05" 
+            data-slide-duration="0.3" 
+            data-slide-timing="cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+            data-slide-auto="true">
+            <li>순서 있는 첫 번째</li>
+            <li>순서 있는 두 번째</li>
+            <li>순서 있는 세 번째</li>
+            <li>순서 있는 네 번째</li>
+        </ol>
+
+        <!-- 세 번째 리스트 - 느린 애니메이션 -->
+        <h3>세 번째 리스트 (느린 애니메이션)</h3>
+        <ul id="list3" class="slide-in-list" 
+            data-slide-delay="0.2" 
+            data-slide-duration="0.8" 
+            data-slide-timing="ease-in-out"
+            data-slide-auto="true">
+            <li>느린 첫 번째</li>
+            <li>느린 두 번째</li>
+            <li>느린 세 번째</li>
+        </ul>
+
+        <!-- 네 번째 리스트 - 수동 실행 (버튼으로 제어) -->
+        <h3>네 번째 리스트 (수동 실행)</h3>
+        <div style="margin-bottom: 10px;">
+            <button class="test-button" onclick="triggerManualSlide('list4')">수동 실행</button>
+            <button class="test-button" onclick="resetSlide('list4')">리셋</button>
+        </div>
+        <ul id="list4" class="slide-in-list" 
+            data-slide-delay="0.15" 
+            data-slide-duration="0.6" 
+            data-slide-timing="ease-in"
+            data-slide-auto="false">
+            <li>수동 첫 번째</li>
+            <li>수동 두 번째</li>
+            <li>수동 세 번째</li>
+            <li>수동 네 번째</li>
+        </ul>
+
+        <!-- 여섯 번째 리스트 - li 개별 옵션 테스트 -->
+        <h3>여섯 번째 리스트 (li 개별 옵션 테스트)</h3>
+        <div style="margin-bottom: 10px;">
+            <button class="test-button" onclick="triggerManualSlide('list6')">애니메이션 실행</button>
+            <button class="test-button" onclick="setLiSlideOptions('list6', 0, {delay: 0.05, duration: 0.3})">첫 번째 li 빠르게</button>
+            <button class="test-button" onclick="setLiSlideOptions('list6', 1, {delay: 0.5, duration: 1.0, timing: 'ease-in-out'})">두 번째 li 느리게</button>
+            <button class="test-button" onclick="setLiSlideOptions('list6', 2, {timing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'})">세 번째 li 바운스</button>
+            <button class="test-button" onclick="removeLiSlideOptions('list6', 0)">첫 번째 li 옵션 제거</button>
+            <button class="test-button" onclick="resetSlide('list6')">리셋</button>
+        </div>
+        <ul id="list6" class="slide-in-list" 
+            data-slide-delay="0.1" 
+            data-slide-duration="0.5" 
+            data-slide-timing="ease-out"
+            data-slide-auto="false">
+            <li>테스트 첫 번째</li>
+            <li>테스트 두 번째</li>
+            <li>테스트 세 번째</li>
+            <li>테스트 네 번째</li>
+        </ul>
+    </div>
+        
+</body>
+</html>
