@@ -9,20 +9,18 @@
     <script src="slide-in-animation.js"></script>
   
     <style>
-        /* 기본 상태 - li 요소들을 왼쪽으로 숨김 */
+
         .slide-in-list li {
-            transform: translateX(-100%);
+            transform: translateX(-20px);
             opacity: 0;
             transition: transform 0.5s ease-out, opacity 0.5s ease-out;
         }
         
-        /* 활성화 상태 - li 요소들이 오른쪽으로 슬라이드 인 */
         .slide-in-list.active li {
             transform: translateX(0);
             opacity: 1;
         }
         
-        /* 기본 딜레이 설정 (스크립트로 동적 변경 가능) */
         .slide-in-list.active li:nth-child(1) { transition-delay: 0.1s; }
         .slide-in-list.active li:nth-child(2) { transition-delay: 0.2s; }
         .slide-in-list.active li:nth-child(3) { transition-delay: 0.3s; }

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입력 필드 컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <script src="slide-in-animation.js"></script>
+    
+    <style>
+        .guide-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "OneShinhan", sans-serif;
+        }
+
+        .guide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .guide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .guide-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .component-section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .component-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .component-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .component-demo {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-source {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .component-source.show {
+            display: block;
+        }
+
+        /* 예제 컴포넌트 스타일 */
+        .example-button {
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .example-button.large {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+
+        .example-button.small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .example-button.secondary {
+            background: #6b7280;
+        }
+
+        .example-button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .example-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .example-card.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border-color: #374151;
+        }
+
+        .example-card.compact {
+            padding: 16px;
+        }
+
+        .example-card.large {
+            padding: 32px;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .example-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+
+        .example-list.compact li {
+            padding: 8px 12px;
+        }
+
+        .example-list.large li {
+            padding: 16px 20px;
+        }
+
+        .example-list.dark li {
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 15px;
+            }
+            
+            .component-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .component-demo {
+                padding: 20px;
+            }
+        }
+    </style>
+    <style>
+
+        .slide-in-list li {
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+        
+        .slide-in-list.active li {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .slide-in-list.active li:nth-child(1) { transition-delay: 0.1s; }
+        .slide-in-list.active li:nth-child(2) { transition-delay: 0.2s; }
+        .slide-in-list.active li:nth-child(3) { transition-delay: 0.3s; }
+        .slide-in-list.active li:nth-child(4) { transition-delay: 0.4s; }
+        .slide-in-list.active li:nth-child(5) { transition-delay: 0.5s; }
+        .slide-in-list.active li:nth-child(6) { transition-delay: 0.6s; }
+        .slide-in-list.active li:nth-child(7) { transition-delay: 0.7s; }
+        .slide-in-list.active li:nth-child(8) { transition-delay: 0.8s; }
+        .slide-in-list.active li:nth-child(9) { transition-delay: 0.9s; }
+        .slide-in-list.active li:nth-child(10) { transition-delay: 1.0s; }
+        
+        /* 커스텀 클래스 옵션들 */
+        .slide-in-list.fast li { transition-duration: 0.3s; }
+        .slide-in-list.slow li { transition-duration: 0.8s; }
+        .slide-in-list.bounce li { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .slide-in-list.ease-in li { transition-timing-function: ease-in; }
+        .slide-in-list.ease-out li { transition-timing-function: ease-out; }
+        
+        /* 테스트용 버튼 스타일 */
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1 class="guide-title"> ul li 컴포넌트 가이드</h1>
+            <p class="guide-description">
+                data 속성으로 옵션이 설정
+            </p>
+        </div>
+
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">첫 번째 리스트 (기본 옵션)</h2>
+                <div class="control-buttons">
+                    <button class="control-btn copy-btn" data-copy="list1-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <ul id="list1" class="slide-in-list" 
+                    data-slide-delay="0.1" 
+                    data-slide-duration="0.5" 
+                    data-slide-timing="ease-out"
+                    data-slide-auto="true">
+                    <li>첫 번째 항목</li>
+                    <li>두 번째 항목</li>
+                    <li>세 번째 항목</li>
+                    <li>네 번째 항목</li>
+                    <li>다섯 번째 항목</li>
+                </ul>
+            </div>
+            <div class="component-source" id="list1-source">
+&lt;ul id="list1" class="slide-in-list" 
+    data-slide-delay="0.1" 
+    data-slide-duration="0.5" 
+    data-slide-timing="ease-out"
+    data-slide-auto="true"&gt;
+    &lt;li&gt;첫 번째 항목&lt;/li&gt;
+    &lt;li&gt;두 번째 항목&lt;/li&gt;
+    &lt;li&gt;세 번째 항목&lt;/li&gt;
+    &lt;li&gt;네 번째 항목&lt;/li&gt;
+    &lt;li&gt;다섯 번째 항목&lt;/li&gt;
+&lt;/ul&gt;
+    </div>
+        </div>
+
+        
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">리스트 (li 개별 옵션)</h2>
+                <div class="control-buttons">
+                    <button class="control-btn copy-btn" data-copy="list5-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <ul id="list5" class="slide-in-list" 
+                    data-slide-delay="0.1" 
+                    data-slide-duration="0.5" 
+                    data-slide-timing="ease-out"
+                    data-slide-auto="true">
+                    <li data-slide-delay="0.05" data-slide-duration="0.3">빠른 첫 번째</li>
+                    <li data-slide-delay="0.2" data-slide-duration="0.8" data-slide-timing="ease-in">느린 두 번째</li>
+                    <li data-slide-delay="0.1" data-slide-timing="cubic-bezier(0.68, -0.55, 0.265, 1.55)">바운스 세 번째</li>
+                    <li data-slide-delay="0.3" data-slide-duration="1.0" data-slide-timing="ease-in-out">매우 느린 네 번째</li>
+                    <li>기본 다섯 번째</li>
+                </ul>
+            </div>
+            <div class="component-source" id="list5-source">&lt;ul id="list5" class="slide-in-list" 
+    data-slide-delay="0.1" 
+    data-slide-duration="0.5" 
+    data-slide-timing="ease-out"
+    data-slide-auto="true"&gt;
+    &lt;li data-slide-delay="0.05" data-slide-duration="0.3"&gt;빠른 첫 번째&lt;/li&gt;
+    &lt;li data-slide-delay="0.2" data-slide-duration="0.8" data-slide-timing="ease-in"&gt;느린 두 번째&lt;/li&gt;
+    &lt;li data-slide-delay="0.1" data-slide-timing="cubic-bezier(0.68, -0.55, 0.265, 1.55)"&gt;바운스 세 번째&lt;/li&gt;
+    &lt;li data-slide-delay="0.3" data-slide-duration="1.0" data-slide-timing="ease-in-out"&gt;매우 느린 네 번째&lt;/li&gt;
+    &lt;li&gt;기본 다섯 번째&lt;/li&gt;
+&lt;/ul&gt;</div>
+        </div>
+
+        
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">ol li 빠른바운스</h2>
+                <div class="control-buttons">
+                    <button class="control-btn copy-btn" data-copy="list2-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+                <ol id="list2" class="slide-in-list" 
+                    data-slide-delay="0.05" 
+                    data-slide-duration="0.3" 
+                    data-slide-timing="cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+                    data-slide-auto="true">
+                    <li>순서 있는 첫 번째</li>
+                    <li>순서 있는 두 번째</li>
+                    <li>순서 있는 세 번째</li>
+                    <li>순서 있는 네 번째</li>
+                </ol>
+            </div>
+            <div class="component-source" id="list2-source">&lt;ol id="list2" class="slide-in-list" 
+    data-slide-delay="0.05" 
+    data-slide-duration="0.3" 
+    data-slide-timing="cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+    data-slide-auto="true"&gt;
+    &lt;li&gt;순서 있는 첫 번째&lt;/li&gt;
+    &lt;li&gt;순서 있는 두 번째&lt;/li&gt;
+    &lt;li&gt;순서 있는 세 번째&lt;/li&gt;
+    &lt;li&gt;순서 있는 네 번째&lt;/li&gt;
+&lt;/ol&gt;</div>
+        </div>
+
+
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sourceId = this.getAttribute('data-copy');
+                    const sourceElement = document.getElementById(sourceId);
+                    
+                    if (sourceElement) {
+                        navigator.clipboard.writeText(sourceElement.textContent).then(function() {
+                            showToast('소스 코드가 복사되었습니다!', 'success');
+                        }).catch(function(err) {
+                            const range = document.createRange();
+                            range.selectNode(sourceElement);
+                            window.getSelection().removeAllRanges();
+                            window.getSelection().addRange(range);
+                            
+                            try {
+                                document.execCommand('copy');
+                                showToast('소스 코드가 복사되었습니다!', 'success');
+                            } catch (err) {
+                                showToast('복사에 실패했습니다.', 'error');
+                            }
+                            
+                            window.getSelection().removeAllRanges();
+                        });
+                    }
+                });
+            });
+
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = `toast ${type}`;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
