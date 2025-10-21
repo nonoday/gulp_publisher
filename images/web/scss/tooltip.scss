@@ -1,0 +1,100 @@
+@use '../tokens/scss/variables' as *;
+
+// Tooltip 화살표 위치 믹스인
+@mixin tooltip-arrow-position($position, $alignment: '') {
+    .tooltip-arrow {
+        @if $position == 'top' {
+            bottom: -8px;
+            @if $alignment == 'left' {
+                left: 20px;
+            } @else if $alignment == 'center' {
+                left: 50%;
+                transform: translateX(-50%);
+            } @else if $alignment == 'right' {
+                right: 20px;
+            }
+        } @else if $position == 'bottom' {
+            top: -8px;
+            @if $alignment == 'left' {
+                left: 20px;
+            } @else if $alignment == 'center' {
+                left: 50%;
+                transform: translateX(-50%);
+            } @else if $alignment == 'right' {
+                right: 20px;
+            }
+        } @else if $position == 'left' {
+            right: -8px;
+            @if $alignment == 'top' {
+                top: 20px;
+            } @else if $alignment == 'center' {
+                top: 50%;
+                transform: translateY(-50%);
+            } @else if $alignment == 'bottom' {
+                bottom: 20px;
+            }
+        } @else if $position == 'right' {
+            left: -8px;
+            @if $alignment == 'top' {
+                top: 20px;
+            } @else if $alignment == 'center' {
+                top: 50%;
+                transform: translateY(-50%);
+            } @else if $alignment == 'bottom' {
+                bottom: 20px;
+            }
+        }
+    }
+}
+
+.tooltip {
+    &-arrow {
+        position: absolute;
+        width: 20px;
+        height: 8px;
+    }
+
+    // 상단 위치들
+    &.top-left {
+        @include tooltip-arrow-position('top', 'left');
+    }
+    &.top-center {
+        @include tooltip-arrow-position('top', 'center');
+    }
+    &.top-right {
+        @include tooltip-arrow-position('top', 'right');
+    }
+
+    // 하단 위치들
+    &.bottom-left {
+        @include tooltip-arrow-position('bottom', 'left');
+    }
+    &.bottom-center {
+        @include tooltip-arrow-position('bottom', 'center');
+    }
+    &.bottom-right {
+        @include tooltip-arrow-position('bottom', 'right');
+    }
+
+    // 좌측 위치들
+    &.left-top {
+        @include tooltip-arrow-position('left', 'top');
+    }
+    &.left-center {
+        @include tooltip-arrow-position('left', 'center');
+    }
+    &.left-bottom {
+        @include tooltip-arrow-position('left', 'bottom');
+    }
+
+    // 우측 위치들
+    &.right-top {
+        @include tooltip-arrow-position('right', 'top');
+    }
+    &.right-center {
+        @include tooltip-arrow-position('right', 'center');
+    }
+    &.right-bottom {
+        @include tooltip-arrow-position('right', 'bottom');
+    }
+}
