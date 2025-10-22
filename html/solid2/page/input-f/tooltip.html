@@ -55,7 +55,10 @@
             padding: 20px;
             margin: 20px 0;
         }
-        
+        .tooltip-wrap {
+            position: relative;
+            display: inline-block;
+        }
         .tooltip-trigger {
             width: 20px;
             height: 20px;
@@ -82,7 +85,7 @@
             position: absolute;
             border: 1px solid #E0E5EE;
             border-radius: 8px;
-            padding: 12px;
+            padding: 0;
             background-color: #FFFFFF;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
@@ -91,6 +94,7 @@
             display: none;
             transition: all 0.2s ease;
             transform: scale(0.95);
+            box-sizing: border-box;
         }
         
         .solid-tooltip.solid-tooltip-show {
@@ -102,8 +106,10 @@
         .solid-tooltip-content {
             position: relative;
             display: flex;
-            align-items: center;
             gap: 8px;
+            padding: 12px;
+            height: 100%;
+            box-sizing: border-box;
         }
         
         .solid-tooltip-text {
@@ -114,6 +120,9 @@
         }
         
         .solid-tooltip-close {
+            width: 20px;
+            height:20px;
+            margin-left:auto;
             background: none;
             border: none;
             cursor: pointer;
@@ -191,10 +200,21 @@
 </head>
 <body>
     <div class="demo-container">
-        <h1 class="demo-title">동적 툴팁 위치 조절 시스템</h1>
+        <h1 class="demo-title">동적 툴팁</h1>
         
         <div class="demo-section">
-            <h2 class="demo-subtitle">위치 조절 컨트롤</h2>
+            <h2 class="demo-subtitle">위치 설정</h2>
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666;">
+                <strong>위치 옵션 설명:</strong><br>
+                • <strong>기본 위치</strong>: 툴팁이 나타날 방향 (상단/하단/좌측/우측)<br>
+                • <strong>정렬</strong>: 선택된 방향에서의 세부 위치 (좌측/중앙/우측 또는 상단/중간/하단)<br>
+                • <strong>화살표 오프셋</strong>: 화살표의 미세한 위치 조정<br>
+                • <strong>툴팁 오프셋</strong>: 툴팁 전체의 위치 조정<br>
+                • <strong>크기</strong>: 툴팁의 넓이와 높이 설정<br>
+                <div>
+                    top-left / top-center / top-right / bottom-left / bottom-center / bottom-right / left-top / left-middle / left-bottom / right-top / right-middle / right-bottom
+                </div>
+            </div>
             <div class="controls">
                 <div class="control-group">
                     <label>기본 위치</label>
@@ -212,6 +232,7 @@
                         <option value="center">중앙 (Center)</option>
                         <option value="right">우측 (Right)</option>
                         <option value="top">상단 (Top)</option>
+                        <option value="middle">중간 (Middle)</option>
                         <option value="bottom">하단 (Bottom)</option>
                     </select>
                 </div>
@@ -231,6 +252,14 @@
                     <label>툴팁 오프셋 Y</label>
                     <input type="number" id="tooltipOffsetY" value="0" step="1">
                 </div>
+                <div class="control-group">
+                    <label>툴팁 넓이</label>
+                    <input type="number" id="tooltipWidth" value="163" step="1">
+                </div>
+                <div class="control-group">
+                    <label>툴팁 높이</label>
+                    <input type="number" id="tooltipHeight" value="44" step="1">
+                </div>
             </div>
             
             <div class="position-preview">
@@ -241,608 +270,85 @@
                 <button class="position-btn" data-position="bottom-center">bottom-center</button>
                 <button class="position-btn" data-position="bottom-right">bottom-right</button>
                 <button class="position-btn" data-position="left-top">left-top</button>
-                <button class="position-btn" data-position="left-center">left-center</button>
+                <button class="position-btn" data-position="left-middle">left-middle</button>
                 <button class="position-btn" data-position="left-bottom">left-bottom</button>
                 <button class="position-btn" data-position="right-top">right-top</button>
-                <button class="position-btn" data-position="right-center">right-center</button>
+                <button class="position-btn" data-position="right-middle">right-middle</button>
                 <button class="position-btn" data-position="right-bottom">right-bottom</button>
             </div>
         </div>
         
         <div class="demo-section">
-            <h2 class="demo-subtitle">툴팁 데모</h2>
-            <div class="tooltip-demo-area">
-                <button class="tooltip-trigger" id="demoTrigger">
-                    툴팁 트리거
-        </button>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <h2 class="demo-subtitle">툴팁 데모 첫번째 버튼만 옵션 변경됨.</h2>
+                <button id="copyButton" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">복사</button>
+            </div>
+            
+            <div class="tooltip-demo-area" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <button class="tooltip-trigger" id="demoTrigger1" 
+                        data-content="첫 번째 툴팁" 
+                        data-position="top-center" 
+                        data-width="163" 
+                        data-height="44">
+                    툴111
+                </button>
+                <button class="tooltip-trigger" id="demoTrigger2" 
+                        data-content="두 번째 툴팁 - 다른 설정" 
+                        data-position="left-top"
+                        data-width="200" 
+                        data-height="60" 
+                        data-offset-x="10" 
+                        data-offset-y="5">
+                    툴2
+                </button>
+                <button class="tooltip-trigger" id="demoTrigger3" 
+                        data-content="세 번째 툴팁" 
+                        data-position="bottom-left" 
+                        data-width="150" 
+                        data-height="50">
+                    툴3
+                </button>
                 <!-- SolidTooltip이 자동으로 생성됩니다 -->
             </div>
         </div>
     </div>
 
+    <script src="tooltip.js"></script>
+    
     <script>
-        // BaseComponent 클래스 정의 (기존 구조와 호환)
-        class BaseComponent {
-            constructor(element) {
-                this.element = element;
-            }
-        }
-        
-        // SolidTooltip 클래스 정의
-        class SolidTooltip extends BaseComponent {
-            constructor(element) {
-                super(element);
-                
-                // 기본 속성 설정
-                this._isVisible = false;
-                this._position = 'top-center';
-                this._content = '';
-                this._arrowOffsetX = 0;
-                this._arrowOffsetY = 0;
-                this._tooltipOffsetX = 0;
-                this._tooltipOffsetY = 0;
-                
-                // DOM 요소 참조
-                this._triggerElement = null;
-                this._tooltipElement = null;
-                this._arrowElement = null;
-                
-                // 이벤트 핸들러 바인딩
-                this._boundHandleTriggerClick = this._handleTriggerClick.bind(this);
-                this._boundHandleCloseClick = this._handleCloseClick.bind(this);
-                this._boundHandleClickOutside = this._handleClickOutside.bind(this);
-                this._boundHandleEscapeKey = this._handleEscapeKey.bind(this);
-                
-                // 초기화
-                this._init();
-            }
-            
-            /**
-             * 컴포넌트 초기화
-             */
-            _init() {
-                try {
-                    this._triggerElement = this.element;
-                    
-                    // 트리거 요소 확인
-                    if (!this._triggerElement) {
-                        console.error('트리거 요소를 찾을 수 없습니다.');
-                        return;
-                    }
-                    
-                    console.log('SolidTooltip 초기화 시작:', this._triggerElement);
-                    
-                    this._createHtml();
-                    this._attachEvents();
-                    this._applyPosition();
-                    
-                    console.log('SolidTooltip 초기화 완료');
-                } catch (error) {
-                    console.error('SolidTooltip 초기화 중 오류:', error);
-                }
-            }
-            
-            /**
-             * HTML 구조 생성
-             */
-            _createHtml() {
-                try {
-                    // 기존 툴팁 요소가 있다면 제거
-                    const existingTooltip = document.querySelector('.solid-tooltip');
-                    if (existingTooltip) {
-                        existingTooltip.remove();
-                    }
-                    
-                    // 툴팁 컨테이너 생성
-                    this._tooltipElement = document.createElement('div');
-                    this._tooltipElement.className = 'solid-tooltip';
-                    this._tooltipElement.setAttribute('role', 'tooltip');
-                    this._tooltipElement.setAttribute('aria-hidden', 'true');
-                    this._tooltipElement.id = `tooltip-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-                    
-                    // 툴팁 콘텐츠 생성
-                    const contentElement = document.createElement('div');
-                    contentElement.className = 'solid-tooltip-content';
-                    
-                    // 텍스트 영역
-                    const textElement = document.createElement('div');
-                    textElement.className = 'solid-tooltip-text';
-                    textElement.textContent = this._content || '툴팁 텍스트';
-                    
-                    // 닫기 버튼
-                    const closeButton = document.createElement('button');
-                    closeButton.className = 'solid-tooltip-close';
-                    closeButton.setAttribute('aria-label', '툴팁 닫기');
-                    closeButton.innerHTML = `
-                        <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10.4979 9.33652L9.83771 9.99667L0.504449 0.663416L1.1646 0.00326538L10.4979 9.33652Z" fill="#818DA2"/>
-                            <path d="M9.83619 0.00334207L10.4963 0.663493L1.16308 9.99675L0.50293 9.3366L9.83619 0.00334207Z" fill="#818DA2"/>
-                        </svg>                        
-                    `;
-                    
-                    // 화살표 요소 생성 (SVG)
-                    this._arrowElement = document.createElement('div');
-                    this._arrowElement.className = 'solid-tooltip-arrow';
-                    this._arrowElement.innerHTML = `
-                        <svg width="9" height="18" viewBox="0 0 9 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7.29199 10.1602C8.02539 9.56005 8.02531 8.43809 7.29199 7.83789L-0.995118 1.05566L-0.999023 16.9453L7.29199 10.1602Z" fill="white" stroke="#D0D5DD"/>
-                        </svg>
-                    `;
-                    
-                    // 구조 조립
-                    contentElement.appendChild(textElement);
-                    contentElement.appendChild(closeButton);
-                    this._tooltipElement.appendChild(contentElement);
-                    this._tooltipElement.appendChild(this._arrowElement);
-                    
-                    // DOM에 추가 (body에 직접 추가하여 안정성 확보)
-                    document.body.appendChild(this._tooltipElement);
-                    
-                    // 트리거 요소에 속성 추가
-                    this._triggerElement.setAttribute('aria-describedby', this._tooltipElement.id);
-                    this._triggerElement.setAttribute('aria-expanded', 'false');
-                    
-                    console.log('툴팁 HTML 생성 완료:', this._tooltipElement);
-                } catch (error) {
-                    console.error('툴팁 HTML 생성 중 오류:', error);
-                }
-            }
-            
-            /**
-             * 이벤트 리스너 등록
-             */
-            _attachEvents() {
-                // 트리거 클릭 이벤트
-                this._triggerElement.addEventListener('click', this._boundHandleTriggerClick);
-                
-                // 닫기 버튼 클릭 이벤트
-                const closeButton = this._tooltipElement.querySelector('.solid-tooltip-close');
-                if (closeButton) {
-                    closeButton.addEventListener('click', this._boundHandleCloseClick);
-                }
-                
-                // 외부 클릭 감지
-                document.addEventListener('click', this._boundHandleClickOutside);
-                
-                // ESC 키 감지
-                document.addEventListener('keydown', this._boundHandleEscapeKey);
-            }
-            
-            /**
-             * 이벤트 리스너 제거
-             */
-            _detachEvents() {
-                this._triggerElement.removeEventListener('click', this._boundHandleTriggerClick);
-                
-                const closeButton = this._tooltipElement.querySelector('.solid-tooltip-close');
-                if (closeButton) {
-                    closeButton.removeEventListener('click', this._boundHandleCloseClick);
-                }
-                
-                document.removeEventListener('click', this._boundHandleClickOutside);
-                document.removeEventListener('keydown', this._boundHandleEscapeKey);
-            }
-            
-            /**
-             * 트리거 클릭 핸들러
-             */
-            _handleTriggerClick(event) {
-                event.stopPropagation();
-                this.toggle();
-            }
-            
-            /**
-             * 닫기 버튼 클릭 핸들러
-             */
-            _handleCloseClick(event) {
-                event.stopPropagation();
-                this.hide();
-            }
-            
-            /**
-             * 외부 클릭 핸들러
-             */
-            _handleClickOutside(event) {
-                if (!this._tooltipElement.contains(event.target) && 
-                    !this._triggerElement.contains(event.target)) {
-                    this.hide();
-                }
-            }
-            
-            /**
-             * ESC 키 핸들러
-             */
-            _handleEscapeKey(event) {
-                if (event.key === 'Escape' && this._isVisible) {
-                    this.hide();
-                }
-            }
-            
-            /**
-             * 툴팁 표시
-             */
-            show() {
-                try {
-                    if (this._isVisible) return;
-                    
-                    // 툴팁 요소가 없으면 생성
-                    if (!this._tooltipElement) {
-                        console.warn('툴팁 요소가 없습니다. HTML을 생성합니다.');
-                        this._createHtml();
-                        if (!this._tooltipElement) {
-                            console.error('툴팁 요소 생성에 실패했습니다.');
-                            return;
-                        }
-                    }
-                    
-                    this._isVisible = true;
-                    this._tooltipElement.classList.add('solid-tooltip-show');
-                    this._tooltipElement.setAttribute('aria-hidden', 'false');
-                    this._triggerElement.setAttribute('aria-expanded', 'true');
-                    
-                    // 위치 계산 및 적용
-                    this._applyPosition();
-                    
-                    // 표시 상태로 변경
-                    this._tooltipElement.style.opacity = '1';
-                    this._tooltipElement.style.visibility = 'visible';
-                    this._tooltipElement.style.transform = 'scale(1)';
-                    
-                    console.log('툴팁 표시 완료');
-                } catch (error) {
-                    console.error('툴팁 표시 중 오류:', error);
-                }
-            }
-            
-            /**
-             * 툴팁 숨김
-             */
-            hide() {
-                if (!this._isVisible) return;
-                
-                this._isVisible = false;
-                this._tooltipElement.classList.remove('solid-tooltip-show');
-                this._tooltipElement.setAttribute('aria-hidden', 'true');
-                this._triggerElement.setAttribute('aria-expanded', 'false');
-                
-                // 애니메이션 효과
-                this._tooltipElement.style.opacity = '0';
-                this._tooltipElement.style.transform = 'scale(0.95)';
-                
-                setTimeout(() => {
-                    if (!this._isVisible) {
-                        this._tooltipElement.style.display = 'none';
-                    }
-                }, 200);
-            }
-            
-            /**
-             * 툴팁 토글
-             */
-            toggle() {
-                if (this._isVisible) {
-                    this.hide();
-                } else {
-                    this.show();
-                }
-            }
-            
-            /**
-             * 위치 설정
-             * @param {string} position - 위치 (예: 'top-center', 'right-top' 등)
-             */
-            setPosition(position) {
-                this._position = position;
-                
-                // 기존 위치 클래스 제거
-                this._tooltipElement.className = this._tooltipElement.className.replace(/solid-tooltip-\w+-\w+/g, '');
-                
-                // 새 위치 클래스 추가
-                this._tooltipElement.classList.add(`solid-tooltip-${position}`);
-                
-                // 항상 위치 적용 (표시 여부와 관계없이)
-                this._applyPosition();
-            }
-            
-            /**
-             * 콘텐츠 설정
-             * @param {string} content - 툴팁 텍스트
-             */
-            setContent(content) {
-                this._content = content;
-                const textElement = this._tooltipElement.querySelector('.solid-tooltip-text');
-                if (textElement) {
-                    textElement.textContent = content;
-                }
-            }
-            
-            /**
-             * 화살표 오프셋 설정
-             * @param {number} x - X축 오프셋
-             * @param {number} y - Y축 오프셋
-             */
-            setArrowOffset(x, y) {
-                this._arrowOffsetX = x;
-                this._arrowOffsetY = y;
-                
-                if (this._isVisible) {
-                    this._applyPosition();
-                }
-            }
-            
-            /**
-             * 툴팁 오프셋 설정
-             * @param {number} x - X축 오프셋
-             * @param {number} y - Y축 오프셋
-             */
-            setTooltipOffset(x, y) {
-                this._tooltipOffsetX = x;
-                this._tooltipOffsetY = y;
-                
-                if (this._isVisible) {
-                    this._applyPosition();
-                }
-            }
-            
-            /**
-             * 위치 적용
-             */
-            _applyPosition() {
-                try {
-                    if (!this._tooltipElement) {
-                        console.warn('툴팁 요소가 없습니다. HTML을 다시 생성합니다.');
-                        this._createHtml();
-                        if (!this._tooltipElement) {
-                            console.error('툴팁 요소 생성에 실패했습니다.');
-                            return;
-                        }
-                    }
-                    
-                    const [basePosition, alignment] = this._position.split('-');
-                    
-                    // 툴팁 위치 계산
-                    this._positionTooltip(basePosition);
-                    
-                    // 화살표 위치 계산
-                    this._positionArrow(basePosition, alignment);
-                    
-                    // 표시 (숨겨진 상태에서도 위치 계산을 위해)
-                    if (!this._isVisible) {
-                        this._tooltipElement.style.display = 'block';
-                        this._tooltipElement.style.opacity = '0';
-                        this._tooltipElement.style.visibility = 'hidden';
-                    }
-                    
-                    console.log(`툴팁 위치 적용 완료: ${this._position}`);
-                } catch (error) {
-                    console.error('툴팁 위치 적용 중 오류:', error);
-                }
-            }
-            
-            /**
-             * 툴팁 위치 계산
-             * @param {string} basePosition - 기본 위치
-             */
-            _positionTooltip(basePosition) {
-                const triggerRect = this._triggerElement.getBoundingClientRect();
-                const tooltipRect = this._tooltipElement.getBoundingClientRect();
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-                
-                // 20px 정사각형 트리거 기준으로 계산
-                const triggerSize = 20;
-                const triggerCenterX = triggerRect.left + scrollLeft + triggerSize / 2;
-                const triggerCenterY = triggerRect.top + scrollTop + triggerSize / 2;
-                
-                let top, left;
-                
-                // 정렬 정보 가져오기
-                const [, alignment] = this._position.split('-');
-                
-                switch (basePosition) {
-                    case 'top':
-                        // 상단: 툴팁이 트리거 아래에 위치
-                        top = triggerCenterY + triggerSize / 2 + 10 + this._tooltipOffsetY;
-                        
-                        if (alignment === 'left') {
-                            left = triggerCenterX - tooltipRect.width + this._tooltipOffsetX;
-                        } else if (alignment === 'center') {
-                            left = triggerCenterX - tooltipRect.width / 2 + this._tooltipOffsetX;
-                        } else if (alignment === 'right') {
-                            left = triggerCenterX + this._tooltipOffsetX;
-                        }
-                        break;
-                        
-                    case 'bottom':
-                        // 하단: 툴팁이 트리거 위에 위치
-                        top = triggerCenterY - tooltipRect.height - 10 + this._tooltipOffsetY;
-                        
-                        if (alignment === 'left') {
-                            left = triggerCenterX - tooltipRect.width + this._tooltipOffsetX;
-                        } else if (alignment === 'center') {
-                            left = triggerCenterX - tooltipRect.width / 2 + this._tooltipOffsetX;
-                        } else if (alignment === 'right') {
-                            left = triggerCenterX + this._tooltipOffsetX;
-                        }
-                        break;
-                        
-                    case 'left':
-                        // 좌측: 툴팁이 트리거 오른쪽에 위치
-                        left = triggerCenterX + triggerSize / 2 + 10 + this._tooltipOffsetX;
-                        
-                        if (alignment === 'top') {
-                            top = triggerCenterY - tooltipRect.height + this._tooltipOffsetY;
-                        } else if (alignment === 'center') {
-                            top = triggerCenterY - tooltipRect.height / 2 + this._tooltipOffsetY;
-                        } else if (alignment === 'bottom') {
-                            top = triggerCenterY + this._tooltipOffsetY;
-                        }
-                        break;
-                        
-                    case 'right':
-                        // 우측: 툴팁이 트리거 왼쪽에 위치
-                        left = triggerCenterX - tooltipRect.width - triggerSize / 2 - 10 + this._tooltipOffsetX;
-                        
-                        if (alignment === 'top') {
-                            top = triggerCenterY - tooltipRect.height + this._tooltipOffsetY;
-                        } else if (alignment === 'center') {
-                            top = triggerCenterY - tooltipRect.height / 2 + this._tooltipOffsetY;
-                        } else if (alignment === 'bottom') {
-                            top = triggerCenterY + this._tooltipOffsetY;
-                        }
-                        break;
-                }
-                
-                this._tooltipElement.style.top = `${top}px`;
-                this._tooltipElement.style.left = `${left}px`;
-            }
-            
-            /**
-             * 화살표 위치 계산
-             * @param {string} basePosition - 기본 위치
-             * @param {string} alignment - 정렬
-             */
-            _positionArrow(basePosition, alignment) {
-                if (!this._arrowElement) return;
-                
-                const svgElement = this._arrowElement.querySelector('svg');
-                if (!svgElement) return;
-                
-                // 화살표 컨테이너 스타일 초기화
-                this._arrowElement.style.cssText = `
-                    position: absolute;
-                    width: 9px;
-                    height: 18px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                `;
-                
-                // SVG 스타일 초기화
-                svgElement.style.cssText = `
-                    width: 9px;
-                    height: 18px;
-                    transition: transform 0.2s ease;
-                `;
-                
-                // 화살표 방향에 따른 스타일 설정
-                switch (basePosition) {
-                    case 'top':
-                        // 상단: 툴팁이 트리거 아래에 있으므로 화살표가 위쪽을 가리킴
-                        svgElement.style.transform = `rotate(0deg)`;
-                        this._arrowElement.style.top = '-9px';
-                        
-                        if (alignment === 'left') {
-                            this._arrowElement.style.left = `${16 + this._arrowOffsetX}px`;
-                            this._arrowElement.style.transform = `translateX(0)`;
-                        } else if (alignment === 'center') {
-                            this._arrowElement.style.left = `50%`;
-                            this._arrowElement.style.transform = `translateX(calc(-50% + ${this._arrowOffsetX}px))`;
-                        } else if (alignment === 'right') {
-                            this._arrowElement.style.right = `${16 - this._arrowOffsetX}px`;
-                            this._arrowElement.style.transform = `translateX(0)`;
-                        }
-                        break;
-                        
-                    case 'bottom':
-                        // 하단: 툴팁이 트리거 위에 있으므로 화살표가 아래쪽을 가리킴
-                        svgElement.style.transform = `rotate(180deg)`;
-                        this._arrowElement.style.bottom = '-9px';
-                        
-                        if (alignment === 'left') {
-                            this._arrowElement.style.left = `${16 + this._arrowOffsetX}px`;
-                            this._arrowElement.style.transform = `translateX(0)`;
-                        } else if (alignment === 'center') {
-                            this._arrowElement.style.left = `50%`;
-                            this._arrowElement.style.transform = `translateX(calc(-50% + ${this._arrowOffsetX}px))`;
-                        } else if (alignment === 'right') {
-                            this._arrowElement.style.right = `${16 - this._arrowOffsetX}px`;
-                            this._arrowElement.style.transform = `translateX(0)`;
-                        }
-                        break;
-                        
-                    case 'left':
-                        // 좌측: 툴팁이 트리거 오른쪽에 있으므로 화살표가 왼쪽을 가리킴
-                        svgElement.style.transform = `rotate(270deg)`;
-                        this._arrowElement.style.left = '-9px';
-                        
-                        if (alignment === 'top') {
-                            this._arrowElement.style.top = `${16 + this._arrowOffsetY}px`;
-                            this._arrowElement.style.transform = `translateY(0)`;
-                        } else if (alignment === 'center') {
-                            this._arrowElement.style.top = `50%`;
-                            this._arrowElement.style.transform = `translateY(calc(-50% + ${this._arrowOffsetY}px))`;
-                        } else if (alignment === 'bottom') {
-                            this._arrowElement.style.bottom = `${16 - this._arrowOffsetY}px`;
-                            this._arrowElement.style.transform = `translateY(0)`;
-                        }
-                        break;
-                        
-                    case 'right':
-                        // 우측: 툴팁이 트리거 왼쪽에 있으므로 화살표가 오른쪽을 가리킴
-                        svgElement.style.transform = `rotate(90deg)`;
-                        this._arrowElement.style.right = '-9px';
-                        
-                        if (alignment === 'top') {
-                            this._arrowElement.style.top = `${16 + this._arrowOffsetY}px`;
-                            this._arrowElement.style.transform = `translateY(0)`;
-                        } else if (alignment === 'center') {
-                            this._arrowElement.style.top = `50%`;
-                            this._arrowElement.style.transform = `translateY(calc(-50% + ${this._arrowOffsetY}px))`;
-                        } else if (alignment === 'bottom') {
-                            this._arrowElement.style.bottom = `${16 - this._arrowOffsetY}px`;
-                            this._arrowElement.style.transform = `translateY(0)`;
-                        }
-                        break;
-                }
-            }
-            
-            /**
-             * 컴포넌트 파괴
-             */
-            destroy() {
-                this._detachEvents();
-                
-                if (this._tooltipElement && this._tooltipElement.parentNode) {
-                    this._tooltipElement.parentNode.removeChild(this._tooltipElement);
-                }
-                
-                // 트리거 요소 속성 정리
-                this._triggerElement.removeAttribute('aria-describedby');
-                this._triggerElement.removeAttribute('aria-expanded');
-            }
-            
-            /**
-             * 현재 상태 반환
-             */
-            get isVisible() {
-                return this._isVisible;
-            }
-            
-            /**
-             * 현재 위치 반환
-             */
-            get position() {
-                return this._position;
-            }
-            
-            /**
-             * 현재 콘텐츠 반환
-             */
-            get content() {
-                return this._content;
-            }
-        }
-        
         // SolidTooltip 데모 초기화
         document.addEventListener('DOMContentLoaded', () => {
-            const trigger = document.getElementById('demoTrigger');
+            // 여러 툴팁 인스턴스 생성
+            const trigger1 = document.getElementById('demoTrigger1');
+            const trigger2 = document.getElementById('demoTrigger2');
+            const trigger3 = document.getElementById('demoTrigger3');
             
-            // SolidTooltip 인스턴스 생성
-            const solidTooltip = new SolidTooltip(trigger);
+            const solidTooltip1 = new SolidTooltip(trigger1);
+            const solidTooltip2 = new SolidTooltip(trigger2);
+            const solidTooltip3 = new SolidTooltip(trigger3);
             
-            // 초기 콘텐츠 설정
-            solidTooltip.setContent('동적 위치 조절 툴팁');
+            // 각 툴팁에 data 속성으로부터 설정 적용
+            function configureTooltipFromData(tooltip, triggerElement) {
+                const content = triggerElement.dataset.content || '기본 툴팁';
+                const position = triggerElement.dataset.position || 'top-center';
+                const width = parseInt(triggerElement.dataset.width) || 163;
+                const height = parseInt(triggerElement.dataset.height) || 44;
+                const offsetX = parseInt(triggerElement.dataset.offsetX) || 0;
+                const offsetY = parseInt(triggerElement.dataset.offsetY) || 0;
+                
+                tooltip.setContent(content);
+                tooltip.setPosition(position);
+                tooltip.setSize(width, height);
+                tooltip.setTooltipOffset(offsetX, offsetY);
+            }
+            
+            // 각 툴팁에 data 속성 설정 적용
+            configureTooltipFromData(solidTooltip1, trigger1);
+            configureTooltipFromData(solidTooltip2, trigger2);
+            configureTooltipFromData(solidTooltip3, trigger3);
+            
+            // 첫 번째 툴팁을 메인 컨트롤 대상으로 설정
+            const solidTooltip = solidTooltip1;
             
             // 컨트롤 이벤트 리스너
             document.getElementById('basePosition').addEventListener('change', () => updateTooltipPosition());
@@ -851,12 +357,21 @@
             document.getElementById('arrowOffsetY').addEventListener('input', () => updateTooltipPosition());
             document.getElementById('tooltipOffsetX').addEventListener('input', () => updateTooltipPosition());
             document.getElementById('tooltipOffsetY').addEventListener('input', () => updateTooltipPosition());
+            document.getElementById('tooltipWidth').addEventListener('input', () => updateTooltipPosition());
+            document.getElementById('tooltipHeight').addEventListener('input', () => updateTooltipPosition());
             
             // 위치 버튼 이벤트 리스너
             document.querySelectorAll('.position-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const position = e.target.dataset.position;
-                    solidTooltip.setPosition(position);
+                    
+                    // 첫 번째 버튼의 data-position 속성 업데이트
+                    trigger1.dataset.position = position;
+                    
+                    // 첫 번째 툴팁에 새로운 설정 적용
+                    configureTooltipFromData(solidTooltip1, trigger1);
+                    
+                    // 컨트롤 업데이트
                     updateControls(position);
                     updateActiveButton(e.target);
                 });
@@ -870,13 +385,23 @@
                 const arrowOffsetY = parseInt(document.getElementById('arrowOffsetY').value) || 0;
                 const tooltipOffsetX = parseInt(document.getElementById('tooltipOffsetX').value) || 0;
                 const tooltipOffsetY = parseInt(document.getElementById('tooltipOffsetY').value) || 0;
+                const tooltipWidth = parseInt(document.getElementById('tooltipWidth').value) || 163;
+                const tooltipHeight = parseInt(document.getElementById('tooltipHeight').value) || 44;
                 
-                // 위치 설정
-                solidTooltip.setPosition(`${basePosition}-${alignment}`);
+                // 첫 번째 버튼의 data 속성들 업데이트
+                trigger1.dataset.position = `${basePosition}-${alignment}`;
+                trigger1.dataset.width = tooltipWidth.toString();
+                trigger1.dataset.height = tooltipHeight.toString();
+                trigger1.dataset.offsetX = tooltipOffsetX.toString();
+                trigger1.dataset.offsetY = tooltipOffsetY.toString();
                 
-                // 오프셋 설정
-                solidTooltip.setArrowOffset(arrowOffsetX, arrowOffsetY);
-                solidTooltip.setTooltipOffset(tooltipOffsetX, tooltipOffsetY);
+                // 첫 번째 툴팁에 새로운 설정 적용
+                configureTooltipFromData(solidTooltip1, trigger1);
+                
+                // 다른 툴팁들은 기존 설정 유지
+                [solidTooltip2, solidTooltip3].forEach(tooltip => {
+                    // 기존 설정 유지 (변경하지 않음)
+                });
             }
             
             // 컨트롤 업데이트 함수
@@ -890,8 +415,8 @@
                 const alignmentOptions = {
                     'top': ['left', 'center', 'right'],
                     'bottom': ['left', 'center', 'right'],
-                    'left': ['top', 'center', 'bottom'],
-                    'right': ['top', 'center', 'bottom']
+                    'left': ['top', 'middle', 'bottom'],
+                    'right': ['top', 'middle', 'bottom']
                 };
                 
                 // 옵션 업데이트
@@ -923,8 +448,49 @@
             }
             
             // 초기 위치 설정
-            solidTooltip.setPosition('top-center');
             updateControls('top-center');
+            
+            // 복사 기능
+            document.getElementById('copyButton').addEventListener('click', () => {
+                const trigger1 = document.getElementById('demoTrigger1');
+                
+                // 현재 설정된 data 속성들을 가져와서 HTML 생성
+                const content = trigger1.dataset.content || '첫 번째 툴팁';
+                const position = trigger1.dataset.position || 'top-center';
+                const width = trigger1.dataset.width || '163';
+                const height = trigger1.dataset.height || '44';
+                const offsetX = trigger1.dataset.offsetX || '0';
+                const offsetY = trigger1.dataset.offsetY || '0';
+                
+                // HTML 코드 생성
+                const htmlCode = `<button class="tooltip-trigger" 
+        data-content="${content}" 
+        data-position="${position}" 
+        data-width="${width}" 
+        data-height="${height}" 
+        data-offset-x="${offsetX}" 
+        data-offset-y="${offsetY}">
+    툴팁 버튼
+</button>`;
+                
+                // 클립보드에 복사
+                navigator.clipboard.writeText(htmlCode).then(() => {
+                    // 복사 성공 시 버튼 텍스트 변경
+                    const copyButton = document.getElementById('copyButton');
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = '복사됨!';
+                    copyButton.style.background = '#28a745';
+                    
+                    // 2초 후 원래 상태로 복원
+                    setTimeout(() => {
+                        copyButton.textContent = originalText;
+                        copyButton.style.background = '#007bff';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('복사 실패:', err);
+                    alert('복사에 실패했습니다. 브라우저가 클립보드 접근을 지원하지 않습니다.');
+                });
+            });
         });
     </script>
 </body>
