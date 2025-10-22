@@ -713,40 +713,52 @@ class SolidTooltip extends BaseComponent {
     get height() {
         return this._tooltipHeight;
     }
-}
-
-// 자동 초기화 함수 (선택적 사용)
-function initTooltips() {
-    // .tooltip-trigger 클래스를 가진 모든 요소에 툴팁 적용
-    document.querySelectorAll('.tooltip-trigger').forEach(element => {
-        if (!element.hasAttribute('data-tooltip-initialized')) {
-            const tooltip = new SolidTooltip(element);
-            
-            // data 속성으로부터 설정 적용
-            const content = element.dataset.content || '툴팁';
-            const position = element.dataset.position || 'top-center';
-            const width = parseInt(element.dataset.width) || 163;
-            const height = parseInt(element.dataset.height) || 44;
-            const offsetX = parseInt(element.dataset.offsetX) || 0;
-            const offsetY = parseInt(element.dataset.offsetY) || 0;
-            
-            tooltip.setContent(content);
-            tooltip.setPosition(position);
-            tooltip.setSize(width, height);
-            tooltip.setTooltipOffset(offsetX, offsetY);
-            
-            // 초기화 완료 표시
-            element.setAttribute('data-tooltip-initialized', 'true');
+    
+    /**
+     * 자동 초기화 함수 (정적 메서드)
+     * .tooltip-trigger 클래스를 가진 모든 요소에 툴팁을 자동으로 적용
+     */
+    static initTooltips() {
+        // .tooltip-trigger 클래스를 가진 모든 요소에 툴팁 적용
+        document.querySelectorAll('.tooltip-trigger').forEach(element => {
+            if (!element.hasAttribute('data-tooltip-initialized')) {
+                const tooltip = new SolidTooltip(element);
+                
+                // data 속성으로부터 설정 적용
+                const content = element.dataset.content || '툴팁';
+                const position = element.dataset.position || 'top-center';
+                const width = parseInt(element.dataset.width) || 163;
+                const height = parseInt(element.dataset.height) || 44;
+                const offsetX = parseInt(element.dataset.offsetX) || 0;
+                const offsetY = parseInt(element.dataset.offsetY) || 0;
+                
+                tooltip.setContent(content);
+                tooltip.setPosition(position);
+                tooltip.setSize(width, height);
+                tooltip.setTooltipOffset(offsetX, offsetY);
+                
+                // 초기화 완료 표시
+                element.setAttribute('data-tooltip-initialized', 'true');
+            }
+        });
+    }
+    
+    /**
+     * DOM이 로드되면 자동으로 툴팁 초기화 (정적 메서드)
+     */
+    static autoInit() {
+        if (typeof document !== 'undefined') {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    SolidTooltip.initTooltips();
+                });
+            } else {
+                SolidTooltip.initTooltips();
+            }
         }
-    });
-}
-
-// DOM이 로드되면 자동으로 툴팁 초기화 (선택적)
-if (typeof document !== 'undefined') {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initTooltips);
-    } else {
-        initTooltips();
     }
 }
+
+// 자동 초기화 실행 (선택적)
+SolidTooltip.autoInit();
 
