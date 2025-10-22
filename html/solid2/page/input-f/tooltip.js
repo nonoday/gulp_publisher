@@ -273,7 +273,7 @@ class SolidTooltip extends BaseComponent {
         try {
             if (this._isVisible) return;
             
-            // 툴팁 요소가 없으면 생성
+            // 툴팁 요소가 없으면 동적으로 생성
             if (!this._tooltipElement) {
                 this._createHtml();
                 if (!this._tooltipElement) {
@@ -306,33 +306,31 @@ class SolidTooltip extends BaseComponent {
     }
     
     /**
-     * 툴팁 숨김
+     * 툴팁 숨김 (동적 제거)
      */
     hide() {
         if (!this._isVisible) return;
         
         this._isVisible = false;
-        this._tooltipElement.classList.remove('solid-tooltip-show');
-        this._tooltipElement.setAttribute('aria-hidden', 'true');
+        
+        if (this._tooltipElement) {
+            // 애니메이션 효과
+            this._tooltipElement.style.opacity = '0';
+            this._tooltipElement.style.transform = 'scale(0.95)';
+            this._tooltipElement.style.visibility = 'hidden';
+            
+            // 애니메이션 완료 후 DOM에서 완전히 제거
+            setTimeout(() => {
+                if (!this._isVisible && this._tooltipElement && this._tooltipElement.parentNode) {
+                    this._detachEvents();
+                    this._tooltipElement.parentNode.removeChild(this._tooltipElement);
+                    this._tooltipElement = null;
+                    this._arrowElement = null;
+                }
+            }, 200);
+        }
+        
         this._triggerElement.setAttribute('aria-expanded', 'false');
-        
-        // 툴팁 내부 요소들의 포커스 차단
-        const focusableElements = this._tooltipElement.querySelectorAll('button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])');
-        focusableElements.forEach(element => {
-            element.setAttribute('tabindex', '-1');
-        });
-        
-        // 애니메이션 효과
-        this._tooltipElement.style.opacity = '0';
-        this._tooltipElement.style.transform = 'scale(0.95)';
-        this._tooltipElement.style.visibility = 'hidden';
-        
-        // display: none을 제거하여 다시 클릭 가능하도록 함
-        setTimeout(() => {
-            if (!this._isVisible) {
-                this._tooltipElement.style.display = 'block';
-            }
-        }, 200);
     }
     
     /**
@@ -420,16 +418,13 @@ class SolidTooltip extends BaseComponent {
     }
     
     /**
-     * 위치 적용
+     * 위치 적용 (동적 생성 지원)
      */
     _applyPosition() {
         try {
+            // 툴팁이 없으면 생성하지 않고 리턴 (동적 생성 방식)
             if (!this._tooltipElement) {
-                this._createHtml();
-                if (!this._tooltipElement) {
-                    console.error('툴팁 요소 생성에 실패했습니다.');
-                    return;
-                }
+                return;
             }
             
             const [basePosition, alignment] = this._position.split('-');
@@ -440,20 +435,11 @@ class SolidTooltip extends BaseComponent {
             // 화살표 위치 계산
             this._positionArrow(basePosition, alignment);
             
-            // 표시 (숨겨진 상태에서도 위치 계산을 위해)
+            // 표시 상태가 아닐 때는 위치만 계산하고 숨김
             if (!this._isVisible) {
                 this._tooltipElement.style.display = 'block';
                 this._tooltipElement.style.opacity = '0';
                 this._tooltipElement.style.visibility = 'hidden';
-                
-                // 위치 계산 후 다시 숨김 상태로 복원
-                setTimeout(() => {
-                    if (!this._isVisible) {
-                        this._tooltipElement.style.display = 'block';
-                        this._tooltipElement.style.opacity = '0';
-                        this._tooltipElement.style.visibility = 'hidden';
-                    }
-                }, 0);
             }
         } catch (error) {
             console.error('툴팁 위치 적용 중 오류:', error);
