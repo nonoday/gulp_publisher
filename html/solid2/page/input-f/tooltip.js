@@ -15,6 +15,12 @@ class SolidTooltip extends BaseComponent {
     constructor(element) {
         super(element);
         
+        // 이미 초기화된 요소인지 확인
+        if (element.hasAttribute('data-tooltip-initialized')) {
+            console.warn('이미 초기화된 툴팁 요소입니다:', element);
+            return element._solidTooltipInstance;
+        }
+        
         // 기본 속성 설정
         this._isVisible = false;
         this._position = 'top-center';
@@ -40,6 +46,10 @@ class SolidTooltip extends BaseComponent {
         
         // 초기화
         this._init();
+        
+        // 인스턴스를 요소에 저장
+        element._solidTooltipInstance = this;
+        element.setAttribute('data-tooltip-initialized', 'true');
     }
     
     /**
@@ -87,25 +97,19 @@ class SolidTooltip extends BaseComponent {
                 return;
             }
             
-            this._createHtml();
+            // tooltip-wrap 컨테이너만 미리 생성 (툴팁 요소는 생성하지 않음)
+            this._createTooltipWrap();
             this._attachEvents();
-            this._applyPosition();
         } catch (error) {
             console.error('SolidTooltip 초기화 중 오류:', error);
         }
     }
     
     /**
-     * HTML 구조 생성
+     * tooltip-wrap 컨테이너 생성 (초기화 시에만)
      */
-    _createHtml() {
+    _createTooltipWrap() {
         try {
-            // 기존 툴팁 요소가 있다면 제거 (이벤트도 함께 정리)
-            if (this._tooltipElement && this._tooltipElement.parentNode) {
-                this._detachEvents();
-                this._tooltipElement.parentNode.removeChild(this._tooltipElement);
-            }
-            
             // tooltip-wrap이 이미 있는지 확인
             let tooltipWrap = this._triggerElement.parentElement;
             if (!tooltipWrap || !tooltipWrap.classList.contains('tooltip-wrap')) {
@@ -117,6 +121,28 @@ class SolidTooltip extends BaseComponent {
                 const parentElement = this._triggerElement.parentElement;
                 parentElement.insertBefore(tooltipWrap, this._triggerElement);
                 tooltipWrap.appendChild(this._triggerElement);
+            }
+        } catch (error) {
+            console.error('tooltip-wrap 생성 중 오류:', error);
+        }
+    }
+
+    /**
+     * HTML 구조 생성 (클릭 시에만 호출)
+     */
+    _createHtml() {
+        try {
+            // 기존 툴팁 요소가 있다면 제거 (이벤트도 함께 정리)
+            if (this._tooltipElement && this._tooltipElement.parentNode) {
+                this._detachEvents();
+                this._tooltipElement.parentNode.removeChild(this._tooltipElement);
+            }
+            
+            // tooltip-wrap 찾기
+            const tooltipWrap = this._triggerElement.parentElement;
+            if (!tooltipWrap || !tooltipWrap.classList.contains('tooltip-wrap')) {
+                console.error('tooltip-wrap을 찾을 수 없습니다.');
+                return;
             }
             
             // 툴팁 컨테이너 생성
@@ -184,6 +210,8 @@ class SolidTooltip extends BaseComponent {
             
             // 이벤트 리스너 등록
             this._attachEvents();
+            
+            console.log('툴팁 요소 동적 생성 완료');
         } catch (error) {
             console.error('툴팁 HTML 생성 중 오류:', error);
         }
@@ -210,18 +238,20 @@ class SolidTooltip extends BaseComponent {
     /**
      * 이벤트 리스너 제거
      */
-    _detachEvents() {
-        if (this._triggerElement) {
+    _detachEvents(options = {}) {
+        const { detachTrigger = false } = options;
+
+        if (detachTrigger && this._triggerElement) {
             this._triggerElement.removeEventListener('click', this._boundHandleTriggerClick);
         }
-        
+
         if (this._tooltipElement) {
             const closeButton = this._tooltipElement.querySelector('.solid-tooltip-close');
             if (closeButton) {
                 closeButton.removeEventListener('click', this._boundHandleCloseClick);
             }
         }
-        
+
         // 전역 이벤트는 정적 메서드에서 관리하므로 여기서는 제거하지 않음
     }
     
@@ -230,6 +260,7 @@ class SolidTooltip extends BaseComponent {
      */
     _handleTriggerClick(event) {
         event.stopPropagation();
+        console.log('트리거 클릭됨, 현재 위치:', this._position, '현재 표시 상태:', this._isVisible);
         this.toggle();
     }
     
@@ -273,8 +304,11 @@ class SolidTooltip extends BaseComponent {
         try {
             if (this._isVisible) return;
             
+            console.log('툴팁 표시 시작, 위치:', this._position);
+            
             // 툴팁 요소가 없으면 동적으로 생성
             if (!this._tooltipElement) {
+                console.log('툴팁 요소 생성 중...');
                 this._createHtml();
                 if (!this._tooltipElement) {
                     console.error('툴팁 요소 생성에 실패했습니다.');
@@ -293,13 +327,19 @@ class SolidTooltip extends BaseComponent {
                 element.removeAttribute('tabindex');
             });
             
-            // 위치 계산 및 적용
-            this._applyPosition();
-            
             // 표시 상태로 변경
+            this._tooltipElement.style.display = 'block';
             this._tooltipElement.style.opacity = '1';
             this._tooltipElement.style.visibility = 'visible';
             this._tooltipElement.style.transform = 'scale(1)';
+            
+            console.log('툴팁 표시 완료, 위치 계산 시작');
+            
+            // DOM에 추가된 직후 위치 계산 및 적용
+            // requestAnimationFrame을 사용하여 DOM 렌더링 완료 후 위치 계산
+            requestAnimationFrame(() => {
+                this._calculateAndApplyPosition();
+            });
         } catch (error) {
             console.error('툴팁 표시 중 오류:', error);
         }
@@ -367,10 +407,15 @@ class SolidTooltip extends BaseComponent {
      */
     setContent(content) {
         this._content = content;
-        const textElement = this._tooltipElement.querySelector('.solid-tooltip-text');
-        if (textElement) {
-            textElement.textContent = content;
+        
+        // 툴팁 요소가 있으면 텍스트 업데이트
+        if (this._tooltipElement) {
+            const textElement = this._tooltipElement.querySelector('.solid-tooltip-text');
+            if (textElement) {
+                textElement.textContent = content;
+            }
         }
+        // 툴팁 요소가 없으면 콘텐츠만 저장 (클릭 시 생성될 때 사용됨)
     }
     
     /**
@@ -414,6 +459,32 @@ class SolidTooltip extends BaseComponent {
             
             // 크기가 변경되면 항상 위치 재계산
             this._applyPosition();
+        }
+    }
+    
+    /**
+     * 위치 계산 및 적용 (개선된 버전)
+     */
+    _calculateAndApplyPosition() {
+        try {
+            // 툴팁이 없으면 생성하지 않고 리턴
+            if (!this._tooltipElement) {
+                console.log('툴팁 요소가 없어서 위치 계산 건너뜀');
+                return;
+            }
+            
+            const [basePosition, alignment] = this._position.split('-');
+            console.log('위치 계산 시작:', basePosition, alignment);
+            
+            // 툴팁 위치 계산
+            this._positionTooltip(basePosition);
+            
+            // 화살표 위치 계산
+            this._positionArrow(basePosition, alignment);
+            
+            console.log('위치 계산 완료');
+        } catch (error) {
+            console.error('툴팁 위치 계산 및 적용 중 오류:', error);
         }
     }
     
@@ -745,6 +816,6 @@ class SolidTooltip extends BaseComponent {
     }
 }
 
-// 자동 초기화 실행 (선택적)
-SolidTooltip.autoInit();
+// 자동 초기화는 HTML에서 수동으로 처리하므로 주석 처리
+// SolidTooltip.autoInit();
 
