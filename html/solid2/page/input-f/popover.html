@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지리스트</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        .guide-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "OneShinhan", sans-serif;
+        }
+
+        .guide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .guide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .guide-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .component-section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .component-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .component-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .reset-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        .reset-btn:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+
+        .component-demo {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-source {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .component-source.show {
+            display: block;
+        }
+
+        /* 예제 컴포넌트 스타일 */
+        .example-button {
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .example-button.large {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+
+        .example-button.small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .example-button.secondary {
+            background: #6b7280;
+        }
+
+        .example-button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .example-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .example-card.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border-color: #374151;
+        }
+
+        .example-card.compact {
+            padding: 16px;
+        }
+
+        .example-card.large {
+            padding: 32px;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .example-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+
+        .example-list.compact li {
+            padding: 8px 12px;
+        }
+
+        .example-list.large li {
+            padding: 16px 20px;
+        }
+
+        .example-list.dark li {
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        /* 이미지 그리드 스타일 */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .folder-tabs-section {
+            margin-top: 10px;
+            padding: 0 20px 20px;
+        }
+
+        .folder-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .folder-tab {
+            padding: 8px 14px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+
+        .folder-tab:hover {
+            border-color: #3b82f6;
+            color: #2563eb;
+        }
+
+        .folder-tab.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 3px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        .image-item {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .image-item.error {
+            border-color: #ef4444;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+        }
+
+        .image-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .image-preview {
+            cursor: pointer;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            border-radius: 6px;
+        }
+
+        .image-info {
+            cursor: pointer;
+        }
+
+        .image-item .image-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .image-path {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .image-item.error .image-path {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .image-status {
+            font-size: 12px;
+            color: #ef4444;
+            display: none;
+        }
+
+        .image-item.error .image-status {
+            display: block;
+        }
+
+        /* 이미지 등록 폼 스타일 */
+        .image-form-section {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .image-form h3 {
+            margin: 0 0 20px 0;
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .form-actions .control-btn {
+            padding: 10px 20px;
+        }
+
+        /* 파일 선택 스타일 */
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .file-picker-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .file-picker-btn:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .file-picker-icon {
+            font-size: 16px;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: #6b7280;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .file-name.has-file {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        /* 파일 미리보기 */
+        .file-preview {
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .file-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* 이미지 아이템에 삭제 버튼 추가 */
+        .image-item {
+            position: relative;
+        }
+
+        .image-delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .image-item:hover .image-delete-btn,
+        .image-item.error .image-delete-btn {
+            opacity: 1;
+        }
+
+        .image-delete-btn:hover {
+            background: #dc2626;
+        }
+
+
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 15px;
+            }
+            
+            .component-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .component-demo {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1 class="guide-title">이미지 리스트</h1>
+        </div>
+    </div>
+
+    <div id="tip1"class="tooltip type-popover pos-top popover-close" role="tooltip">
+        <div class="tooltip-content">
+            텍스트
+            <button class="tooltip-btn-close">닫기</button>
+        </div>
+        <div class="tooltip-arrow">
+            화살표
+        </div>
+    </div>
+
+</body>
+</html>
