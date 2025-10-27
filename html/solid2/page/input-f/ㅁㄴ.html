@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+
+<style>
+/* 웹 접근성을 위한 sr-only 클래스 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 필드셋, 인풋 등 기본적인 스타일 (예시) */
+.resident-id-form-group {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.resident-id-legend {
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 0 10px;
+  margin-left: -10px; /* legend 기본 패딩 보정 */
+}
+
+.resident-id-inputs-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* 입력 필드 사이 간격 */
+}
+
+.resident-id-input {
+  width: 100px; /* 적절한 너비 설정 */
+  height: 36px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.resident-id-back-first {
+  width: 30px; /* 뒷자리 첫 번째 숫자만 작게 */
+}
+
+.resident-id-separator {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.masked-dots {
+  font-size: 1.2em;
+  letter-spacing: 0.1em; /* 동그라미 사이 간격 */
+  margin-left: 5px;
+  color: #555;
+}
+</style>
+</head>
+<body>
+BS 작업 방안 요약
+1. 기존(asis) → 새로운(tobe) 바텀 시트 전환 방안
+기존 시스템의 바텀 시트(BS)를 새로운 시스템에 맞게 전환하는 작업 방안은 다음과 같습니다.
+
+CSS 분리 및 관리:
+새로운 바텀 시트에 사용될 CSS는 _component_bottomsheet.scss 파일로 별도 분리하여 관리할 예정입니다.
+바텀 시트 내에 포함된 input, button 등 공용으로 사용되는 요소의 CSS는 공통 호출 방식으로 분리하여 코드의 효율성을 높이고 중복을 줄일 것입니다.
+클래스명 충돌 방지:
+기존과 새로운 클래스명이 겹칠 수 있는 잠재적 문제를 방지하기 위해, 새로운 바텀 시트에는 solid-bs와 같은 고유한 클래스명을 적용할 계획입니다. 이는 폰트 패밀리 등 예상치 못한 스타일 충돌을 미연에 방지하는 데 목적이 있습니다.
+2. 기존(asis) HTML 요소 통합 방안 (새로운 환경 tobe로)
+기존 시스템에 존재하던 HTML 요소를 새로운 시스템 구조에 맞게 통합하는 방안은 다음과 같습니다.
+
+HTML 및 SCSS 파일 추가:
+기존 HTML을 새로운 환경으로 이전하는 과정에서 바텀 시트 전용 SCSS 파일을 추가 생성하여 스타일을 적용할 예정입니다.
+필요한 클래스만 선별하여 CSS 분리 작업을 진행함으로써 불필요한 코드 없이 효율적인 스타일링을 유지할 것입니다.
+공통 프로세스 영역 HTML 분리:
+JavaScript 등 스크립트를 통해 HTML이 동적으로 호출되는 케이스가 있을 수 있습니다. 따라서 개발 환경에서만 사용되는 공통 프로세스 영역의 HTML은 별도로 분리하여 관리하는 방안을 검토하고 있습니다.
+3. 개발팀 요청 사항
+원활한 작업 진행을 위해 개발팀에는 아래와 같은 내용을 요청드릴 예정입니다.
+
+기존(asis) ID와 해당 HTML 내용을 리스트업하여 제공해 주시면 감사하겠습니다.
+        
+</body>
+</html>
