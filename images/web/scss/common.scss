@@ -210,7 +210,9 @@ strong {
   font-weight: 700;
 }
 
-
+input {  
+  font-family: "OneShinhan";
+}
 
 /* 자동완성 스타일 변경 */
 input:-webkit-autofill,
@@ -879,6 +881,7 @@ body {
 
 
 .input {
+  
   &-container {
     display: flex;
     flex-direction: column;
@@ -1001,6 +1004,44 @@ body {
     padding:0 var(--spacing-xl);
     border: 1px solid var(--border-secondary);
     border-radius: var(--radius-md);
+
+    &-password {
+      position: absolute;
+      width: 26px;
+      left: -4px;
+      height: 44px;
+      padding:0;
+      border:none;
+      font-size: 56px;
+      z-index: 1;
+      background: transparent;
+      text-align: center;
+
+      &.all {
+        width:140px;
+        text-align: left;
+        font-size: 48px;
+        top: 3px;
+        left: -1px;
+        letter-spacing: -2.4px;
+      }
+
+      &-box {
+        position: relative;
+        flex:1;
+        width:1%;
+        height: 100%;
+        font-size:0;
+      }
+    }
+    &-masked-dots {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-primary);
+      font-weight: 500;
+      @include title-large;
+    }
 
     &.line {
       padding:0;
@@ -1140,6 +1181,8 @@ body {
     &-inline {
       height: 76px;
       padding:0  var(--spacing-xl);
+
+      .input-field-password {top:10px;}
     }
     &.focus {
       .input-field-inner-label {
@@ -1272,6 +1315,7 @@ body {
     }
 
     &.focus,
+    &.focused,
     &.value {
       .input-field-sub-text-form {
         width: 140px;
@@ -1395,6 +1439,10 @@ body {
     width: 10px;
     min-width: 10px;
     margin-left:12px;
+
+    & + .input-field-password-box {
+      margin-left:12px;
+    }
   }
 
   &-password {
