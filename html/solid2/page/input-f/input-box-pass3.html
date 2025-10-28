@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+
+<style>
+
+.resident-id-back-first {
+  width: 30px; /* 뒷자리 첫 번째 숫자만 작게 */
+}
+
+/* 비밀번호 입력 필드 스타일 */
+input[type="password"].resident-id-input {
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  letter-spacing: 0;
+  font-size: 24px;
+  text-align: center;
+  color: #000;
+}
+
+input[type="password"].resident-id-input::placeholder {
+  color: rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+/* password 타입은 자동으로 ●로 표시됨 */
+
+</style>
+</head>
+<body>
+   
+    <div style="width: 100%;padding:50px;">
+        <p>Basic/Box/InputFieldDual 인풋 인풋</p>
+        <div class="input-container">
+            <div class="input-field svg-animated input-top" role="group">  
+                <input type="text" class="input" id="input-field-5" placeholder="첫 번째 입력" />
+                <label class="blind" for="input-field-5">카드번호 첫 번째 자리</label>
+                <span class="input-dash" aria-hidden="true">-</span>
+                <input type="text" class="input" id="input-field-6" placeholder="두 번째 입력" />
+                <label class="blind" for="input-field-6">카드번호 두 번째 자리</label>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+            </div>
+        </div>
+        <p>Basic/Box/InputFieldDual 인풋 인풋 텍</p>
+        <div class="input-container">
+            <div class="input-field svg-animated input-bottom" role="group">  
+                <input type="text" class="input" id="input-field-7" placeholder="첫 번째 입력" />
+                <label class="blind" for="input-field-7">카드번호 첫 번째 자리</label>
+                <span class="input-dash" aria-hidden="true">-</span>
+                <input type="text" class="input" id="input-field-8" placeholder="두 번째 입력" />
+                <label class="blind" for="input-field-8">카드번호 두 번째 자리</label>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+                <span class="input-unit">
+                    텍
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <!-- 모듈 스크립트들 -->
+    <script src="../../../../script/components/focus-manager.js"></script>
+    <script src="../../../../script/components/svg-border-animation.js"></script>
+    <script src="../../../../script/components/input-field/input-field-animation.js"></script>
+    
+    <script>
+        // 위쪽 인풋 - 기본 설정 (파란색 border, 빠른 애니메이션)
+        const inputTopInstance = new AnimatedBorderInputField({
+            containerSelector: '.input-top',
+            borderColor: '#005DF9',
+            borderWidth: 2,
+            animationDuration: 600,
+            borderRadius: 12
+        });
+        
+        // 아래쪽 인풋 - 다른 설정 (초록색 border, 느린 애니메이션)
+        const inputBottomInstance = new AnimatedBorderInputField({
+            containerSelector: '.input-bottom',
+            borderColor: '#00A86B',
+            borderWidth: 2,
+            animationDuration: 1200,
+            borderRadius: 12
+        });
+    </script>
+
+        
+</body>
+</html>
