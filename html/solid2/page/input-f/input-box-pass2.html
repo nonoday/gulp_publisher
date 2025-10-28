@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+
+<style>
+
+
+</style>
+</head>
+<body>
+   
+    <div style="width: 100%;padding:50px;">
+        <div class="input-container">
+            <div class="input-field input-field-inline svg-animated" role="group">  
+                <div class="input-field-inner">
+                    <label class="input-field-inner-label" for="inline-input-field-13">레이블</label>
+                    <input  id="inline-input-field-13" type="text" class="inline-input" placeholder="첫 번째 입력" />
+                </div>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+                <span class="input-dash" aria-hidden="true">-</span>
+                <span class="input-field-password-box">
+                    <span id="residentIdBackMaskedDescription" class="blind">주민등록번호 뒷자리 첫 번째 숫자 이후 여섯 자리는 보안을 위해 마스킹 처리됩니다.</span>
+                    <label for="residentIdBackFirstDigit" class="blind">주민등록번호 뒷자리 첫 번째 숫자 (성별 코드)</label>
+                    <input
+                        type="password"
+                        id="residentIdBackFirstDigit"
+                        name="residentIdBackFirstDigit"
+                        maxlength="1"
+                        pattern="[0-9]"
+                        inputmode="numeric"
+                        placeholder=""
+                        autocomplete="off"
+                        aria-describedby="residentIdBackMaskedDescription"
+                        aria-required="true"
+                        class="input-field-password"
+                    >
+                    <span id="residentIdBackMaskedDots" class="input-field-masked-dots" aria-hidden="true">○●●●●●●</span>
+                </span>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+                <span class="input-icon">
+                    <!-- 임시 아이콘 -->
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+        </div>
+        <!-- inline 타입 -->
+        <p>Inline/Box/InputInlineField  텍스트 인풋 텍스트</p>
+        <div class="input-container">
+            <div class="input-field input-field-inline svg-animated">  
+                <div class="input-field-inner">
+                    <label class="input-field-inner-label" for="inline-input-field-133">레이블</label>
+                    <input  id="inline-input-field-133" type="text" class="inline-input" placeholder="첫 번째 입력" />
+                </div>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                                  
+                </button>
+            </div>
+        </div>
+        <p>Basic/Box/InputField 주민번호 1자리</p>
+        <div class="input-container">
+            <div class="input-field svg-animated" role="group">  
+                <label for="residentIdFront" class="blind">주민등록번호 앞 6자리 (생년월일)</label>
+                <input
+                    type="text"
+                    id="residentIdFront"
+                    name="residentIdFront"
+                    maxlength="6"
+                    pattern="[0-9]{6}"
+                    inputmode="numeric"
+                    placeholder="생년월일 6자리"
+                    autocomplete="off"
+                    aria-required="true"
+                    class="input"
+                >
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+                <span class="input-dash" aria-hidden="true">-</span>
+                <span class="input-field-password-box">
+                    <span id="residentIdBackMaskedDescription" class="blind">주민등록번호 뒷자리 첫 번째 숫자 이후 여섯 자리는 보안을 위해 마스킹 처리됩니다.</span>
+                    <label for="residentIdBackFirstDigit" class="blind">주민등록번호 뒷자리 첫 번째 숫자 (성별 코드)</label>
+                    <input
+                        type="password"
+                        id="residentIdBackFirstDigit"
+                        name="residentIdBackFirstDigit"
+                        maxlength="1"
+                        pattern="[0-9]"
+                        inputmode="numeric"
+                        placeholder=""
+                        autocomplete="off"
+                        aria-describedby="residentIdBackMaskedDescription"
+                        aria-required="true"
+                        class="input-field-password"
+                    >
+                    <span id="residentIdBackMaskedDots" class="input-field-masked-dots" aria-hidden="true">○●●●●●●</span>
+                </span>
+                
+            </div>
+        </div>
+
+        <p>Basic/Box/InputField 주민번호 1자리</p>
+        <div class="input-container">
+            <div class="input-field svg-animated" role="group">  
+                <label for="residentIdFront" class="blind">주민등록번호 앞 6자리 (생년월일)</label>
+                <input
+                    type="text"
+                    id="residentIdFront"
+                    name="residentIdFront"
+                    maxlength="1"
+                    pattern="[0-9]{6}"
+                    inputmode="numeric"
+                    placeholder="생년월일 6자리"
+                    autocomplete="off"
+                    aria-required="true"
+                    class="input"
+                >
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+                <span class="input-dash" aria-hidden="true">-</span>
+                <span class="input-field-password-box">
+                    <span id="residentIdBackMaskedDescription" class="blind">주민등록번호 뒷자리 첫 번째 숫자 이후 여섯 자리는 보안을 위해 마스킹 처리됩니다.</span>
+                    <label for="residentIdBackFirstDigit" class="blind">주민등록번호 뒷자리 첫 번째 숫자 (성별 코드)</label>
+                    <input
+                        type="password"
+                        id="residentIdBackFirstDigit"
+                        name="residentIdBackFirstDigit"
+                        maxlength="7"
+                        pattern="[0-9]"
+                        inputmode="numeric"
+                        placeholder=""
+                        autocomplete="off"
+                        aria-describedby="residentIdBackMaskedDescription"
+                        aria-required="true"
+                        class="input-field-password all"
+                    >
+                    <span id="residentIdBackMaskedDots" class="input-field-masked-dots" aria-hidden="true">○○○○○○○</span>
+                </span>
+                
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 모듈 스크립트들 -->
+    <script src="../../../../script/components/focus-manager.js"></script>
+    <script src="../../../../script/components/svg-border-animation.js"></script>
+    <script src="../../../../script/components/input-field/input-field-animation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 페이지 내 svg-animated 컨테이너 전체를 대상으로 초기화
+            new AnimatedBorderInputField({
+                containerSelector: '.svg-animated',
+                borderColor: '#005DF9',
+                borderWidth: 2,
+                animationDuration: 800,
+                borderRadius: 12
+            });
+        });
+    </script>
+        
+
+</body>
+</html>
