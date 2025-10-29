@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+
+    <style>
+        /* 토글 버튼 on 상태 예시 스타일 (필요 시 커스터마이즈) */
+        .toggle-btn.on {
+            color: #fff;
+            background: #0a6bff;
+        }
+
+        /* 컨테이너: 높이(0↔auto) 애니메이션은 JS로 높이를 px로 제어, 페이드는 CSS */
+        .toggle-box .toggle-content {
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .toggle-content-inner {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toggle-box.is-open .toggle-content {
+            opacity: 1;
+        }
+
+        .toggle-box.is-open .toggle-content-inner {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+   
+    <div style="width: 100%;padding:50px;">
+        
+            <div class="toggle-box">
+                <button type="button" class="toggle-btn" aria-expanded="false">토글</button>
+                <div class="toggle-content">
+                    <div class="toggle-content-inner">토글되는 영역</div>
+                </div>
+            </div>  
+    </div>
+
+    <script>
+        (function () {
+            var box = document.querySelector('.toggle-box');
+            var button = document.querySelector('.toggle-btn');
+            var content = document.querySelector('.toggle-content');
+            if (!box || !button || !content) return;
+
+            function openPanel() {
+                box.classList.add('is-open');
+                button.classList.add('on');
+                button.setAttribute('aria-expanded', 'true');
+                // 먼저 auto를 계산하기 위해 height를 실제 높이(px)로 설정
+                content.style.height = content.scrollHeight + 'px';
+            }
+
+            function closePanel() {
+                box.classList.remove('is-open');
+                button.classList.remove('on');
+                button.setAttribute('aria-expanded', 'false');
+                // 현재 높이를 픽셀로 고정 후 0으로 애니메이션
+                content.style.height = content.scrollHeight + 'px';
+                // 리플로우 강제
+                void content.offsetHeight;
+                content.style.height = '0px';
+            }
+
+            function isOpen() {
+                return box.classList.contains('is-open');
+            }
+
+            // 전환 종료 후 열림 상태면 auto로 풀어 레이아웃 변화에 대응
+            content.addEventListener('transitionend', function (e) {
+                if (e.propertyName !== 'height') return;
+                if (isOpen()) {
+                    content.style.height = 'auto';
+                }
+            });
+
+            // 초기 상태
+            content.style.height = '0px';
+            button.setAttribute('aria-expanded', 'false');
+
+            // 버튼 클릭
+            button.addEventListener('click', function () {
+                if (isOpen()) {
+                    closePanel();
+                } else {
+                    // auto → px로 전환 후 애니메이션
+                    content.style.height = '0px';
+                    // 리플로우 보장
+                    void content.offsetHeight;
+                    openPanel();
+                }
+            });
+        })();
+    </script>
+
+</body>
+</html>
