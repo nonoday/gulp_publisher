@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입력 필드 컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        .guide-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "OneShinhan", sans-serif;
+        }
+
+        .guide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .guide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .guide-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .component-section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .component-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .component-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .control-btn.active {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .component-demo {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .component-source {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .component-source.show {
+            display: block;
+        }
+
+        /* 예제 컴포넌트 스타일 */
+        .example-button {
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .example-button.large {
+            padding: 16px 32px;
+            font-size: 18px;
+        }
+
+        .example-button.small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .example-button.secondary {
+            background: #6b7280;
+        }
+
+        .example-button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .example-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .example-card.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border-color: #374151;
+        }
+
+        .example-card.compact {
+            padding: 16px;
+        }
+
+        .example-card.large {
+            padding: 32px;
+        }
+
+        .example-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .example-list li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+
+        .example-list.compact li {
+            padding: 8px 12px;
+        }
+
+        .example-list.large li {
+            padding: 16px 20px;
+        }
+
+        .example-list.dark li {
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 15px;
+            }
+            
+            .component-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .component-demo {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1 class="guide-title">입력필드 컴포넌트 가이드</h1>
+            <p class="guide-description">
+                다양한 상태별 이미지
+            </p>
+        </div>
+
+        <div class="component-section">
+            <div class="component-header">
+                <h2 class="component-title">각 상태별 메세지</h2>
+                <div class="control-buttons">
+                    <select name="message-type" id="message-type">
+                        <option value="nodata">데이타없음/ 등록된 정보 없을때</option>
+                        <option value="search">검색결과 없음/조회결과 없음</option>
+                        <option value="limit">불가/제한</option>
+                        <option value="maintenance">점검중</option>
+                        <option value="invite">초대중</option>
+                        <option value="notice">정보안내/알림</option>
+                        <option value="waiting">대기/잠시후 다시시도</option>
+                        <option value="unstable">서비스 원활하지않음/원활하지않아 조회불가일때</option>
+                        <option value="update">공지/앱 버전 업데이트 필요할때</option>
+                        <option value="report">신고</option>
+                    </select>
+                    <button class="control-btn copy-btn" data-copy="input-field-source">소스 복사</button>
+                </div>
+            </div>
+            <div class="component-demo">
+              <div class="flash-message">
+                <div class="flash-message-graphic" aria-hidden="true"></div>
+                <div class="flash-message-detail">서브텍스트 서브텍스트</div>
+                <button class="capsule-button-tonal-sm">
+                    <span>오류코드 확인하기</span>
+                </button>
+                <button class="button-sm-secondary">버튼</button>
+              </div>
+            </div>
+            <div class="component-source" id="input-field-source">
+                &lt;div class="flash-message"&gt;
+                &nbsp;&nbsp;&lt;div class="flash-message-graphic" aria-hidden="true"&gt;&lt;/div&gt;
+                &nbsp;&nbsp;&lt;div class="flash-message-detail"&gt;서브텍스트 서브텍스트&lt;/div&gt;
+                &nbsp;&nbsp;&lt;button class="capsule-button-tonal-sm"&gt;
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;span&gt;오류코드 확인하기&lt;/span&gt;
+                &nbsp;&nbsp;&lt;/button&gt;
+                &nbsp;&nbsp;&lt;button class="button-sm-secondary"&gt;버튼&lt;/button&gt;
+                &lt;/div&gt;
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+           
+            // 소스 복사 기능
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sourceId = this.getAttribute('data-copy');
+                    const sourceElement = document.getElementById(sourceId);
+                    
+                    if (sourceElement) {
+                        // 소스 코드를 클립보드에 복사
+                        navigator.clipboard.writeText(sourceElement.textContent).then(function() {
+                            showToast('소스 코드가 복사되었습니다!', 'success');
+                        }).catch(function(err) {
+                            // 폴백: 텍스트 선택 후 복사
+                            const range = document.createRange();
+                            range.selectNode(sourceElement);
+                            window.getSelection().removeAllRanges();
+                            window.getSelection().addRange(range);
+                            
+                            try {
+                                document.execCommand('copy');
+                                showToast('소스 코드가 복사되었습니다!', 'success');
+                            } catch (err) {
+                                showToast('복사에 실패했습니다.', 'error');
+                            }
+                            
+                            window.getSelection().removeAllRanges();
+                        });
+                    }
+                });
+            });
+
+            // 토스트 메시지 표시
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = `toast ${type}`;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // 초기 상태 설정 (첫 번째 버튼 활성화)
+            const sections = document.querySelectorAll('.component-section');
+            sections.forEach(section => {
+                const firstButton = section.querySelector('.control-btn:not(.copy-btn)');
+                if (firstButton) {
+                    firstButton.classList.add('active');
+                }
+            });
+
+            // 메시지 타입 선택 시 그래픽 클래스 및 소스 표시 업데이트
+            const messageTypeSelect = document.getElementById('message-type');
+            const flashGraphic = document.querySelector('.flash-message-graphic');
+            const flashGraphicBaseClass = 'flash-message-graphic';
+            const sourceBox = document.getElementById('input-field-source');
+
+            function renderFlashMessageSource(selected) {
+                const classAttr = selected ? `${flashGraphicBaseClass} ${selected}` : flashGraphicBaseClass;
+                const src = [
+                    '<div class="flash-message">',
+                    `  <div class="${classAttr}" aria-hidden="true"></div>`,
+                    '  <div class="flash-message-detail">서브텍스트 서브텍스트</div>',
+                    '  <button class="capsule-button-tonal-sm">',
+                    '    <span>오류코드 확인하기</span>',
+                    '  </button>',
+                    '  <button class="button-sm-secondary">버튼</button>',
+                    '</div>'
+                ].join('\n');
+                if (sourceBox) sourceBox.textContent = src;
+            }
+
+            function updateFlashGraphicClass() {
+                if (!flashGraphic || !messageTypeSelect) return;
+                const selected = messageTypeSelect.value?.trim();
+                flashGraphic.className = selected ? `${flashGraphicBaseClass} ${selected}` : flashGraphicBaseClass;
+                renderFlashMessageSource(selected);
+            }
+
+            if (messageTypeSelect) {
+                messageTypeSelect.addEventListener('change', updateFlashGraphicClass);
+                // 초기 렌더 시에도 적용
+                updateFlashGraphicClass();
+            }
+
+            // 인증번호 입력 필드 자동 포커스 이동
+            const authCodeInputs = document.querySelectorAll('#guide-auth-code-input-1, #guide-auth-code-input-2, #guide-auth-code-input-3, #guide-auth-code-input-4, #guide-auth-code-input-5, #guide-auth-code-input-6');
+            
+            authCodeInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    
+                    // 숫자가 아닌 문자 제거
+                    if (!/^[0-9]$/.test(value)) {
+                        e.target.value = '';
+                        return;
+                    }
+                    
+                    // 다음 필드로 자동 이동
+                    if (value && index < authCodeInputs.length - 1) {
+                        authCodeInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    // 백스페이스 키 처리
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        authCodeInputs[index - 1].focus();
+                    }
+                });
+                
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text');
+                    const numbers = pastedData.replace(/\D/g, '').slice(0, 6);
+                    
+                    // 각 필드에 숫자 할당
+                    numbers.split('').forEach((num, i) => {
+                        if (authCodeInputs[i]) {
+                            authCodeInputs[i].value = num;
+                        }
+                    });
+                    
+                    // 마지막 입력된 필드로 포커스 이동
+                    const lastIndex = Math.min(numbers.length - 1, authCodeInputs.length - 1);
+                    authCodeInputs[lastIndex].focus();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
