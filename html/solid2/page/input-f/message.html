@@ -397,7 +397,11 @@
             function updateFlashGraphicClass() {
                 if (!flashGraphic || !messageTypeSelect) return;
                 const selected = messageTypeSelect.value?.trim();
+                
+                // 실제 HTML 요소의 클래스 업데이트
                 flashGraphic.className = selected ? `${flashGraphicBaseClass} ${selected}` : flashGraphicBaseClass;
+                
+                // 소스 코드 박스의 HTML도 업데이트
                 renderFlashMessageSource(selected);
             }
 
