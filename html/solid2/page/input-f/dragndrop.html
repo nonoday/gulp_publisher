@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.min.css">
+  
+    <style>
+        .list-wrap {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding:20px;
+            transform: border-color 0.2s;
+            width: 100%;
+        }
+
+        .cardbox-inner {
+            display: flex;
+            flex-direction: column;
+            padding:20px;
+            will-change: border-color;
+            background: #3399ff;
+            border: 1px solid #000;
+            border-radius: 10px;
+        }
+        .data-list-title-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li + li {margin-top:30px;}
+
+        .ui-drag-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ui-drag-item.dragged {
+            opacity: 0.8;
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .ui-drag-item {
+            cursor: move;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .ui-drag-btn-handle {
+            cursor: grab !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            display: inline-block;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 10;
+        }
+
+        .ui-drag-btn-handle:active,
+        .ui-drag-btn-handle:hover {
+            cursor: grabbing !important;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .ui-drag-btn-handle span {
+            display: block;
+            background: #333;
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .ui-state-highlight {
+            background: #e8f4f8;
+            border: 2px dashed #3399ff;
+            border-radius: 10px;
+            min-height: 100px;
+        }
+
+    </style>
+
+</head>
+<body>
+    
+    <div style="width: 100%;padding:50px;">
+
+
+        <div class="list-wrap">
+            <div class="ui-check-group select-list-area select-list-area-type-check">
+                
+                <ul class="ui-check-list ui-drag-list">
+                    <li class="select-list-item data-list data-list-round-line ui-drag-item">
+                        <div class="cardbox-inner">
+                            <div class="data-list-title-wrap">
+
+                                <a href="#" role="button" class="btn-drag ui-drag-btn-drag ui-drag-btn-handle">
+                                    <span style="width:20px;height: 20px;">핸들</span>
+                                </a>
+                            </div>                                
+                        </div>
+                    </li>
+                    <li class="select-list-item data-list data-list-round-line ui-drag-item">
+                        <div class="cardbox-inner">
+                            <div class="data-list-title-wrap">
+
+                                <a href="#" role="button" class="btn-drag ui-drag-btn-drag ui-drag-btn-handle">
+                                    <span style="width:20px;height: 20px;">핸들</span>
+                                </a>
+                            </div>                                
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+    
+    <!-- 모듈 스크립트들 -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script>
+        // jQuery와 jQuery UI 로드 확인
+        console.log("jQuery 버전:", typeof jQuery !== 'undefined' ? jQuery.fn.jquery : '없음');
+        console.log("jQuery UI:", typeof jQuery !== 'undefined' && typeof jQuery.ui !== 'undefined' ? '로드됨' : '없음');
+        console.log("sortable:", typeof jQuery !== 'undefined' && typeof jQuery.ui !== 'undefined' && typeof jQuery.ui.sortable !== 'undefined' ? '사용 가능' : '없음');
+    </script>
+    <script src="./dragndrop.js"></script>
+    
+
+</body>
+</html>
