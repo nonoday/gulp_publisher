@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무한 스크롤 샘플</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .scroll-container {
+            height: 600px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .item {
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #4a90e2;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .item-content {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .item-meta {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60%, 100% {
+                content: '...';
+            }
+        }
+        
+        .end-message {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .scrollbar-style::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .scrollbar-style::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .scrollbar-style::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .scrollbar-style::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>무한 스크롤 샘플</h1>
+        <div class="scroll-container scrollbar-style" id="scrollContainer">
+            <div id="itemContainer"></div>
+            <div id="loadingIndicator" class="loading" style="display: none;">로딩 중</div>
+            <div id="endMessage" class="end-message" style="display: none;">모든 항목을 불러왔습니다</div>
+        </div>
+    </div>
+
+    <script>
+        class InfiniteScroll {
+            constructor(container, options = {}) {
+                this.container = container;
+                this.itemContainer = document.getElementById('itemContainer');
+                this.loadingIndicator = document.getElementById('loadingIndicator');
+                this.endMessage = document.getElementById('endMessage');
+                
+                this.itemsPerPage = options.itemsPerPage || 10;
+                this.currentPage = 0;
+                this.isLoading = false;
+                this.hasMore = true;
+                this.totalItems = options.totalItems || 100; // 총 아이템 수
+                
+                this.init();
+            }
+            
+            init() {
+                // 초기 데이터 로드
+                this.loadItems();
+                
+                // 스크롤 이벤트 리스너
+                this.container.addEventListener('scroll', () => {
+                    this.handleScroll();
+                });
+            }
+            
+            handleScroll() {
+                const scrollTop = this.container.scrollTop;
+                const scrollHeight = this.container.scrollHeight;
+                const clientHeight = this.container.clientHeight;
+                
+                // 스크롤이 하단에서 100px 이내에 도달하면 로드
+                if (scrollHeight - scrollTop - clientHeight < 100 && !this.isLoading && this.hasMore) {
+                    this.loadItems();
+                }
+            }
+            
+            async loadItems() {
+                if (this.isLoading || !this.hasMore) return;
+                
+                this.isLoading = true;
+                this.loadingIndicator.style.display = 'block';
+                
+                // 실제 API 호출을 시뮬레이션 (비동기 처리)
+                await this.simulateApiCall();
+                
+                const startIndex = this.currentPage * this.itemsPerPage;
+                const endIndex = Math.min(startIndex + this.itemsPerPage, this.totalItems);
+                
+                // 새로운 아이템 생성
+                for (let i = startIndex; i < endIndex; i++) {
+                    this.createItem(i + 1);
+                }
+                
+                this.currentPage++;
+                
+                // 더 이상 로드할 항목이 없으면
+                if (endIndex >= this.totalItems) {
+                    this.hasMore = false;
+                    this.endMessage.style.display = 'block';
+                }
+                
+                this.isLoading = false;
+                this.loadingIndicator.style.display = 'none';
+            }
+            
+            simulateApiCall() {
+                // 실제 API 호출을 시뮬레이션 (0.5초 ~ 1.5초 랜덤 지연)
+                return new Promise(resolve => {
+                    setTimeout(resolve, Math.random() * 1000 + 500);
+                });
+            }
+            
+            createItem(index) {
+                const item = document.createElement('div');
+                item.className = 'item';
+                item.innerHTML = `
+                    <div class="item-title">항목 #${index}</div>
+                    <div class="item-content">
+                        이것은 무한 스크롤 샘플의 ${index}번째 항목입니다. 
+                        스크롤을 내리면 자동으로 새로운 항목들이 로드됩니다.
+                    </div>
+                    <div class="item-meta">생성 시간: ${new Date().toLocaleTimeString('ko-KR')}</div>
+                `;
+                this.itemContainer.appendChild(item);
+            }
+            
+            // 수동으로 리셋하는 메서드
+            reset() {
+                this.currentPage = 0;
+                this.isLoading = false;
+                this.hasMore = true;
+                this.itemContainer.innerHTML = '';
+                this.endMessage.style.display = 'none';
+                this.loadItems();
+            }
+        }
+        
+        // 무한 스크롤 인스턴스 생성
+        const scrollContainer = document.getElementById('scrollContainer');
+        const infiniteScroll = new InfiniteScroll(scrollContainer, {
+            itemsPerPage: 10,
+            totalItems: 100
+        });
+        
+        // 전역으로 접근 가능하도록 (디버깅용)
+        window.infiniteScroll = infiniteScroll;
+    </script>
+</body>
+</html>
