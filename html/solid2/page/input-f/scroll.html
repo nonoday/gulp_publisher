@@ -122,6 +122,7 @@
         <h1>무한 스크롤 샘플</h1>
         <div class="scroll-container scrollbar-style" id="scrollContainer">
             <div id="itemContainer"></div>
+            <div id="sentinel" style="height: 1px;"></div>
             <div id="loadingIndicator" class="loading" style="display: none;">로딩 중</div>
             <div id="endMessage" class="end-message" style="display: none;">모든 항목을 불러왔습니다</div>
         </div>
@@ -131,8 +132,10 @@
         // 전역 변수
         var scrollContainer = document.getElementById('scrollContainer');
         var itemContainer = document.getElementById('itemContainer');
+        var sentinel = document.getElementById('sentinel');
         var loadingIndicator = document.getElementById('loadingIndicator');
         var endMessage = document.getElementById('endMessage');
+        var observer = null;
         
         var itemsPerPage = 10;
         var currentPage = 0;
@@ -185,6 +188,10 @@
                 if (endIndex >= totalItems) {
                     hasMore = false;
                     endMessage.style.display = 'block';
+                    // Observer 중지
+                    if (observer) {
+                        observer.disconnect();
+                    }
                 }
                 
                 isLoading = false;
@@ -192,34 +199,57 @@
             });
         }
         
-        // 스크롤 핸들러 함수
-        function handleScroll() {
-            var scrollTop = scrollContainer.scrollTop;
-            var scrollHeight = scrollContainer.scrollHeight;
-            var clientHeight = scrollContainer.clientHeight;
-            
-            // 스크롤이 하단에서 100px 이내에 도달하면 로드
-            if (scrollHeight - scrollTop - clientHeight < 100 && !isLoading && hasMore) {
-                loadItems();
-            }
+        // Intersection Observer 콜백 함수
+        function handleIntersection(entries) {
+            entries.forEach(function(entry) {
+                // sentinel 요소가 뷰포트에 보이면 새로운 데이터 로드
+                if (entry.isIntersecting && !isLoading && hasMore) {
+                    loadItems();
+                }
+            });
         }
         
         // 초기화 함수
         function init() {
+            // Intersection Observer 옵션 설정
+            var options = {
+                root: scrollContainer, // 스크롤 컨테이너를 루트로 설정
+                rootMargin: '0px', // 마진 없음
+                threshold: 0.1 // 10% 보이면 트리거
+            };
+            
+            // Intersection Observer 생성
+            observer = new IntersectionObserver(handleIntersection, options);
+            
+            // sentinel 요소 관찰 시작
+            observer.observe(sentinel);
+            
             // 초기 데이터 로드
             loadItems();
-            
-            // 스크롤 이벤트 리스너
-            scrollContainer.addEventListener('scroll', handleScroll);
         }
         
         // 리셋 함수 (전역으로 접근 가능하도록)
         function resetScroll() {
+            // 기존 Observer 중지
+            if (observer) {
+                observer.disconnect();
+            }
+            
             currentPage = 0;
             isLoading = false;
             hasMore = true;
             itemContainer.innerHTML = '';
             endMessage.style.display = 'none';
+            
+            // Observer 재설정
+            var options = {
+                root: scrollContainer,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            observer = new IntersectionObserver(handleIntersection, options);
+            observer.observe(sentinel);
+            
             loadItems();
         }
         
