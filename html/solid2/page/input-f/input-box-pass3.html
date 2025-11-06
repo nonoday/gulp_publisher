@@ -116,6 +116,59 @@ input[type="password"].resident-id-input::placeholder {
             focusedClass: 'focused'
         });
         
+        class Input {
+            constructor(element) {
+                const containers = document.querySelectorAll(
+                    ".svg-animated, .no-animated"
+                )
+                
+                if (containers.length > 0) {
+                    // AnimatedBorderInputField 인스턴스의 focusManager에 접근
+                    // inputTopInstance와 inputBottomInstance 모두 같은 컨테이너 셀렉터를 사용하므로
+                    // 둘 다 콜백을 추가해야 할 수도 있음
+                    문제 원인
+this.FocusManager.callbacks = { ... }로 직접 할당하면:
+AnimatedBorderInputField가 내부적으로 생성한 FocusManager 인스턴스와 별개의 새 FocusManager를 생성합니다.
+새 인스턴스의 callbacks를 직접 할당하면 기존 콜백이 덮어써집니다.
+AnimatedBorderInputField가 설정한 SVG 애니메이션 콜백(onFocus에서 startAnimation, onBlur에서 stopAnimation)이 사라집니다.
+결과적으로 SVG 애니메이션이 동작하지 않습니다.
+해결 방법
+AnimatedBorderInputField 인스턴스의 focusManager에 접근해 setCallbacks()를 사용합니다:
+setCallbacks()는 기존 콜백을 병합합니다 ({ ...this.callbacks, ...callbacks }).
+SVG 애니메이션 콜백은 유지되고, 추가 콜백도 함께 실행됩니다.
+이제 SVG 애니메이션과 사용자 정의 콜백이 함께 동작합니다.
+
+AnimatedBorderInputField의 focusManager 인스턴스에 접근해 setCallbacks로 기존 콜백을 유지하면서 추가 콜백을 병합합니다.
+또는 AnimatedBorderInputField 인스턴스에 직접 콜백을 추가하는 메서드를 제공합니다.
+                    
+                    // inputTopInstance의 focusManager에 추가 콜백 설정
+                    inputTopInstance.focusManager.setCallbacks({
+                        onFocusChange: (_, container) => {
+                            console.log("onFocusChange");
+                        },
+                        onFocus: (_, container) => {
+                            console.log("onFocus");
+                        },
+                        onBlur: (_, container) => {
+                            console.log("onBlur");
+                        }
+                    });
+                    
+                    // inputBottomInstance의 focusManager에 추가 콜백 설정
+                    inputBottomInstance.focusManager.setCallbacks({
+                        onFocusChange: (_, container) => {
+                            console.log("onFocusChange");
+                        },
+                        onFocus: (_, container) => {
+                            console.log("onFocus");
+                        },
+                        onBlur: (_, container) => {
+                            console.log("onBlur");
+                        }
+                    });
+                }
+            }
+        }
     </script>
 
         
