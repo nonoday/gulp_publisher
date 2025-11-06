@@ -67,6 +67,21 @@ input[type="password"].resident-id-input::placeholder {
                 </span>
             </div>
         </div>
+        <p>Basic/Box/InputFieldDual 인풋 인풋 (포커스만)</p>
+        <div class="input-container">
+            <div class="input-field input-focus-only" role="group">  
+                <input type="text" class="input" id="input-field-9" placeholder="첫 번째 입력" />
+                <label class="blind" for="input-field-9">카드번호 첫 번째 자리</label>
+                <span class="input-dash" aria-hidden="true">-</span>
+                <input type="text" class="input" id="input-field-10" placeholder="두 번째 입력" />
+                <label class="blind" for="input-field-10">카드번호 두 번째 자리</label>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+            </div>
+        </div>
     </div>
 
 
@@ -95,6 +110,11 @@ input[type="password"].resident-id-input::placeholder {
             borderRadius: 12
         });
 
+        // 포커스만 있는 인풋 - SVG 애니메이션 없이 포커스 동작만
+        const focusOnlyInstance = new FocusManager({
+            containerSelector: '.input-focus-only',
+            focusedClass: 'focused'
+        });
         
     </script>
 
