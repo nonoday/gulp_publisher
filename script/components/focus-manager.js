@@ -19,6 +19,7 @@ class FocusManager {
             readonlyClass: 'readonly',          // 읽기전용 클래스
             errorClass: 'error',                // 에러 클래스
             focusedClass: 'focused',              // 포커스 상태 클래스
+            focusMaintainClass: 'focus-maintain', // 포커스 유지 클래스
             focusDelay: 10,                     // 포커스 상태 확인 지연 시간 (ms)
             instanceId: null,                   // 인스턴스 ID (독립적인 처리용)
             ...options
@@ -238,7 +239,10 @@ class FocusManager {
             focusState.focusedElement = null;
             this.focusStates.set(container, focusState);
 
-            container.classList.remove(this.options.focusedClass);
+            // 포커스 유지 상태가 아니면 focusedClass 제거
+            if (!container.classList.contains(this.options.focusMaintainClass)) {
+                container.classList.remove(this.options.focusedClass);
+            }
 
             // 포커스 해제 콜백 실행
             if (this.callbacks.onBlur) {
@@ -312,6 +316,55 @@ class FocusManager {
      */
     resetFocusState(container) {
         this.focusStates.delete(container);
+    }
+
+    /**
+     * 포커스 유지 상태 토글
+     * @param {HTMLElement|string} container - 컨테이너 요소 또는 셀렉터
+     * @param {boolean} shouldMaintain - 포커스 유지 여부
+     */
+    toggleFocusMaintainState(container, shouldMaintain) {
+        // 컨테이너 요소 가져오기
+        if (typeof container === 'string') {
+            container = document.querySelector(container);
+        }
+        
+        if (!container || !(container instanceof Element)) {
+            return;
+        }
+
+        // 관리되는 컨테이너인지 확인
+        if (!this.isManagedContainer(container)) {
+            return;
+        }
+
+        if (shouldMaintain) {
+            container.classList.add(this.options.focusMaintainClass);
+            container.classList.add(this.options.focusedClass);
+        } else {
+            this.removeFocusMaintainState(container);
+            // 실제 포커스가 없으면 focusedClass 제거
+            if (!this.hasFocus(container)) {
+                container.classList.remove(this.options.focusedClass);
+            }
+        }
+    }
+
+    /**
+     * 포커스 유지 상태 제거
+     * @param {HTMLElement|string} container - 컨테이너 요소 또는 셀렉터
+     */
+    removeFocusMaintainState(container) {
+        // 컨테이너 요소 가져오기
+        if (typeof container === 'string') {
+            container = document.querySelector(container);
+        }
+        
+        if (!container || !(container instanceof Element)) {
+            return;
+        }
+
+        container.classList.remove(this.options.focusMaintainClass);
     }
 }
 
