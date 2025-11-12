@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/page.css">
+
+</head>
+<body>
+   
+   <table border="1" aria-describedby="table_summary">
+  <caption>
+    2024년 3분기 지점별 일별 매출 보고서 테이블입니다. 항목으로는 지점, 일별 매출액 (단위: 만 원) 3월1일부터 3월 3일까지 항목이 있습니다.
+  </caption>
+  <thead>
+    <tr>
+      <th rowspan="2" id="branch">지점</th>
+      <th colspan="3" id="daily_sales">일별 매출액 (단위: 만 원)</th>
+    </tr>
+    <tr>
+      <th id="day1" headers="daily_sales">3월 1일</th>
+      <th id="day2" headers="daily_sales">3월 2일</th>
+      <th id="day3" headers="daily_sales">3월 3일</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th headers="branch">강남점</th>
+      <td headers="branch day1">500</td>
+      <td headers="branch day2">550</td>
+      <td headers="branch day3">600</td>
+    </tr>
+    <tr>
+      <th headers="branch">홍대점</th>
+      <td headers="branch day1">350</td>
+      <td headers="branch day2">400</td>
+      <td headers="branch day3">380</td>
+    </tr>
+  </tbody>
+</table>
+
+<p id="table_summary" class="sr-only">
+  이 보고서는 2024년 3월 1일부터 3일까지의 강남점과 홍대점의 일별 매출액을 나타냅니다. 각 지점의 3일간의 매출 합계는 강남점 1650만원, 홍대점 1130만원입니다.
+</p>
+
+
+</body>
+</html>
+</html>
