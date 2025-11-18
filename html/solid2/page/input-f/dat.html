@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DateRangePicker 모바일 터치 샘플</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/page.css">
+    
+    <!-- daterangepicker CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1/daterangepicker.css" />
+    
+    <style>
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .date-input-wrapper {
+            margin-bottom: 30px;
+        }
+        
+        .date-input-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .date-input-wrapper input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .date-input-wrapper input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        .daterangepicker .calendar-table td:focus {
+            outline: 2px solid #4a90e2;
+            outline-offset: -2px;
+        }
+        .daterangepicker.single-panel .drp-calendar.right {
+            display: none;
+        }
+        .daterangepicker.single-panel .drp-calendar.left {
+            border-right: none;
+        }
+        .daterangepicker.single-panel .calendar-table {
+            width: 100%;
+        }
+        
+        /* 모바일 터치 개선 */
+        .daterangepicker {
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        .daterangepicker .calendar-table td {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .daterangepicker .calendar-table td.available:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* 모바일에서 버튼 크기 조정 */
+        @media (max-width: 768px) {
+            .daterangepicker .calendar-table td {
+                min-width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+            
+            .daterangepicker .calendar-table th {
+                min-width: 40px;
+                height: 40px;
+                font-size: 13px;
+            }
+            
+            .daterangepicker .drp-buttons button {
+                padding: 10px 20px;
+                font-size: 14px;
+                min-height: 44px; /* 터치 타겟 최소 크기 */
+            }
+        }
+        .manual-range {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .manual-range input {
+            flex: 1 1 140px;
+        }
+        .manual-range button {
+            padding: 12px 20px;
+            font-size: 15px;
+            border: none;
+            background-color: #4a90e2;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .manual-range button:disabled {
+            background-color: #c1c1c1;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="margin-bottom: 30px;">DateRangePicker 모바일 터치 샘플</h1>
+        
+        <div class="date-input-wrapper">
+          <label for="dateRange3">단일 날짜 선택:</label>
+          <input type="text" id="dateRange3" name="dateRange3" placeholder="날짜를 선택하세요" aria-describedby="dateRange3Desc" />
+          <input type="hidden" id="singleStartHidden" name="singleStartDate">
+          <input type="hidden" id="singleEndHidden" name="singleEndDate">
+       </div>
+
+        <div class="date-input-wrapper">
+            <label for="dateRange1">기본 날짜 범위 선택:</label>
+            <input type="text" id="dateRange1" name="dateRange1" placeholder="날짜를 선택하세요" aria-describedby="dateRange1Desc" />
+            <div class="manual-range">
+                <input type="date" id="manualStartDate" aria-label="시작일 직접 입력">
+                <input type="date" id="manualEndDate" aria-label="종료일 직접 입력">
+                <button type="button" id="manualApplyBtn" disabled>날짜 범위 적용</button>
+            </div>
+        </div>
+        
+        <div class="date-input-wrapper">
+            <label for="dateRange2">사전 설정 옵션 포함:</label>
+            <input type="text" id="dateRange2" name="dateRange2" placeholder="날짜를 선택하세요" />
+        </div>
+        
+        
+        <div style="margin-top: 40px; padding: 20px; background-color: #f5f5f5; border-radius: 4px;">
+            <h3 style="margin-top: 0;">선택된 날짜:</h3>
+            <div id="selectedDates" style="font-size: 14px; color: #666;">
+                아직 날짜가 선택되지 않았습니다.
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery (필수) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Moment.js (필수) -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/locale/ko.js"></script>
+    
+    <!-- jQuery UI Touch Punch (모바일 터치 지원) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    
+    <!-- daterangepicker JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1/daterangepicker.min.js"></script>
+    
+    <script>
+        // 한국어 로케일 설정
+        moment.locale('ko');
+        
+        // 기본 날짜 범위 선택기
+        $('#dateRange1').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' ~ ',
+                applyLabel: '적용',
+                cancelLabel: '취소',
+                fromLabel: '시작',
+                toLabel: '종료',
+                customRangeLabel: '사용자 지정',
+                weekLabel: 'W',
+                daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                firstDay: 1
+            },
+            opens: 'left',
+            drops: 'down'
+        }, function(start, end, label) {
+            $('#dateRange1').val(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+            updateSelectedDates('dateRange1', start, end);
+        });
+        
+        // 사전 설정 옵션 포함
+        $('#dateRange2').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' ~ ',
+                applyLabel: '적용',
+                cancelLabel: '취소',
+                fromLabel: '시작',
+                toLabel: '종료',
+                customRangeLabel: '사용자 지정',
+                weekLabel: 'W',
+                daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                firstDay: 1
+            },
+            opens: 'left',
+            drops: 'down',
+            ranges: {
+                '오늘': [moment(), moment()],
+                '어제': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '최근 7일': [moment().subtract(6, 'days'), moment()],
+                '최근 30일': [moment().subtract(29, 'days'), moment()],
+                '이번 달': [moment().startOf('month'), moment().endOf('month')],
+                '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, function(start, end, label) {
+            $('#dateRange2').val(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+            updateSelectedDates('dateRange2', start, end);
+        });
+        
+        // 단일 날짜 선택
+        $('#dateRange3').daterangepicker({
+            singleDatePicker: false,
+            linkedCalendars: false,
+            autoUpdateInput: false,
+            locale: {
+                format: 'YYYY-MM-DD',
+                applyLabel: '적용',
+                cancelLabel: '취소',
+                daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                firstDay: 1
+            },
+            opens: 'left',
+            drops: 'down'
+        }, function(start, end, label) {
+            var startFormatted = start.format('YYYY-MM-DD');
+            var endFormatted = end.format('YYYY-MM-DD');
+            $('#dateRange3').val(startFormatted + ' ~ ' + endFormatted);
+            syncSingleHiddenFields(start, end);
+            updateSelectedDates('dateRange3', start, end);
+        });
+        
+        // 선택된 날짜 업데이트 함수
+        function updateSelectedDates(inputId, start, end) {
+            const dateText = start.format('YYYY년 MM월 DD일') + ' ~ ' + end.format('YYYY년 MM월 DD일');
+            const daysDiff = end.diff(start, 'days') + 1;
+            $('#selectedDates').html(`
+                <strong>${inputId}:</strong> ${dateText} (${daysDiff}일)
+            `);
+        }
+        
+        // 모바일 터치 이벤트 개선
+        $(document).on('touchstart', '.daterangepicker .calendar-table td', function(e) {
+            $(this).addClass('touching');
+        });
+        
+        $(document).on('touchend', '.daterangepicker .calendar-table td', function(e) {
+            var $this = $(this);
+            setTimeout(function() {
+                $this.removeClass('touching');
+            }, 200);
+        });
+        
+        // 모바일에서 스크롤 방지 (선택사항)
+        var preventScroll = false;
+        $(document).on('touchmove', '.daterangepicker', function(e) {
+            if (preventScroll) {
+                e.preventDefault();
+            }
+        });
+        
+        // daterangepicker가 열릴 때 모바일 최적화
+        function setCalendarFocusables(picker) {
+            const $cells = picker.container.find('.calendar-table td.available');
+            $cells.attr('tabindex', '-1');
+            $cells.first().attr('tabindex', '0');
+        }
+
+        $(document).on('show.daterangepicker', function(ev, picker) {
+            // 모바일 감지
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // 모바일에서 더 큰 터치 영역 확보
+                $('.daterangepicker .calendar-table td').css({
+                    'min-height': '44px',
+                    'line-height': '44px'
+                });
+                
+                // 드롭다운 위치 조정
+                var $picker = $('.daterangepicker');
+                var windowHeight = $(window).height();
+                var pickerHeight = $picker.outerHeight();
+                var scrollTop = $(window).scrollTop();
+                
+                if (pickerHeight > windowHeight * 0.8) {
+                    $picker.css({
+                        'max-height': windowHeight * 0.8 + 'px',
+                        'overflow-y': 'auto'
+                    });
+                }
+            }
+
+            // 접근성 포커스 세팅
+            picker.container.attr({
+                role: 'dialog',
+                'aria-modal': 'true',
+                'aria-label': '날짜 범위 선택',
+                tabindex: '-1'
+            });
+
+            if (picker.element && picker.element.attr('id') === 'dateRange3') {
+                picker.container.addClass('single-panel');
+            } else {
+                picker.container.removeClass('single-panel');
+            }
+
+            setCalendarFocusables(picker);
+
+            setTimeout(function() {
+                picker.container.focus();
+                var $firstCell = picker.container.find('.calendar-table td.available[tabindex="0"]');
+                if ($firstCell.length) {
+                    $firstCell.focus();
+                }
+            }, 0);
+        });
+
+        $(document).on('click touchend', '.daterangepicker .calendar-table td.available', function() {
+            $(this).attr('tabindex', '0').focus();
+        });
+
+        $(document).on('hide.daterangepicker', function(ev, picker) {
+            // 닫힐 때 원래 입력으로 포커스 반환
+            if (picker.element && picker.element.length) {
+                picker.element.trigger('focus');
+            }
+
+            picker.container.removeClass('single-panel');
+        });
+
+        // 단일 날짜 시작/종료 동기화 (hidden)
+        const singleStartHidden = document.getElementById('singleStartHidden');
+        const singleEndHidden = document.getElementById('singleEndHidden');
+
+        function syncSingleHiddenFields(startMoment, endMoment) {
+            if (!startMoment || !startMoment.isValid()) {
+                singleStartHidden.value = '';
+            } else {
+                singleStartHidden.value = startMoment.format('YYYY-MM-DD');
+            }
+
+            if (!endMoment || !endMoment.isValid()) {
+                singleEndHidden.value = '';
+            } else {
+                singleEndHidden.value = endMoment.format('YYYY-MM-DD');
+            }
+        }
+
+        // 직접 입력한 날짜로 값 세팅
+        const manualStart = document.getElementById('manualStartDate');
+        const manualEnd = document.getElementById('manualEndDate');
+        const manualBtn = document.getElementById('manualApplyBtn');
+
+        function toggleManualBtn() {
+            manualBtn.disabled = !(manualStart.value && manualEnd.value);
+        }
+
+        manualStart.addEventListener('change', toggleManualBtn);
+        manualEnd.addEventListener('change', toggleManualBtn);
+
+        manualBtn.addEventListener('click', function() {
+            const startVal = moment(manualStart.value, 'YYYY-MM-DD', true);
+            const endVal = moment(manualEnd.value, 'YYYY-MM-DD', true);
+
+            if (!startVal.isValid() || !endVal.isValid()) {
+                alert('유효한 날짜를 입력해주세요.');
+                return;
+            }
+
+            if (endVal.isBefore(startVal)) {
+                alert('종료일이 시작일보다 빠를 수 없습니다.');
+                return;
+            }
+
+            const picker = $('#dateRange1').data('daterangepicker');
+            if (picker) {
+                picker.setStartDate(startVal);
+                picker.setEndDate(endVal);
+            }
+
+            $('#dateRange1').val(startVal.format('YYYY-MM-DD') + ' ~ ' + endVal.format('YYYY-MM-DD'));
+            updateSelectedDates('dateRange1', startVal, endVal);
+        });
+    </script>
+</body>
+</html>
