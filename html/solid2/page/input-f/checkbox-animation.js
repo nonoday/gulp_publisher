@@ -58,11 +58,6 @@ class CheckboxAnimation extends BaseComponent {
         }
         this._isInitialized = false;
         
-        // 체크박스나 필수 요소가 없으면 초기화하지 않음
-        if (!this._checkbox || !this._pathChecked) {
-            return;
-        }
-        
         // .select-area-wrap 내부의 체크박스인 경우 border 애니메이션도 처리
         this._isSelectAreaWrap = this._label.closest('.select-area-wrap') !== null;
         this._animatedBorder = null;
@@ -73,6 +68,30 @@ class CheckboxAnimation extends BaseComponent {
                 animationDuration: 1000,
                 borderRadius: 12
             });
+        }
+        
+        // SVG가 없는 체크박스는 border 애니메이션만 처리하고 종료
+        if (!this._pathChecked) {
+            // 체크박스가 없으면 초기화하지 않음
+            if (!this._checkbox) {
+                return;
+            }
+            // SVG가 없지만 체크박스가 있고 .select-area-wrap 내부인 경우 border 애니메이션만 처리
+            if (this._isSelectAreaWrap) {
+                element.classList.add("checkbox-initiated");
+                // 초기 상태 설정
+                this._updateCheckboxStateForBorderOnly(false);
+                // 체크박스 상태 변경 감지
+                this._checkbox.addEventListener('change', () => {
+                    this._updateCheckboxStateForBorderOnly(true);
+                });
+            }
+            return;
+        }
+        
+        // 체크박스나 필수 요소가 없으면 초기화하지 않음
+        if (!this._checkbox) {
+            return;
         }
         
         // 초기화 표시
@@ -219,6 +238,39 @@ class CheckboxAnimation extends BaseComponent {
         
         this._isInitialized = true;
     }
+    
+    // SVG가 없는 체크박스의 경우 border 애니메이션만 처리하는 메서드
+    _updateCheckboxStateForBorderOnly(animate) {
+        if (!this._checkbox) return;
+        
+        // disabled 상태 처리
+        if (this._checkbox.disabled) {
+            this._label.classList.add('is-disabled');
+        } else {
+            this._label.classList.remove('is-disabled');
+        }
+        
+        if (this._checkbox.checked) {
+            this._label.classList.add('is-checked');
+            
+            // .select-area-wrap 내부의 체크박스인 경우 border 애니메이션 시작
+            if (this._isSelectAreaWrap && this._animatedBorder && this._label) {
+                this._animatedBorder.startAnimation(this._label, {
+                    borderColor: '#005DF9',
+                    animationDuration: 1000,
+                    borderRadius: 12
+                });
+            }
+        } else {
+            // unchecked 상태
+            this._label.classList.remove('is-checked');
+            
+            // .select-area-wrap 내부의 체크박스인 경우 border 애니메이션 중지
+            if (this._isSelectAreaWrap && this._animatedBorder && this._label) {
+                this._animatedBorder.stopAnimation(this._label);
+            }
+        }
+    }
 }
 
 const CheckboxAnimationApply = (elements) => {
@@ -236,8 +288,9 @@ const CheckboxAnimationApply = (elements) => {
                 checkbox = document.getElementById(forId);
             }
             const svg = label.querySelector('svg');
-            // 체크박스와 SVG가 있고, 체크박스 타입이 맞고, 아직 초기화되지 않은 경우만 추가
-            if (checkbox && checkbox.type === 'checkbox' && svg && !label.classList.contains('checkbox-initiated')) {
+            // 체크박스가 있고, 체크박스 타입이 맞고, 아직 초기화되지 않은 경우 추가
+            // SVG가 있거나 없거나 상관없이 처리 (SVG가 없으면 border 애니메이션만 처리)
+            if (checkbox && checkbox.type === 'checkbox' && !label.classList.contains('checkbox-initiated')) {
                 labels.push(label);
             }
         });
