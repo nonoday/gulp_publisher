@@ -265,7 +265,12 @@ const colorData = [
         "hex": "#E255E2",
         "type": "border",
         "ch": "magenta-700"
-    }
+    },
+    {
+        "hex": "rgba(0, 0, 0, 0.6)",
+        "type": "border",
+        "ch": "black-60"
+    },
 ];
 
 // colorData 배열에서 hex -> ch 매핑 생성
@@ -292,9 +297,21 @@ function replaceHexInCss(cssContent, colorMap) {
     
     // 각 hex 값에 대해 대소문자 구분 없이 매칭하여 교체
     colorMap.forEach((ch, hex) => {
-        // 정규식으로 hex 값 찾기 (대소문자 구분 없이)
-        // #cd652c, #CD652C, #Cd652C 등 모든 경우 매칭
-        const regex = new RegExp(`#${hex.replace('#', '')}`, 'gi');
+        let regex;
+        
+        // rgba 또는 rgb 값인 경우 (공백 처리 포함)
+        if (hex.startsWith('rgba') || hex.startsWith('rgb')) {
+            // rgba(0, 0, 0, 0.6), rgba(0,0,0,0.6) 등 모든 경우 매칭
+            // 정규식에서 특수문자 이스케이프 처리
+            const escapedHex = hex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // 공백이 있을 수도 있고 없을 수도 있으므로 \s* 사용
+            const flexiblePattern = escapedHex.replace(/\s+/g, '\\s*');
+            regex = new RegExp(flexiblePattern, 'gi');
+        } else {
+            // hex 값인 경우 (#cd652c, #CD652C, #Cd652C 등 모든 경우 매칭)
+            regex = new RegExp(`#${hex.replace('#', '')}`, 'gi');
+        }
+        
         const matches = modifiedContent.match(regex);
         
         if (matches) {
