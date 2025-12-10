@@ -182,11 +182,8 @@ function printResults(results) {
         console.log(`${(index + 1).toString().padStart(3)}. ${rgba}`);
     });
     
-    // JSON 형식으로도 출력
-    console.log('\n' + '='.repeat(60));
-    console.log('📋 JSON 형식 출력');
-    console.log('='.repeat(60));
-    console.log(JSON.stringify({
+    // JSON 데이터 생성
+    const jsonData = {
         summary: {
             totalFiles: results.length,
             uniqueHexCount: allHex.size,
@@ -199,7 +196,28 @@ function printResults(results) {
             hex: r.hex,
             rgba: r.rgba
         }))
-    }, null, 2));
+    };
+    
+    // JSON 형식으로 콘솔 출력
+    console.log('\n' + '='.repeat(60));
+    console.log('📋 JSON 형식 출력');
+    console.log('='.repeat(60));
+    console.log(JSON.stringify(jsonData, null, 2));
+    
+    return jsonData;
+}
+
+// JSON 파일 저장
+function saveJsonFile(jsonData, outputPath) {
+    try {
+        const jsonString = JSON.stringify(jsonData, null, 2);
+        fs.writeFileSync(outputPath, jsonString, 'utf8');
+        console.log(`\n💾 JSON 파일이 저장되었습니다: ${outputPath}`);
+        return true;
+    } catch (error) {
+        console.error(`\n❌ JSON 파일 저장 오류: ${error.message}`);
+        return false;
+    }
 }
 
 // 메인 함수
@@ -207,14 +225,16 @@ function main() {
     const args = process.argv.slice(2);
     
     if (args.length < 1) {
-        console.log('사용법: node extract-colors-from-css.js <css파일경로 또는 css폴더경로>');
+        console.log('사용법: node extract-colors-from-css.js <css파일경로 또는 css폴더경로> [출력파일경로]');
         console.log('\n예시:');
         console.log('  node extract-colors-from-css.js html/solid2/page/input-f/css/style.css');
         console.log('  node extract-colors-from-css.js html/solid2/page/input-f/css');
+        console.log('  node extract-colors-from-css.js html/solid2/page/input-f/css colors.json');
         process.exit(1);
     }
     
     const cssPath = args[0];
+    const outputPath = args[1] || 'extracted-colors.json'; // 기본값: 현재 디렉토리에 저장
     
     console.log('🚀 CSS 컬러 값 추출 스크립트 시작\n');
     console.log(`📁 대상: ${cssPath}\n`);
@@ -225,7 +245,15 @@ function main() {
         }
         
         const results = processCssFolder(cssPath);
-        printResults(results);
+        const jsonData = printResults(results);
+        
+        // JSON 파일 저장
+        if (jsonData) {
+            const absoluteOutputPath = path.isAbsolute(outputPath) 
+                ? outputPath 
+                : path.join(process.cwd(), outputPath);
+            saveJsonFile(jsonData, absoluteOutputPath);
+        }
         
     } catch (error) {
         console.error(`\n❌ 오류: ${error.message}`);
