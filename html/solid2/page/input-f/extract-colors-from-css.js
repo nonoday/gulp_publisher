@@ -28,29 +28,99 @@
 const fs = require('fs');
 const path = require('path');
 
-// Hex 컬러 값 추출 (정규식)
-function extractHexColors(content) {
-    // #으로 시작하는 hex 값 추출 (#ffffff, #fff, #FF5733 등)
-    // 단어 경계를 사용하여 다른 문자와 섞이지 않도록 함
-    const hexPattern = /#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})\b/g;
-    const matches = content.match(hexPattern) || [];
+// 컬러 값이 사용된 속성 타입 추출
+function getColorPropertyType(content, colorValue, position) {
+    // 컬러 값 앞 200자 범위 내에서 속성 찾기
+    const beforeText = content.substring(Math.max(0, position - 200), position).toLowerCase();
     
-    // 중복 제거 및 정렬
-    const uniqueHex = [...new Set(matches)].sort();
-    return uniqueHex;
+    // 속성 패턴 매칭
+    if (/\b(border(?:-color|-top-color|-right-color|-bottom-color|-left-color)?)\s*[:=]/.test(beforeText)) {
+        return 'border';
+    }
+    if (/\b(background(?:-color)?)\s*[:=]/.test(beforeText)) {
+        return 'background';
+    }
+    if (/\bcolor\s*[:=]/.test(beforeText)) {
+        return 'color';
+    }
+    if (/\b(box-shadow|text-shadow)\s*[:=]/.test(beforeText)) {
+        return 'shadow';
+    }
+    if (/\boutline(?:-color)?\s*[:=]/.test(beforeText)) {
+        return 'outline';
+    }
+    
+    return 'unknown';
 }
 
-// RGBA 컬러 값 추출 (정규식)
-function extractRgbaColors(content) {
-    // rgba로 시작하는 컬러 값 추출
-    // rgba(0, 0, 0, 0.5), rgba(255,255,255,0.8) 등
-    // 공백이 있을 수도 있고 없을 수도 있음
-    const rgbaPattern = /rgba?\s*\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[\d.]+)?\s*\)/gi;
-    const matches = content.match(rgbaPattern) || [];
+// Hex 컬러 값 추출 (속성 타입 포함)
+function extractHexColors(content) {
+    const hexPattern = /#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})\b/gi;
+    const colors = [];
+    let match;
     
-    // 중복 제거 및 정렬 (대소문자 구분 없이)
-    const uniqueRgba = [...new Set(matches.map(m => m.toLowerCase()))].sort();
-    return uniqueRgba;
+    while ((match = hexPattern.exec(content)) !== null) {
+        const hex = match[0];
+        const position = match.index;
+        const propertyType = getColorPropertyType(content, hex, position);
+        
+        colors.push({
+            value: hex,
+            type: propertyType
+        });
+    }
+    
+    // 중복 제거 (값과 타입 조합으로)
+    const uniqueColors = [];
+    const seen = new Set();
+    
+    colors.forEach(color => {
+        const key = `${color.value.toLowerCase()}_${color.type}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            uniqueColors.push(color);
+        }
+    });
+    
+    // 값으로 정렬
+    uniqueColors.sort((a, b) => a.value.localeCompare(b.value));
+    
+    return uniqueColors;
+}
+
+// RGBA 컬러 값 추출 (속성 타입 포함)
+function extractRgbaColors(content) {
+    const rgbaPattern = /rgba?\s*\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[\d.]+)?\s*\)/gi;
+    const colors = [];
+    let match;
+    
+    while ((match = rgbaPattern.exec(content)) !== null) {
+        const rgba = match[0].toLowerCase();
+        const position = match.index;
+        const propertyType = getColorPropertyType(content, rgba, position);
+        
+        colors.push({
+            value: rgba,
+            type: propertyType
+        });
+    }
+    
+    // 중복 제거 (값과 타입 조합으로)
+    const uniqueColors = [];
+    const seen = new Set();
+    
+    colors.forEach(color => {
+        const key = `${color.value}_${color.type}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            uniqueColors.push(color);
+        }
+    });
+    
+    // 값으로 정렬
+    uniqueColors.sort((a, b) => a.value.localeCompare(b.value));
+    
+    return uniqueColors;
 }
 
 // 단일 CSS 파일에서 컬러 추출
@@ -131,13 +201,13 @@ function printResults(results) {
         return;
     }
     
-    // 전체 통계
+    // 전체 통계 (컬러 객체에서 값 추출)
     const allHex = new Set();
     const allRgba = new Set();
     
     results.forEach(result => {
-        result.hex.forEach(hex => allHex.add(hex.toLowerCase()));
-        result.rgba.forEach(rgba => allRgba.add(rgba.toLowerCase()));
+        result.hex.forEach(color => allHex.add(color.value.toLowerCase()));
+        result.rgba.forEach(color => allRgba.add(color.value.toLowerCase()));
     });
     
     console.log('\n' + '='.repeat(60));
@@ -157,11 +227,13 @@ function printResults(results) {
         console.log(`   Hex: ${result.hexCount}개, RGBA: ${result.rgbaCount}개`);
         
         if (result.hex.length > 0) {
-            console.log(`   Hex 값: ${result.hex.join(', ')}`);
+            const hexList = result.hex.map(c => `${c.value} (${c.type})`).join(', ');
+            console.log(`   Hex 값: ${hexList}`);
         }
         
         if (result.rgba.length > 0) {
-            console.log(`   RGBA 값: ${result.rgba.join(', ')}`);
+            const rgbaList = result.rgba.map(c => `${c.value} (${c.type})`).join(', ');
+            console.log(`   RGBA 값: ${rgbaList}`);
         }
     });
     
@@ -182,15 +254,54 @@ function printResults(results) {
         console.log(`${(index + 1).toString().padStart(3)}. ${rgba}`);
     });
     
-    // JSON 데이터 생성
+    // JSON 데이터 생성 (전체 컬러 정보 포함)
+    const allHexWithType = [];
+    const allRgbaWithType = [];
+    const hexMap = new Map();
+    const rgbaMap = new Map();
+    
+    results.forEach(result => {
+        result.hex.forEach(color => {
+            const key = color.value.toLowerCase();
+            if (!hexMap.has(key)) {
+                hexMap.set(key, new Set());
+            }
+            hexMap.get(key).add(color.type);
+        });
+        result.rgba.forEach(color => {
+            const key = color.value.toLowerCase();
+            if (!rgbaMap.has(key)) {
+                rgbaMap.set(key, new Set());
+            }
+            rgbaMap.get(key).add(color.type);
+        });
+    });
+    
+    hexMap.forEach((types, value) => {
+        allHexWithType.push({
+            value: value,
+            types: Array.from(types)
+        });
+    });
+    
+    rgbaMap.forEach((types, value) => {
+        allRgbaWithType.push({
+            value: value,
+            types: Array.from(types)
+        });
+    });
+    
+    allHexWithType.sort((a, b) => a.value.localeCompare(b.value));
+    allRgbaWithType.sort((a, b) => a.value.localeCompare(b.value));
+    
     const jsonData = {
         summary: {
             totalFiles: results.length,
             uniqueHexCount: allHex.size,
             uniqueRgbaCount: allRgba.size
         },
-        uniqueHex: sortedHex,
-        uniqueRgba: sortedRgba,
+        uniqueHex: allHexWithType,
+        uniqueRgba: allRgbaWithType,
         files: results.map(r => ({
             file: r.file,
             hex: r.hex,
@@ -236,7 +347,10 @@ function generateHtml(jsonData) {
     const { summary, uniqueHex, uniqueRgba } = jsonData;
     
     // Hex 컬러 테이블 행 생성
-    const hexRows = uniqueHex.map((hex, index) => {
+    const hexRows = uniqueHex.map((colorObj, index) => {
+        const hex = colorObj.value;
+        const types = colorObj.types || [];
+        const typeText = types.length > 0 ? types.join(', ') : 'unknown';
         const rgb = hexToRgb(hex);
         const bgColor = rgb ? `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` : hex;
         const textColor = rgb && (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114) < 128 ? '#ffffff' : '#000000';
@@ -248,11 +362,15 @@ function generateHtml(jsonData) {
                     <span style="color: ${textColor};">${hex}</span>
                 </td>
                 <td>${hex}</td>
+                <td>${typeText}</td>
             </tr>`;
     }).join('');
     
     // RGBA 컬러 테이블 행 생성
-    const rgbaRows = uniqueRgba.map((rgba, index) => {
+    const rgbaRows = uniqueRgba.map((colorObj, index) => {
+        const rgba = colorObj.value;
+        const types = colorObj.types || [];
+        const typeText = types.length > 0 ? types.join(', ') : 'unknown';
         const parsed = parseRgba(rgba);
         const bgColor = parsed ? `rgba(${parsed.r}, ${parsed.g}, ${parsed.b}, ${parsed.a})` : rgba;
         const textColor = parsed && (parsed.r * 0.299 + parsed.g * 0.587 + parsed.b * 0.114) < 128 ? '#ffffff' : '#000000';
@@ -264,6 +382,7 @@ function generateHtml(jsonData) {
                     <span style="color: ${textColor};">${rgba}</span>
                 </td>
                 <td>${rgba}</td>
+                <td>${typeText}</td>
             </tr>`;
     }).join('');
     
@@ -366,10 +485,11 @@ function generateHtml(jsonData) {
                     <th style="width: 60px;">번호</th>
                     <th style="width: 200px;">컬러</th>
                     <th>값</th>
+                    <th>속성</th>
                 </tr>
             </thead>
             <tbody>
-                ${hexRows || '<tr><td colspan="3" style="text-align: center; padding: 40px; color: #999;">Hex 컬러가 없습니다.</td></tr>'}
+                ${hexRows || '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">Hex 컬러가 없습니다.</td></tr>'}
             </tbody>
         </table>
         
@@ -380,10 +500,11 @@ function generateHtml(jsonData) {
                     <th style="width: 60px;">번호</th>
                     <th style="width: 200px;">컬러</th>
                     <th>값</th>
+                    <th>속성</th>
                 </tr>
             </thead>
             <tbody>
-                ${rgbaRows || '<tr><td colspan="3" style="text-align: center; padding: 40px; color: #999;">RGBA 컬러가 없습니다.</td></tr>'}
+                ${rgbaRows || '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">RGBA 컬러가 없습니다.</td></tr>'}
             </tbody>
         </table>
     </div>
