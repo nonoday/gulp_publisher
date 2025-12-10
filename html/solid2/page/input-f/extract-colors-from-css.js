@@ -207,15 +207,199 @@ function printResults(results) {
     return jsonData;
 }
 
-// JSON 파일 저장
-function saveJsonFile(jsonData, outputPath) {
+// Hex 값을 RGB로 변환 (시각화용)
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+// RGBA 값을 파싱 (시각화용)
+function parseRgba(rgba) {
+    const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    if (match) {
+        return {
+            r: parseInt(match[1]),
+            g: parseInt(match[2]),
+            b: parseInt(match[3]),
+            a: match[4] ? parseFloat(match[4]) : 1
+        };
+    }
+    return null;
+}
+
+// HTML 파일 생성
+function generateHtml(jsonData) {
+    const { summary, uniqueHex, uniqueRgba } = jsonData;
+    
+    // Hex 컬러 테이블 행 생성
+    const hexRows = uniqueHex.map((hex, index) => {
+        const rgb = hexToRgb(hex);
+        const bgColor = rgb ? `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` : hex;
+        const textColor = rgb && (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114) < 128 ? '#ffffff' : '#000000';
+        
+        return `
+            <tr>
+                <td>${index + 1}</td>
+                <td class="color-cell" style="background-color: ${bgColor};">
+                    <span style="color: ${textColor};">${hex}</span>
+                </td>
+                <td>${hex}</td>
+            </tr>`;
+    }).join('');
+    
+    // RGBA 컬러 테이블 행 생성
+    const rgbaRows = uniqueRgba.map((rgba, index) => {
+        const parsed = parseRgba(rgba);
+        const bgColor = parsed ? `rgba(${parsed.r}, ${parsed.g}, ${parsed.b}, ${parsed.a})` : rgba;
+        const textColor = parsed && (parsed.r * 0.299 + parsed.g * 0.587 + parsed.b * 0.114) < 128 ? '#ffffff' : '#000000';
+        
+        return `
+            <tr>
+                <td>${index + 1}</td>
+                <td class="color-cell" style="background-color: ${bgColor};">
+                    <span style="color: ${textColor};">${rgba}</span>
+                </td>
+                <td>${rgba}</td>
+            </tr>`;
+    }).join('');
+    
+    return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 컬러 추출 결과</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        h2 {
+            font-size: 20px;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+        
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            color: #495057;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .color-cell {
+            width: 200px;
+            text-align: center;
+            font-weight: 600;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .color-cell span {
+            padding: 4px 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            backdrop-filter: blur(10px);
+        }
+        
+        td:last-child {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 CSS 컬러 추출 결과</h1>
+        
+        <h2>Hex 컬러 (${summary.uniqueHexCount}개)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 60px;">번호</th>
+                    <th style="width: 200px;">컬러</th>
+                    <th>값</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${hexRows || '<tr><td colspan="3" style="text-align: center; padding: 40px; color: #999;">Hex 컬러가 없습니다.</td></tr>'}
+            </tbody>
+        </table>
+        
+        <h2>RGBA 컬러 (${summary.uniqueRgbaCount}개)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 60px;">번호</th>
+                    <th style="width: 200px;">컬러</th>
+                    <th>값</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rgbaRows || '<tr><td colspan="3" style="text-align: center; padding: 40px; color: #999;">RGBA 컬러가 없습니다.</td></tr>'}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>`;
+}
+
+// HTML 파일 저장
+function saveHtmlFile(jsonData, outputPath) {
     try {
-        const jsonString = JSON.stringify(jsonData, null, 2);
-        fs.writeFileSync(outputPath, jsonString, 'utf8');
-        console.log(`\n💾 JSON 파일이 저장되었습니다: ${outputPath}`);
+        const htmlContent = generateHtml(jsonData);
+        fs.writeFileSync(outputPath, htmlContent, 'utf8');
+        console.log(`\n💾 HTML 파일이 저장되었습니다: ${outputPath}`);
         return true;
     } catch (error) {
-        console.error(`\n❌ JSON 파일 저장 오류: ${error.message}`);
+        console.error(`\n❌ HTML 파일 저장 오류: ${error.message}`);
         return false;
     }
 }
@@ -229,12 +413,12 @@ function main() {
         console.log('\n예시:');
         console.log('  node extract-colors-from-css.js html/solid2/page/input-f/css/style.css');
         console.log('  node extract-colors-from-css.js html/solid2/page/input-f/css');
-        console.log('  node extract-colors-from-css.js html/solid2/page/input-f/css colors.json');
+        console.log('  node extract-colors-from-css.js html/solid2/page/input-f/css colors.html');
         process.exit(1);
     }
     
     const cssPath = args[0];
-    const outputPath = args[1] || 'extracted-colors.json'; // 기본값: 현재 디렉토리에 저장
+    const outputPath = args[1] || 'extracted-colors.html'; // 기본값: 현재 디렉토리에 저장
     
     console.log('🚀 CSS 컬러 값 추출 스크립트 시작\n');
     console.log(`📁 대상: ${cssPath}\n`);
@@ -247,12 +431,18 @@ function main() {
         const results = processCssFolder(cssPath);
         const jsonData = printResults(results);
         
-        // JSON 파일 저장
+        // HTML 파일 저장
         if (jsonData) {
             const absoluteOutputPath = path.isAbsolute(outputPath) 
                 ? outputPath 
                 : path.join(process.cwd(), outputPath);
-            saveJsonFile(jsonData, absoluteOutputPath);
+            
+            // 확장자가 없으면 .html 추가
+            const finalOutputPath = outputPath.endsWith('.html') || outputPath.endsWith('.htm')
+                ? absoluteOutputPath
+                : absoluteOutputPath + '.html';
+            
+            saveHtmlFile(jsonData, finalOutputPath);
         }
         
     } catch (error) {
