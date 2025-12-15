@@ -3,15 +3,30 @@ const path = require('path');
 
 // color 속성에서만 컬러 값 추출 여부 확인
 function isColorProperty(content, position) {
-    // 컬러 값 앞 200자 범위 내에서 color 속성 찾기
-    const beforeText = content.substring(Math.max(0, position - 200), position).toLowerCase();
+    // 컬러 값 앞 300자 범위 내에서 가장 가까운 속성 찾기
+    const startPos = Math.max(0, position - 300);
+    const beforeText = content.substring(startPos, position);
+    const beforeTextLower = beforeText.toLowerCase();
     
-    // color 속성만 매칭 (background-color, border-color 등은 제외)
-    // 앞에 하이픈이 없고, 공백/세미콜론/중괄호/줄바꿈 뒤에 오는 경우만 매칭
-    // 예: "color:", " color:", "\ncolor:", "{color:", ";color:"
-    // 제외: "background-color:", "border-color:" 등
-    return /(?:^|[\s;{])color\s*[:=]/.test(beforeText) && 
-           !/(?:background|border|outline|text-decoration|caret|column-rule|flood|lighting|stop)-color\s*[:=]/.test(beforeText);
+    // 색상 값 바로 앞에서 역순으로 검색하여 가장 가까운 속성 이름 찾기
+    // 세미콜론, 중괄호, 줄바꿈을 만나면 그 이후의 속성을 찾음
+    const lastSemicolon = beforeTextLower.lastIndexOf(';');
+    const lastBrace = beforeTextLower.lastIndexOf('}');
+    const lastNewline = beforeTextLower.lastIndexOf('\n');
+    
+    // 가장 최근의 구분자 위치 찾기
+    const lastSeparator = Math.max(lastSemicolon, lastBrace, lastNewline);
+    const searchStart = lastSeparator > 0 ? lastSeparator : 0;
+    const propertyText = beforeTextLower.substring(searchStart);
+    
+    // 정확히 "color" 속성만 매칭 (앞에 하이픈이 없어야 함)
+    // 패턴: 공백/줄바꿈/중괄호 뒤에 "color"가 오고, 그 뒤에 공백과 콜론/등호
+    // 제외: "-color" 형태 (예: "background-color", "border-color")
+    const colorPattern = /(?:^|[\s{])color\s*[:=]/;
+    const hyphenColorPattern = /[a-z-]+-color\s*[:=]/;
+    
+    // "color" 속성이 있고, "-color" 형태가 아닌 경우만 매칭
+    return colorPattern.test(propertyText) && !hyphenColorPattern.test(propertyText);
 }
 
 // Hex 값을 RGB로 변환
