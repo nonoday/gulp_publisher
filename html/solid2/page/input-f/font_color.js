@@ -20,13 +20,20 @@ function isColorProperty(content, position) {
     const propertyText = beforeTextLower.substring(searchStart);
     
     // 정확히 "color" 속성만 매칭 (앞에 하이픈이 없어야 함)
-    // 패턴: 공백/줄바꿈/중괄호 뒤에 "color"가 오고, 그 뒤에 공백과 콜론/등호
-    // 제외: "-color" 형태 (예: "background-color", "border-color")
-    const colorPattern = /(?:^|[\s{])color\s*[:=]/;
-    const hyphenColorPattern = /[a-z-]+-color\s*[:=]/;
+    // 패턴: 시작/공백/줄바꿈/중괄호 뒤에 "color"가 오고, 그 뒤에 공백과 콜론/등호
+    // 예: "color:", " color:", "\ncolor:", "{color:", ";color:"
+    // 제외: "-color" 형태 (예: "background-color:", "border-color:")
     
-    // "color" 속성이 있고, "-color" 형태가 아닌 경우만 매칭
-    return colorPattern.test(propertyText) && !hyphenColorPattern.test(propertyText);
+    // 먼저 "-color" 형태가 있는지 확인 (이 경우 제외)
+    if (/[a-z-]+-color\s*[:=]/.test(propertyText)) {
+        return false;
+    }
+    
+    // 정확히 "color" 속성만 매칭
+    // 패턴: (시작 또는 공백/중괄호/세미콜론) + "color" + 공백 + (콜론 또는 등호)
+    const colorPattern = /(?:^|[\s{;])color\s*[:=]/;
+    
+    return colorPattern.test(propertyText);
 }
 
 // Hex 값을 RGB로 변환
