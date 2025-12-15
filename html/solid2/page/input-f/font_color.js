@@ -70,7 +70,8 @@ function extractHexColors(content) {
                 colors.push({
                     value: hex.toLowerCase(),
                     rgb: rgb,
-                    type: 'hex'
+                    type: 'hex',
+                    property: 'color'
                 });
             }
         }
@@ -124,7 +125,8 @@ function extractRgbaColors(content) {
                     value: rgba,
                     rgb: { r: parsed.r, g: parsed.g, b: parsed.b },
                     alpha: parsed.a,
-                    type: 'rgba'
+                    type: 'rgba',
+                    property: 'color'
                 });
             }
         }
@@ -368,7 +370,8 @@ function printResults(results) {
             groupId: index + 1,
             colors: group.map(color => ({
                 value: color.value,
-                rgb: color.rgb
+                rgb: color.rgb,
+                property: color.property || 'color'
             }))
         })),
         rgbaColorGroups: rgbaGroups.map((group, index) => ({
@@ -376,7 +379,8 @@ function printResults(results) {
             colors: group.map(color => ({
                 value: color.value,
                 rgb: color.rgb,
-                alpha: color.alpha || 1
+                alpha: color.alpha || 1,
+                property: color.property || 'color'
             }))
         })),
         files: results.map(r => ({
@@ -414,6 +418,7 @@ function generateHtml(jsonData) {
                     </td>
                     <td>${color.value}</td>
                     <td>RGB(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})</td>
+                    <td>${color.property || 'color'}</td>
                 </tr>`;
         }).join('');
         
@@ -427,6 +432,7 @@ function generateHtml(jsonData) {
                         <th style="width: 200px;">컬러</th>
                         <th>Hex 값</th>
                         <th>RGB</th>
+                        <th>CSS 속성</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -452,6 +458,7 @@ function generateHtml(jsonData) {
                     <td>${color.value}</td>
                     <td>RGB(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})</td>
                     <td>${color.alpha || 1}</td>
+                    <td>${color.property || 'color'}</td>
                 </tr>`;
         }).join('');
         
@@ -466,6 +473,7 @@ function generateHtml(jsonData) {
                         <th>RGBA 값</th>
                         <th>RGB</th>
                         <th>Alpha</th>
+                        <th>CSS 속성</th>
                     </tr>
                 </thead>
                 <tbody>
