@@ -54,7 +54,8 @@ function extractHexColors(content) {
             if (rgb) {
                 colors.push({
                     value: hex.toLowerCase(),
-                    rgb: rgb
+                    rgb: rgb,
+                    type: 'hex'
                 });
             }
         }
@@ -107,7 +108,8 @@ function extractRgbaColors(content) {
                 colors.push({
                     value: rgba,
                     rgb: { r: parsed.r, g: parsed.g, b: parsed.b },
-                    alpha: parsed.a
+                    alpha: parsed.a,
+                    type: 'rgba'
                 });
             }
         }
@@ -184,13 +186,13 @@ function extractColorsFromFile(filePath) {
         const hexColors = extractHexColors(content);
         const rgbaColors = extractRgbaColors(content);
         
-        // 모든 색상을 하나의 배열로 합치기
-        const allColors = [...hexColors, ...rgbaColors];
-        
         return {
             file: filePath,
-            colors: allColors,
-            colorCount: allColors.length
+            hexColors: hexColors,
+            rgbaColors: rgbaColors,
+            hexCount: hexColors.length,
+            rgbaCount: rgbaColors.length,
+            colorCount: hexColors.length + rgbaColors.length
         };
     } catch (error) {
         console.error(`  ❌ 파일 읽기 오류: ${error.message}`);
@@ -238,7 +240,7 @@ function processCssFolder(cssPath) {
             const result = extractColorsFromFile(filePath);
             if (result) {
                 results.push(result);
-                console.log(`  ✅ 색상: ${result.colorCount}개\n`);
+                console.log(`  ✅ Hex: ${result.hexCount}개, RGBA: ${result.rgbaCount}개\n`);
             }
         });
     } else {
@@ -256,22 +258,50 @@ function printResults(results) {
         return;
     }
     
-    // 전체 색상 수집
-    const allColors = [];
+    // 전체 색상 수집 (hex와 rgba 분리)
+    const allHexColors = [];
+    const allRgbaColors = [];
     
     results.forEach(result => {
-        allColors.push(...result.colors);
+        allHexColors.push(...result.hexColors);
+        allRgbaColors.push(...result.rgbaColors);
     });
     
-    // 전체 색상 그룹화
-    const globalGroups = groupSimilarColors(allColors);
+    // 중복 제거 (RGB 값 기준)
+    const uniqueHexColors = [];
+    const uniqueRgbaColors = [];
+    const seenHex = new Set();
+    const seenRgba = new Set();
+    
+    // Hex 중복 제거
+    allHexColors.forEach(color => {
+        const rgbKey = `${color.rgb.r},${color.rgb.g},${color.rgb.b}`;
+        if (!seenHex.has(rgbKey)) {
+            seenHex.add(rgbKey);
+            uniqueHexColors.push(color);
+        }
+    });
+    
+    // RGBA 중복 제거
+    allRgbaColors.forEach(color => {
+        const rgbKey = `${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.alpha || 1}`;
+        if (!seenRgba.has(rgbKey)) {
+            seenRgba.add(rgbKey);
+            uniqueRgbaColors.push(color);
+        }
+    });
+    
+    // 각각 그룹화
+    const hexGroups = groupSimilarColors(uniqueHexColors);
+    const rgbaGroups = groupSimilarColors(uniqueRgbaColors);
     
     console.log('\n' + '='.repeat(60));
     console.log('📊 추출 결과 요약');
     console.log('='.repeat(60));
     console.log(`\n📁 처리된 파일 수: ${results.length}개`);
-    console.log(`🎨 전체 색상 수: ${allColors.length}개`);
-    console.log(`🎨 색상 그룹 수: ${globalGroups.length}개`);
+    console.log(`🎨 Hex 색상 수: ${uniqueHexColors.length}개 (그룹: ${hexGroups.length}개)`);
+    console.log(`🎨 RGBA 색상 수: ${uniqueRgbaColors.length}개 (그룹: ${rgbaGroups.length}개)`);
+    console.log(`🎨 전체 색상 수: ${uniqueHexColors.length + uniqueRgbaColors.length}개`);
     
     // 파일별 상세 정보
     console.log('\n' + '='.repeat(60));
@@ -280,19 +310,32 @@ function printResults(results) {
     
     results.forEach(result => {
         console.log(`\n📄 ${result.file}`);
-        console.log(`   색상: ${result.colorCount}개`);
+        console.log(`   Hex: ${result.hexCount}개, RGBA: ${result.rgbaCount}개`);
     });
     
-    // 색상 그룹별 출력
+    // Hex 색상 그룹별 출력
     console.log('\n' + '='.repeat(60));
-    console.log('🎨 색상 그룹별 목록');
+    console.log('🎨 Hex 색상 그룹별 목록');
     console.log('='.repeat(60));
     
-    globalGroups.forEach((group, groupIndex) => {
-        console.log(`\n그룹 ${groupIndex + 1} (${group.length}개 색상):`);
+    hexGroups.forEach((group, groupIndex) => {
+        console.log(`\nHex 그룹 ${groupIndex + 1} (${group.length}개 색상):`);
         group.forEach((color, colorIndex) => {
             const brightness = color.rgb.r * 0.299 + color.rgb.g * 0.587 + color.rgb.b * 0.114;
             console.log(`  ${colorIndex + 1}. ${color.value} (RGB: ${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, 밝기: ${brightness.toFixed(1)})`);
+        });
+    });
+    
+    // RGBA 색상 그룹별 출력
+    console.log('\n' + '='.repeat(60));
+    console.log('🎨 RGBA 색상 그룹별 목록');
+    console.log('='.repeat(60));
+    
+    rgbaGroups.forEach((group, groupIndex) => {
+        console.log(`\nRGBA 그룹 ${groupIndex + 1} (${group.length}개 색상):`);
+        group.forEach((color, colorIndex) => {
+            const brightness = color.rgb.r * 0.299 + color.rgb.g * 0.587 + color.rgb.b * 0.114;
+            console.log(`  ${colorIndex + 1}. ${color.value} (RGB: ${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, Alpha: ${color.alpha || 1}, 밝기: ${brightness.toFixed(1)})`);
         });
     });
     
@@ -300,10 +343,20 @@ function printResults(results) {
     const jsonData = {
         summary: {
             totalFiles: results.length,
-            totalColors: allColors.length,
-            totalGroups: globalGroups.length
+            totalHexColors: uniqueHexColors.length,
+            totalRgbaColors: uniqueRgbaColors.length,
+            totalColors: uniqueHexColors.length + uniqueRgbaColors.length,
+            hexGroups: hexGroups.length,
+            rgbaGroups: rgbaGroups.length
         },
-        colorGroups: globalGroups.map((group, index) => ({
+        hexColorGroups: hexGroups.map((group, index) => ({
+            groupId: index + 1,
+            colors: group.map(color => ({
+                value: color.value,
+                rgb: color.rgb
+            }))
+        })),
+        rgbaColorGroups: rgbaGroups.map((group, index) => ({
             groupId: index + 1,
             colors: group.map(color => ({
                 value: color.value,
@@ -313,7 +366,8 @@ function printResults(results) {
         })),
         files: results.map(r => ({
             file: r.file,
-            colorCount: r.colorCount
+            hexCount: r.hexCount,
+            rgbaCount: r.rgbaCount
         }))
     };
     
@@ -328,14 +382,12 @@ function printResults(results) {
 
 // HTML 파일 생성
 function generateHtml(jsonData) {
-    const { summary, colorGroups } = jsonData;
+    const { summary, hexColorGroups, rgbaColorGroups } = jsonData;
     
-    // 그룹별 HTML 생성
-    const groupSections = colorGroups.map((group, groupIndex) => {
+    // Hex 그룹별 HTML 생성
+    const hexGroupSections = hexColorGroups.map((group, groupIndex) => {
         const colorRows = group.colors.map((color, colorIndex) => {
-            const bgColor = color.alpha && color.alpha < 1 
-                ? `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.alpha})`
-                : `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`;
+            const bgColor = `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`;
             const brightness = color.rgb.r * 0.299 + color.rgb.g * 0.587 + color.rgb.b * 0.114;
             const textColor = brightness < 128 ? '#ffffff' : '#000000';
             
@@ -347,19 +399,56 @@ function generateHtml(jsonData) {
                     </td>
                     <td>${color.value}</td>
                     <td>RGB(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})</td>
-                    ${color.alpha && color.alpha < 1 ? `<td>Alpha: ${color.alpha}</td>` : '<td>-</td>'}
                 </tr>`;
         }).join('');
         
         return `
         <div class="group-section">
-            <h2>그룹 ${groupIndex + 1} (${group.colors.length}개 색상)</h2>
+            <h2>Hex 그룹 ${groupIndex + 1} (${group.colors.length}개 색상)</h2>
             <table>
                 <thead>
                     <tr>
                         <th style="width: 60px;">번호</th>
                         <th style="width: 200px;">컬러</th>
-                        <th>값</th>
+                        <th>Hex 값</th>
+                        <th>RGB</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${colorRows}
+                </tbody>
+            </table>
+        </div>`;
+    }).join('');
+    
+    // RGBA 그룹별 HTML 생성
+    const rgbaGroupSections = rgbaColorGroups.map((group, groupIndex) => {
+        const colorRows = group.colors.map((color, colorIndex) => {
+            const bgColor = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.alpha || 1})`;
+            const brightness = color.rgb.r * 0.299 + color.rgb.g * 0.587 + color.rgb.b * 0.114;
+            const textColor = brightness < 128 ? '#ffffff' : '#000000';
+            
+            return `
+                <tr>
+                    <td>${colorIndex + 1}</td>
+                    <td class="color-cell" style="background-color: ${bgColor};">
+                        <span style="color: ${textColor};">${color.value}</span>
+                    </td>
+                    <td>${color.value}</td>
+                    <td>RGB(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})</td>
+                    <td>${color.alpha || 1}</td>
+                </tr>`;
+        }).join('');
+        
+        return `
+        <div class="group-section">
+            <h2>RGBA 그룹 ${groupIndex + 1} (${group.colors.length}개 색상)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">번호</th>
+                        <th style="width: 200px;">컬러</th>
+                        <th>RGBA 값</th>
                         <th>RGB</th>
                         <th>Alpha</th>
                     </tr>
@@ -482,10 +571,12 @@ function generateHtml(jsonData) {
         <h1>🎨 CSS Color 속성 색상 추출 결과</h1>
         <div class="summary">
             <p><strong>처리된 파일 수:</strong> ${summary.totalFiles}개</p>
+            <p><strong>Hex 색상 수:</strong> ${summary.totalHexColors}개 (그룹: ${summary.hexGroups}개)</p>
+            <p><strong>RGBA 색상 수:</strong> ${summary.totalRgbaColors}개 (그룹: ${summary.rgbaGroups}개)</p>
             <p><strong>전체 색상 수:</strong> ${summary.totalColors}개</p>
-            <p><strong>색상 그룹 수:</strong> ${summary.totalGroups}개</p>
         </div>
-        ${groupSections || '<p style="text-align: center; padding: 40px; color: #999;">추출된 색상이 없습니다.</p>'}
+        ${hexGroupSections || '<p style="text-align: center; padding: 40px; color: #999;">추출된 Hex 색상이 없습니다.</p>'}
+        ${rgbaGroupSections || '<p style="text-align: center; padding: 40px; color: #999;">추출된 RGBA 색상이 없습니다.</p>'}
     </div>
 </body>
 </html>`;
