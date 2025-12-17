@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8.0.7/swiper-bundle.min.css">
+    
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8.0.7/swiper-bundle.min.js"></script>
+    <script src="swipe_base.js"></script>
+    <style>
+        a {
+            display: block;
+        }
+        *:focus {
+            outline: 3px solid red !important;
+        }
+        /* Swiper 컨트롤 박스 스타일 */
+        .comp-carousel {
+            position: relative;
+        }
+
+        .control-box {
+            position: relative !important;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 16px;
+            border-radius: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 이전/다음 버튼 스타일 */
+        .swiper-button-prev,
+        .swiper-button-next {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            margin: 0;
+            background: #ffffff;
+            border: 1px solid #d0d5dd;
+            border-radius: 50%;
+            color: #005df9;
+            transition: all 0.3s ease;
+            top: auto;
+            left: auto;
+            right: auto;
+            bottom: auto;
+        }
+
+        .swiper-button-prev::after,
+        .swiper-button-next::after {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .swiper-button-prev:hover,
+        .swiper-button-next:hover {
+            background: #ebf0ff;
+            border-color: #005df9;
+            transform: scale(1.05);
+        }
+
+        .swiper-button-prev:active,
+        .swiper-button-next:active {
+            transform: scale(0.95);
+        }
+
+        .swiper-button-prev.swiper-button-disabled,
+        .swiper-button-next.swiper-button-disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background: #f0f4fa;
+            border-color: #d0d5dd;
+        }
+
+        /* 자동재생 컨트롤 래퍼 */
+        .autoplay-control-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .autoplay-control-wrap-btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 1px solid #d0d5dd;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .autoplay-control-wrap-btn::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 6px 0 6px 10px;
+            border-color: transparent transparent transparent #005df9;
+            transition: all 0.3s ease;
+        }
+
+        .autoplay-control-wrap-btn[data-aria-autoplay="false"]::before {
+            width: 12px;
+            height: 12px;
+            border: none;
+            background: #005df9;
+            border-radius: 2px;
+        }
+
+        .autoplay-control-wrap-btn:hover {
+            background: #ebf0ff;
+            border-color: #005df9;
+            transform: scale(1.05);
+        }
+
+        .autoplay-control-wrap-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 포커스 스타일 */
+        .swiper-button-prev:focus-visible,
+        .swiper-button-next:focus-visible,
+        .autoplay-control-wrap-btn:focus-visible {
+            outline: 2px solid #005df9;
+            outline-offset: 2px;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .control-box {
+                bottom: 16px;
+                padding: 6px 12px;
+                gap: 8px;
+            }
+
+            .swiper-button-prev,
+            .swiper-button-next,
+            .autoplay-control-wrap-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .swiper-button-prev::after,
+            .swiper-button-next::after {
+                font-size: 14px;
+            }
+        }
+    </style>
+   
+
+</head>
+<body>
+<button>시작</button>
+    <div role="region" 
+    aria-label="슬라이드"
+     class="swiper js-swiper comp-carousel"
+     data-swiper-options="swiperOptions3"
+     data-swiper-instance="mySwiper"
+    >
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <a href="#" class="comp-carousel-e-item">
+                    dsdsaasd
+                </a>
+            </div>
+            <div class="swiper-slide">
+                <a href="#" class="comp-carousel-e-item">
+                    dsdsaasd2222222222222222222
+                </a>
+            </div>
+        </div>
+
+        <div class="control-box">
+            <button class="swiper-button-prev" aria-label="이전 슬라이드"></button>
+            <button class="swiper-button-next" aria-label="다음 슬라이드"></button>
+
+            <div class="autoplay-control-wrap">
+                <button class="autoplay-control-wrap-btn" aria-label="자동 재생" aria-pressed="true">
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var swiperOptions3 = {
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: true,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: false,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        };
+    </script>
+    
+    <a href="">dsdsadsadsa</a>
+</body>
+</html>
