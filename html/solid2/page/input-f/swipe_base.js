@@ -156,12 +156,18 @@ class UISwiper extends BaseComponent {
                 autoPlayBtn.setAttribute("data-aria-autoplay", "true");
 
                 // 포커스가 체크해야 할 영역에 있는지 확인하는 함수
+                // 현재 Swiper 인스턴스 내부의 요소만 체크
                 const isFocusInTargetArea = (element) => {
                     if (!element) return false;
                     
+                    // 현재 Swiper 인스턴스 내부에 있는지 먼저 확인
+                    if (!thisSlide._element.contains(element)) {
+                        return false;
+                    }
+                    
                     // swiper-slide 내부의 a, button 체크
                     const slide = element.closest('.swiper-slide');
-                    if (slide) {
+                    if (slide && thisSlide._element.contains(slide)) {
                         const isLinkOrButton = element.tagName === 'A' || element.tagName === 'BUTTON';
                         if (isLinkOrButton && slide.contains(element)) {
                             return true;
@@ -170,7 +176,7 @@ class UISwiper extends BaseComponent {
                     
                     // control-box 내부의 button, a 체크
                     const controlBox = element.closest('.control-box');
-                    if (controlBox) {
+                    if (controlBox && thisSlide._element.contains(controlBox)) {
                         const isLinkOrButton = element.tagName === 'A' || element.tagName === 'BUTTON';
                         if (isLinkOrButton && controlBox.contains(element)) {
                             return true;
@@ -317,8 +323,17 @@ class UISwiper extends BaseComponent {
                 });
 
                 // document 레벨에서 포커스 변경 감지
-                document.addEventListener("focusin", (e) => {
+                // 현재 Swiper 인스턴스에만 적용되도록 체크
+                const handleDocumentFocusIn = (e) => {
                     const target = e.target;
+                    
+                    // 현재 Swiper 인스턴스 내부의 요소인지 먼저 확인
+                    if (!thisSlide._element.contains(target)) {
+                        // 다른 Swiper의 요소이면 이 인스턴스의 포커스 상태만 확인
+                        checkFocusState();
+                        return;
+                    }
+                    
                     const isInTarget = isFocusInTargetArea(target);
                     
                     if (isInTarget) {
@@ -330,7 +345,12 @@ class UISwiper extends BaseComponent {
                     } else {
                         checkFocusState();
                     }
-                }, true);
+                };
+                
+                document.addEventListener("focusin", handleDocumentFocusIn, true);
+                
+                // dispose 시 이벤트 리스너 제거를 위해 저장
+                this._documentFocusInHandler = handleDocumentFocusIn;
 
                 autoPlayBtn.addEventListener("click", (e) => {
                     let autoPlayState = autoPlayBtn.getAttribute("data-aria-autoplay");
@@ -358,6 +378,11 @@ class UISwiper extends BaseComponent {
     }
 
     dispose() {
+        // document 이벤트 리스너 제거
+        if (this._documentFocusInHandler) {
+            document.removeEventListener("focusin", this._documentFocusInHandler, true);
+            this._documentFocusInHandler = null;
+        }
         super.dispose();
     }
 
