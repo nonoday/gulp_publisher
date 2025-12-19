@@ -45,15 +45,11 @@ function processImageUrls(cssContent) {
     return { content: modifiedContent, count: replacementCount };
 }
 
-// CSS 파일에서 background 관련 속성이 있는지 확인하는 함수
+// CSS 파일에서 background 관련 속성 중 url()이 포함된 것이 있는지 확인하는 함수
 function hasBackgroundProperties(cssContent) {
-    const backgroundPatterns = [
-        /background\s*:/gi,
-        /background-image\s*:/gi,
-        /background-url\s*:/gi
-    ];
-    
-    return backgroundPatterns.some(pattern => pattern.test(cssContent));
+    // background 속성 중 url()이 포함된 것만 확인
+    const urlPattern = /background[^;]*url\s*\(/gi;
+    return urlPattern.test(cssContent);
 }
 
 // CSS 파일에서 background 관련 속성만 추출하는 함수
@@ -77,14 +73,15 @@ function extractBackgroundRules(cssContent) {
             continue;
         }
         
-        // background 관련 속성이 있는지 확인
+        // background 관련 속성 중 url()이 포함된 것이 있는지 확인
         if (hasBackgroundProperties(properties)) {
-            // background 관련 속성만 추출
+            // background 관련 속성 중 url()이 포함된 것만 추출
             const backgroundProps = properties
                 .split(';')
                 .filter(prop => {
                     const trimmed = prop.trim();
-                    return /background/i.test(trimmed);
+                    // background 속성이면서 url()이 포함된 것만
+                    return /background/i.test(trimmed) && /url\s*\(/i.test(trimmed);
                 })
                 .join(';');
             
