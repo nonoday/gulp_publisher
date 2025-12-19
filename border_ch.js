@@ -332,7 +332,17 @@ function replaceHexInCss(cssContent, colorMap) {
             regex = new RegExp(flexiblePattern, 'gi');
         } else {
             // hex 값인 경우 (#cd652c, #CD652C, #Cd652C 등 모든 경우 매칭)
-            regex = new RegExp(`#${hex.replace('#', '')}`, 'gi');
+            // 각 hex 문자를 대소문자 구분 없이 매칭하도록 정규식 생성
+            const hexValue = hex.replace('#', '');
+            const hexPattern = hexValue.split('').map(char => {
+                if (/[0-9]/.test(char)) {
+                    return char;
+                } else {
+                    // 알파벳인 경우 [a-fA-F]로 대소문자 모두 매칭
+                    return `[${char.toLowerCase()}${char.toUpperCase()}]`;
+                }
+            }).join('');
+            regex = new RegExp(`#${hexPattern}\\b`, 'g');
         }
         
         let localCount = 0;
