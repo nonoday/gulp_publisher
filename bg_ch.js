@@ -315,6 +315,11 @@ const colorData = [
         "type": "border",
         "ch": "black-60"
     },
+    {
+        "hex": "white",
+        "type": "background",
+        "ch": "white"
+    },
 ];
 
 // colorData 배열에서 hex -> ch 매핑 생성
@@ -339,7 +344,7 @@ function replaceHexInCss(cssContent, colorMap) {
     let modifiedContent = cssContent;
     let replacementCount = 0;
     
-    // 각 hex/rgba 값에 대해 대소문자 구분 없이 매칭하여 교체
+    // 각 hex/rgba/CSS 키워드 값에 대해 대소문자 구분 없이 매칭하여 교체
     colorMap.forEach((ch, hex) => {
         let regex;
         
@@ -348,7 +353,7 @@ function replaceHexInCss(cssContent, colorMap) {
             const escapedHex = hex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const flexiblePattern = escapedHex.replace(/\s+/g, '\\s*');
             regex = new RegExp(flexiblePattern, 'gi');
-        } else {
+        } else if (hex.startsWith('#')) {
             // hex 값인 경우 (#cd652c, #CD652C, #Cd652C 등 모든 경우 매칭)
             // 각 hex 문자를 대소문자 구분 없이 매칭하도록 정규식 생성
             const hexValue = hex.replace('#', '');
@@ -361,6 +366,10 @@ function replaceHexInCss(cssContent, colorMap) {
                 }
             }).join('');
             regex = new RegExp(`#${hexPattern}\\b`, 'g');
+        } else {
+            // CSS 키워드 색상인 경우 (white, black 등)
+            // 단어 경계를 사용하여 정확히 매칭
+            regex = new RegExp(`\\b${hex}\\b`, 'gi');
         }
         
         let localCount = 0;
