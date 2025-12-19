@@ -33,8 +33,8 @@ const path = require('path');
 
 // background 관련 속성에서만 컬러 값 추출 여부 확인
 function isBackgroundProperty(content, position) {
-    // 컬러 값 앞 300자 범위 내에서 가장 가까운 속성 찾기
-    const startPos = Math.max(0, position - 300);
+    // 컬러 값 앞 500자 범위 내에서 가장 가까운 속성 찾기 (그라데이션을 위해 범위 확대)
+    const startPos = Math.max(0, position - 500);
     const beforeText = content.substring(startPos, position);
     const beforeTextLower = beforeText.toLowerCase();
     
@@ -49,9 +49,28 @@ function isBackgroundProperty(content, position) {
     const propertyText = beforeTextLower.substring(searchStart);
     
     // background 관련 속성만 매칭
-    // background, background-color 등
-    const backgroundPattern = /(?:^|[\s{;])(?:background(?:-color)?)\s*[:=]/;
-    return backgroundPattern.test(propertyText);
+    // background, background-color, background-image 등
+    const backgroundPattern = /(?:^|[\s{;])(?:background(?:-color|-image)?)\s*[:=]/;
+    
+    // background 속성이 있는지 확인
+    if (backgroundPattern.test(propertyText)) {
+        return true;
+    }
+    
+    // 그라데이션 함수 내부인지 확인
+    // linear-gradient, radial-gradient, conic-gradient, repeating-linear-gradient, repeating-radial-gradient
+    const gradientPattern = /(?:linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient)\s*\(/;
+    
+    // 그라데이션 함수가 있고, 그 앞에 background 관련 속성이 있는지 확인
+    if (gradientPattern.test(propertyText)) {
+        // 그라데이션 함수 앞에 background 관련 속성이 있는지 확인
+        const beforeGradient = propertyText.substring(0, propertyText.lastIndexOf('gradient'));
+        if (backgroundPattern.test(beforeGradient)) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 // colorData 배열 정의
