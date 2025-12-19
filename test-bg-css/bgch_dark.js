@@ -89,9 +89,9 @@ function extractBackgroundRules(cssContent) {
                 // 선택자가 여러 개일 수 있으므로 쉼표로 분리
                 const selectors = selector.split(',').map(s => s.trim()).filter(s => s && !s.startsWith('/*'));
                 if (selectors.length > 0) {
-                    // 원래 선택자 그대로 유지 (나중에 전체를 :root[data-theme="dark"]로 감쌀 예정)
-                    const originalSelector = selectors.join(', ');
-                    rules.push(`${originalSelector} {\n    ${backgroundProps};\n}`);
+                    // 각 선택자 앞에 :root[data-theme="dark"] 붙이기 (AOS6 호환성을 위해)
+                    const wrappedSelectors = selectors.map(sel => `:root[data-theme="dark"] ${sel}`).join(', ');
+                    rules.push(`${wrappedSelectors} {\n    ${backgroundProps};\n}`);
                 }
             }
         }
@@ -178,8 +178,8 @@ function processCssFolder(cssFolderPath) {
     // dark.css 파일 생성
     if (allDarkCss.length > 0) {
         const darkCssPath = path.join(cssFolderPath, 'dark.css');
-        // 전체 CSS를 :root[data-theme="dark"]로 한 번만 감싸기
-        const darkCssContent = `:root[data-theme="dark"] {\n${allDarkCss.join('\n')}\n}`;
+        // 각 선택자에 :root[data-theme="dark"]가 이미 붙어있으므로 그대로 출력 (AOS6 호환성)
+        const darkCssContent = allDarkCss.join('\n');
         
         fs.writeFileSync(darkCssPath, darkCssContent, 'utf8');
         
