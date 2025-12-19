@@ -4,7 +4,7 @@ const path = require('path');
 // 이미지 확장자 목록
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'ico', 'bmp', 'tiff', 'tif'];
 
-// CSS 파일에서 이미지 URL을 찾아서 _dark를 붙이는 함수
+// CSS 파일에서 이미지 URL을 찾아서 -darkmode를 붙이는 함수
 function processImageUrls(cssContent) {
     let modifiedContent = cssContent;
     let replacementCount = 0;
@@ -23,10 +23,10 @@ function processImageUrls(cssContent) {
             
             // 이미지 확장자인지 확인
             if (IMAGE_EXTENSIONS.includes(extension)) {
-                // 이미 _dark가 붙어있는지 확인
-                if (!urlTrimmed.includes('_dark.')) {
-                    // 확장자 앞에 _dark 붙이기
-                    const newUrl = urlTrimmed.replace(/\.([a-zA-Z0-9]+)(\?.*)?$/i, '_dark.$1$2');
+                // 이미 -darkmode가 붙어있는지 확인
+                if (!urlTrimmed.includes('-darkmode.')) {
+                    // 확장자 앞에 -darkmode 붙이기
+                    const newUrl = urlTrimmed.replace(/\.([a-zA-Z0-9]+)(\?.*)?$/i, '-darkmode.$1$2');
                     
                     // 원래 따옴표 형식 유지
                     const quoteMatch = match.match(/url\s*\(\s*(['"])/);
