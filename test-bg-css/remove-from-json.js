@@ -6,15 +6,36 @@ const XLSX = require('xlsx');
 const args = process.argv.slice(2);
 
 if (args.length < 2) {
-    console.error('사용법: node remove-from-json.js <json파일경로> <엑셀파일경로> [컬럼번호]');
+    console.error('사용법: node remove-from-json.js <json파일경로> <엑셀파일경로> [컬럼]');
+    console.error('예시: node remove-from-json.js program.json paths.xlsx A');
     console.error('예시: node remove-from-json.js program.json paths.xlsx 1');
-    console.error('컬럼번호는 선택사항이며, 기본값은 1번째 컬럼(A열)입니다.');
+    console.error('컬럼은 선택사항이며, A, B, C 또는 1, 2, 3 형식으로 지정 가능합니다. 기본값은 A열입니다.');
     process.exit(1);
+}
+
+// 엑셀 컬럼명을 인덱스로 변환 (A=0, B=1, ..., Z=25, AA=26, ...)
+function columnNameToIndex(columnName) {
+    if (!columnName) return 0;
+    
+    // 숫자인 경우
+    const num = parseInt(columnName);
+    if (!isNaN(num)) {
+        return num - 1; // 1부터 시작하는 숫자를 0부터 시작하는 인덱스로 변환
+    }
+    
+    // 알파벳인 경우 (A, B, C, ...)
+    const upper = columnName.toUpperCase().trim();
+    let index = 0;
+    for (let i = 0; i < upper.length; i++) {
+        const char = upper.charCodeAt(i) - 65; // A=0, B=1, ...
+        index = index * 26 + (char + 1);
+    }
+    return index - 1; // 0부터 시작하는 인덱스로 변환
 }
 
 const jsonFilePath = args[0];
 const excelFilePath = args[1];
-const columnIndex = args[2] ? parseInt(args[2]) - 1 : 0; // 엑셀 컬럼은 0부터 시작, 사용자는 1부터 입력
+const columnIndex = args[2] ? columnNameToIndex(args[2]) : 0; // A열 또는 1번째 컬럼이 기본값
 
 try {
     // JSON 파일 읽기
@@ -36,6 +57,10 @@ try {
     const sheetName = workbook.SheetNames[0]; // 첫 번째 시트 사용
     const worksheet = workbook.Sheets[sheetName];
     const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+    
+    // 컬럼 정보 출력
+    const columnLabel = args[2] ? args[2].toUpperCase() : 'A';
+    console.log(`   사용 컬럼: ${columnLabel}열 (인덱스: ${columnIndex})`);
 
     // 엑셀에서 경로 리스트 추출 (지정한 컬럼에서)
     const pathList = [];
