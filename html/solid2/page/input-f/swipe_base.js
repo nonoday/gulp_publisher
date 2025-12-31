@@ -298,6 +298,28 @@ class UISwiper extends BaseComponent {
                         hasFocusInTargetArea = true;
                         pausedByFocus = true;
                         stopAutoplay();
+                        
+                        // 포커스가 들어온 요소가 속한 슬라이드를 활성화
+                        const slide = element.closest('.swiper-slide');
+                        if (slide && thisSlide.swiper) {
+                            // 모든 슬라이드 찾기
+                            const allSlides = Array.from(thisSlide._element.querySelectorAll('.swiper-slide'));
+                            const slideIndex = allSlides.indexOf(slide);
+                            
+                            if (slideIndex !== -1) {
+                                // loop 모드인지 확인
+                                if (thisSlide.swiper.params && thisSlide.swiper.params.loop) {
+                                    // loop 모드에서는 실제 인덱스를 계산해야 함
+                                    const realIndex = thisSlide.swiper.slides.indexOf(slide);
+                                    if (realIndex !== -1) {
+                                        thisSlide.swiper.slideToLoop(realIndex);
+                                    }
+                                } else {
+                                    // 일반 모드에서는 직접 인덱스 사용
+                                    thisSlide.swiper.slideTo(slideIndex);
+                                }
+                            }
+                        }
                     });
                     
                     element.addEventListener("focusout", (e) => {
@@ -341,6 +363,28 @@ class UISwiper extends BaseComponent {
                             hasFocusInTargetArea = true;
                             pausedByFocus = true;
                             stopAutoplay();
+                        }
+                        
+                        // swiper-slide 내부 요소에 포커스가 들어온 경우 슬라이드 활성화
+                        const slide = target.closest('.swiper-slide');
+                        if (slide && thisSlide.swiper) {
+                            // 모든 슬라이드 찾기
+                            const allSlides = Array.from(thisSlide._element.querySelectorAll('.swiper-slide'));
+                            const slideIndex = allSlides.indexOf(slide);
+                            
+                            if (slideIndex !== -1) {
+                                // loop 모드인지 확인
+                                if (thisSlide.swiper.params && thisSlide.swiper.params.loop) {
+                                    // loop 모드에서는 실제 인덱스를 계산해야 함
+                                    const realIndex = thisSlide.swiper.slides.indexOf(slide);
+                                    if (realIndex !== -1) {
+                                        thisSlide.swiper.slideToLoop(realIndex);
+                                    }
+                                } else {
+                                    // 일반 모드에서는 직접 인덱스 사용
+                                    thisSlide.swiper.slideTo(slideIndex);
+                                    }
+                            }
                         }
                     } else {
                         checkFocusState();
