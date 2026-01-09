@@ -79,6 +79,7 @@ class Slider extends BaseComponent {
             unit:"",
             showMinMax:false,
             showTooltip:false,
+            tooltipRange:false,
             linkedFormID:null,
             valueArray:null,
             change:null,
@@ -171,8 +172,12 @@ class Slider extends BaseComponent {
             this._element.classList.add("vertical-slider");
         }
 
-        appendHtml(this._element, `<div class="slider-container"></div>`);
-        this._container = this._element.querySelector(".slider-container");
+        // slider-inner div 생성
+        appendHtml(this._element, `<div class="slider-inner"></div>`);
+        this._inner = this._element.querySelector(".slider-inner");
+
+        appendHtml(this._inner, `<div class="slider-container"></div>`);
+        this._container = this._inner.querySelector(".slider-container");
 
         appendHtml(this._container, `<div class="slider-track-bar"></div>`);
 
@@ -189,19 +194,25 @@ class Slider extends BaseComponent {
         //민맥
         if (this.config.showMinMax){
             if (!this.hasValueArray()) {
-                appendHtml(this._element, `<div class="slider-labels"><span class="min">${amountFormat(this.valueMin()) + this.config.unit}</span><span class="max">${amountFormat(this.valueMax()) + this.config.unit}</span></div>`);
+                appendHtml(this._inner, `<div class="slider-labels"><span class="min">${amountFormat(this.valueMin()) + this.config.unit}</span><span class="max">${amountFormat(this.valueMax()) + this.config.unit}</span></div>`);
             } else {
-                appendHtml(this._element, `<div class="slider-labels"><span class="min">${this.config.valueArray[this.valueMin()] + this.config.unit}</span><span class="max">${this.config.valueArray[this.valueMax()] + this.config.unit}</span></div>`);
+                appendHtml(this._inner, `<div class="slider-labels"><span class="min">${this.config.valueArray[this.valueMin()] + this.config.unit}</span><span class="max">${this.config.valueArray[this.valueMax()] + this.config.unit}</span></div>`);
             }
         }
 
         if (this.config.showTooltip){
             this._element.classList.add("has-tooltip");
-            const tooltipValue = this.isRange() ? 
-                (this.config.values ? this.config.values[0] : this.valueMin()) : 
-                (this.config.value !== undefined && this.config.value !== null ? this.config.value : this.valueMin());
-            appendHtml(this._element, `<div class="slider-tooltip">${tooltipValue}</div>`);
+            // tooltipRange 옵션에 따라 다른 구조로 생성
+            if (this.config.tooltipRange) {
+                // 범위값 모드
+                appendHtml(this._element, `<div class="slider-tooltip"><span class="slider-tooltip-first"></span><span class="slider-tooltip-end"></span></div>`);
+            } else {
+                // 단일값 모드
+                appendHtml(this._element, `<div class="slider-tooltip"><span class="slider-tooltip-end"></span></div>`);
+            }
             this._tooltip = this._element.querySelector(".slider-tooltip");
+            this._tooltipFirst = this._element.querySelector(".slider-tooltip-first");
+            this._tooltipEnd = this._element.querySelector(".slider-tooltip-end");
         }
 
     }
@@ -776,10 +787,66 @@ class Slider extends BaseComponent {
         }
 
         if (this.config.showTooltip) {
-            if (!this.hasValueArray()) {
-                this._tooltip.textContent = amountFormat(value) + this.config.unit;
+            if (this.config.tooltipRange) {
+                // 범위값 모드
+                let firstValue, endValue, endValuePercent;
+                
+                if (this.isRange()) {
+                    // 범위 슬라이더인 경우
+                    if (this.config.values && this.config.values.length >= 2) {
+                        firstValue = this.config.values[0];
+                        endValue = this.config.values[1];
+                    } else {
+                        firstValue = this.valueMin();
+                        endValue = this.valueMax();
+                    }
+                    // tooltip 위치를 end 값의 위치로 설정
+                    valueMin = this.valueMin();
+                    valueMax = this.valueMax();
+                    endValuePercent = valueMax !== valueMin ? ((endValue - valueMin) / (valueMax - valueMin)) * 100 : 0;
+                    this._element.style.setProperty("--fill-percent", `${endValuePercent}%`);
+                } else {
+                    // 단일 슬라이더인데 tooltipRange가 true인 경우
+                    // 첫번째 값은 0으로 고정
+                    firstValue = 0;
+                    endValue = value;
+                    // tooltip 위치는 현재 value 위치 사용 (이미 위에서 설정됨)
+                }
+                
+                // 첫번째 값 포맷팅
+                let firstValueText;
+                if (!this.hasValueArray()) {
+                    firstValueText = amountFormat(firstValue) + this.config.unit + "  -";
+                } else {
+                    firstValueText = this.config.valueArray[firstValue] + this.config.unit + "  -";
+                }
+                
+                // 마지막 값 포맷팅
+                let endValueText;
+                if (!this.hasValueArray()) {
+                    endValueText = amountFormat(endValue) + this.config.unit;
+                } else {
+                    endValueText = this.config.valueArray[endValue] + this.config.unit;
+                }
+                
+                if (this._tooltipFirst) {
+                    this._tooltipFirst.textContent = firstValueText;
+                }
+                if (this._tooltipEnd) {
+                    this._tooltipEnd.textContent = endValueText;
+                }
             } else {
-                this._tooltip.textContent = this.config.valueArray[value] + this.config.unit;
+                // 단일값 모드
+                let valueText;
+                if (!this.hasValueArray()) {
+                    valueText = amountFormat(value) + this.config.unit;
+                } else {
+                    valueText = this.config.valueArray[value] + this.config.unit;
+                }
+                
+                if (this._tooltipEnd) {
+                    this._tooltipEnd.textContent = valueText;
+                }
             }
         }
 
