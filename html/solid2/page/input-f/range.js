@@ -19,10 +19,6 @@ function amountFormat(value) {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function setAriaAttrubute(element, attr, value) {
-    element.setAttribute(`aria-${attr}`, value);
-}
-
 function replaceAll(str, find, replace) {
     return str.split(find).join(replace);
 }
@@ -765,6 +761,10 @@ class Slider extends BaseComponent {
         return this.max || this.config.max;
     }
 
+    setAriaAttrubute(element, attr, value) {
+        element.setAttribute(`aria-${attr}`, value);
+    }
+
     updateValue() {
         let valPercent, value, valueMin, valueMax;
 
@@ -782,13 +782,13 @@ class Slider extends BaseComponent {
                 
                 if (i === 0) {
                     this._element.style.setProperty("--fill-start-percent", `${valPercent}%`);
-                    setAriaAttrubute(this.handles[1], "valuemin", value);
+                    this.setAriaAttrubute(this.handles[1], "valuemin", value);
                 }
                 if (i === 1) {
                     this._element.style.setProperty("--fill-end-percent", `${valPercent}%`);
-                    setAriaAttrubute(this.handles[0], "valuemax", value);
+                    this.setAriaAttrubute(this.handles[0], "valuemax", value);
                 }
-                setAriaAttrubute(handle, "valuenow", value);
+                this.setAriaAttrubute(handle, "valuenow", value);
             });
         } else {
             // value가 설정되지 않았으면 기본값 사용
@@ -803,7 +803,7 @@ class Slider extends BaseComponent {
             valPercent = valueMax !== valueMin ? ((value - valueMin) / (valueMax - valueMin)) * 100 : 0;
 
             this._element.style.setProperty("--fill-percent", `${valPercent}%`);
-            setAriaAttrubute(this.handles[0], "valuenow", value);
+            this.setAriaAttrubute(this.handles[0], "valuenow", value);
 
             this._element.style.setProperty("--fill-percent-min", `${(valueMin / valueMax) * 100}%`);
         }
