@@ -206,17 +206,19 @@ class Slider extends BaseComponent {
                     for (let i = 0; i < arrayLength; i++) {
                         const percent = arrayLength > 1 ? (i / (arrayLength - 1)) * 100 : 0;
                         const labelClass = i === 0 ? 'min' : (i === arrayLength - 1 ? 'max' : '');
-                        labelsHtml += `<span class="slider-label-item ${labelClass}" style="left: ${percent}%; transform: translateX(-50%);">${this.config.valueArray[i] + this.config.unit}</span>`;
+                        labelsHtml += `<span class="slider-label-item ${labelClass}" data-index="${i}" style="left: ${percent}%; transform: translateX(-50%);">${this.config.valueArray[i] + this.config.unit}</span>`;
                     }
                 } else {
                     // 첫 번째와 마지막만 표시
-                    labelsHtml += `<span class="slider-label-item min" style="left: 0%; transform: translateX(0);">${this.config.valueArray[0] + this.config.unit}</span>`;
+                    labelsHtml += `<span class="slider-label-item min" data-index="0" style="left: 0%; transform: translateX(0);">${this.config.valueArray[0] + this.config.unit}</span>`;
                     if (arrayLength > 1) {
-                        labelsHtml += `<span class="slider-label-item max" style="left: 100%; transform: translateX(-100%);">${this.config.valueArray[arrayLength - 1] + this.config.unit}</span>`;
+                        labelsHtml += `<span class="slider-label-item max" data-index="${arrayLength - 1}" style="left: 100%; transform: translateX(-100%);">${this.config.valueArray[arrayLength - 1] + this.config.unit}</span>`;
                     }
                 }
                 labelsHtml += '</div>';
                 appendHtml(this._inner, labelsHtml);
+                // 라벨 아이템들을 저장
+                this._labelItems = this._inner.querySelectorAll('.slider-label-item');
             }
         }
 
@@ -868,6 +870,29 @@ class Slider extends BaseComponent {
                     this._tooltipEnd.textContent = valueText;
                 }
             }
+        }
+
+        // valueArray 라벨 클래스 업데이트
+        if (this.hasValueArray() && this._labelItems && this._labelItems.length > 0) {
+            const currentValue = this.isRange() ? this.config.values[1] : this.config.value;
+            
+            Array.from(this._labelItems).forEach((labelItem) => {
+                const itemIndex = parseInt(labelItem.getAttribute('data-index'));
+                
+                // 기존 클래스 제거
+                labelItem.classList.remove('slider-label-item-active', 'slider-label-item-prev', 'slider-label-item-next');
+                
+                if (itemIndex === currentValue) {
+                    // 현재 값
+                    labelItem.classList.add('slider-label-item-active');
+                } else if (itemIndex < currentValue) {
+                    // 이전 값
+                    labelItem.classList.add('slider-label-item-prev');
+                } else {
+                    // 이후 값
+                    labelItem.classList.add('slider-label-item-next');
+                }
+            });
         }
 
         if (this._linkedForm !== null) {
