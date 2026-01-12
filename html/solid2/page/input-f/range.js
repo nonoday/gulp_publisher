@@ -82,6 +82,7 @@ class Slider extends BaseComponent {
             tooltipRange:false,
             linkedFormID:null,
             valueArray:null,
+            showAllValueArrayLabels:true,
             change:null,
             slide:null,
             start:null,
@@ -196,7 +197,26 @@ class Slider extends BaseComponent {
             if (!this.hasValueArray()) {
                 appendHtml(this._inner, `<div class="slider-labels"><span class="min">${amountFormat(this.valueMin()) + this.config.unit}</span><span class="max">${amountFormat(this.valueMax()) + this.config.unit}</span></div>`);
             } else {
-                appendHtml(this._inner, `<div class="slider-labels"><span class="min">${this.config.valueArray[this.valueMin()] + this.config.unit}</span><span class="max">${this.config.valueArray[this.valueMax()] + this.config.unit}</span></div>`);
+                // valueArray 라벨 생성
+                let labelsHtml = '<div class="slider-labels slider-labels-array">';
+                const arrayLength = this.config.valueArray.length;
+                
+                if (this.config.showAllValueArrayLabels) {
+                    // 모든 값에 대해 라벨 생성
+                    for (let i = 0; i < arrayLength; i++) {
+                        const percent = arrayLength > 1 ? (i / (arrayLength - 1)) * 100 : 0;
+                        const labelClass = i === 0 ? 'min' : (i === arrayLength - 1 ? 'max' : '');
+                        labelsHtml += `<span class="slider-label-item ${labelClass}" style="left: ${percent}%; transform: translateX(-50%);">${this.config.valueArray[i] + this.config.unit}</span>`;
+                    }
+                } else {
+                    // 첫 번째와 마지막만 표시
+                    labelsHtml += `<span class="slider-label-item min" style="left: 0%; transform: translateX(0);">${this.config.valueArray[0] + this.config.unit}</span>`;
+                    if (arrayLength > 1) {
+                        labelsHtml += `<span class="slider-label-item max" style="left: 100%; transform: translateX(-100%);">${this.config.valueArray[arrayLength - 1] + this.config.unit}</span>`;
+                    }
+                }
+                labelsHtml += '</div>';
+                appendHtml(this._inner, labelsHtml);
             }
         }
 
