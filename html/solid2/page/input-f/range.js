@@ -25,14 +25,14 @@ function replaceAll(str, find, replace) {
 
 // 간단한 EventHandler
 const EventHandler = {
-    on: function(element, event, handler) {
+    on: function(element, event, handler, options) {
         if (element.addEventListener) {
-            element.addEventListener(event, handler);
+            element.addEventListener(event, handler, options);
         }
     },
-    off: function(element, event, handler) {
+    off: function(element, event, handler, options) {
         if (element.removeEventListener) {
-            element.removeEventListener(event, handler);
+            element.removeEventListener(event, handler, options);
         }
     }
 };
@@ -241,7 +241,7 @@ class Slider extends BaseComponent {
         Array.from(this.handles).forEach((handle) => {
             EventHandler.on(handle, "keydown", this.handleKeydown.bind(this));
             EventHandler.on(handle, "mousedown", this.handleTouchStart.bind(this));
-            EventHandler.on(handle, "touchstart", this.handleTouchStart.bind(this));
+            EventHandler.on(handle, "touchstart", this.handleTouchStart.bind(this), { passive: false });
         });
         if (this._linkedForm) {
             EventHandler.on(this._linkedForm, "change", () => {
@@ -407,15 +407,15 @@ class Slider extends BaseComponent {
                 this.handleTouchEnd(evt);
                 document.removeEventListener("mousemove", this._globalMoveHandler);
                 document.removeEventListener("mouseup", this._globalEndHandler);
-                document.removeEventListener("touchmove", this._globalMoveHandler);
-                document.removeEventListener("touchend", this._globalEndHandler);
+                document.removeEventListener("touchmove", this._globalMoveHandler, { passive: false });
+                document.removeEventListener("touchend", this._globalEndHandler, { passive: false });
             }
         };
         
         document.addEventListener("mousemove", this._globalMoveHandler);
         document.addEventListener("mouseup", this._globalEndHandler);
-        document.addEventListener("touchmove", this._globalMoveHandler);
-        document.addEventListener("touchend", this._globalEndHandler);
+        document.addEventListener("touchmove", this._globalMoveHandler, { passive: false });
+        document.addEventListener("touchend", this._globalEndHandler, { passive: false });
     }
 
     handleTouchEnd(e) {
@@ -915,14 +915,24 @@ class Slider extends BaseComponent {
             let uiForm = this.getParentsByClass(this._linkedForm, "ui-form");
             let uiFormInstance = null;
             if (uiForm !== null) {
-                if(UIEvent.UIForm.getInstance("#testForm") !== null) {
-                    setTimeout(() => {
-                        uiFormInstance = UIEvent.UIForm.getInstance("#testForm");
-                        uiFormInstance.update();
-                    }, 500);
-                }   else {
-                    uiFormInstance = new UIEvent.UIForm("#testForm");
-                    uiFormInstance.update();
+                // UIEvent와 UIForm이 존재하는지 확인
+                if (typeof UIEvent !== 'undefined' && UIEvent && typeof UIEvent.UIForm !== 'undefined' && UIEvent.UIForm) {
+                    const formId = uiForm.id ? `#${uiForm.id}` : "#testForm";
+                    if (typeof UIEvent.UIForm.getInstance === 'function' && UIEvent.UIForm.getInstance(formId) !== null) {
+                        setTimeout(() => {
+                            uiFormInstance = UIEvent.UIForm.getInstance(formId);
+                            if (uiFormInstance && typeof uiFormInstance.update === 'function') {
+                                uiFormInstance.update();
+                            }
+                        }, 500);
+                    } else {
+                        if (typeof UIEvent.UIForm === 'function') {
+                            uiFormInstance = new UIEvent.UIForm(formId);
+                            if (uiFormInstance && typeof uiFormInstance.update === 'function') {
+                                uiFormInstance.update();
+                            }
+                        }
+                    }
                 }
             }
         }
