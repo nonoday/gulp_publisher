@@ -23,20 +23,6 @@ function replaceAll(str, find, replace) {
     return str.split(find).join(replace);
 }
 
-// 간단한 EventHandler
-const EventHandler = {
-    on: function(element, event, handler, options) {
-        if (element.addEventListener) {
-            element.addEventListener(event, handler, options);
-        }
-    },
-    off: function(element, event, handler, options) {
-        if (element.removeEventListener) {
-            element.removeEventListener(event, handler, options);
-        }
-    }
-};
-
 class BaseComponent {
     constructor(element) {
         if (typeof element === 'string') {
@@ -107,6 +93,20 @@ class Slider extends BaseComponent {
             up:38,
             right:39,
             down:40,
+        };
+
+        // Slider 전용 EventHandler
+        this.EventHandler = {
+            on: function(element, event, handler, options) {
+                if (element.addEventListener) {
+                    element.addEventListener(event, handler, options);
+                }
+            },
+            off: function(element, event, handler, options) {
+                if (element.removeEventListener) {
+                    element.removeEventListener(event, handler, options);
+                }
+            }
         };
 
         this.init();
@@ -236,15 +236,15 @@ class Slider extends BaseComponent {
     }
 
     eventBind() {
-        EventHandler.on(this._element, "slide", this.eventSlide.bind(this));
-        EventHandler.on(this._element, "stop", this.eventStop.bind(this));
+        this.EventHandler.on(this._element, "slide", this.eventSlide.bind(this));
+        this.EventHandler.on(this._element, "stop", this.eventStop.bind(this));
         Array.from(this.handles).forEach((handle) => {
-            EventHandler.on(handle, "keydown", this.handleKeydown.bind(this));
-            EventHandler.on(handle, "mousedown", this.handleTouchStart.bind(this));
-            EventHandler.on(handle, "touchstart", this.handleTouchStart.bind(this), { passive: false });
+            this.EventHandler.on(handle, "keydown", this.handleKeydown.bind(this));
+            this.EventHandler.on(handle, "mousedown", this.handleTouchStart.bind(this));
+            this.EventHandler.on(handle, "touchstart", this.handleTouchStart.bind(this), { passive: false });
         });
         if (this._linkedForm) {
-            EventHandler.on(this._linkedForm, "change", () => {
+            this.EventHandler.on(this._linkedForm, "change", () => {
                 let changedValue = parseFloat(replaceAll(this._linkedForm.value, ",", ""));
                 this.value(changedValue);
             });
