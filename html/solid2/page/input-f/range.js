@@ -180,10 +180,13 @@ class Slider extends BaseComponent {
 
 
         if (this.isRange()){
-            appendHtml(this._container, `<div class="slider-handle start" tabindex="0" role="slider" aria-valuemin="${this.valueMin()}" aria-valuemax="${this.config.values[1]}" aria-valuenow="${this.config.values[0]}"></div>`);
-            appendHtml(this._container, `<div class="slider-handle end" tabindex="0" role="slider" aria-valuemin="${this.config.values[0]}" aria-valuemax="${this.valueMax()}" aria-valuenow="${this.config.values[1]}"></div>`);
+            const startLabel = this.getAriaLabel(this.config.values[0], 0, true);
+            const endLabel = this.getAriaLabel(this.config.values[1], 1, true);
+            appendHtml(this._container, `<div class="slider-handle start" tabindex="0" role="slider" aria-orientation="${this.orientation}" aria-valuemin="${this.valueMin()}" aria-valuemax="${this.config.values[1]}" aria-valuenow="${this.config.values[0]}" aria-label="${startLabel}"></div>`);
+            appendHtml(this._container, `<div class="slider-handle end" tabindex="0" role="slider" aria-orientation="${this.orientation}" aria-valuemin="${this.config.values[0]}" aria-valuemax="${this.valueMax()}" aria-valuenow="${this.config.values[1]}" aria-label="${endLabel}"></div>`);
         } else {
-            appendHtml(this._container, `<div class="slider-handle" tabindex="0" role="slider" aria-valuemin="${this.valueMin()}" aria-valuemax="${this.valueMax()}" aria-valuenow="${this.config.value}"></div>`);
+            const label = this.getAriaLabel(this.config.value, 0, false);
+            appendHtml(this._container, `<div class="slider-handle" tabindex="0" role="slider" aria-orientation="${this.orientation}" aria-valuemin="${this.valueMin()}" aria-valuemax="${this.valueMax()}" aria-valuenow="${this.config.value}" aria-label="${label}"></div>`);
         }
 
         this.handles = this._container.querySelectorAll(".slider-handle");
@@ -765,6 +768,30 @@ class Slider extends BaseComponent {
         element.setAttribute(`aria-${attr}`, value);
     }
 
+    getAriaLabel(value, index, isRange) {
+        let label = '';
+        const orientation = this.orientation === 'vertical' ? '수직' : '수평';
+        
+        if (this.hasValueArray()) {
+            const displayValue = this.config.valueArray[value];
+            if (isRange) {
+                const handleType = index === 0 ? '시작' : '끝';
+                label = `${orientation} 범위 슬라이더 ${handleType} 핸들, 현재 값: ${displayValue}${this.config.unit}`;
+            } else {
+                label = `${orientation} 슬라이더, 현재 값: ${displayValue}${this.config.unit}`;
+            }
+        } else {
+            const displayValue = amountFormat(value);
+            if (isRange) {
+                const handleType = index === 0 ? '시작' : '끝';
+                label = `${orientation} 범위 슬라이더 ${handleType} 핸들, 현재 값: ${displayValue}${this.config.unit}`;
+            } else {
+                label = `${orientation} 슬라이더, 현재 값: ${displayValue}${this.config.unit}`;
+            }
+        }
+        return label;
+    }
+
     getParentsByClass(element, className) {
         if (!element || !className) {
             return null;
@@ -803,6 +830,9 @@ class Slider extends BaseComponent {
                     this.setAriaAttrubute(this.handles[0], "valuemax", value);
                 }
                 this.setAriaAttrubute(handle, "valuenow", value);
+                // aria-label 업데이트
+                const label = this.getAriaLabel(value, i, true);
+                this.setAriaAttrubute(handle, "label", label);
             });
         } else {
             // value가 설정되지 않았으면 기본값 사용
@@ -818,6 +848,9 @@ class Slider extends BaseComponent {
 
             this._element.style.setProperty("--fill-percent", `${valPercent}%`);
             this.setAriaAttrubute(this.handles[0], "valuenow", value);
+            // aria-label 업데이트
+            const label = this.getAriaLabel(value, 0, false);
+            this.setAriaAttrubute(this.handles[0], "label", label);
 
             this._element.style.setProperty("--fill-percent-min", `${(valueMin / valueMax) * 100}%`);
         }
