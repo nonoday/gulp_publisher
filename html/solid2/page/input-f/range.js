@@ -23,6 +23,20 @@ function replaceAll(str, find, replace) {
     return str.split(find).join(replace);
 }
 
+function getParentsByClass(element, className) {
+    if (!element || !className) {
+        return null;
+    }
+    let current = element.parentElement;
+    while (current) {
+        if (current.classList && current.classList.contains(className)) {
+            return current;
+        }
+        current = current.parentElement;
+    }
+    return null;
+}
+
 // 간단한 EventHandler
 const EventHandler = {
     on: function(element, event, handler) {
