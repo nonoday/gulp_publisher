@@ -23,20 +23,6 @@ function replaceAll(str, find, replace) {
     return str.split(find).join(replace);
 }
 
-function getParentsByClass(element, className) {
-    if (!element || !className) {
-        return null;
-    }
-    let current = element.parentElement;
-    while (current) {
-        if (current.classList && current.classList.contains(className)) {
-            return current;
-        }
-        current = current.parentElement;
-    }
-    return null;
-}
-
 // 간단한 EventHandler
 const EventHandler = {
     on: function(element, event, handler) {
@@ -779,6 +765,20 @@ class Slider extends BaseComponent {
         element.setAttribute(`aria-${attr}`, value);
     }
 
+    getParentsByClass(element, className) {
+        if (!element || !className) {
+            return null;
+        }
+        let current = element.parentElement;
+        while (current) {
+            if (current.classList && current.classList.contains(className)) {
+                return current;
+            }
+            current = current.parentElement;
+        }
+        return null;
+    }
+
     updateValue() {
         let valPercent, value, valueMin, valueMax;
 
@@ -912,7 +912,7 @@ class Slider extends BaseComponent {
         if (this._linkedForm !== null) {
             const formValue = this.isRange() ? this.config.values[0] : this.config.value;
             this._linkedForm.value = formValue;
-            let uiForm = getParentsByClass(this._linkedForm, "ui-form");
+            let uiForm = this.getParentsByClass(this._linkedForm, "ui-form");
             let uiFormInstance = null;
             if (uiForm !== null) {
                 if(UIEvent.UIForm.getInstance("#testForm") !== null) {
