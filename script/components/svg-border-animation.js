@@ -335,29 +335,56 @@ class AnimatedBorder {
     }
 
     /**
-     * border-radius 값 가져오기
+     * border-radius 값 가져오기 (px 단위로 변환)
      * @param {HTMLElement} container - 컨테이너 요소
-     * @param {number} defaultRadius - 기본 border-radius 값
-     * @returns {number} border-radius 값
+     * @param {number} defaultRadius - 기본 border-radius 값 (px)
+     * @returns {number} border-radius 값 (px)
      */
     getBorderRadius(container, defaultRadius) {
-        // CSS에서 실제 border-radius 값을 읽어서 사용
+        // CSS에서 실제 border-radius 값을 읽어서 px 단위로 변환
         const computedStyle = window.getComputedStyle(container);
         const borderRadius = computedStyle.borderRadius;
         
-        // border-radius 값이 있는 경우 (예: "12px", "12px 8px", "12px 8px 12px 8px" 등)
+        // border-radius 값이 있는 경우
         if (borderRadius && borderRadius !== '0px' && borderRadius !== 'none') {
             // 첫 번째 값을 사용 (모든 모서리가 같지 않은 경우에도 첫 번째 값 사용)
             const firstValue = borderRadius.split(/\s+/)[0];
-            const parsedValue = parseFloat(firstValue);
             
-            // 유효한 숫자 값인 경우 사용
-            if (!isNaN(parsedValue) && parsedValue > 0) {
-                return parsedValue;
+            // px 단위로 변환
+            // computed style은 보통 px로 반환되지만, 다른 단위(rem, em, %)일 수도 있으므로 처리
+            let pxValue = 0;
+            
+            if (firstValue.endsWith('px')) {
+                // 이미 px 단위인 경우
+                pxValue = parseFloat(firstValue);
+            } else if (firstValue.endsWith('rem')) {
+                // rem 단위인 경우 (기본 16px 기준)
+                const remValue = parseFloat(firstValue);
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+                pxValue = remValue * rootFontSize;
+            } else if (firstValue.endsWith('em')) {
+                // em 단위인 경우 (컨테이너의 font-size 기준)
+                const emValue = parseFloat(firstValue);
+                const containerFontSize = parseFloat(computedStyle.fontSize) || 16;
+                pxValue = emValue * containerFontSize;
+            } else if (firstValue.endsWith('%')) {
+                // % 단위인 경우 (컨테이너 크기 기준)
+                const percentValue = parseFloat(firstValue);
+                const rect = container.getBoundingClientRect();
+                const minDimension = Math.min(rect.width, rect.height);
+                pxValue = (percentValue / 100) * minDimension;
+            } else {
+                // 단위가 없거나 숫자만 있는 경우 (이미 px로 간주)
+                pxValue = parseFloat(firstValue);
+            }
+            
+            // 유효한 숫자 값인 경우 px 값 반환
+            if (!isNaN(pxValue) && pxValue > 0) {
+                return pxValue;
             }
         }
         
-        // CSS 값이 없거나 유효하지 않은 경우 기본값 사용
+        // CSS 값이 없거나 유효하지 않은 경우 기본값 사용 (이미 px 단위)
         return defaultRadius;
     }
 
