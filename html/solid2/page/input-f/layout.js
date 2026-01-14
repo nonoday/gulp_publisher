@@ -1,18 +1,9 @@
-(function (global, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        // CommonJS
-        module.exports = factory();
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD
-        define([], factory);
-    } else {
-        // Browser globals
-        global = typeof globalThis !== "undefined" ? globalThis : global || self;
-        const result = factory();
-        global.FocusScrollManager = result.FocusScrollManager;
-        global.FocusScrollManagerApply = result.FocusScrollManagerApply;
-    }
-})(this, function () {
+(function (global,factory) {
+    (global = typeof globalThis !== "undefined" ? globalThis : global || self),
+    (global.UI_AnIMATION = factory(global,Popper));
+})(this, function (global, Popper) {
+    'use strict';
+    
     class FocusScrollManager {
         constructor(element, config) {
             if (typeof element === 'string') {
@@ -190,6 +181,18 @@
         } catch (error) {
             console.error('FocusScrollManagerApply error:', error);
             return false;
+        }
+    }
+
+    // 자동 초기화
+    if (typeof document !== 'undefined') {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                FocusScrollManagerApply();
+            });
+        } else {
+            // DOM이 이미 로드된 경우
+            FocusScrollManagerApply();
         }
     }
 
