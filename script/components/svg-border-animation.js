@@ -341,19 +341,24 @@ class AnimatedBorder {
      * @returns {number} border-radius 값
      */
     getBorderRadius(container, defaultRadius) {
-        // JavaScript 설정값을 우선 사용 (CSS 값 무시)
-        return defaultRadius;
+        // CSS에서 실제 border-radius 값을 읽어서 사용
+        const computedStyle = window.getComputedStyle(container);
+        const borderRadius = computedStyle.borderRadius;
         
-        // 기존 코드 (CSS 값 우선 사용)
-        // const computedStyle = window.getComputedStyle(container);
-        // const borderRadius = computedStyle.borderRadius;
-        // 
-        // // px 단위로 변환
-        // if (borderRadius && borderRadius !== '0px') {
-        //     return parseFloat(borderRadius);
-        // }
-        // 
-        // return defaultRadius;
+        // border-radius 값이 있는 경우 (예: "12px", "12px 8px", "12px 8px 12px 8px" 등)
+        if (borderRadius && borderRadius !== '0px' && borderRadius !== 'none') {
+            // 첫 번째 값을 사용 (모든 모서리가 같지 않은 경우에도 첫 번째 값 사용)
+            const firstValue = borderRadius.split(/\s+/)[0];
+            const parsedValue = parseFloat(firstValue);
+            
+            // 유효한 숫자 값인 경우 사용
+            if (!isNaN(parsedValue) && parsedValue > 0) {
+                return parsedValue;
+            }
+        }
+        
+        // CSS 값이 없거나 유효하지 않은 경우 기본값 사용
+        return defaultRadius;
     }
 
     /**
