@@ -3,17 +3,7 @@
  * sticky 영역에 가려지지 않도록 포커스된 요소의 스크롤을 자동 조정
  */
 
-class BaseComponent {
-    constructor(element) {
-        if (typeof element === 'string') {
-            element = document.querySelector(element);
-        }
-        this.element = element;
-        this._element = element;
-    }
-}
-
-class FocusScrollManager extends BaseComponent {
+class FocusScrollManager {
     constructor(element, config) {
         if (typeof element === 'string') {
             element = document.querySelector(element);
@@ -27,7 +17,7 @@ class FocusScrollManager extends BaseComponent {
             return {};
         }
 
-        super(element);
+        this.element = element;
         
         this.config = {
             // sticky 영역 선택자 (상단)
@@ -202,13 +192,10 @@ function FocusScrollManagerApply(element, config) {
     }
 }
 
-const index = {
-    FocusScrollManager,
-    FocusScrollManagerApply
-}
+const index = FocusScrollManager;
 
 // 모듈 내보내기 (ES6 모듈 환경에서)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = index;
+    module.exports = FocusScrollManager;
 }
  
