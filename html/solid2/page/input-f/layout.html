@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        * {margin:0;padding:0;}
+        body {
+            overflow: unset;
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+        .solid-wrap {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        .header-area {
+            position: sticky;
+            left:0;
+            right:0;
+            top:0;
+            z-index: 100;
+            height: 56px;
+            background-color: #f0f4fa;
+        }
+        .content-area {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .content-area-inner {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            flex:1;
+        }
+        .content-area-footer {
+            position: sticky;
+            left:0;
+            right:0;
+            bottom:0;
+            z-index: 100;
+        }
+    </style>
+
+</head>
+<body>
+   <div class="solid-wrap">
+    <div class="header-area">상단</div>
+    <div class="content-area">
+        <div class="content-area-inner">
+
+
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+            <button>테스트</button><br />
+        </div>
+        <div class="content-area-footer">하단
+
+        </div>
+    </div>
+
+   </div>
+   
+   <script>
+   /**
+    * 포커스된 요소가 sticky 영역에 가려지지 않도록 스크롤 조정
+    */
+   (function() {
+       // sticky 영역 선택자 (상단)
+       const stickyTopSelector = '.header-area';
+       // sticky 영역 선택자 (하단)
+       const stickyBottomSelector = '.content-area-footer';
+       // 포커스 가능한 요소 선택자
+       const focusableSelector = 'button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+       
+       // 포커스 이벤트 처리
+       document.addEventListener('focusin', function(e) {
+           const focusedElement = e.target;
+           
+           // 포커스 가능한 요소인지 확인
+           if (!focusedElement.matches || !focusedElement.matches(focusableSelector)) {
+               return;
+           }
+           
+           // 약간의 지연을 두고 처리 (브라우저의 기본 스크롤 동작 후 실행)
+           setTimeout(function() {
+               adjustScrollForSticky(focusedElement);
+           }, 10);
+       });
+       
+       /**
+        * sticky 영역을 고려한 스크롤 조정
+        */
+       function adjustScrollForSticky(element) {
+           if (!element || !element.getBoundingClientRect) {
+               return;
+           }
+           
+           const elementRect = element.getBoundingClientRect();
+           const elementTop = elementRect.top;
+           const elementBottom = elementRect.bottom;
+           const padding = 8; // 여유 공간 (px)
+           
+           // 상단 sticky 영역 확인
+           const stickyTop = document.querySelector(stickyTopSelector);
+           if (stickyTop) {
+               const stickyTopRect = stickyTop.getBoundingClientRect();
+               const stickyTopHeight = stickyTopRect.height;
+               const stickyTopBottom = stickyTopRect.bottom;
+               
+               // 포커스된 요소가 sticky 영역에 가려지는지 확인 (viewport 기준)
+               if (elementTop < stickyTopBottom) {
+                   // 스크롤을 조정해서 포커스된 요소가 sticky 영역 아래에 보이도록
+                   const targetScrollTop = window.scrollY + elementTop - stickyTopHeight - padding;
+                   window.scrollTo({
+                       top: Math.max(0, targetScrollTop), // 음수 방지
+                       behavior: 'smooth'
+                   });
+                   return; // 상단 처리 후 종료
+               }
+           }
+           
+           // 하단 sticky 영역 확인
+           const stickyBottom = document.querySelector(stickyBottomSelector);
+           if (stickyBottom) {
+               const stickyBottomRect = stickyBottom.getBoundingClientRect();
+               const stickyBottomTop = stickyBottomRect.top;
+               const viewportHeight = window.innerHeight;
+               
+               // 포커스된 요소가 sticky 영역에 가려지는지 확인
+               if (elementBottom > stickyBottomTop) {
+                   // 스크롤을 조정해서 포커스된 요소가 sticky 영역 위에 보이도록
+                   const scrollOffset = elementBottom - stickyBottomTop + padding;
+                   window.scrollTo({
+                       top: window.scrollY + scrollOffset,
+                       behavior: 'smooth'
+                   });
+               }
+           }
+       }
+   })();
+   </script>
+</body>
+</html>
