@@ -222,7 +222,14 @@ class ScrollTabs extends BaseComponent {
                             panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                             panel.hidden = false;
                         });
-                        SolidTabsUpdate(this._element.querySelectorAll(`#${panelId} . tabs-container`));
+                        try {
+                            const tabsContainers = panel.querySelectorAll(".tabs-container");
+                            if (tabsContainers.length > 0) {
+                                SolidTabsUpdate(tabsContainers);
+                            }
+                        } catch (e) {
+                            console.warn("Failed to update tabs:", e);
+                        }
                     }
                 }
             } else {
@@ -282,7 +289,14 @@ class ScrollTabs extends BaseComponent {
                     panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                     panel.hidden = false;
                 });
-                UIEvent.SolidTabsUpdate(this._element.querySelectorAll(`#${panelId} . tabs-container`));
+                try {
+                    const tabsContainers = panel.querySelectorAll(".tabs-container");
+                    if (tabsContainers.length > 0) {
+                        SolidTabsUpdate(tabsContainers);
+                    }
+                } catch (e) {
+                    console.warn("Failed to update tabs:", e);
+                }
             }
         }
 
