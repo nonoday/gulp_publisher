@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+   <style>
+    * {margin:0;padding:0;}
+    .scroll-tabs {
+        position: relative;
+        display: flex;
+        overflow-x: auto;
+        border-bottom:1px solid #000;
+        scrollbar-width:none;
+        padding:0 20px;
+        white-space: nowrap;
+        width: auto !important;
+    }
+    .scroll-tabs .tab {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size:16px;
+        color:#eee;
+    }
+    .scroll-tabs .tab +.tab {margin-left:20px;}
+    .scroll-tabs .tab[aria-selected=true] {
+        color:#000;
+        font-weight: 700;
+    }
+    .sub-tabs.depth2 {
+        position: relative;
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 0 20px;
+        white-space: nowrap;
+        z-index: 1
+        ;
+    }
+    .sub-tabs.depth2 .tab {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        color: #eee;
+    }
+    .sub-tabs.depth2 .tab + .tab {
+        margin-left: 20px;
+    }
+    .sub-tabs.depth2 .tab[aria-selected=true] {
+        color: #000;
+        font-weight: 700;
+    }
+    .depth1-wrap {position: relative;
+        margin-left: calc(20px * -1);
+        margin-right: calc(20px * -1)}
+    .depth2-wrap {position: relative;
+        margin-left: calc(20px * -1);
+        margin-right: calc(20px * -1)}
+    .next {position: absolute;right:0;top:0; z-index:10;background-color: #3399ff;}
+    .prev {position: absolute;left:0;top:0; z-index:10; background-color: #3399ff;}
+   </style>
+</head>
+<body>
+    
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="tabscroll.js"></script>
+    
+    <div style="width: 100%;padding:50px;">
+        
+        <div class="scroll-tabs-container initiated">
+            <div class="scroll-tabs depth1">
+                <button class="tab" aria-selected="true" aria-controls="panel1" id="tab1-1">탭탭탭1</button>
+                <button class="tab" aria-selected="false" aria-controls="panel2" id="tab1-2">탭스트스트2</button>
+                <button class="tab" aria-selected="false" aria-controls="panel3" id="tab1-3">탭스스3</button>
+                <button class="tab" aria-selected="false" aria-controls="panel4" id="tab1-4">탭탭4</button>
+                <button class="tab" aria-selected="false" aria-controls="panel5" id="tab1-5">탭스트스트5</button>
+                <button class="tab" aria-selected="false" aria-controls="panel6" id="tab1-6">탭스6</button>
+                <button class="tab" aria-selected="false" aria-controls="panel7" id="tab1-7">탭이7</button>
+                <button class="tab" aria-selected="false" aria-controls="panel8" id="tab1-8">탭팔8</button>
+            </div>
+            <div class="sub-tabs-list">
+                <div class="sub-tabs depth2 active" role="tablist" id="sub1">
+                    <button class="tab" aria-selected="true" aria-controls="panel1-1" id="tab2-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel1-2" id="tab2-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel1-3" id="tab2-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel1-4" id="tab2-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel1-5" id="tab2-5">탭5</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel1-6" id="tab2-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel1-7" id="tab2-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel1-8" id="tab2-8">탭8</button>
+                </div>
+                <div class="sub-tabs depth2" role="tablist" id="sub2">
+                    <button class="tab" aria-selected="true" aria-controls="panel2-1" id="tab2-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel2-2" id="tab2-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel2-3" id="tab2-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel2-4" id="tab2-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel2-5" id="tab2-5">탭5</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel2-6" id="tab2-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel2-7" id="tab2-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel2-8" id="tab2-8">탭8</button>         
+                </div>
+                <div class="sub-tabs depth2" role="tablist" id="sub3">
+                    <button class="tab" aria-selected="true" aria-controls="panel3-1" id="tab3-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel3-2" id="tab3-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel3-3" id="tab3-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel3-4" id="tab3-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel3-5" id="tab3-5">탭5</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel3-6" id="tab3-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel3-7" id="tab3-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel3-8" id="tab3-8">탭8</button>
+                </div>
+                <div class="sub-tabs depth2" role="tablist" id="sub4">
+                    <button class="tab" aria-selected="true" aria-controls="panel4-1" id="tab4-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel4-2" id="tab4-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel4-3" id="tab4-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel4-4" id="tab4-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel4-5" id="tab4-5">탭5</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel4-6" id="tab4-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel4-7" id="tab4-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel4-8" id="tab4-8">탭8</button>
+                </div>
+                <div class="sub-tabs depth2" role="tablist" id="sub5">
+                    <button class="tab" aria-selected="true" aria-controls="panel5-1" id="tab5-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel5-2" id="tab5-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel5-3" id="tab5-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel5-4" id="tab5-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel5-5" id="tab5-5">탭5</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel5-6" id="tab5-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel5-7" id="tab5-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel5-8" id="tab5-8">탭8</button>
+                </div>
+                <div class="sub-tabs depth2" role="tablist" id="sub6">
+                    <button class="tab" aria-selected="true" aria-controls="panel6-1" id="tab6-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel6-2" id="tab6-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel6-3" id="tab6-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel6-4" id="tab6-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel6-5" id="tab6-5">탭5</button> 
+                    <button class="tab" aria-selected="false" aria-controls="panel6-6" id="tab6-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel6-7" id="tab6-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel6-8" id="tab6-8">탭8</button>
+                </div>
+                <div class="sub-tabs depth2" role="tablist" id="sub7">
+                    <button class="tab" aria-selected="true" aria-controls="panel7-1" id="tab7-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel7-2" id="tab7-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel7-3" id="tab7-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel7-4" id="tab7-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel7-5" id="tab7-5">탭5</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel7-6" id="tab7-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel7-7" id="tab7-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel7-8" id="tab7-8">탭8</button>
+                </div>
+                <div class="sub-tabs depth2" role="tablist" id="sub8">
+                    <button class="tab" aria-selected="true" aria-controls="panel8-1" id="tab8-1">탭1</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel8-2" id="tab8-2">탭2</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel8-3" id="tab8-3">탭3</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel8-4" id="tab8-4">탭4</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel8-5" id="tab8-5">탭5</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel8-6" id="tab8-6">탭6</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel8-7" id="tab8-7">탭7</button>
+                    <button class="tab" aria-selected="false" aria-controls="panel8-8" id="tab8-8">탭8</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
