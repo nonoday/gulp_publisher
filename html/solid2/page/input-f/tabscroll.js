@@ -119,6 +119,11 @@ class ScrollTabs extends BaseComponent {
             t.hidden = true;
         });
 
+        // 초기 상태: 모든 패널을 hidden 처리
+        this._panels.forEach((p) => {
+            p.hidden = true;
+        });
+
         // 스크롤 네비게이션은 항상 설정
         this._setupScrollNav(this._depth1);
         this._setupAllDepth2ScrollNav();
@@ -218,8 +223,10 @@ class ScrollTabs extends BaseComponent {
             });
 
 
+            // 모든 패널을 먼저 hidden 처리
+            this._panels.forEach((p) => (p.hidden = true));
+
             if (!targetId) {
-                this._panels.forEach((p) => (p.hidden = true));
                 const panelId = tab.getAttribute("aria-controls");
 
                 if (panelId) {
@@ -260,10 +267,14 @@ class ScrollTabs extends BaseComponent {
         if (!this._element) return;
 
         this._subDetp2Tabs = this._element.querySelector("#" + targetId);
+        
+        // 전체 패널을 먼저 hidden 처리
+        const allPanels = this._element.querySelectorAll("[role='tabpanel']");
+        allPanels.forEach((p) => (p.hidden = true));
+        
         this._subPanels = this._element.querySelectorAll("[role='tabpanel']");
         
         if(!this._subDetp2Tabs) {
-            this._subPanels.forEach((p) => (p.hidden = true));
             return;
         }
 
