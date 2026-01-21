@@ -114,6 +114,11 @@ class ScrollTabs extends BaseComponent {
 
         if(!this._tabs.length) return;
 
+        // 초기 상태: 모든 탭을 hidden 처리
+        this._tabs.forEach((t) => {
+            t.hidden = true;
+        });
+
         // 스크롤 네비게이션은 항상 설정
         this._setupScrollNav(this._depth1);
         this._setupAllDepth2ScrollNav();
@@ -197,9 +202,11 @@ class ScrollTabs extends BaseComponent {
             this._tabs.forEach((t) => {
                 t.setAttribute("aria-selected", "false");
                 t.classList.remove("active");
+                t.hidden = true;
             });
             tab.setAttribute("aria-selected", "true");
             tab.classList.add("active");
+            tab.hidden = false;
 
             const depth2Group = this._element.querySelectorAll(".depth2");
 
@@ -261,6 +268,12 @@ class ScrollTabs extends BaseComponent {
         }
 
         this._subTabs = this._subDetp2Tabs.querySelectorAll(".tab");
+        
+        // 초기 상태: 모든 탭을 hidden 처리
+        this._subTabs.forEach((t) => {
+            t.hidden = true;
+        });
+        
         this._setupScrollNav(this._subDetp2Tabs);
 
         this._dept2EventBind();
@@ -276,9 +289,11 @@ class ScrollTabs extends BaseComponent {
         this._subTabs.forEach((t) => {
             t.setAttribute("aria-selected", "false");
             t.classList.remove("active");
+            t.hidden = true;
         });
         tab.setAttribute("aria-selected", "true");
         tab.classList.add("active");
+        tab.hidden = false;
 
         this._subPanels.forEach((p) => (p.hidden = true));
         const panelId = tab.getAttribute("aria-controls");
@@ -332,9 +347,11 @@ class ScrollTabs extends BaseComponent {
                 allTabs.forEach((t) => {
                     t.setAttribute("aria-selected", "false");
                     t.classList.remove("active");
+                    t.hidden = true;
                 });
                 tab.setAttribute("aria-selected", "true");
                 tab.classList.add("active");
+                tab.hidden = false;
                 this._scrollTabIntoViewCenter(tab);
             });
         });
@@ -399,6 +416,12 @@ class ScrollTabs extends BaseComponent {
     _setupAllDepth2ScrollNav() {
         const depth2Lists = this._element.querySelectorAll(".sub-tabs.depth2");
         depth2Lists.forEach((list) => {
+            // 초기 상태: 모든 탭을 hidden 처리
+            const tabs = list.querySelectorAll(".tab");
+            tabs.forEach((t) => {
+                t.hidden = true;
+            });
+            
             this._setupScrollNav(list);
             this._dept2EventBindForContainer(list);
         });
