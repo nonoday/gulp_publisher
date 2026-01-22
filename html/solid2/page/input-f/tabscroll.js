@@ -109,7 +109,16 @@ class ScrollTabs extends BaseComponent {
         if(!this._depth1) return;
 
         this._tabs = this._depth1.querySelectorAll(".tab");
-        this._panels = this._depth1.querySelectorAll("[role='tabpanel']:not(.ui-tab-inner [role='tabpanel'])");
+        // 1뎁스 패널만 선택 (panel-list의 직접 자식만, 2뎁스 패널은 제외)
+        const panelList = this._element.querySelector(".panel-list");
+        if (panelList) {
+            // 직접 자식만 선택 (2뎁스 패널 제외)
+            this._panels = Array.from(panelList.children).filter(child => 
+                child.getAttribute("role") === "tabpanel"
+            );
+        } else {
+            this._panels = [];
+        }
         this._indicator = this._depth1.querySelector(".tab-indicator");
 
         if(!this._tabs.length) return;
@@ -117,11 +126,6 @@ class ScrollTabs extends BaseComponent {
         // 초기 상태: 모든 탭을 hidden 처리
         this._tabs.forEach((t) => {
             t.hidden = true;
-        });
-
-        // 초기 상태: 모든 패널을 hidden 처리
-        this._panels.forEach((p) => {
-            p.hidden = true;
         });
 
         // 스크롤 네비게이션은 항상 설정
@@ -135,13 +139,31 @@ class ScrollTabs extends BaseComponent {
             
             //초기활성화
             const activeTab = this._element.querySelector(".tab[aria-selected='true']") || this._tabs[0]
-            this._initIndicator(activeTab);
-            this._activateDepth1Tab(activeTab);
+            if (activeTab) {
+                this._initIndicator(activeTab);
+                this._activateDepth1Tab(activeTab);
+            }
         } else {
             // indicator가 없어도 탭 클릭 이벤트는 동작하도록
             this._dept1EventBind();
             const activeTab = this._element.querySelector(".tab[aria-selected='true']") || this._tabs[0]
-            if(activeTab) this._activateDepth1Tab(activeTab);
+            if(activeTab) {
+                this._activateDepth1Tab(activeTab);
+            } else {
+                // 초기 활성 탭이 없어도 모든 depth2-wrap은 숨김 처리
+                const depth2Wraps = this._element.querySelectorAll(".depth2-wrap");
+                depth2Wraps.forEach((wrap) => {
+                    wrap.style.display = "none";
+                });
+                // 1뎁스 탭 케이스의 경우 모든 패널 숨김
+                const panelList = this._element.querySelector(".panel-list");
+                if (panelList && !this._depth2) {
+                    const allPanels = Array.from(panelList.children);
+                    allPanels.forEach((panel) => {
+                        panel.hidden = true;
+                    });
+                }
+            }
         }
     }
 
@@ -172,19 +194,24 @@ class ScrollTabs extends BaseComponent {
     }
 
     _initIndicator(tab) {
+        if (!this._indicator || !tab) return;
 
         const prevTransition = this._indicator.style.transition;
         this._indicator.style.transition = "none";
 
         window.addEventListener("load", () => {
             requestAnimationFrame(() => {
+                if (!tab || !tab.parentNode) return;
+                
                 tab.parentNode.scrollLeft = tab.parentNode.scrollLeft || 0;
 
                 if(this._defaultTab) tab = this._defaultTab;
                 this._moveDepth1Indicator(tab);
 
                 requestAnimationFrame(() => {
-                    this._indicator.style.transition = prevTransition || '';
+                    if (this._indicator) {
+                        this._indicator.style.transition = prevTransition || '';
+                    }
                 });
             });
         });
@@ -214,17 +241,34 @@ class ScrollTabs extends BaseComponent {
             tab.hidden = false;
 
             const depth2Group = this._element.querySelectorAll(".depth2");
+            const depth2Wraps = this._element.querySelectorAll(".depth2-wrap");
+
+            // 모든 depth2-wrap을 display:none 처리
+            depth2Wraps.forEach((wrap) => {
+                wrap.style.display = "none";
+            });
 
             depth2Group.forEach((group) => {
                 group.classList.remove("active");
                 if (group.id === targetId){
                     group.classList.add("active");
+                    // 활성화된 depth2의 wrap만 display:block 처리
+                    const wrap = group.closest(".depth2-wrap");
+                    if (wrap) {
+                        wrap.style.display = "block";
+                    }
                 }            
             });
 
 
-            // 모든 패널을 먼저 hidden 처리
-            this._panels.forEach((p) => (p.hidden = true));
+            // 모든 1뎁스 패널 컨테이너 숨김 처리
+            const panelList = this._element.querySelector(".panel-list");
+            if (panelList) {
+                const allDepth1Panels = Array.from(panelList.children);
+                allDepth1Panels.forEach((panel) => {
+                    panel.hidden = true;
+                });
+            }
 
             if (!targetId) {
                 const panelId = tab.getAttribute("aria-controls");
@@ -232,9 +276,10 @@ class ScrollTabs extends BaseComponent {
                 if (panelId) {
                     const panel = this._element.querySelector("#" + panelId);
                     if (panel) {
+                        // 패널을 먼저 보여주기
+                        panel.hidden = false;
                         requestAnimationFrame(() => {
                             panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
-                            panel.hidden = false;
                         });
                         try {
                             const tabsContainers = panel.querySelectorAll(".tabs-container");
@@ -247,14 +292,23 @@ class ScrollTabs extends BaseComponent {
                     }
                 }
             } else {
+                // 1뎁스 패널 컨테이너 먼저 보여주기
+                const depth1PanelId = targetId + "-panel";
+                const depth1Panel = this._element.querySelector("#" + depth1PanelId);
+                if (depth1Panel) {
+                    depth1Panel.hidden = false;
+                }
+                
                 this._initDepth2(targetId);
             }
 
             let timer = null;
             clearTimeout(timer);
-            timer = setTimeout(() => {
-                this._initIndicator(tab);
-            }, 150);
+            if (this._indicator) {
+                timer = setTimeout(() => {
+                    this._initIndicator(tab);
+                }, 150);
+            }
 
             // active 탭을 화면 중앙으로 스크롤
             requestAnimationFrame(() => {
@@ -268,30 +322,47 @@ class ScrollTabs extends BaseComponent {
 
         this._subDetp2Tabs = this._element.querySelector("#" + targetId);
         
-        // 전체 패널을 먼저 hidden 처리
-        const allPanels = this._element.querySelectorAll("[role='tabpanel']");
-        allPanels.forEach((p) => (p.hidden = true));
-        
-        this._subPanels = this._element.querySelectorAll("[role='tabpanel']");
-        
         if(!this._subDetp2Tabs) {
             return;
         }
 
+        // 1뎁스 패널 컨테이너는 그대로 유지 (숨기지 않음)
+        const depth1PanelId = targetId + "-panel";
+        const depth1Panel = this._element.querySelector("#" + depth1PanelId);
+        
+        if (!depth1Panel) {
+            console.warn("Depth1 panel not found:", depth1PanelId);
+            return;
+        }
+        
+        // 해당 1뎁스 패널 안의 2뎁스 패널들만 찾기
+        const subPanelsInContainer = depth1Panel.querySelectorAll("[role='tabpanel']");
+        
+        // 2뎁스 패널들만 hidden 처리
+        subPanelsInContainer.forEach((p) => (p.hidden = true));
+        
+        this._subPanels = subPanelsInContainer;
+
         this._subTabs = this._subDetp2Tabs.querySelectorAll(".tab");
+        
+        if (!this._subTabs || this._subTabs.length === 0) {
+            return;
+        }
         
         // 초기 상태: 모든 탭을 hidden 처리
         this._subTabs.forEach((t) => {
             t.hidden = true;
         });
-        
+
         this._setupScrollNav(this._subDetp2Tabs);
 
         this._dept2EventBind();
 
         const activeTab = this._subDetp2Tabs.querySelector(".tab[aria-selected='true']") || this._subTabs[0];
 
-        if (activeTab) this._activateDepth2Tab(activeTab);
+        if (activeTab) {
+            this._activateDepth2Tab(activeTab);
+        }
 
     }
 
@@ -306,7 +377,11 @@ class ScrollTabs extends BaseComponent {
         tab.classList.add("active");
         tab.hidden = false;
 
-        this._subPanels.forEach((p) => (p.hidden = true));
+        // 2뎁스 패널들만 숨김 처리
+        if (this._subPanels && this._subPanels.length > 0) {
+            this._subPanels.forEach((p) => (p.hidden = true));
+        }
+        
         const panelId = tab.getAttribute("aria-controls");
         if (panelId) {
             const panel = this._element.querySelector("#" + panelId);
@@ -435,13 +510,17 @@ class ScrollTabs extends BaseComponent {
             
             this._setupScrollNav(list);
             this._dept2EventBindForContainer(list);
+            
+            // depth2-wrap 초기 상태: display:none 처리
+            const wrap = list.closest(".depth2-wrap");
+            if (wrap) {
+                wrap.style.display = "none";
+            }
         });
     }
 
     _setupScrollNav(container) {
-        if (!container || container.dataset.scrollNavInit === "true") return;
-
-        container.dataset.scrollNavInit = "true";
+        if (!container) return;
 
         // 컨테이너를 relative로 설정
         const containerStyle = getComputedStyle(container);
@@ -449,33 +528,66 @@ class ScrollTabs extends BaseComponent {
             container.style.position = "relative";
         }
 
-        const prevBtn = this._createScrollNavButton("prev");
-        const nextBtn = this._createScrollNavButton("next");
-
         // depth1-wrap / depth2-wrap으로 컨테이너(depth1·depth2)를 밖에서 감싸고, prev·next를 래퍼 안에 배치
         const wrapClass = container.classList.contains("depth1") ? "depth1-wrap" : "depth2-wrap";
-        const wrap = document.createElement("div");
-        wrap.className = wrapClass;
-
-        const parent = container.parentElement;
-        if (parent) {
-            parent.insertBefore(wrap, container);
-            wrap.appendChild(container);
+        
+        // 이미 wrap이 있는지 확인
+        let wrap = container.closest("." + wrapClass);
+        
+        if (!wrap) {
+            // wrap이 없으면 새로 생성
+            wrap = document.createElement("div");
+            wrap.className = wrapClass;
+            
+            const parent = container.parentElement;
+            if (parent) {
+                parent.insertBefore(wrap, container);
+                wrap.appendChild(container);
+            } else {
+                wrap.appendChild(container);
+            }
+        }
+        
+        // prev/next 버튼이 이미 있는지 확인
+        let prevBtn = wrap.querySelector(".scroll-nav.prev");
+        let nextBtn = wrap.querySelector(".scroll-nav.next");
+        
+        if (!prevBtn) {
+            prevBtn = this._createScrollNavButton("prev");
             wrap.insertBefore(prevBtn, wrap.firstChild);
+            // 이벤트 리스너는 한 번만 추가
+            prevBtn.addEventListener("click", () => this._scrollByDevice(container, -1));
+        }
+        
+        if (!nextBtn) {
+            nextBtn = this._createScrollNavButton("next");
             wrap.appendChild(nextBtn);
-        } else {
-            wrap.appendChild(prevBtn);
-            wrap.appendChild(container);
-            wrap.appendChild(nextBtn);
+            // 이벤트 리스너는 한 번만 추가
+            nextBtn.addEventListener("click", () => this._scrollByDevice(container, 1));
         }
 
-        prevBtn.addEventListener("click", () => this._scrollByDevice(container, -1));
-        nextBtn.addEventListener("click", () => this._scrollByDevice(container, 1));
-
+        // 스크롤 상태 업데이트는 항상 설정 (중복 방지를 위해 이벤트 리스너 제거 후 추가)
         const update = () => this._updateScrollNavState(container, prevBtn, nextBtn, wrap);
+        
+        // 기존 이벤트 리스너 제거 후 추가 (중복 방지)
+        const scrollHandler = container._scrollNavUpdateHandler;
+        if (scrollHandler) {
+            container.removeEventListener("scroll", scrollHandler, { passive: true });
+        }
+        container._scrollNavUpdateHandler = update;
         container.addEventListener("scroll", update, { passive: true });
-        window.addEventListener("resize", update);
+        
+        const resizeHandler = window._scrollNavResizeHandlers || (window._scrollNavResizeHandlers = new Map());
+        if (!resizeHandler.has(container)) {
+            const resizeUpdate = () => update();
+            resizeHandler.set(container, resizeUpdate);
+            window.addEventListener("resize", resizeUpdate);
+        }
+        
         requestAnimationFrame(update);
+        
+        // 초기화 완료 표시
+        container.dataset.scrollNavInit = "true";
     }
 
     _createScrollNavButton(direction) {
