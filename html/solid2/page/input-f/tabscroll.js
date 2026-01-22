@@ -230,15 +230,20 @@ class ScrollTabs extends BaseComponent {
     _activateDepth1Tab(tab) {
         if(tab) {
             const targetId = tab.dataset.target;
+            
+            // fixed-width-tab 클래스가 있는 경우 depth1 탭 상태 변경 없이 depth2만 활성화
+            const isFixedWidth = this._element.classList.contains("fixed-width-tab");
 
-            this._tabs.forEach((t) => {
-                t.setAttribute("aria-selected", "false");
-                t.classList.remove("active");
-                t.hidden = true;
-            });
-            tab.setAttribute("aria-selected", "true");
-            tab.classList.add("active");
-            tab.hidden = false;
+            if (!isFixedWidth) {
+                this._tabs.forEach((t) => {
+                    t.setAttribute("aria-selected", "false");
+                    t.classList.remove("active");
+                    t.hidden = true;
+                });
+                tab.setAttribute("aria-selected", "true");
+                tab.classList.add("active");
+                tab.hidden = false;
+            }
 
             const depth2Group = this._element.querySelectorAll(".depth2");
             const depth2Wraps = this._element.querySelectorAll(".depth2-wrap");
@@ -261,13 +266,15 @@ class ScrollTabs extends BaseComponent {
             });
 
 
-            // 모든 1뎁스 패널 컨테이너 숨김 처리
-            const panelList = this._element.querySelector(".panel-list");
-            if (panelList) {
-                const allDepth1Panels = Array.from(panelList.children);
-                allDepth1Panels.forEach((panel) => {
-                    panel.hidden = true;
-                });
+            // fixed-width-tab이 아닌 경우에만 1뎁스 패널 컨테이너 숨김 처리
+            if (!isFixedWidth) {
+                const panelList = this._element.querySelector(".panel-list");
+                if (panelList) {
+                    const allDepth1Panels = Array.from(panelList.children);
+                    allDepth1Panels.forEach((panel) => {
+                        panel.hidden = true;
+                    });
+                }
             }
 
             if (!targetId) {
