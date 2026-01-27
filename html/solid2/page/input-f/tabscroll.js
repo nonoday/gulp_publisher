@@ -1,11 +1,11 @@
 /**
- * BasicTabs 사용법
+ * SolidBasicTabs 사용법
  * 
  * 1. 인스턴스 가져오기
  *    const container = document.querySelector('.ui-basic-tab');
  *    const basicTabs = container._basicTabsInstance; // 자동 초기화된 경우
  *    // 또는 직접 생성:
- *    const basicTabs = new BasicTabs(container);
+ *    const basicTabs = new SolidBasicTabs(container);
  * 
  * 2. activateTab(tabElement, focus) - 탭을 활성화하고 선택적으로 포커스 설정
  *    예시:
@@ -397,10 +397,10 @@ const SolidTabsUpdate = (elements) => {
         instance._update();
     });
     Object.values(scrollTabsElements ?? []).map((tabElement) => {
-        let scrollInstance = BasicTabs.getInstance(tabElement);
+        let scrollInstance = SolidBasicTabs.getInstance(tabElement);
         if(scrollInstance === null) {
             tabElement.classList.remove("initiated");
-            scrollInstance = new BasicTabs(tabElement);
+            scrollInstance = new SolidBasicTabs(tabElement);
         }
         scrollInstance._initDepth1();
     });
@@ -422,7 +422,7 @@ function getElement(element) {
     return element;
 }
 
-class BasicTabs extends BaseComponent {
+class SolidBasicTabs extends BaseComponent {
     
     constructor(element) {
         const el = getElement(element);
@@ -1187,7 +1187,7 @@ function initBasicTabs() {
     const basicTabsContainers = document.querySelectorAll(".ui-basic-tab");
     basicTabsContainers.forEach((container) => {
         if (!container.dataset.basicTabsInitialized) {
-            const instance = new BasicTabs(container);
+            const instance = new SolidBasicTabs(container);
             container._basicTabsInstance = instance; // 인스턴스 저장
             container.dataset.basicTabsInitialized = "true";
         }
@@ -1203,7 +1203,7 @@ window.addEventListener("load", initBasicTabs);
 
 
 const index  = {
-    BasicTabs,
+    SolidBasicTabs,
     SolidTabsUpdate,
     ScrollNavigation
 }
