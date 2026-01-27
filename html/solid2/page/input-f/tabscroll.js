@@ -1,40 +1,40 @@
 /**
- * ScrollTabs 사용법
+ * BasicTabs 사용법
  * 
  * 1. 인스턴스 가져오기
- *    const container = document.querySelector('.scroll-tabs-container');
- *    const scrollTabs = container._scrollTabsInstance; // 자동 초기화된 경우
+ *    const container = document.querySelector('.ui-basic-tab');
+ *    const basicTabs = container._basicTabsInstance; // 자동 초기화된 경우
  *    // 또는 직접 생성:
- *    const scrollTabs = new ScrollTabs(container);
+ *    const basicTabs = new BasicTabs(container);
  * 
  * 2. activateTab(tabElement, focus) - 탭을 활성화하고 선택적으로 포커스 설정
  *    예시:
  *    const tabElement = document.querySelector('#tab1-1');
- *    scrollTabs.activateTab(tabElement); // 포커스 없이 활성화
- *    scrollTabs.activateTab(tabElement, true); // 포커스와 함께 활성화
+ *    basicTabs.activateTab(tabElement); // 포커스 없이 활성화
+ *    basicTabs.activateTab(tabElement, true); // 포커스와 함께 활성화
  * 
  * 3. setDefaultTab(id) - 기본적으로 보여지는 탭 설정 (id로 설정)
  *    예시:
- *    scrollTabs.setDefaultTab('tab1-1'); // depth1 탭 설정
- *    scrollTabs.setDefaultTab('sub-tab1-1'); // depth2 탭 설정 (해당 depth1도 자동 활성화)
+ *    basicTabs.setDefaultTab('tab1-1'); // depth1 탭 설정
+ *    basicTabs.setDefaultTab('sub-tab1-1'); // depth2 탭 설정 (해당 depth1도 자동 활성화)
  * 
  * 4. setTabsTitle(id, value) - 원하는 탭 버튼 텍스트 변경
  *    예시:
- *    scrollTabs.setTabsTitle('tab1-1', '새로운 탭 이름');
- *    scrollTabs.setTabsTitle('sub-tab1-1', '새로운 서브 탭 이름');
+ *    basicTabs.setTabsTitle('tab1-1', '새로운 탭 이름');
+ *    basicTabs.setTabsTitle('sub-tab1-1', '새로운 서브 탭 이름');
  * 
  * 5. setTabDisabled(id, isDisabled) - 원하는 탭 버튼 disabled 처리
  *    예시:
- *    scrollTabs.setTabDisabled('tab1-1', true); // 탭 비활성화
- *    scrollTabs.setTabDisabled('tab1-1', false); // 탭 활성화
+ *    basicTabs.setTabDisabled('tab1-1', true); // 탭 비활성화
+ *    basicTabs.setTabDisabled('tab1-1', false); // 탭 활성화
  * 
  * 6. resetDepth2(targetId) - depth2 탭을 첫 번째 탭으로 초기화
  *    예시:
- *    scrollTabs.resetDepth2(); // 현재 활성화된 depth2를 첫 번째 탭으로 초기화
- *    scrollTabs.resetDepth2('sub1'); // 특정 depth2 그룹을 첫 번째 탭으로 초기화
+ *    basicTabs.resetDepth2(); // 현재 활성화된 depth2를 첫 번째 탭으로 초기화
+ *    basicTabs.resetDepth2('sub1'); // 특정 depth2 그룹을 첫 번째 탭으로 초기화
  * 
  * 7. HTML에서 depth2 자동 초기화 옵션 설정
- *    <div class="scroll-tabs-container" data-reset-depth2="true">
+ *    <div class="ui-basic-tab" data-reset-depth2="true">
  *        <!-- depth1 탭 클릭 시 해당 depth2가 자동으로 첫 번째 탭으로 초기화됩니다 -->
  *    </div>
  */
@@ -151,8 +151,8 @@ class ScrollNavigation {
         this.prevBtn = this.wrap.querySelector("." + this.options.prevButtonClass.split(' ')[0] + ".prev");
         this.nextBtn = this.wrap.querySelector("." + this.options.nextButtonClass.split(' ')[0] + ".next");
 
-        // depth1이나 depth2 요소 찾기
-        const depthElement = this.wrap.querySelector(".depth1") || this.wrap.querySelector(".depth2");
+        // ui-scroll-tab 요소 찾기
+        const depthElement = this.wrap.querySelector(".ui-scroll-tab");
         
         if (!depthElement) return;
 
@@ -361,13 +361,13 @@ const SolidTabsUpdate = (elements) => {
 
     if(typeof elements == "undefined") {
         basicTabsElements = document.querySelectorAll(".tabs-container");
-        scrollTabsElements = document.querySelectorAll(".scroll-tabs-container");
+        scrollTabsElements = document.querySelectorAll(".ui-basic-tab");
         scrollspyTabsElements = document.querySelectorAll(".ui-scrollspy");
     } else if(typeof elements == "object" && typeof elements.length == "number") {
        Object.values(elements ?? []).map((el) => {
         if (el.classList.contains("tabs-container")) {
             basicTabsElements = [...(basicTabsElements ?? []), el];
-        } else if (el.classList.contains("scroll-tabs-container")) {
+        } else if (el.classList.contains("ui-basic-tab")) {
             scrollTabsElements = [...(scrollTabsElements ?? []), el];
         } else if (el.classList.contains("ui-scrollspy")) {
             scrollspyTabsElements = [...(scrollspyTabsElements ?? []), el];
@@ -378,7 +378,7 @@ const SolidTabsUpdate = (elements) => {
         Object.values(targets ?? []).map((el) => {
             if (el.classList.contains("tabs-container")) {
                 basicTabsElements = [...(basicTabsElements ?? []), el];
-            } else if (el.classList.contains("scroll-tabs-container")) {
+            } else if (el.classList.contains("ui-basic-tab")) {
                 scrollTabsElements = [...(scrollTabsElements ?? []), el];
             } else if (el.classList.contains("ui-scrollspy")) {
                 scrollspyTabsElements = [...(scrollspyTabsElements ?? []), el];
@@ -397,10 +397,10 @@ const SolidTabsUpdate = (elements) => {
         instance._update();
     });
     Object.values(scrollTabsElements ?? []).map((tabElement) => {
-        let scrollInstance = scrollTabs.getInstance(tabElement);
+        let scrollInstance = BasicTabs.getInstance(tabElement);
         if(scrollInstance === null) {
             tabElement.classList.remove("initiated");
-            scrollInstance = new scrollTabs(tabElement);
+            scrollInstance = new BasicTabs(tabElement);
         }
         scrollInstance._initDepth1();
     });
@@ -422,15 +422,15 @@ function getElement(element) {
     return element;
 }
 
-class ScrollTabs extends BaseComponent {
+class BasicTabs extends BaseComponent {
     
     constructor(element) {
         const el = getElement(element);
         
         // 이미 초기화된 경우 중복 초기화 방지
-        if(el && el.dataset.scrollTabsInitialized === "true") {
+        if(el && el.dataset.basicTabsInitialized === "true") {
             // 이미 저장된 인스턴스 반환
-            return el._scrollTabsInstance || {};
+            return el._basicTabsInstance || {};
         }
 
         super(element);
@@ -446,7 +446,14 @@ class ScrollTabs extends BaseComponent {
     }
 
     static get NAME() {
-        return "scrollTabs";
+        return "basicTabs";
+    }
+
+    static getInstance(element) {
+        if (typeof element === 'string') {
+            element = document.querySelector(element);
+        }
+        return element?._basicTabsInstance || null;
     }
 
     _initDepth1() {
@@ -455,7 +462,7 @@ class ScrollTabs extends BaseComponent {
 
         if(!this._depth1) return;
 
-        this._tabs = this._depth1.querySelectorAll(".tab");
+        this._tabs = this._depth1.querySelectorAll(".ui-basic-tab");
         // 1뎁스 패널만 선택 (panel-list의 직접 자식만, 2뎁스 패널은 제외)
         const panelList = this._element.querySelector(".panel-list");
         if (panelList) {
@@ -498,7 +505,7 @@ class ScrollTabs extends BaseComponent {
         this._bindScroll();
         
         //초기활성화
-        const activeTab = this._element.querySelector(".tab[aria-selected='true']") || this._tabs[0]
+        const activeTab = this._element.querySelector(".ui-basic-tab[aria-selected='true']") || this._tabs[0]
         if (activeTab) {
             this._initIndicator(activeTab);
             this._activateDepth1Tab(activeTab);
@@ -558,7 +565,10 @@ class ScrollTabs extends BaseComponent {
                     (t) => t.getAttribute("aria-selected") === "true"
                 );
                 if (activeTab) {
-                    this._moveDepth1Indicator(activeTab);
+                    this._moveDepth1Indicator(activeTab);                    // indicator 위치 업데이트
+                    if (this._depth1 && this._depth1._scrollNavigation) {
+                        this._depth1._scrollNavigation._updateState();
+                    }                                                                  // 스크롤 네비게이션 상태 업데이트
                 }
             });
         });
@@ -669,7 +679,7 @@ class ScrollTabs extends BaseComponent {
                             panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                         });
                         try {
-                            const tabsContainers = panel.querySelectorAll(".tabs-container");
+                            const tabsContainers = panel.querySelectorAll(".tabs-container, .ui-basic-tab");
                             if (tabsContainers.length > 0) {
                                 SolidTabsUpdate(tabsContainers);
                             }
@@ -756,7 +766,7 @@ class ScrollTabs extends BaseComponent {
         const depth2Group = this._element.querySelector("#" + targetId);
         if (!depth2Group) return;
         
-        const tabs = depth2Group.querySelectorAll(".tab");
+        const tabs = depth2Group.querySelectorAll(".ui-basic-tab");
         if (!tabs || tabs.length === 0) return;
         
         // 모든 탭을 비활성화 상태로 리셋
@@ -796,7 +806,7 @@ class ScrollTabs extends BaseComponent {
         
         this._subPanels = subPanelsInContainer;
 
-        this._subTabs = this._subDetp2Tabs.querySelectorAll(".tab");
+        this._subTabs = this._subDetp2Tabs.querySelectorAll(".ui-basic-tab");
         
         if (!this._subTabs || this._subTabs.length === 0) {
             return;
@@ -811,7 +821,7 @@ class ScrollTabs extends BaseComponent {
 
         this._dept2EventBind();
 
-        const activeTab = this._subDetp2Tabs.querySelector(".tab[aria-selected='true']") || this._subTabs[0];
+        const activeTab = this._subDetp2Tabs.querySelector(".ui-basic-tab[aria-selected='true']") || this._subTabs[0];
 
         if (activeTab) {
             this._activateDepth2Tab(activeTab);
@@ -893,12 +903,12 @@ class ScrollTabs extends BaseComponent {
     }
 
     _dept2EventBindForContainer(container) {
-        const subTabs = container.querySelectorAll(".tab");
+        const subTabs = container.querySelectorAll(".ui-basic-tab");
         if (!subTabs.length) return;
         
         subTabs.forEach((tab) => {
             tab.addEventListener("click", () => {
-                const allTabs = container.querySelectorAll(".tab");
+                const allTabs = container.querySelectorAll(".ui-basic-tab");
                 allTabs.forEach((t) => {
                     t.setAttribute("aria-selected", "false");
                     t.classList.remove("active");
@@ -931,7 +941,7 @@ class ScrollTabs extends BaseComponent {
                                 panel.hidden = false;
                             });
                             try {
-                                const tabsContainers = panel.querySelectorAll(".tabs-container");
+                                const tabsContainers = panel.querySelectorAll(".tabs-container, .ui-basic-tab");
                                 if (tabsContainers.length > 0) {
                                     SolidTabsUpdate(tabsContainers);
                                 }
@@ -1018,7 +1028,7 @@ class ScrollTabs extends BaseComponent {
         const depth2Lists = this._element.querySelectorAll(".sub-tabs.depth2");
         depth2Lists.forEach((list) => {
             // 초기 상태: 모든 탭을 hidden 처리
-            const tabs = list.querySelectorAll(".tab");
+            const tabs = list.querySelectorAll(".ui-basic-tab");
             tabs.forEach((t) => {
                 t.hidden = true;
             });
@@ -1068,6 +1078,12 @@ class ScrollTabs extends BaseComponent {
      */
     activateTab(tab, focus = false) {
         if (!tab) return;
+        
+        // ui-basic-tab 클래스를 가진 요소만 동작
+        if (!tab.classList.contains("ui-basic-tab")) {
+            console.warn("activateTab: ui-basic-tab 클래스를 가진 요소만 활성화할 수 있습니다.");
+            return;
+        }
 
         // 탭이 depth1인지 depth2인지 확인
         const isDepth1 = tab.closest(".depth1") !== null;
@@ -1167,13 +1183,13 @@ class ScrollTabs extends BaseComponent {
 
 
 // 초기화 함수
-function initScrollTabs() {
-    const scrollTabsContainers = document.querySelectorAll(".scroll-tabs-container");
-    scrollTabsContainers.forEach((container) => {
-        if (!container.dataset.scrollTabsInitialized) {
-            const instance = new ScrollTabs(container);
-            container._scrollTabsInstance = instance; // 인스턴스 저장
-            container.dataset.scrollTabsInitialized = "true";
+function initBasicTabs() {
+    const basicTabsContainers = document.querySelectorAll(".ui-basic-tab");
+    basicTabsContainers.forEach((container) => {
+        if (!container.dataset.basicTabsInitialized) {
+            const instance = new BasicTabs(container);
+            container._basicTabsInstance = instance; // 인스턴스 저장
+            container.dataset.basicTabsInitialized = "true";
         }
     });
 
@@ -1182,12 +1198,12 @@ function initScrollTabs() {
 }
 
 // DOMContentLoaded와 load 이벤트에서 초기화
-document.addEventListener("DOMContentLoaded", initScrollTabs);
-window.addEventListener("load", initScrollTabs);
+document.addEventListener("DOMContentLoaded", initBasicTabs);
+window.addEventListener("load", initBasicTabs);
 
 
 const index  = {
-    ScrollTabs,
+    BasicTabs,
     SolidTabsUpdate,
     ScrollNavigation
 }
