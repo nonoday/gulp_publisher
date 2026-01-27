@@ -462,7 +462,7 @@ class SolidBasicTabs extends BaseComponent {
 
         if(!this._depth1) return;
 
-        this._tabs = this._depth1.querySelectorAll(".ui-basic-tab");
+        this._tabs = this._depth1.querySelectorAll(".solid-tab");
         // 1뎁스 패널만 선택 (panel-list의 직접 자식만, 2뎁스 패널은 제외)
         const panelList = this._element.querySelector(".panel-list");
         if (panelList) {
@@ -505,7 +505,7 @@ class SolidBasicTabs extends BaseComponent {
         this._bindScroll();
         
         //초기활성화
-        const activeTab = this._element.querySelector(".ui-basic-tab[aria-selected='true']") || this._tabs[0]
+        const activeTab = this._element.querySelector(".solid-tab[aria-selected='true']") || this._tabs[0]
         if (activeTab) {
             this._initIndicator(activeTab);
             this._activateDepth1Tab(activeTab);
@@ -766,7 +766,7 @@ class SolidBasicTabs extends BaseComponent {
         const depth2Group = this._element.querySelector("#" + targetId);
         if (!depth2Group) return;
         
-        const tabs = depth2Group.querySelectorAll(".ui-basic-tab");
+        const tabs = depth2Group.querySelectorAll(".solid-tab");
         if (!tabs || tabs.length === 0) return;
         
         // 모든 탭을 비활성화 상태로 리셋
@@ -806,7 +806,7 @@ class SolidBasicTabs extends BaseComponent {
         
         this._subPanels = subPanelsInContainer;
 
-        this._subTabs = this._subDetp2Tabs.querySelectorAll(".ui-basic-tab");
+        this._subTabs = this._subDetp2Tabs.querySelectorAll(".solid-tab");
         
         if (!this._subTabs || this._subTabs.length === 0) {
             return;
@@ -821,7 +821,7 @@ class SolidBasicTabs extends BaseComponent {
 
         this._dept2EventBind();
 
-        const activeTab = this._subDetp2Tabs.querySelector(".ui-basic-tab[aria-selected='true']") || this._subTabs[0];
+        const activeTab = this._subDetp2Tabs.querySelector(".solid-tab[aria-selected='true']") || this._subTabs[0];
 
         if (activeTab) {
             this._activateDepth2Tab(activeTab);
@@ -861,7 +861,7 @@ class SolidBasicTabs extends BaseComponent {
                     panel.hidden = false;
                 });
                 try {
-                    const tabsContainers = panel.querySelectorAll(".tabs-container");
+                    const tabsContainers = panel.querySelectorAll(".tabs-container, .ui-basic-tab");
                     if (tabsContainers.length > 0) {
                         SolidTabsUpdate(tabsContainers);
                     }
@@ -903,12 +903,12 @@ class SolidBasicTabs extends BaseComponent {
     }
 
     _dept2EventBindForContainer(container) {
-        const subTabs = container.querySelectorAll(".ui-basic-tab");
+        const subTabs = container.querySelectorAll(".solid-tab");
         if (!subTabs.length) return;
         
         subTabs.forEach((tab) => {
             tab.addEventListener("click", () => {
-                const allTabs = container.querySelectorAll(".ui-basic-tab");
+                const allTabs = container.querySelectorAll(".solid-tab");
                 allTabs.forEach((t) => {
                     t.setAttribute("aria-selected", "false");
                     t.classList.remove("active");
@@ -1028,7 +1028,7 @@ class SolidBasicTabs extends BaseComponent {
         const depth2Lists = this._element.querySelectorAll(".sub-tabs.depth2");
         depth2Lists.forEach((list) => {
             // 초기 상태: 모든 탭을 hidden 처리
-            const tabs = list.querySelectorAll(".ui-basic-tab");
+            const tabs = list.querySelectorAll(".solid-tab");
             tabs.forEach((t) => {
                 t.hidden = true;
             });
@@ -1079,9 +1079,10 @@ class SolidBasicTabs extends BaseComponent {
     activateTab(tab, focus = false) {
         if (!tab) return;
         
-        // ui-basic-tab 클래스를 가진 요소만 동작
-        if (!tab.classList.contains("ui-basic-tab")) {
-            console.warn("activateTab: ui-basic-tab 클래스를 가진 요소만 활성화할 수 있습니다.");
+        // 외부 컨테이너에 ui-basic-tab 클래스가 있는지 확인
+        const container = tab.closest(".ui-basic-tab");
+        if (!container) {
+            console.warn("activateTab: ui-basic-tab 컨테이너 내부의 탭만 활성화할 수 있습니다.");
             return;
         }
 
