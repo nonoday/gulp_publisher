@@ -110,6 +110,11 @@ class ScrollNavigation {
         // wrap 생성 또는 찾기
         this._setupWrap();
 
+        // scroll-nav-wrap에 is-arrow 클래스가 없으면 동작하지 않음
+        if (!this.wrap) {
+            return;
+        }
+
         // 버튼 생성 및 추가
         this._setupButtons();
 
@@ -139,6 +144,11 @@ class ScrollNavigation {
                 this.wrap = null;
             }
         }
+        
+        // scroll-nav-wrap에 is-arrow 클래스가 없으면 동작하지 않음
+        if (this.wrap && !this.wrap.classList.contains("is-arrow")) {
+            this.wrap = null;
+        }
     }
 
     /**
@@ -146,6 +156,11 @@ class ScrollNavigation {
      */
     _setupButtons() {
         if (!this.wrap) return;
+        
+        // scroll-nav-wrap에 is-arrow 클래스가 있을 때만 버튼 생성
+        if (!this.wrap.classList.contains("is-arrow")) {
+            return;
+        }
         
         // prev/next 버튼이 이미 있는지 확인
         this.prevBtn = this.wrap.querySelector("." + this.options.prevButtonClass.split(' ')[0] + ".prev");
@@ -355,19 +370,15 @@ class ScrollNavigation {
 
 
 const SolidTabsUpdate = (elements) => {
-    let basicTabsElements = null;
     let scrollTabsElements = null;
     let scrollspyTabsElements = null;
 
     if(typeof elements == "undefined") {
-        basicTabsElements = document.querySelectorAll(".tabs-container");
         scrollTabsElements = document.querySelectorAll(".ui-basic-tab");
         scrollspyTabsElements = document.querySelectorAll(".ui-scrollspy");
     } else if(typeof elements == "object" && typeof elements.length == "number") {
        Object.values(elements ?? []).map((el) => {
-        if (el.classList.contains("tabs-container")) {
-            basicTabsElements = [...(basicTabsElements ?? []), el];
-        } else if (el.classList.contains("ui-basic-tab")) {
+        if (el.classList.contains("ui-basic-tab")) {
             scrollTabsElements = [...(scrollTabsElements ?? []), el];
         } else if (el.classList.contains("ui-scrollspy")) {
             scrollspyTabsElements = [...(scrollspyTabsElements ?? []), el];
@@ -376,9 +387,7 @@ const SolidTabsUpdate = (elements) => {
     } else if(typeof elements == "string") {
         const targets = document.querySelectorAll(elements);
         Object.values(targets ?? []).map((el) => {
-            if (el.classList.contains("tabs-container")) {
-                basicTabsElements = [...(basicTabsElements ?? []), el];
-            } else if (el.classList.contains("ui-basic-tab")) {
+            if (el.classList.contains("ui-basic-tab")) {
                 scrollTabsElements = [...(scrollTabsElements ?? []), el];
             } else if (el.classList.contains("ui-scrollspy")) {
                 scrollspyTabsElements = [...(scrollspyTabsElements ?? []), el];
@@ -388,14 +397,6 @@ const SolidTabsUpdate = (elements) => {
         return false;
     }
 
-    Object.values(basicTabsElements ?? []).map((tabElement) => {
-        let instance = BasicTabs.getInstance(tabElement);
-        if (instance === null) {
-            tabElement.classList.remove("initiated");
-            instance = new BasicTabs(tabElement);
-        }
-        instance._update();
-    });
     Object.values(scrollTabsElements ?? []).map((tabElement) => {
         let scrollInstance = SolidBasicTabs.getInstance(tabElement);
         if(scrollInstance === null) {
@@ -446,7 +447,7 @@ class SolidBasicTabs extends BaseComponent {
     }
 
     static get NAME() {
-        return "basicTabs";
+        return "SolidBasicTabs";
     }
 
     static getInstance(element) {
@@ -474,18 +475,27 @@ class SolidBasicTabs extends BaseComponent {
             this._panels = [];
         }
         
-        // tab-indicator가 없으면 자동으로 생성
-        this._indicator = this._depth1.querySelector(".tab-indicator");
-        if (!this._indicator) {
-            this._indicator = document.createElement("span");
-            this._indicator.className = "tab-indicator";
-            this._indicator.style.transition = "transform 0.3s ease, width 0.3s ease";
-            this._depth1.appendChild(this._indicator);
-        } else {
-            // 기존 indicator가 있으면 transition 설정
-            if (!this._indicator.style.transition) {
+        // solid-text-tabs 또는 solid-chip-tabs 클래스가 있으면 인디케이터 생성하지 않음
+        const hasTextTabsClass = this._element.classList.contains("solid-text-tabs");
+        const hasChipTabsClass = this._element.classList.contains("solid-chip-tabs");
+        const shouldSkipIndicator = hasTextTabsClass || hasChipTabsClass;
+        
+        // tab-indicator가 없으면 자동으로 생성 (solid-text-tabs 또는 solid-chip-tabs가 아닌 경우만)
+        if (!shouldSkipIndicator) {
+            this._indicator = this._depth1.querySelector(".tab-indicator");
+            if (!this._indicator) {
+                this._indicator = document.createElement("span");
+                this._indicator.className = "tab-indicator";
                 this._indicator.style.transition = "transform 0.3s ease, width 0.3s ease";
+                this._depth1.appendChild(this._indicator);
+            } else {
+                // 기존 indicator가 있으면 transition 설정
+                if (!this._indicator.style.transition) {
+                    this._indicator.style.transition = "transform 0.3s ease, width 0.3s ease";
+                }
             }
+        } else {
+            this._indicator = null;
         }
 
         if(!this._tabs.length) return;
@@ -499,15 +509,19 @@ class SolidBasicTabs extends BaseComponent {
         this._setupScrollNav(this._depth1);
         this._setupAllDepth2ScrollNav();
 
-        // indicator 기능 활성화
+        // indicator 기능 활성화 (solid-text-tabs 또는 solid-chip-tabs가 아닌 경우만)
         this._dept1EventBind();
-        this._bindResize();
-        this._bindScroll();
+        if (!shouldSkipIndicator) {
+            this._bindResize();
+            this._bindScroll();
+        }
         
         //초기활성화
         const activeTab = this._element.querySelector(".solid-tab[aria-selected='true']") || this._tabs[0]
         if (activeTab) {
-            this._initIndicator(activeTab);
+            if (!shouldSkipIndicator) {
+                this._initIndicator(activeTab);
+            }
             this._activateDepth1Tab(activeTab);
         } else {
             // 초기 활성 탭이 없어도 모든 scroll-nav-wrap은 숨김 처리
@@ -679,7 +693,7 @@ class SolidBasicTabs extends BaseComponent {
                             panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                         });
                         try {
-                            const tabsContainers = panel.querySelectorAll(".tabs-container, .ui-basic-tab");
+                            const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                             if (tabsContainers.length > 0) {
                                 SolidTabsUpdate(tabsContainers);
                             }
