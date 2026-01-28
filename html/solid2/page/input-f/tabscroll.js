@@ -476,13 +476,7 @@ class SolidBasicTabs extends BaseComponent {
             if (!this._indicator) {
                 this._indicator = document.createElement("span");
                 this._indicator.className = "tab-indicator";
-                this._indicator.style.transition = "transform 0.3s ease, width 0.3s ease";
                 this._depth1.appendChild(this._indicator);
-            } else {
-                // 기존 indicator가 있으면 transition 설정
-                if (!this._indicator.style.transition) {
-                    this._indicator.style.transition = "transform 0.3s ease, width 0.3s ease";
-                }
             }
         } else {
             this._indicator = null;
@@ -581,7 +575,7 @@ class SolidBasicTabs extends BaseComponent {
     _initIndicator(tab) {
         if (!this._indicator || !tab) return;
 
-        const prevTransition = this._indicator.style.transition;
+        // transition을 임시로 제거하여 즉시 위치 설정
         this._indicator.style.transition = "none";
 
         requestAnimationFrame(() => {
@@ -594,7 +588,8 @@ class SolidBasicTabs extends BaseComponent {
 
             requestAnimationFrame(() => {
                 if (this._indicator) {
-                    this._indicator.style.transition = prevTransition || '';
+                    // transition 복원 (CSS로 처리되므로 빈 문자열로 제거)
+                    this._indicator.style.transition = "";
                 }
             });
         });
@@ -608,11 +603,6 @@ class SolidBasicTabs extends BaseComponent {
         const parentRect = tab.parentNode.getBoundingClientRect();
         const x = tabRect.left - parentRect.left;
         const w = tabRect.width;
-        
-        // transition이 설정되어 있지 않으면 설정
-        if (!this._indicator.style.transition || this._indicator.style.transition === "none") {
-            this._indicator.style.transition = "transform 0.3s ease, width 0.3s ease";
-        }
         
         this._indicator.style.width = w + "px";
         this._indicator.style.transform = `translateX(${x + tab.parentNode.scrollLeft}px)`;
