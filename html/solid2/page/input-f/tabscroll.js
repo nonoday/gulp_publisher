@@ -982,7 +982,9 @@ class SolidBasicTabs extends BaseComponent {
 
         while(p) {
             const cs = getComputedStyle(p);
-            const canScroll = p.scrollWidth > p.clientWidth && cs.overflowX !== "visible";
+            // 실제로 스크롤 가능한 영역이 있는지 정확히 체크
+            const scrollableWidth = p.scrollWidth - p.clientWidth;
+            const canScroll = scrollableWidth > 1 && cs.overflowX !== "visible";
             if (canScroll) return p;
             p = p.parentElement;
         }
@@ -1003,9 +1005,9 @@ class SolidBasicTabs extends BaseComponent {
         const container = this._getHScrollContainer(tab);
         if (!container) return;
 
-        // 스크롤 가능한 영역이 없으면 동작하지 않음
+        // 스크롤 가능한 영역이 없으면 동작하지 않음 (1px 이상의 여유 공간이 있어야 함)
         const max = container.scrollWidth - container.clientWidth;
-        if (max <= 0) {
+        if (max <= 1) {
             return;
         }
 
@@ -1019,7 +1021,9 @@ class SolidBasicTabs extends BaseComponent {
         const tabLeft = this._offsetLeftWithin(tab, container);
         const targetLeft = (tabLeft + tab.offsetWidth / 2) - (deviceWidth / 2) + padLeft;
         const clamped = Math.max(0, Math.min(targetLeft, max));
-        if (Math.abs(clamped - container.scrollLeft) < 1) {
+        
+        // 현재 위치와 목표 위치가 거의 같으면 스크롤하지 않음 (2px 이상 차이가 있어야 함)
+        if (Math.abs(clamped - container.scrollLeft) < 2) {
             container.style.scrollBehavior = originalScrollBehavior;
             return;
         }
