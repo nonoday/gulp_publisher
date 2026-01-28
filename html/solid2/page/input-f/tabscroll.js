@@ -247,18 +247,18 @@ class ScrollNavigation {
      * 스크롤 실행
      */
     _scroll(direction) {
+        // 스크롤 가능한 영역이 없으면 동작하지 않음
+        const max = this.container.scrollWidth - this.container.clientWidth;
+        if (max <= 0) {
+            return;
+        }
+
         const distance = Math.round(window.innerWidth * this.options.scrollDistance);
         if (distance <= 0) return;
 
         // CSS scroll-behavior 적용
         const originalScrollBehavior = this.container.style.scrollBehavior;
         this.container.style.scrollBehavior = "smooth";
-
-        const max = this.container.scrollWidth - this.container.clientWidth;
-        if (max <= 0) {
-            this.container.style.scrollBehavior = originalScrollBehavior;
-            return;
-        }
 
         const target = Math.max(0, Math.min(this.container.scrollLeft + direction * distance, max));
         if (Math.abs(target - this.container.scrollLeft) < 1) {
