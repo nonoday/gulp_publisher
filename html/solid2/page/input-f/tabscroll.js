@@ -45,7 +45,6 @@ class BaseComponent {
         if (typeof element === 'string') {
             element = document.querySelector(element);
         }
-        this.element = element;
         this._element = element;
     }
 }
@@ -157,11 +156,7 @@ class ScrollNavigation {
     _setupButtons() {
         if (!this.wrap) return;
         
-        // scroll-nav-wrap에 is-arrow 클래스가 있을 때만 버튼 생성
-        if (!this.wrap.classList.contains("is-arrow")) {
-            return;
-        }
-        
+        // _setupWrap()에서 이미 is-arrow 체크를 했으므로 여기서는 불필요
         // prev/next 버튼이 이미 있는지 확인
         this.prevBtn = this.wrap.querySelector("." + this.options.prevButtonClass.split(' ')[0] + ".prev");
         this.nextBtn = this.wrap.querySelector("." + this.options.nextButtonClass.split(' ')[0] + ".next");
@@ -377,7 +372,7 @@ const SolidTabsUpdate = (elements) => {
         scrollTabsElements = document.querySelectorAll(".ui-basic-tab");
         scrollspyTabsElements = document.querySelectorAll(".ui-scrollspy");
     } else if(typeof elements == "object" && typeof elements.length == "number") {
-       Object.values(elements ?? []).map((el) => {
+       Object.values(elements ?? []).forEach((el) => {
         if (el.classList.contains("ui-basic-tab")) {
             scrollTabsElements = [...(scrollTabsElements ?? []), el];
         } else if (el.classList.contains("ui-scrollspy")) {
@@ -386,7 +381,7 @@ const SolidTabsUpdate = (elements) => {
        })
     } else if(typeof elements == "string") {
         const targets = document.querySelectorAll(elements);
-        Object.values(targets ?? []).map((el) => {
+        Object.values(targets ?? []).forEach((el) => {
             if (el.classList.contains("ui-basic-tab")) {
                 scrollTabsElements = [...(scrollTabsElements ?? []), el];
             } else if (el.classList.contains("ui-scrollspy")) {
@@ -397,7 +392,7 @@ const SolidTabsUpdate = (elements) => {
         return false;
     }
 
-    Object.values(scrollTabsElements ?? []).map((tabElement) => {
+    Object.values(scrollTabsElements ?? []).forEach((tabElement) => {
         let scrollInstance = SolidBasicTabs.getInstance(tabElement);
         if(scrollInstance === null) {
             tabElement.classList.remove("initiated");
@@ -405,7 +400,7 @@ const SolidTabsUpdate = (elements) => {
         }
         scrollInstance._initDepth1();
     });
-    Object.values(scrollspyTabsElements ?? []).map((tabElement) => {
+    Object.values(scrollspyTabsElements ?? []).forEach((tabElement) => {
         let scrollspyInstance = scrollspyTabs.getInstance(tabElement);
         if(scrollspyInstance === null) {
             tabElement.classList.remove("initiated");
@@ -875,7 +870,7 @@ class SolidBasicTabs extends BaseComponent {
                     panel.hidden = false;
                 });
                 try {
-                    const tabsContainers = panel.querySelectorAll(".tabs-container, .ui-basic-tab");
+                    const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                     if (tabsContainers.length > 0) {
                         SolidTabsUpdate(tabsContainers);
                     }
@@ -955,7 +950,7 @@ class SolidBasicTabs extends BaseComponent {
                                 panel.hidden = false;
                             });
                             try {
-                                const tabsContainers = panel.querySelectorAll(".tabs-container, .ui-basic-tab");
+                                const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                                 if (tabsContainers.length > 0) {
                                     SolidTabsUpdate(tabsContainers);
                                 }
@@ -1119,6 +1114,28 @@ class SolidBasicTabs extends BaseComponent {
     }
 
     /**
+     * depth1과 depth2에서 탭 요소 찾기 (헬퍼 함수)
+     * @param {string} id - 탭 버튼의 id
+     * @returns {HTMLElement|null} 찾은 탭 요소 또는 null
+     */
+    _findTabById(id) {
+        if (!id) return null;
+
+        // depth1에서 먼저 찾기
+        let tab = this._depth1?.querySelector(`#${id}`);
+        if (tab) return tab;
+
+        // depth2에서 찾기
+        const depth2Lists = this._element.querySelectorAll(".depth2");
+        for (const depth2 of depth2Lists) {
+            tab = depth2.querySelector(`#${id}`);
+            if (tab) return tab;
+        }
+
+        return null;
+    }
+
+    /**
      * 탭 버튼의 텍스트 변경
      * @param {string} id - 탭 버튼의 id
      * @param {string} value - 변경할 텍스트
@@ -1126,16 +1143,7 @@ class SolidBasicTabs extends BaseComponent {
     setTabsTitle(id, value) {
         if (!id || value === undefined) return;
 
-        // depth1과 depth2 모두에서 찾기
-        let tab = this._depth1?.querySelector(`#${id}`);
-        if (!tab) {
-            const depth2Lists = this._element.querySelectorAll(".depth2");
-            for (const depth2 of depth2Lists) {
-                tab = depth2.querySelector(`#${id}`);
-                if (tab) break;
-            }
-        }
-
+        const tab = this._findTabById(id);
         if (tab) {
             tab.textContent = value;
         }
@@ -1149,16 +1157,7 @@ class SolidBasicTabs extends BaseComponent {
     setTabDisabled(id, isDisabled = true) {
         if (!id) return;
 
-        // depth1과 depth2 모두에서 찾기
-        let tab = this._depth1?.querySelector(`#${id}`);
-        if (!tab) {
-            const depth2Lists = this._element.querySelectorAll(".depth2");
-            for (const depth2 of depth2Lists) {
-                tab = depth2.querySelector(`#${id}`);
-                if (tab) break;
-            }
-        }
-
+        const tab = this._findTabById(id);
         if (tab) {
             if (isDisabled) {
                 tab.setAttribute("disabled", "true");
@@ -1212,9 +1211,8 @@ function initBasicTabs() {
     ScrollNavigation.init(".scroll-nav-target");
 }
 
-// DOMContentLoaded와 load 이벤트에서 초기화
+// DOMContentLoaded 이벤트에서 초기화
 document.addEventListener("DOMContentLoaded", initBasicTabs);
-window.addEventListener("load", initBasicTabs);
 
 
 const index  = {
