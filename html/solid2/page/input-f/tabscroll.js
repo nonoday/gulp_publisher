@@ -262,18 +262,13 @@ class ScrollNavigation {
             return;
         }
 
-        // 모든 체크 완료 후 CSS scroll-behavior 적용
-        const originalScrollBehavior = this.container.style.scrollBehavior;
-        this.container.style.scrollBehavior = "smooth";
-
         // 스크롤 동작 중 클래스 추가
         this.container.classList.add("scroll-nav-active");
 
         requestAnimationFrame(() => {
             this.container.scrollTo({ left: target, behavior: "smooth" });
-            // 스크롤 완료 후 원래 scroll-behavior 복원 및 클래스 제거
+            // 스크롤 완료 후 클래스 제거
             setTimeout(() => {
-                this.container.style.scrollBehavior = originalScrollBehavior;
                 this.container.classList.remove("scroll-nav-active");
             }, 500);
         });
@@ -1023,16 +1018,8 @@ class SolidBasicTabs extends BaseComponent {
             return;
         }
 
-        // 모든 체크 완료 후 CSS scroll-behavior 적용
-        const originalScrollBehavior = container.style.scrollBehavior;
-        container.style.scrollBehavior = "smooth";
-
         requestAnimationFrame(() => {
             container.scrollTo({ left: clamped, behavior: "smooth" });
-            // 스크롤 완료 후 원래 scroll-behavior 복원
-            setTimeout(() => {
-                container.style.scrollBehavior = originalScrollBehavior;
-            }, 500);
         });
     }
 
