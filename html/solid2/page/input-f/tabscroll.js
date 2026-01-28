@@ -1003,6 +1003,12 @@ class SolidBasicTabs extends BaseComponent {
         const container = this._getHScrollContainer(tab);
         if (!container) return;
 
+        // 스크롤 가능한 영역이 없으면 동작하지 않음
+        const max = container.scrollWidth - container.clientWidth;
+        if (max <= 0) {
+            return;
+        }
+
         // CSS scroll-behavior 적용
         const originalScrollBehavior = container.style.scrollBehavior;
         container.style.scrollBehavior = "smooth";
@@ -1012,12 +1018,6 @@ class SolidBasicTabs extends BaseComponent {
 
         const tabLeft = this._offsetLeftWithin(tab, container);
         const targetLeft = (tabLeft + tab.offsetWidth / 2) - (deviceWidth / 2) + padLeft;
-
-        const max = container.scrollWidth - container.clientWidth;
-        if (max <= 0) {
-            container.style.scrollBehavior = originalScrollBehavior;
-            return;
-        }
         const clamped = Math.max(0, Math.min(targetLeft, max));
         if (Math.abs(clamped - container.scrollLeft) < 1) {
             container.style.scrollBehavior = originalScrollBehavior;
