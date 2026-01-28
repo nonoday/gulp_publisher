@@ -453,7 +453,7 @@ class SolidBasicTabs extends BaseComponent {
     }
 
     _initDepth1() {
-        this._depth1 = this._element.querySelector(".scroll-tabs.depth1");
+        this._depth1 = this._element.querySelector(".solid-tabs.depth1");
         this._depth2 = this._element.querySelector(".sub-tabs-list");
 
         if(!this._depth1) return;
