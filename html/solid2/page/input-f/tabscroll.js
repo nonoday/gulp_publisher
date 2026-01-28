@@ -277,11 +277,11 @@ class ScrollNavigation {
     /**
      * 버튼 상태 업데이트
      */
-    _updateState() {
+    _updateState(force = false) {
         if (!this.prevBtn || !this.nextBtn) return;
         
-        // wrap이 숨겨져 있으면 상태 업데이트하지 않음
-        if (this.wrap && getComputedStyle(this.wrap).display === "none") {
+        // wrap이 숨겨져 있으면 상태 업데이트하지 않음 (force가 true이면 강제 업데이트)
+        if (!force && this.wrap && getComputedStyle(this.wrap).display === "none") {
             return;
         }
 
@@ -639,12 +639,15 @@ class SolidBasicTabs extends BaseComponent {
                     if (wrap) {
                         wrap.style.display = "block";
                         // scroll-nav-wrap이 표시된 후 depth2의 네비게이션 상태 업데이트
-                        // 약간의 지연을 두어 DOM이 완전히 렌더링된 후 상태 업데이트
-                        setTimeout(() => {
-                            if (group._scrollNavigation) {
-                                group._scrollNavigation._updateState();
-                            }
-                        }, 50);
+                        // requestAnimationFrame을 사용하여 DOM이 완전히 렌더링된 후 상태 업데이트
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                if (group._scrollNavigation) {
+                                    // force=true로 강제 업데이트하여 wrap이 표시된 직후에도 상태 업데이트
+                                    group._scrollNavigation._updateState(true);
+                                }
+                            });
+                        });
                     }
                 }            
             });
@@ -819,11 +822,15 @@ class SolidBasicTabs extends BaseComponent {
             this._activateDepth2Tab(activeTab);
             // depth2 활성화 후 네비게이션 상태 업데이트
             // 약간의 지연을 두어 DOM이 완전히 렌더링된 후 상태 업데이트
-            setTimeout(() => {
-                if (this._subDetp2Tabs._scrollNavigation) {
-                    this._subDetp2Tabs._scrollNavigation._updateState();
-                }
-            }, 50);
+            // requestAnimationFrame을 사용하여 DOM이 완전히 렌더링된 후 상태 업데이트
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    if (this._subDetp2Tabs._scrollNavigation) {
+                        // force=true로 강제 업데이트하여 초기화 시에도 상태 업데이트
+                        this._subDetp2Tabs._scrollNavigation._updateState(true);
+                    }
+                });
+            });
         }
 
     }
