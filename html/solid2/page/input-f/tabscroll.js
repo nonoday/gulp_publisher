@@ -161,9 +161,14 @@ class ScrollNavigation {
         this.prevBtn = this.wrap.querySelector("." + this.options.prevButtonClass.split(' ')[0] + ".prev");
         this.nextBtn = this.wrap.querySelector("." + this.options.nextButtonClass.split(' ')[0] + ".next");
 
-        // ui-scroll-tab 요소 찾기
-        const depthElement = this.wrap.querySelector(".ui-scroll-tab");
-        
+        // 버튼을 삽입할 기준 요소 찾기
+        // - 우선: ScrollNavigation이 붙은 실제 컨테이너(대개 [role="tablist"])
+        // - fallback: 기존 마크업(.ui-scroll-tab) 또는 wrap 내부 첫 tablist
+        const depthElement =
+            this.container ||
+            this.wrap.querySelector(".ui-scroll-tab") ||
+            this.wrap.querySelector("[role='tablist']");
+
         if (!depthElement) return;
 
         if (!this.prevBtn) {
@@ -448,7 +453,8 @@ class SolidBasicTabs extends BaseComponent {
     }
 
     _initDepth1() {
-        this._depth1 = this._element.querySelector(".solid-tabs.depth1");
+        this._scrollWrap = this._element.querySelector(".scroll-nav-wrap");
+        this._depth1 = this._element.querySelector(":scope > [role='tablist'], :scope > .scroll-nav-wrap > [role='tablist']");
         this._depth2 = this._element.querySelector(".sub-tabs-list");
 
         if(!this._depth1) return;
