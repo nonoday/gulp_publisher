@@ -100,18 +100,18 @@ class ScrollNavigation {
      * 초기화
      */
     _init() {
-        // 컨테이너를 relative로 설정
-        const containerStyle = getComputedStyle(this.container);
-        if (containerStyle.position === "static") {
-            this.container.style.position = "relative";
-        }
-
         // wrap 생성 또는 찾기
         this._setupWrap();
 
         // scroll-nav-wrap에 is-arrow 클래스가 없으면 동작하지 않음
         if (!this.wrap) {
             return;
+        }
+
+        // 컨테이너를 relative로 설정 (wrap이 있을 때만)
+        const containerStyle = getComputedStyle(this.container);
+        if (containerStyle.position === "static") {
+            this.container.style.position = "relative";
         }
 
         // 버튼 생성 및 추가
@@ -580,8 +580,6 @@ class SolidBasicTabs extends BaseComponent {
 
         requestAnimationFrame(() => {
             if (!tab || !tab.parentNode) return;
-            
-            tab.parentNode.scrollLeft = tab.parentNode.scrollLeft || 0;
 
             if(this._defaultTab) tab = this._defaultTab;
             this._moveDepth1Indicator(tab);
@@ -1003,13 +1001,27 @@ class SolidBasicTabs extends BaseComponent {
         const targetLeft = (tabLeft + tab.offsetWidth / 2) - (deviceWidth / 2) + padLeft;
         const clamped = Math.max(0, Math.min(targetLeft, max));
         
-        // 현재 위치와 목표 위치가 거의 같으면 스크롤하지 않음 (2px 이상 차이가 있어야 함)
-        if (Math.abs(clamped - container.scrollLeft) < 2) {
+        // 현재 위치와 목표 위치가 거의 같으면 스크롤하지 않음 (5px 이상 차이가 있어야 함)
+        const scrollDiff = Math.abs(clamped - container.scrollLeft);
+        if (scrollDiff < 5) {
             return;
         }
 
+        // 실제로 스크롤할 수 있는지 최종 확인
         requestAnimationFrame(() => {
-            container.scrollTo({ left: clamped, behavior: "smooth" });
+            // 다시 한번 체크 (DOM 변경 후 상태가 바뀔 수 있음)
+            const currentMax = container.scrollWidth - container.clientWidth;
+            if (currentMax <= 1) {
+                return;
+            }
+            
+            const currentClamped = Math.max(0, Math.min(targetLeft, currentMax));
+            const currentScrollDiff = Math.abs(currentClamped - container.scrollLeft);
+            if (currentScrollDiff < 5) {
+                return;
+            }
+            
+            container.scrollTo({ left: currentClamped, behavior: "smooth" });
         });
     }
 
