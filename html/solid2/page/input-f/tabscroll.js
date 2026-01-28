@@ -256,15 +256,15 @@ class ScrollNavigation {
         const distance = Math.round(window.innerWidth * this.options.scrollDistance);
         if (distance <= 0) return;
 
-        // CSS scroll-behavior 적용
-        const originalScrollBehavior = this.container.style.scrollBehavior;
-        this.container.style.scrollBehavior = "smooth";
-
         const target = Math.max(0, Math.min(this.container.scrollLeft + direction * distance, max));
+        // 실제로 스크롤할 필요가 없으면 동작하지 않음 (1px 이상 차이가 있어야 함)
         if (Math.abs(target - this.container.scrollLeft) < 1) {
-            this.container.style.scrollBehavior = originalScrollBehavior;
             return;
         }
+
+        // 모든 체크 완료 후 CSS scroll-behavior 적용
+        const originalScrollBehavior = this.container.style.scrollBehavior;
+        this.container.style.scrollBehavior = "smooth";
 
         // 스크롤 동작 중 클래스 추가
         this.container.classList.add("scroll-nav-active");
@@ -1011,10 +1011,6 @@ class SolidBasicTabs extends BaseComponent {
             return;
         }
 
-        // CSS scroll-behavior 적용
-        const originalScrollBehavior = container.style.scrollBehavior;
-        container.style.scrollBehavior = "smooth";
-
         const padLeft = parseInt(getComputedStyle(container).paddingLeft) || 0;
         const deviceWidth = window.innerWidth;
 
@@ -1024,9 +1020,12 @@ class SolidBasicTabs extends BaseComponent {
         
         // 현재 위치와 목표 위치가 거의 같으면 스크롤하지 않음 (2px 이상 차이가 있어야 함)
         if (Math.abs(clamped - container.scrollLeft) < 2) {
-            container.style.scrollBehavior = originalScrollBehavior;
             return;
         }
+
+        // 모든 체크 완료 후 CSS scroll-behavior 적용
+        const originalScrollBehavior = container.style.scrollBehavior;
+        container.style.scrollBehavior = "smooth";
 
         requestAnimationFrame(() => {
             container.scrollTo({ left: clamped, behavior: "smooth" });
