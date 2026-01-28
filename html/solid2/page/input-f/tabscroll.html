@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
    <style>
     * {margin:0;padding:0;}
-    .scroll-tabs {
+    .solid-tabs {
         position: relative;
         display: flex;
         overflow-x: auto;
@@ -18,15 +18,15 @@
         white-space: nowrap;
         width: auto !important;
     }
-    .scroll-tabs .solid-tab {
+    .solid-tabs .solid-tab {
         display: flex;
         justify-content: center;
         align-items: center;
         font-size:16px;
         color:#eee;
     }
-    .scroll-tabs .solid-tab +.solid-tab {margin-left:20px;}
-    .scroll-tabs .solid-tab[aria-selected=true] {
+    .solid-tabs .solid-tab +.solid-tab {margin-left:20px;}
+    .solid-tabs .solid-tab[aria-selected=true] {
         color:#000;
         font-weight: 700;
     }
@@ -259,7 +259,7 @@
         1뎁스
         <div class="ui-basic-tab initiated">
             <div class="scroll-nav-wrap">
-                <div class="scroll-tabs depth1 ui-scroll-tab" role="tablist">
+                <div class="solid-tabs depth1 ui-scroll-tab" role="tablist">
                     <button class="solid-tab" role="tab" aria-selected="true" aria-controls="scroll24-1-panel" id="tab24-1">탭탭탭1</button>
                     <button class="solid-tab" role="tab" aria-selected="false" aria-controls="scroll24-2-panel" id="tab24-2">탭스트스트2</button>
                     <button class="solid-tab" role="tab" aria-selected="false" aria-controls="scroll24-3-panel" id="tab24-3">탭스스3</button>
@@ -283,9 +283,9 @@
         </div>
 
         fixed-width-tab
-        <div class="scroll-tabs-container initiated fixed-width-tab">
+        <div class="solid-tabs-container initiated fixed-width-tab">
             <div class="scroll-nav-wrap">
-                <div class="scroll-tabs depth1 ui-scroll-tab" role="tablist">
+                <div class="solid-tabs depth1 ui-scroll-tab" role="tablist">
                     <button class="solid-tab" role="tab" aria-selected="true" aria-controls="fixed-sub1-panel" data-target="fixed-sub1" id="fixed-tab1-1">고정탭1</button>
                     <button class="solid-tab" role="tab" aria-selected="false" aria-controls="fixed-sub2-panel" data-target="fixed-sub2" id="fixed-tab1-2">고정탭2</button>
                     <button class="solid-tab" role="tab" aria-selected="false" aria-controls="fixed-sub3-panel" data-target="fixed-sub3" id="fixed-tab1-3">고정탭3</button>
