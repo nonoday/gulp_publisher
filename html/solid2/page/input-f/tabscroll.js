@@ -51,7 +51,10 @@ class BaseComponent {
 
 class SolidAccordion extends BaseComponent {
     constructor(element) {
+        console.log("[SolidAccordion.constructor] 시작", element);
+        
         if(getElement(element).classList.contains("initiated")) {
+            console.log("[SolidAccordion.constructor] 이미 초기화됨, 중단");
             return {};
         }
         super(element);
@@ -64,8 +67,20 @@ class SolidAccordion extends BaseComponent {
         this._accoTitleWrap = element.querySelector(".acco-title-wrap");
         this._accoContentWrap = element.querySelector(".acco-content-wrap");
         
+        console.log("[SolidAccordion.constructor] 요소 찾기 결과:", {
+            element: element,
+            hasTitleWrap: !!this._accoTitleWrap,
+            hasContentWrap: !!this._accoContentWrap,
+            titleWrap: this._accoTitleWrap,
+            contentWrap: this._accoContentWrap
+        });
+        
         // 필수 요소가 없으면 초기화 중단
         if (!this._accoTitleWrap || !this._accoContentWrap) {
+            console.error("[SolidAccordion.constructor] 필수 요소를 찾을 수 없습니다.", {
+                titleWrap: !!this._accoTitleWrap,
+                contentWrap: !!this._accoContentWrap
+            });
             console.warn("SolidAccordion: 필수 요소를 찾을 수 없습니다.", {
                 titleWrap: !!this._accoTitleWrap,
                 contentWrap: !!this._accoContentWrap
@@ -78,11 +93,19 @@ class SolidAccordion extends BaseComponent {
         this._isScroll = true;
         this._accoContent = element.querySelector(".acco-content");
         
+        const hasOnClass = element.classList.contains("on");
+        console.log("[SolidAccordion.constructor] 초기 상태:", {
+            hasOnClass: hasOnClass,
+            element: element
+        });
+        
         // .on 클래스가 있으면 열린 상태, 없으면 닫힌 상태로 초기화
-        if (element.classList.contains("on")) {
+        if (hasOnClass) {
+            console.log("[SolidAccordion.constructor] 열린 상태로 초기화");
             this._setHeight();
         } else {
             // .on 클래스가 없으면 닫힌 상태로 확실히 설정
+            console.log("[SolidAccordion.constructor] 닫힌 상태로 초기화");
             this._accoContentWrap.hidden = true;
             this._accoContentWrap.style.display = "none";
             this._accoContentWrap.style.height = "0px";
@@ -97,6 +120,7 @@ class SolidAccordion extends BaseComponent {
         // 인스턴스를 요소에 저장 (재초기화 시 참조용)
         element._accordionInstance = this;
         element.classList.add("initiated");
+        console.log("[SolidAccordion.constructor] 초기화 완료", this);
     }
 
     _bindResize() {
@@ -291,13 +315,22 @@ class SolidAccordion extends BaseComponent {
     }
 
     _eventBind() {
+        console.log("[SolidAccordion._eventBind] 시작", {
+            element: this._element,
+            isAccordionControl: this._isAccordionControl,
+            hasTitleWrap: !!this._accoTitleWrap,
+            titleWrap: this._accoTitleWrap
+        });
+        
         if(!this._isAccordionControl && this._accoTitleWrap) {
             // 기존 이벤트 리스너가 있으면 제거 (재초기화 시 중복 방지)
             if (this._accoTitleWrap._originalClickHandler) {
+                console.log("[SolidAccordion._eventBind] 기존 이벤트 리스너 제거");
                 this._accoTitleWrap.removeEventListener("click", this._accoTitleWrap._originalClickHandler);
             }
             
             const clickHandler = (e) => {
+                console.log("[SolidAccordion._eventBind] 아코디언 클릭 이벤트 발생", this._element);
                 e.preventDefault();
                 e.stopPropagation();
                 this.openContent();
@@ -305,6 +338,12 @@ class SolidAccordion extends BaseComponent {
             
             this._accoTitleWrap._originalClickHandler = clickHandler;
             this._accoTitleWrap.addEventListener("click", clickHandler);
+            console.log("[SolidAccordion._eventBind] 클릭 이벤트 바인딩 완료");
+        } else {
+            console.warn("[SolidAccordion._eventBind] 이벤트 바인딩 불가:", {
+                isAccordionControl: this._isAccordionControl,
+                hasTitleWrap: !!this._accoTitleWrap
+            });
         }
 
         this._accoContentWrap.addEventListener("transitionend", (e) => {
@@ -347,10 +386,20 @@ class SolidAccordion extends BaseComponent {
     }
 
     openContent(isOpen, isScroll = true) {
+         console.log("[SolidAccordion.openContent] 시작", {
+             element: this._element,
+             isOpen: isOpen,
+             hasTitleWrap: !!this._accoTitleWrap
+         });
+         
          if (!this._accoTitleWrap) {
              // _accoTitleWrap이 없으면 다시 찾기 시도
+             console.log("[SolidAccordion.openContent] _accoTitleWrap 없음, 재찾기 시도");
              this._accoTitleWrap = this._element.querySelector(".acco-title-wrap");
-             if (!this._accoTitleWrap) return;
+             if (!this._accoTitleWrap) {
+                 console.error("[SolidAccordion.openContent] _accoTitleWrap을 찾을 수 없음");
+                 return;
+             }
          }
          
          // this._element가 .accordion-area인지 확인
@@ -358,13 +407,21 @@ class SolidAccordion extends BaseComponent {
          if (!parentNode.classList.contains("accordion-area")) {
              parentNode = this._accoTitleWrap.closest(".accordion-area");
          }
-         if (!parentNode) return;
+         if (!parentNode) {
+             console.error("[SolidAccordion.openContent] parentNode를 찾을 수 없음");
+             return;
+         }
          
          const willOpen = !parentNode.classList.contains("on");
+         console.log("[SolidAccordion.openContent] willOpen:", willOpen, "parentNode:", parentNode);
 
          // parentNode에 is-animating 클래스 확인 및 추가
-         if(parentNode.classList.contains("is-animating")) return;
+         if(parentNode.classList.contains("is-animating")) {
+             console.log("[SolidAccordion.openContent] 이미 애니메이션 중, 중단");
+             return;
+         }
          parentNode.classList.add("is-animating");
+         console.log("[SolidAccordion.openContent] is-animating 클래스 추가");
 
          this._isScroll = isScroll;
 
@@ -1452,6 +1509,8 @@ class SolidBasicTabs extends BaseComponent {
 
 
     _activateDepth2Tab(tab) {
+        console.log("[_activateDepth2Tab] 시작", { tab, tabId: tab.id, ariaControls: tab.getAttribute("aria-controls") });
+        
         this._subTabs.forEach((t) => {
             t.setAttribute("aria-selected", "false");
             t.classList.remove("active");
@@ -1467,44 +1526,76 @@ class SolidBasicTabs extends BaseComponent {
         }
         
         const panelId = tab.getAttribute("aria-controls");
+        console.log("[_activateDepth2Tab] panelId:", panelId);
+        
         if (panelId) {
             const panel = this._element.querySelector("#" + panelId);
+            console.log("[_activateDepth2Tab] panel 찾음:", panel, "hidden:", panel?.hidden);
+            
             if (panel) {
                 requestAnimationFrame(() => {
                     panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                     panel.hidden = false;
+                    console.log("[_activateDepth2Tab] tabActivated 이벤트 발생, panel.hidden = false");
                 });
                 // 패널이 표시된 후 아코디언 재초기화 (hidden 상태에서 표시 상태로 변경될 때 이벤트가 제대로 바인딩되도록)
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
+                        const accordionAreas = panel.querySelectorAll(".accordion-area");
+                        console.log("[_activateDepth2Tab] 아코디언 영역 찾기:", accordionAreas.length, "개");
+                        
                         // .accordion-area 내부의 .accordion-item 찾기 (없으면 .accordion-area 자체 사용)
-                        panel.querySelectorAll(".accordion-area").forEach((accordionArea) => {
+                        accordionAreas.forEach((accordionArea, index) => {
+                            console.log(`[_activateDepth2Tab] 아코디언 영역 ${index + 1} 처리 시작:`, accordionArea);
+                            
                             let accordionElement = accordionArea.querySelector(".accordion-item");
                             if (!accordionElement) {
                                 accordionElement = accordionArea;
+                                console.log(`[_activateDepth2Tab] .accordion-item 없음, .accordion-area 사용:`, accordionElement);
+                            } else {
+                                console.log(`[_activateDepth2Tab] .accordion-item 찾음:`, accordionElement);
                             }
                             
                             // 아코디언 인스턴스 찾기 또는 재초기화
                             let accordionInstance = accordionElement._accordionInstance;
+                            const isInitiated = accordionElement.classList.contains("initiated");
                             
-                            if (!accordionInstance || !accordionElement.classList.contains("initiated")) {
+                            console.log(`[_activateDepth2Tab] 아코디언 상태:`, {
+                                hasInstance: !!accordionInstance,
+                                isInitiated: isInitiated,
+                                element: accordionElement
+                            });
+                            
+                            if (!accordionInstance || !isInitiated) {
                                 // 인스턴스가 없거나 초기화되지 않은 경우 재초기화
+                                console.log(`[_activateDepth2Tab] 아코디언 재초기화 시작`);
                                 try {
                                     accordionElement.classList.remove("initiated");
                                     accordionInstance = new SolidAccordion(accordionElement);
+                                    console.log(`[_activateDepth2Tab] 아코디언 재초기화 완료:`, accordionInstance);
                                 } catch (e) {
+                                    console.error("[_activateDepth2Tab] 아코디언 초기화 실패:", e);
                                     console.warn("Failed to initialize accordion:", e);
                                     return;
                                 }
                             } else if (accordionInstance) {
                                 // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
+                                console.log(`[_activateDepth2Tab] 아코디언 이미 초기화됨, 이벤트 재바인딩 확인`);
+                                console.log(`[_activateDepth2Tab] 아코디언 상태:`, {
+                                    hasTitleWrap: !!accordionInstance._accoTitleWrap,
+                                    isAccordionControl: accordionInstance._isAccordionControl,
+                                    hasOriginalHandler: !!accordionInstance._accoTitleWrap?._originalClickHandler
+                                });
+                                
                                 if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
                                     // 기존 이벤트 리스너 제거 후 재바인딩
                                     if (accordionInstance._accoTitleWrap._originalClickHandler) {
+                                        console.log(`[_activateDepth2Tab] 기존 이벤트 리스너 제거`);
                                         accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
                                     }
                                     
                                     const clickHandler = (e) => {
+                                        console.log(`[_activateDepth2Tab] 아코디언 클릭 이벤트 발생:`, accordionInstance);
                                         e.preventDefault();
                                         e.stopPropagation();
                                         if (accordionInstance && accordionInstance.openContent) {
@@ -1514,6 +1605,12 @@ class SolidBasicTabs extends BaseComponent {
                                     
                                     accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
                                     accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
+                                    console.log(`[_activateDepth2Tab] 아코디언 클릭 이벤트 재바인딩 완료`);
+                                } else {
+                                    console.warn(`[_activateDepth2Tab] 아코디언 이벤트 재바인딩 불가:`, {
+                                        hasTitleWrap: !!accordionInstance._accoTitleWrap,
+                                        isAccordionControl: accordionInstance._isAccordionControl
+                                    });
                                 }
                             }
                         });
@@ -1568,8 +1665,12 @@ class SolidBasicTabs extends BaseComponent {
         const subTabs = container.querySelectorAll(".solid-tab");
         if (!subTabs.length) return;
         
+        console.log("[_dept2EventBindForContainer] 시작, subTabs 개수:", subTabs.length);
+        
         subTabs.forEach((tab) => {
             tab.addEventListener("click", () => {
+                console.log("[_dept2EventBindForContainer] 서브탭 클릭:", tab, "aria-controls:", tab.getAttribute("aria-controls"));
+                
                 const allTabs = container.querySelectorAll(".solid-tab");
                 allTabs.forEach((t) => {
                     t.setAttribute("aria-selected", "false");
@@ -1582,56 +1683,90 @@ class SolidBasicTabs extends BaseComponent {
                 
                 // 패널 활성화 로직 추가
                 const panelId = tab.getAttribute("aria-controls");
+                console.log("[_dept2EventBindForContainer] panelId:", panelId);
+                
                 if (panelId) {
                     // 같은 1뎁스 패널 컨테이너 내에서 패널 찾기
                     const subTabsId = container.getAttribute("id");
                     const depth1PanelId = subTabsId + "-panel";
                     const depth1Panel = this._element.querySelector("#" + depth1PanelId);
+                    console.log("[_dept2EventBindForContainer] depth1Panel:", depth1Panel, "depth1PanelId:", depth1PanelId);
                     
                     if (depth1Panel) {
                         // 같은 컨테이너 내의 모든 패널 숨김
                         const allPanels = depth1Panel.querySelectorAll("[role='tabpanel']");
+                        console.log("[_dept2EventBindForContainer] allPanels 개수:", allPanels.length);
                         allPanels.forEach((p) => {
                             p.hidden = true;
                         });
                         
                         // 선택된 패널 활성화
                         const panel = this._element.querySelector("#" + panelId);
+                        console.log("[_dept2EventBindForContainer] panel 찾음:", panel, "hidden:", panel?.hidden);
+                        
                         if (panel) {
                             requestAnimationFrame(() => {
                                 panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                                 panel.hidden = false;
+                                console.log("[_dept2EventBindForContainer] tabActivated 이벤트 발생, panel.hidden = false");
                             });
                             // 패널이 표시된 후 아코디언 재초기화
                             requestAnimationFrame(() => {
                                 requestAnimationFrame(() => {
-                                    panel.querySelectorAll(".accordion-area").forEach((accordionArea) => {
+                                    const accordionAreas = panel.querySelectorAll(".accordion-area");
+                                    console.log("[_dept2EventBindForContainer] 아코디언 영역 찾기:", accordionAreas.length, "개");
+                                    
+                                    panel.querySelectorAll(".accordion-area").forEach((accordionArea, index) => {
+                                        console.log(`[_dept2EventBindForContainer] 아코디언 영역 ${index + 1} 처리 시작:`, accordionArea);
+                                        
                                         // .accordion-item이 있으면 그것을 사용, 없으면 .accordion-area 자체를 사용
                                         let accordionElement = accordionArea.querySelector(".accordion-item");
                                         if (!accordionElement) {
                                             accordionElement = accordionArea;
+                                            console.log(`[_dept2EventBindForContainer] .accordion-item 없음, .accordion-area 사용:`, accordionElement);
+                                        } else {
+                                            console.log(`[_dept2EventBindForContainer] .accordion-item 찾음:`, accordionElement);
                                         }
                                         
                                         // 아코디언 인스턴스 찾기 또는 재초기화
                                         let accordionInstance = accordionElement._accordionInstance;
+                                        const isInitiated = accordionElement.classList.contains("initiated");
                                         
-                                        if (!accordionInstance || !accordionElement.classList.contains("initiated")) {
+                                        console.log(`[_dept2EventBindForContainer] 아코디언 상태:`, {
+                                            hasInstance: !!accordionInstance,
+                                            isInitiated: isInitiated,
+                                            element: accordionElement
+                                        });
+                                        
+                                        if (!accordionInstance || !isInitiated) {
                                             try {
+                                                console.log(`[_dept2EventBindForContainer] 아코디언 재초기화 시작`);
                                                 accordionElement.classList.remove("initiated");
                                                 accordionInstance = new SolidAccordion(accordionElement);
+                                                console.log(`[_dept2EventBindForContainer] 아코디언 재초기화 완료:`, accordionInstance);
                                             } catch (e) {
+                                                console.error("[_dept2EventBindForContainer] 아코디언 초기화 실패:", e);
                                                 console.warn("Failed to initialize accordion:", e);
                                                 return;
                                             }
                                         } else if (accordionInstance) {
                                             // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
+                                            console.log(`[_dept2EventBindForContainer] 아코디언 이미 초기화됨, 이벤트 재바인딩 확인`);
+                                            console.log(`[_dept2EventBindForContainer] 아코디언 상태:`, {
+                                                hasTitleWrap: !!accordionInstance._accoTitleWrap,
+                                                isAccordionControl: accordionInstance._isAccordionControl,
+                                                hasOriginalHandler: !!accordionInstance._accoTitleWrap?._originalClickHandler
+                                            });
+                                            
                                             if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
                                                 // 기존 이벤트 리스너 제거 후 재바인딩
                                                 if (accordionInstance._accoTitleWrap._originalClickHandler) {
+                                                    console.log(`[_dept2EventBindForContainer] 기존 이벤트 리스너 제거`);
                                                     accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
                                                 }
                                                 
                                                 const clickHandler = (e) => {
+                                                    console.log(`[_dept2EventBindForContainer] 아코디언 클릭 이벤트 발생:`, accordionInstance);
                                                     e.preventDefault();
                                                     e.stopPropagation();
                                                     if (accordionInstance && accordionInstance.openContent) {
@@ -1641,6 +1776,12 @@ class SolidBasicTabs extends BaseComponent {
                                                 
                                                 accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
                                                 accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
+                                                console.log(`[_dept2EventBindForContainer] 아코디언 클릭 이벤트 재바인딩 완료`);
+                                            } else {
+                                                console.warn(`[_dept2EventBindForContainer] 아코디언 이벤트 재바인딩 불가:`, {
+                                                    hasTitleWrap: !!accordionInstance._accoTitleWrap,
+                                                    isAccordionControl: accordionInstance._isAccordionControl
+                                                });
                                             }
                                         }
                                     });
