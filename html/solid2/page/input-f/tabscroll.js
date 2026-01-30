@@ -1215,23 +1215,8 @@ class SolidBasicTabs extends BaseComponent {
                                             }
                                         }
                                         
-                                        // 이벤트가 제대로 바인딩되었는지 확인하고 필요시 재바인딩
-                                        if (accordionInstance && accordionInstance._accoTitleWrap) {
-                                            const titleWrap = accordionInstance._accoTitleWrap;
-                                            if (!accordionInstance._isAccordionControl) {
-                                                const hasListener = titleWrap._hasAccordionListener;
-                                                if (!hasListener) {
-                                                    titleWrap.addEventListener("click", (e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        if (accordionInstance && accordionInstance.openContent) {
-                                                            accordionInstance.openContent();
-                                                        }
-                                                    });
-                                                    titleWrap._hasAccordionListener = true;
-                                                }
-                                            }
-                                        }
+                                        // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
+                                        // 추가 이벤트 바인딩은 불필요
                                     });
                                 });
                             });
@@ -1282,23 +1267,8 @@ class SolidBasicTabs extends BaseComponent {
                                   }
                               }
                               
-                              // 이벤트가 제대로 바인딩되었는지 확인하고 필요시 재바인딩
-                              if (accordionInstance && accordionInstance._accoTitleWrap) {
-                                  const titleWrap = accordionInstance._accoTitleWrap;
-                                  if (!accordionInstance._isAccordionControl) {
-                                      const hasListener = titleWrap._hasAccordionListener;
-                                      if (!hasListener) {
-                                          titleWrap.addEventListener("click", (e) => {
-                                              e.preventDefault();
-                                              e.stopPropagation();
-                                              if (accordionInstance && accordionInstance.openContent) {
-                                                  accordionInstance.openContent();
-                                              }
-                                          });
-                                          titleWrap._hasAccordionListener = true;
-                                      }
-                                  }
-                              }
+                              // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
+                              // 추가 이벤트 바인딩은 불필요
                           });
                       });
                   });
@@ -1496,26 +1466,8 @@ class SolidBasicTabs extends BaseComponent {
                                 }
                             }
                             
-                            // 이벤트가 제대로 바인딩되었는지 확인하고 필요시 재바인딩
-                            if (accordionInstance && accordionInstance._accoTitleWrap) {
-                                const titleWrap = accordionInstance._accoTitleWrap;
-                                // 기존 이벤트 리스너가 있는지 확인 (간단한 방법: 이벤트를 다시 바인딩)
-                                // 클릭 이벤트가 제대로 동작하도록 보장
-                                if (!accordionInstance._isAccordionControl) {
-                                    // 기존 이벤트 제거를 위해 클론 후 교체
-                                    const hasListener = titleWrap._hasAccordionListener;
-                                    if (!hasListener) {
-                                        titleWrap.addEventListener("click", (e) => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            if (accordionInstance && accordionInstance.openContent) {
-                                                accordionInstance.openContent();
-                                            }
-                                        });
-                                        titleWrap._hasAccordionListener = true;
-                                    }
-                                }
-                            }
+                            // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
+                            // 추가 이벤트 바인딩은 불필요
                         });
                     });
                 });
@@ -1625,23 +1577,8 @@ class SolidBasicTabs extends BaseComponent {
                                             }
                                         }
                                         
-                                        // 이벤트가 제대로 바인딩되었는지 확인하고 필요시 재바인딩
-                                        if (accordionInstance && accordionInstance._accoTitleWrap) {
-                                            const titleWrap = accordionInstance._accoTitleWrap;
-                                            if (!accordionInstance._isAccordionControl) {
-                                                const hasListener = titleWrap._hasAccordionListener;
-                                                if (!hasListener) {
-                                                    titleWrap.addEventListener("click", (e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        if (accordionInstance && accordionInstance.openContent) {
-                                                            accordionInstance.openContent();
-                                                        }
-                                                    });
-                                                    titleWrap._hasAccordionListener = true;
-                                                }
-                                            }
-                                        }
+                                        // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
+                                        // 추가 이벤트 바인딩은 불필요
                                     });
                                 });
                             });
