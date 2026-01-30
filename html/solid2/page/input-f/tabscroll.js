@@ -673,39 +673,49 @@ const SolidTabsUpdate = (elements) => {
     }
 
     Object.values(scrollTabsElements ?? []).forEach((tabElement) => {
-        let scrollInstance = SolidBasicTabs.getInstance(tabElement);
-        if(scrollInstance === null) {
-            tabElement.classList.remove("initiated");
-            scrollInstance = new SolidBasicTabs(tabElement);
-        }
-        scrollInstance._initDepth1();
-    });
-    Object.values(scrollspyTabsElements ?? []).forEach((tabElement) => {
-        // scrollspyTabs가 정의되어 있는지 확인
-        if (typeof scrollspyTabs === "undefined" || scrollspyTabs === null) {
-            console.warn("scrollspyTabs is not defined");
-            return;
-        }
-        
-        let scrollspyInstance = null;
         try {
-            if (typeof scrollspyTabs.getInstance === "function") {
-                scrollspyInstance = scrollspyTabs.getInstance(tabElement);
-            }
-            if(scrollspyInstance === null) {
+            let scrollInstance = SolidBasicTabs.getInstance(tabElement);
+            if(scrollInstance === null) {
                 tabElement.classList.remove("initiated");
-                scrollspyInstance = new scrollspyTabs(tabElement);
+                scrollInstance = new SolidBasicTabs(tabElement);
             }
-            // _update 메서드가 있는지 확인 후 호출
-            if(scrollspyInstance && typeof scrollspyInstance._update === "function") {
-                scrollspyInstance._update();
-            } else {
-                console.warn("scrollspyInstance._update is not a function", scrollspyInstance);
+            if(scrollInstance && typeof scrollInstance._initDepth1 === "function") {
+                scrollInstance._initDepth1();
             }
         } catch (e) {
-            console.warn("Failed to update scrollspy tabs:", e);
+            console.warn("Failed to update basic tabs:", e);
         }
     });
+    // scrollspyTabsElements가 있고 scrollspyTabs가 정의되어 있을 때만 처리
+    if (scrollspyTabsElements && scrollspyTabsElements.length > 0) {
+        // scrollspyTabs가 정의되어 있는지 확인
+        if (typeof scrollspyTabs === "undefined" || scrollspyTabs === null) {
+            // scrollspyTabs가 없으면 경고만 출력하고 계속 진행
+            console.warn("scrollspyTabs is not defined, skipping scrollspy tabs update");
+        } else {
+            Object.values(scrollspyTabsElements).forEach((tabElement) => {
+                let scrollspyInstance = null;
+                try {
+                    if (typeof scrollspyTabs.getInstance === "function") {
+                        scrollspyInstance = scrollspyTabs.getInstance(tabElement);
+                    }
+                    if(scrollspyInstance === null) {
+                        tabElement.classList.remove("initiated");
+                        scrollspyInstance = new scrollspyTabs(tabElement);
+                    }
+                    // _update 메서드가 있는지 확인 후 호출
+                    if(scrollspyInstance && typeof scrollspyInstance._update === "function") {
+                        scrollspyInstance._update();
+                    } else if (scrollspyInstance) {
+                        // _update 메서드가 없으면 경고만 출력하고 계속 진행
+                        console.warn("scrollspyInstance._update is not a function, instance:", scrollspyInstance);
+                    }
+                } catch (e) {
+                    console.warn("Failed to update scrollspy tabs:", e);
+                }
+            });
+        }
+    }
 }
 
 // getElement 헬퍼 함수
