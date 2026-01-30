@@ -178,7 +178,8 @@ class SolidAccordion extends BaseComponent {
         });
 
 
-        wrap.addEventListener("transitionend", function onStart(e) {
+        // transitionend 이벤트 리스너 (한 번만 실행되도록 once 옵션 사용)
+        const transitionEndHandler = (e) => {
             if (e.target !== wrap || e.propertyName !== "height") return;
             
             if (wrap.style.maxHeight !== "0px") {
@@ -198,9 +199,27 @@ class SolidAccordion extends BaseComponent {
                     }
                 });
             });
-            
-            wrap.removeEventListener("transitionend", onStart);
-        });
+        };
+        
+        wrap.addEventListener("transitionend", transitionEndHandler, { once: true });
+        
+        // transition이 없는 경우를 대비한 fallback (약간의 지연 후 실행)
+        setTimeout(() => {
+            // transitionend가 발생하지 않았을 수 있으므로 확인
+            const computedStyle = getComputedStyle(wrap);
+            const currentHeight = computedStyle.height;
+            if (currentHeight !== "0px" && currentHeight !== "0") {
+                // 아코디언이 열려있으면 탭 초기화
+                const tabsContainers = wrap.querySelectorAll(".ui-basic-tab");
+                if (tabsContainers.length > 0) {
+                    try {
+                        SolidTabsUpdate(tabsContainers);
+                    } catch (err) {
+                        console.warn("Failed to update tabs in accordion (fallback):", err);
+                    }
+                }
+            }
+        }, 400); // transition 시간보다 약간 길게 설정
 
         wrap.addEventListener('transitionstart', function() {
             element.classList.remove('is-animating')
