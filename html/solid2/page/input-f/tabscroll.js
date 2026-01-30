@@ -49,6 +49,249 @@ class BaseComponent {
     }
 }
 
+class SolidAccordion extends BaseComponent {
+    constructor(element) {
+        if(getElement(element).classList.contains("initiated")) {
+            return {};
+        }
+        super(element);
+
+        if(element.classList.contains("accordion-notice")) this._initNotice = true;
+
+        if(getDataAttribute(element, "accordion-control")) this._isAccordionControl = true;
+
+        this._element = element;
+        this._accoTitleWrap = element.querySelector(".acco-title-wrap");
+        this._accoContentWrap = element.querySelector(".acco-content-wrap");
+        this._accoContentWrap.hidden = true;
+        this._isActive = true;
+        this._isScrollArmed = false;
+        this._isScroll = true;
+        this._accoContent = element.querySelector(".acco-content");
+        if (element.classList.contains("on")) {
+            this._setHeight();
+        }
+
+        this._init();
+        this._eventBind();
+        this._bindResize();
+    }
+
+    _bindResize() {
+        let timer = null;
+        let prevWidth = window.innerWidth;
+
+        window.addEventListener("resize", () => {
+            const currentWidth = window.innerWidth;
+            if (currentWidth !== prevWidth) {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    if (this._element.classList.contains("on")) {
+                        this._setHeight();
+                    }
+                }, 100);
+            }
+        });
+    }
+
+    _scroll() {
+        if (!this._isScroll) return;
+
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.isContentEditabled)) return;
+
+        if(this._element.closest('[role="tabpanel"]')) {
+            if(this._asActive) {
+                this._asActive = false;
+                return;
+            }
+        }
+
+        const rect = this._accoTitleWrap.getBoundingClientRect();
+        const targetY = rect.top + window.pageYOffset;
+
+        window.scrollTo({
+            top: targetY,
+            behavior: "smooth"
+        });
+
+    }
+
+    _init() {
+
+        const mutationObserver = new MutationObserver(mutations => {
+            if (!this._element.classList.contains("on")) return;
+
+            mutationObserver.disconnect();
+
+            let needUpdate = false;
+            for (const mutation of mutations) {
+
+                if (
+                    mutation.type === "childList" ||
+                    mutation.type === "characterData" ||
+                    mutation.type === "attributes" && mutation.attributeName === "style"
+                ) {
+                    needUpdate = true;
+                    break;
+                }
+            }
+
+            if (needUpdate) {
+                this._setHeight();
+            }
+
+            setTimeout(() => {
+                mutationObserver.observe(this._element, this._observeConfig);
+            }, 100);
+        });
+
+        this._observeConfig = {
+            childList: true,
+            attributes: true,
+            characterData: true,
+            subtree: true
+        };
+        
+        mutationObserver.observe(this._element, this._observeConfig);
+
+        this.mutationObserver = mutationObserver;
+    }
+
+    _setHeight() {
+        const element = this._element;
+        const wrap = this._accoContentWrap;
+        if(!wrap) return;
+
+        wrap.style.overflow = "hidden";
+        wrap.style.display = "block";
+        wrap.style.height = "0px";
+        setAriaAttribute(this._accoTitleWrap, "expanded", true);
+        wrap.removeAttribute("hidden");
+
+        requestAnimationFrame(() => {
+            const content = this._accoContent || wrap;
+            const height = content.scrollHeight;
+
+            wrap.style.height = height + "px";
+            wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
+        });
+
+
+        wrap.addEventListener("transitionend", function onStart() {
+            if (wrap.style.maxHeight !== "0px") {
+                wrap.style.overflow = "auto";
+            }
+            wrap.removeEventListener("transitionend", onStart);
+        });
+
+        wrap.addEventListener('transitionstart', function() {
+            element.classList.remove('is-animating')
+        }, { once: true });
+    }
+
+    _setCloseHeight() {
+        const element = this._element;
+        const wrap = this._accoContentWrap;
+        if(!wrap) return;
+
+       setAriaAttribute(this._accoTitleWrap, "expanded", false);
+       wrap.setAttribute("hidden", true);
+
+       requestAnimationFrame(() => {
+        wrap.style.height = "0px";
+       });
+
+       wrap.addEventListener("transitionend", function onEnd() {
+        wrap.style.overflow = "hidden";
+        wrap.style.display = "none";
+        wrap.removeEventListener("transitionend", onEnd);
+       });
+
+       wrap.addEventListener('transitionsEnd', function() {
+        element.classList.remove('is-animating')
+       }, { once: true });
+    }
+
+
+    static get NAME() {
+        return "SolidAccordion";
+    }
+
+    _eventBind() {
+        if(!this._isAccordionControl) {
+            this._accoTitleWrap.addEventListener("click", this.openContent())
+        }
+
+        this._accoContentWrap.addEventListener("transitionend", (e) => {
+            if (e.target === this._accoContentWrap) return;
+            if (e.propertyName !== "height") return;
+
+            if (!this._isNotice) return;
+            if (!this._isScrollArmed) return;
+            if (!this._isScroll) return;
+
+            this._isScrollArmed = false;
+
+            this._scroll();
+        });
+
+        if(this._element.closest('[role="tabpanel"]')) {
+            const tabpanel = this._element.closest('[role="tabpanel"]');
+
+            tabpanel?.addEventListener("tabActivated", (e) => {
+                requestAnimationFrame(() => {
+                    tabpanel?.querySelectorAll(".accordion-area").forEach((el) => {
+                        if (el.classList.contains("on")) {
+                            this._isActive = true;
+                        }
+                    });
+                });
+            });
+        }
+    }
+
+    openContent(isOpen, isScroll = true) {
+         const parentNode = this?._accoTitleWrap?.closet(".accordion-area");
+         const willOpen = !parentNode.classList.contains("on");
+
+         if(this._element.classList.contains("is-animating")) return;
+         this._element.classList.add("is-animating");
+
+         this._isScroll = isScroll;
+
+         const  _closeFn = () => {
+            parentNode.classList.remove("on");
+            this._setCloseHeight();
+            this._isScrollArmed = false;
+         };
+
+         const _openFn = () => {
+            parentNode.classList.add("on");
+            this._setHeight();
+         };
+
+         if(!this._isAccordionControl) {
+            if(willOpen && this._isNotice) {
+                this._isScrollArmed = true;
+            }
+            if (parentNode.classList.contains("on")) {
+                _closeFn();
+            } else {
+                _openFn();
+            }
+            return;
+         }  else {
+            if (!isOpen) {
+                _closeFn();
+            } else {
+                _openFn();
+            }
+            return isOpen ? false : true;
+         }    
+    }
+}
+
 /**
  * 스크롤 네비게이션 버튼(이전/다음)을 자동으로 추가하는 독립적인 클래스
  * 특정 클래스를 가진 요소에 이전/다음 버튼을 추가하여 스크롤 기능을 제공합니다.
@@ -1119,6 +1362,7 @@ class SolidBasicTabs extends BaseComponent {
         const maxChecks = 50; // 최대 5초 대기 (100ms * 50)
         let checkInterval = null;
         let transitionEndHandler = null;
+        let accordionOpenedHandler = null;
         
         const cleanup = () => {
             if (checkInterval) {
@@ -1129,9 +1373,25 @@ class SolidBasicTabs extends BaseComponent {
                 accordionContentWrap.removeEventListener('transitionend', transitionEndHandler);
                 transitionEndHandler = null;
             }
+            if (accordionOpenedHandler && accordionContentWrap) {
+                accordionContentWrap.removeEventListener('accordion:opened', accordionOpenedHandler);
+                accordionOpenedHandler = null;
+            }
             // 초기화 완료 표시
             delete wrap.dataset[initKey];
         };
+        
+        // accordion:opened 이벤트 리스너 추가 (가장 빠른 감지)
+        if (accordionContentWrap) {
+            accordionOpenedHandler = () => {
+                cleanup();
+                // 아코디언이 열린 후 약간의 지연을 두고 탭 초기화
+                setTimeout(() => {
+                    this._initTabAfterAccordionOpen(wrap, group);
+                }, 50);
+            };
+            accordionContentWrap.addEventListener('accordion:opened', accordionOpenedHandler, { once: true });
+        }
         
         checkInterval = setInterval(() => {
             checkCount++;
@@ -1239,6 +1499,7 @@ class SolidBasicTabs extends BaseComponent {
         const maxChecks = 50; // 최대 5초 대기 (100ms * 50)
         let checkInterval = null;
         let transitionEndHandler = null;
+        let accordionOpenedHandler = null;
         
         const cleanup = () => {
             if (checkInterval) {
@@ -1249,9 +1510,25 @@ class SolidBasicTabs extends BaseComponent {
                 accordionContentWrap.removeEventListener('transitionend', transitionEndHandler);
                 transitionEndHandler = null;
             }
+            if (accordionOpenedHandler && accordionContentWrap) {
+                accordionContentWrap.removeEventListener('accordion:opened', accordionOpenedHandler);
+                accordionOpenedHandler = null;
+            }
             // 처리 완료 표시
             delete panel.dataset[panelKey];
         };
+        
+        // accordion:opened 이벤트 리스너 추가 (가장 빠른 감지)
+        if (accordionContentWrap) {
+            accordionOpenedHandler = () => {
+                cleanup();
+                // 아코디언이 열린 후 약간의 지연을 두고 콜백 실행
+                setTimeout(() => {
+                    if (callback) callback();
+                }, 50);
+            };
+            accordionContentWrap.addEventListener('accordion:opened', accordionOpenedHandler, { once: true });
+        }
         
         checkInterval = setInterval(() => {
             checkCount++;
@@ -1294,30 +1571,43 @@ class SolidBasicTabs extends BaseComponent {
         // height 초기화 (아코디언이 열린 후에도 height가 남아있을 수 있음)
         wrap.style.height = "";
         
-        // scroll-nav-wrap이 표시된 후 depth2의 네비게이션 상태 업데이트
-        requestAnimationFrame(() => {
+        // group의 id를 통해 targetId 확인
+        const targetId = group.id;
+        if (!targetId) {
+            // targetId가 없으면 기존 로직 실행
             requestAnimationFrame(() => {
-                if (group._scrollNavigation) {
-                    // force=true로 강제 업데이트하여 wrap이 표시된 직후에도 상태 업데이트
-                    group._scrollNavigation._updateState(true);
-                }
-                
-                // depth2 탭이 제대로 표시되도록 활성 탭 다시 활성화
-                const activeTab = group.querySelector(".solid-tab[aria-selected='true']") || 
-                                 group.querySelector(".solid-tab");
-                if (activeTab) {
-                    // 탭이 이미 활성화되어 있으면 다시 활성화하여 표시 보장
-                    const currentState = activeTab.getAttribute("aria-selected");
-                    if (currentState === "true") {
-                        activeTab.hidden = false;
-                        // 스크롤 네비게이션 상태 다시 업데이트
-                        if (group._scrollNavigation) {
-                            setTimeout(() => {
-                                group._scrollNavigation._updateState(true);
-                            }, 100);
+                requestAnimationFrame(() => {
+                    if (group._scrollNavigation) {
+                        group._scrollNavigation._updateState(true);
+                    }
+                    
+                    const activeTab = group.querySelector(".solid-tab[aria-selected='true']") || 
+                                     group.querySelector(".solid-tab");
+                    if (activeTab) {
+                        const currentState = activeTab.getAttribute("aria-selected");
+                        if (currentState === "true") {
+                            activeTab.hidden = false;
+                            if (group._scrollNavigation) {
+                                setTimeout(() => {
+                                    group._scrollNavigation._updateState(true);
+                                }, 100);
+                            }
                         }
                     }
-                }
+                });
+            });
+            return;
+        }
+        
+        // depth2 초기화 옵션이 활성화되어 있으면 첫 번째 탭으로 리셋
+        if (this._resetDepth2OnTabChange) {
+            this._resetDepth2Tabs(targetId);
+        }
+        
+        // depth2 탭 초기화 실행 (아코디언이 완전히 열린 후)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this._initDepth2(targetId);
             });
         });
     }
