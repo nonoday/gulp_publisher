@@ -1136,8 +1136,11 @@ class SolidBasicTabs extends BaseComponent {
                             requestAnimationFrame(() => {
                                 requestAnimationFrame(() => {
                                     panel.querySelectorAll(".accordion-area").forEach((accordionArea) => {
-                                        const accordionElement = accordionArea.querySelector(".accordion-item");
-                                        if (!accordionElement) return;
+                                        // .accordion-item이 있으면 그것을 사용, 없으면 .accordion-area 자체를 사용
+                                        let accordionElement = accordionArea.querySelector(".accordion-item");
+                                        if (!accordionElement) {
+                                            accordionElement = accordionArea;
+                                        }
                                         
                                         // 아코디언 인스턴스 찾기 또는 재초기화
                                         let accordionInstance = accordionElement._accordionInstance;
@@ -1201,8 +1204,10 @@ class SolidBasicTabs extends BaseComponent {
                   requestAnimationFrame(() => {
                       requestAnimationFrame(() => {
                           depth1Panel.querySelectorAll(".accordion-area").forEach((accordionArea) => {
-                              const accordionElement = accordionArea.querySelector(".accordion-item");
-                              if (!accordionElement) return;
+                              let accordionElement = accordionArea.querySelector(".accordion-item");
+                              if (!accordionElement) {
+                                  accordionElement = accordionArea;
+                              }
                               
                               // 아코디언 인스턴스 찾기 또는 재초기화
                               let accordionInstance = accordionElement._accordionInstance;
@@ -1410,10 +1415,12 @@ class SolidBasicTabs extends BaseComponent {
                 // 패널이 표시된 후 아코디언 재초기화 (hidden 상태에서 표시 상태로 변경될 때 이벤트가 제대로 바인딩되도록)
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        // .accordion-area 내부의 .accordion-item 찾기
+                        // .accordion-area 내부의 .accordion-item 찾기 (없으면 .accordion-area 자체 사용)
                         panel.querySelectorAll(".accordion-area").forEach((accordionArea) => {
-                            const accordionElement = accordionArea.querySelector(".accordion-item");
-                            if (!accordionElement) return;
+                            let accordionElement = accordionArea.querySelector(".accordion-item");
+                            if (!accordionElement) {
+                                accordionElement = accordionArea;
+                            }
                             
                             // 아코디언 인스턴스 찾기 또는 재초기화
                             let accordionInstance = accordionElement._accordionInstance;
@@ -1539,8 +1546,11 @@ class SolidBasicTabs extends BaseComponent {
                             requestAnimationFrame(() => {
                                 requestAnimationFrame(() => {
                                     panel.querySelectorAll(".accordion-area").forEach((accordionArea) => {
-                                        const accordionElement = accordionArea.querySelector(".accordion-item");
-                                        if (!accordionElement) return;
+                                        // .accordion-item이 있으면 그것을 사용, 없으면 .accordion-area 자체를 사용
+                                        let accordionElement = accordionArea.querySelector(".accordion-item");
+                                        if (!accordionElement) {
+                                            accordionElement = accordionArea;
+                                        }
                                         
                                         // 아코디언 인스턴스 찾기 또는 재초기화
                                         let accordionInstance = accordionElement._accordionInstance;
