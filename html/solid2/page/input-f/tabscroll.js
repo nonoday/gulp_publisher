@@ -178,10 +178,27 @@ class SolidAccordion extends BaseComponent {
         });
 
 
-        wrap.addEventListener("transitionend", function onStart() {
+        wrap.addEventListener("transitionend", function onStart(e) {
+            if (e.target !== wrap || e.propertyName !== "height") return;
+            
             if (wrap.style.maxHeight !== "0px") {
                 wrap.style.overflow = "auto";
             }
+            
+            // 아코디언이 열린 후 내부 탭 초기화
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const tabsContainers = wrap.querySelectorAll(".ui-basic-tab");
+                    if (tabsContainers.length > 0) {
+                        try {
+                            SolidTabsUpdate(tabsContainers);
+                        } catch (err) {
+                            console.warn("Failed to update tabs in accordion:", err);
+                        }
+                    }
+                });
+            });
+            
             wrap.removeEventListener("transitionend", onStart);
         });
 
@@ -1037,10 +1054,6 @@ class SolidBasicTabs extends BaseComponent {
                             requestAnimationFrame(() => {
                                 panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                             });
-                            
-                            // 패널 내부의 아코디언이 열려있으면 내부 탭 초기화
-                            this._initTabsInAccordions(panel);
-                            
                             try {
                                 const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                                 if (tabsContainers.length > 0) {
@@ -1060,9 +1073,6 @@ class SolidBasicTabs extends BaseComponent {
                     // 아코디언이 열릴 때까지 기다렸다가 패널 표시
                     this._waitForAccordionAndShowPanel(depth1Panel, () => {
                         depth1Panel.hidden = false;
-                        
-                        // 패널 내부의 아코디언이 열려있으면 내부 탭 초기화
-                        this._initTabsInAccordions(depth1Panel);
                         
                         // depth2 초기화 옵션이 활성화되어 있으면 첫 번째 탭으로 리셋
                         if (this._resetDepth2OnTabChange) {
@@ -1287,10 +1297,6 @@ class SolidBasicTabs extends BaseComponent {
                     panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                     panel.hidden = false;
                 });
-                
-                // 패널 내부의 아코디언이 열려있으면 내부 탭 초기화
-                this._initTabsInAccordions(panel);
-                
                 try {
                     const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                     if (tabsContainers.length > 0) {
@@ -1371,10 +1377,6 @@ class SolidBasicTabs extends BaseComponent {
                                 panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                                 panel.hidden = false;
                             });
-                            
-                            // 패널 내부의 아코디언이 열려있으면 내부 탭 초기화
-                            this._initTabsInAccordions(panel);
-                            
                             try {
                                 const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                                 if (tabsContainers.length > 0) {
