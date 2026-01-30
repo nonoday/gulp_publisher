@@ -1213,10 +1213,26 @@ class SolidBasicTabs extends BaseComponent {
                                                 console.warn("Failed to initialize accordion:", e);
                                                 return;
                                             }
+                                        } else if (accordionInstance) {
+                                            // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
+                                            if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
+                                                // 기존 이벤트 리스너 제거 후 재바인딩
+                                                if (accordionInstance._accoTitleWrap._originalClickHandler) {
+                                                    accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
+                                                }
+                                                
+                                                const clickHandler = (e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    if (accordionInstance && accordionInstance.openContent) {
+                                                        accordionInstance.openContent();
+                                                    }
+                                                };
+                                                
+                                                accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
+                                                accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
+                                            }
                                         }
-                                        
-                                        // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
-                                        // 추가 이벤트 바인딩은 불필요
                                     });
                                 });
                             });
@@ -1265,10 +1281,26 @@ class SolidBasicTabs extends BaseComponent {
                                       console.warn("Failed to initialize accordion:", e);
                                       return;
                                   }
+                              } else if (accordionInstance) {
+                                  // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
+                                  if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
+                                      // 기존 이벤트 리스너 제거 후 재바인딩
+                                      if (accordionInstance._accoTitleWrap._originalClickHandler) {
+                                          accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
+                                      }
+                                      
+                                      const clickHandler = (e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          if (accordionInstance && accordionInstance.openContent) {
+                                              accordionInstance.openContent();
+                                          }
+                                      };
+                                      
+                                      accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
+                                      accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
+                                  }
                               }
-                              
-                              // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
-                              // 추가 이벤트 바인딩은 불필요
                           });
                       });
                   });
@@ -1464,10 +1496,26 @@ class SolidBasicTabs extends BaseComponent {
                                     console.warn("Failed to initialize accordion:", e);
                                     return;
                                 }
+                            } else if (accordionInstance) {
+                                // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
+                                if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
+                                    // 기존 이벤트 리스너 제거 후 재바인딩
+                                    if (accordionInstance._accoTitleWrap._originalClickHandler) {
+                                        accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
+                                    }
+                                    
+                                    const clickHandler = (e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (accordionInstance && accordionInstance.openContent) {
+                                            accordionInstance.openContent();
+                                        }
+                                    };
+                                    
+                                    accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
+                                    accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
+                                }
                             }
-                            
-                            // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
-                            // 추가 이벤트 바인딩은 불필요
                         });
                     });
                 });
@@ -1575,10 +1623,26 @@ class SolidBasicTabs extends BaseComponent {
                                                 console.warn("Failed to initialize accordion:", e);
                                                 return;
                                             }
+                                        } else if (accordionInstance) {
+                                            // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
+                                            if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
+                                                // 기존 이벤트 리스너 제거 후 재바인딩
+                                                if (accordionInstance._accoTitleWrap._originalClickHandler) {
+                                                    accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
+                                                }
+                                                
+                                                const clickHandler = (e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    if (accordionInstance && accordionInstance.openContent) {
+                                                        accordionInstance.openContent();
+                                                    }
+                                                };
+                                                
+                                                accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
+                                                accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
+                                            }
                                         }
-                                        
-                                        // 아코디언이 재초기화된 경우 이벤트는 _eventBind에서 이미 바인딩됨
-                                        // 추가 이벤트 바인딩은 불필요
                                     });
                                 });
                             });
