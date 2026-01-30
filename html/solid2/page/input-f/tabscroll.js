@@ -941,20 +941,28 @@ class SolidBasicTabs extends BaseComponent {
             return;
         }
         
-        // 늘어났다가 줄어드는 애니메이션
+        // 늘어났다가 줄어드는 애니메이션 (스크립트로 제어)
+        // transition을 임시로 비활성화하여 스크립트로 애니메이션 제어
+        const originalTransition = this._indicator.style.transition;
+        this._indicator.style.transition = 'none';
+        
         // 1단계: 현재 탭 넓이에서 50% 증가 (150%)
         const expandedWidth = currentW * 1.5;
         
-        // 2단계: 목표 위치로 이동하고 목표 넓이로 축소
-        // 먼저 현재 위치에서 넓이를 50% 증가
+        // 현재 위치에서 넓이를 50% 증가
         this._indicator.style.width = expandedWidth + "px";
         this._indicator.style.transform = `translateX(${currentX}px)`;
         
         // 브라우저가 첫 번째 변경사항을 렌더링한 후 두 번째 단계 실행
         requestAnimationFrame(() => {
-            // 목표 위치로 이동하고 목표 넓이로 축소
-            this._indicator.style.width = targetW + "px";
-            this._indicator.style.transform = `translateX(${targetX}px)`;
+            requestAnimationFrame(() => {
+                // 목표 위치로 이동하고 목표 넓이로 축소
+                this._indicator.style.width = targetW + "px";
+                this._indicator.style.transform = `translateX(${targetX}px)`;
+                
+                // transition 복원
+                this._indicator.style.transition = originalTransition || '';
+            });
         });
     }
 
