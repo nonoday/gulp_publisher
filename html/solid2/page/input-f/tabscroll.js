@@ -178,10 +178,27 @@ class SolidAccordion extends BaseComponent {
         });
 
 
-        wrap.addEventListener("transitionend", function onStart() {
+        wrap.addEventListener("transitionend", function onStart(e) {
+            if (e.target !== wrap || e.propertyName !== "height") return;
+            
             if (wrap.style.maxHeight !== "0px") {
                 wrap.style.overflow = "auto";
             }
+            
+            // 아코디언이 열린 후 내부 탭 초기화
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const tabsContainers = wrap.querySelectorAll(".ui-basic-tab");
+                    if (tabsContainers.length > 0) {
+                        try {
+                            SolidTabsUpdate(tabsContainers);
+                        } catch (err) {
+                            console.warn("Failed to update tabs in accordion:", err);
+                        }
+                    }
+                });
+            });
+            
             wrap.removeEventListener("transitionend", onStart);
         });
 
@@ -1468,13 +1485,10 @@ class SolidBasicTabs extends BaseComponent {
             return isOpen;
         };
         
-        // 아코디언이 이미 열려있으면 약간의 지연 후 초기화 (DOM 렌더링 완료 대기)
+        // 아코디언이 이미 열려있으면 바로 초기화
+        // (아코디언의 transitionend에서 내부 탭 초기화 처리)
         if (isAccordionOpen()) {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    this._initTabAfterAccordionOpen(wrap, group);
-                });
-            });
+            this._initTabAfterAccordionOpen(wrap, group);
             return;
         }
         
@@ -1552,13 +1566,10 @@ class SolidBasicTabs extends BaseComponent {
             return isOpen;
         };
         
-        // 아코디언이 이미 열려있으면 약간의 지연 후 콜백 실행 (DOM 렌더링 완료 대기)
+        // 아코디언이 이미 열려있으면 바로 콜백 실행
+        // (아코디언의 transitionend에서 내부 탭 초기화 처리)
         if (isAccordionOpen()) {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    if (callback) callback();
-                });
-            });
+            if (callback) callback();
             return;
         }
         
