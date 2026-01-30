@@ -907,11 +907,51 @@ class SolidBasicTabs extends BaseComponent {
         
         const tabRect = tab.getBoundingClientRect();
         const parentRect = tab.parentNode.getBoundingClientRect();
-        const x = tabRect.left - parentRect.left;
-        const w = tabRect.width;
+        const targetX = tabRect.left - parentRect.left + tab.parentNode.scrollLeft;
+        const targetW = tab.offsetWidth;
         
-        this._indicator.style.width = w + "px";
-        this._indicator.style.transform = `translateX(${x + tab.parentNode.scrollLeft}px)`;
+        // transition이 비활성화된 경우 (초기화 시) 바로 설정
+        if (this._indicator.style.transition === 'none') {
+            this._indicator.style.width = targetW + "px";
+            this._indicator.style.transform = `translateX(${targetX}px)`;
+            return;
+        }
+        
+        // 현재 인디케이터의 위치와 너비 계산
+        const currentTransform = getComputedStyle(this._indicator).transform;
+        let currentX = 0;
+        if (currentTransform && currentTransform !== 'none') {
+            const matrix = currentTransform.match(/matrix.*\((.+)\)/);
+            if (matrix) {
+                currentX = parseFloat(matrix[1].split(',')[4]) || 0;
+            }
+        } else {
+            // transform이 없으면 offsetLeft 사용
+            const indicatorRect = this._indicator.getBoundingClientRect();
+            const parentRect2 = this._indicator.parentElement.getBoundingClientRect();
+            currentX = indicatorRect.left - parentRect2.left + tab.parentNode.scrollLeft;
+        }
+        const currentW = this._indicator.offsetWidth || 0;
+        
+        // 늘어났다가 줄어드는 애니메이션
+        // 1단계: 너비를 늘려서 현재 위치와 목표 위치를 모두 포함
+        const startX = currentX;
+        const endX = targetX;
+        const expandedWidth = Math.abs(endX - startX) + Math.max(currentW, targetW);
+        const expandedX = Math.min(startX, endX);
+        
+        // 2단계: 위치 이동과 함께 너비를 목표 너비로 줄임
+        requestAnimationFrame(() => {
+            // 먼저 너비를 늘림
+            this._indicator.style.width = expandedWidth + "px";
+            this._indicator.style.transform = `translateX(${expandedX}px)`;
+            
+            // 그 다음 위치 이동과 너비 축소
+            requestAnimationFrame(() => {
+                this._indicator.style.width = targetW + "px";
+                this._indicator.style.transform = `translateX(${targetX}px)`;
+            });
+        });
     }
 
     _activateDepth1Tab(tab) {
