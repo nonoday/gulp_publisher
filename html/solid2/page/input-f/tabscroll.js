@@ -695,6 +695,16 @@ class SolidBasicTabs extends BaseComponent {
         return element?._basicTabsInstance || null;
     }
 
+    /**
+     * depth1 탭 초기화 메서드
+     * - 탭 목록, 패널 목록 설정
+     * - 인디케이터 생성 (solid-text-tabs, solid-chip-tabs 제외)
+     * - 스크롤 네비게이션 설정
+     * - 초기 활성 탭 설정
+     *   - 아코디언 안에 있는 경우: aria-selected='true'가 있는 탭만 활성화 (없으면 활성화하지 않음)
+     *   - 아코디언 밖에 있는 경우: aria-selected='true'가 있으면 그것을, 없으면 첫 번째 탭 활성화
+     *   - 아코디언이 닫혀있으면 transitionend 이벤트를 기다렸다가 활성화
+     */
     _initDepth1() {
         this._scrollWrap = this._element.querySelector(".scroll-nav-wrap");
         this._depth1 = this._element.querySelector(":scope > [role='tablist'], :scope > .scroll-nav-wrap > [role='tablist']");
@@ -752,7 +762,12 @@ class SolidBasicTabs extends BaseComponent {
         //초기활성화
         // 아코디언 안에 있는지 확인
         const accordionContentWrap = this._element.closest('.acco-content-wrap');
-        const activeTab = this._element.querySelector(".solid-tab[aria-selected='true']") || (accordionContentWrap ? null : this._tabs[0]);
+        
+        // 활성 탭 찾기: aria-selected='true'가 있으면 우선 사용, 없으면 아코디언이 아닌 경우에만 첫 번째 탭 사용
+        let activeTab = this._element.querySelector(".solid-tab[aria-selected='true']");
+        if (!activeTab && !accordionContentWrap) {
+            activeTab = this._tabs[0];
+        }
         
         if (activeTab) {
             if (accordionContentWrap) {
@@ -1334,6 +1349,8 @@ class SolidBasicTabs extends BaseComponent {
 
     /**
      * 아코디언이 열릴 때까지 기다렸다가 탭을 초기화하는 메서드
+     * - 아코디언이 없거나 이미 열려있으면 바로 초기화
+     * - 아코디언이 닫혀있으면 transitionend 이벤트를 기다렸다가 초기화
      * @param {HTMLElement} wrap - scroll-nav-wrap 요소
      * @param {HTMLElement} group - depth2 그룹 요소
      */
@@ -1412,6 +1429,8 @@ class SolidBasicTabs extends BaseComponent {
     
     /**
      * 아코디언이 열릴 때까지 기다렸다가 패널을 표시하는 메서드
+     * - 아코디언이 없거나 이미 열려있으면 바로 콜백 실행
+     * - 아코디언이 닫혀있으면 transitionend 이벤트를 기다렸다가 콜백 실행
      * @param {HTMLElement} panel - 표시할 패널 요소
      * @param {Function} callback - 아코디언이 열린 후 실행할 콜백
      */
@@ -1490,6 +1509,8 @@ class SolidBasicTabs extends BaseComponent {
     
     /**
      * 아코디언이 열린 후 탭을 초기화하는 메서드
+     * - depth2 탭 초기화 실행
+     * - targetId가 있으면 _initDepth2 호출하여 depth2 탭 초기화
      * @param {HTMLElement} wrap - scroll-nav-wrap 요소
      * @param {HTMLElement} group - depth2 그룹 요소
      */
