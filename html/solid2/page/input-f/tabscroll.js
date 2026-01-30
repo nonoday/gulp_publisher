@@ -946,16 +946,15 @@ class SolidBasicTabs extends BaseComponent {
         const expandedWidth = currentW * 1.5;
         
         // 2단계: 목표 위치로 이동하고 목표 넓이로 축소
+        // 먼저 현재 위치에서 넓이를 50% 증가
+        this._indicator.style.width = expandedWidth + "px";
+        this._indicator.style.transform = `translateX(${currentX}px)`;
+        
+        // 브라우저가 첫 번째 변경사항을 렌더링한 후 두 번째 단계 실행
         requestAnimationFrame(() => {
-            // 먼저 현재 위치에서 넓이를 50% 증가
-            this._indicator.style.width = expandedWidth + "px";
-            this._indicator.style.transform = `translateX(${currentX}px)`;
-            
-            // 그 다음 목표 위치로 이동하고 목표 넓이로 축소
-            requestAnimationFrame(() => {
-                this._indicator.style.width = targetW + "px";
-                this._indicator.style.transform = `translateX(${targetX}px)`;
-            });
+            // 목표 위치로 이동하고 목표 넓이로 축소
+            this._indicator.style.width = targetW + "px";
+            this._indicator.style.transform = `translateX(${targetX}px)`;
         });
     }
 
