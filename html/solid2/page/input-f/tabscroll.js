@@ -931,22 +931,27 @@ class SolidBasicTabs extends BaseComponent {
             const parentRect2 = this._indicator.parentElement.getBoundingClientRect();
             currentX = indicatorRect.left - parentRect2.left + tab.parentNode.scrollLeft;
         }
-        const currentW = this._indicator.offsetWidth || 0;
+        const currentW = this._indicator.offsetWidth || targetW;
+        
+        // 리사이즈 시 위치 차이가 거의 없으면 애니메이션 없이 바로 설정
+        const positionDiff = Math.abs(targetX - currentX);
+        if (positionDiff < 1 && Math.abs(targetW - currentW) < 1) {
+            this._indicator.style.width = targetW + "px";
+            this._indicator.style.transform = `translateX(${targetX}px)`;
+            return;
+        }
         
         // 늘어났다가 줄어드는 애니메이션
-        // 1단계: 너비를 늘려서 현재 위치와 목표 위치를 모두 포함
-        const startX = currentX;
-        const endX = targetX;
-        const expandedWidth = Math.abs(endX - startX) + Math.max(currentW, targetW);
-        const expandedX = Math.min(startX, endX);
+        // 1단계: 현재 탭 넓이에서 50% 증가 (150%)
+        const expandedWidth = currentW * 1.5;
         
-        // 2단계: 위치 이동과 함께 너비를 목표 너비로 줄임
+        // 2단계: 목표 위치로 이동하고 목표 넓이로 축소
         requestAnimationFrame(() => {
-            // 먼저 너비를 늘림
+            // 먼저 현재 위치에서 넓이를 50% 증가
             this._indicator.style.width = expandedWidth + "px";
-            this._indicator.style.transform = `translateX(${expandedX}px)`;
+            this._indicator.style.transform = `translateX(${currentX}px)`;
             
-            // 그 다음 위치 이동과 너비 축소
+            // 그 다음 목표 위치로 이동하고 목표 넓이로 축소
             requestAnimationFrame(() => {
                 this._indicator.style.width = targetW + "px";
                 this._indicator.style.transform = `translateX(${targetX}px)`;
