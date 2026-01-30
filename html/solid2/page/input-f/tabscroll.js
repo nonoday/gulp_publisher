@@ -226,12 +226,106 @@ class SolidAccordion extends BaseComponent {
         setAriaAttribute(this._accoTitleWrap, "expanded", true);
         wrap.removeAttribute("hidden");
 
-        requestAnimationFrame(() => {
-            const content = this._accoContent || wrap;
-            const height = content.scrollHeight;
+        // 탭 패널이 hidden 또는 display:none 상태인지 확인
+        const panel = wrap.closest('[role="tabpanel"]');
+        const isPanelHidden = panel && panel.hidden;
+        const panelComputedStyle = panel ? getComputedStyle(panel) : null;
+        const isPanelDisplayNone = panelComputedStyle && panelComputedStyle.display === 'none';
+        const isPanelNotVisible = isPanelHidden || isPanelDisplayNone;
+        
+        console.log("[_setHeight] 패널 상태:", { 
+            panel, 
+            isPanelHidden, 
+            isPanelDisplayNone, 
+            isPanelNotVisible,
+            panelDisplay: panelComputedStyle?.display
+        });
 
-            wrap.style.height = height + "px";
-            wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
+        // 높이 계산 함수
+        const calculateAndSetHeight = () => {
+            const content = this._accoContent || wrap;
+            let height = content.scrollHeight;
+            
+            console.log("[_setHeight] 높이 계산 시도:", { 
+                height, 
+                isPanelNotVisible,
+                content: content,
+                wrapDisplay: getComputedStyle(wrap).display,
+                wrapHeight: getComputedStyle(wrap).height
+            });
+            
+            // scrollHeight가 0이면 패널이 hidden 또는 display:none 상태일 수 있으므로 재시도
+            if (height === 0 && isPanelNotVisible) {
+                console.warn("[_setHeight] scrollHeight가 0입니다. 패널이 hidden 또는 display:none 상태일 수 있습니다. 재시도합니다.");
+                // 패널이 표시될 때까지 대기
+                const checkPanelVisible = () => {
+                    const currentPanelStyle = panel ? getComputedStyle(panel) : null;
+                    const isCurrentlyVisible = panel && !panel.hidden && currentPanelStyle && currentPanelStyle.display !== 'none';
+                    
+                    if (isCurrentlyVisible) {
+                        // 패널이 표시된 상태에서 높이 재계산
+                        height = content.scrollHeight;
+                        if (height > 0) {
+                            wrap.style.height = height + "px";
+                            wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
+                            console.log("[_setHeight] 패널 표시 후 높이 설정:", height);
+                        } else {
+                            // 여전히 0이면 다시 시도 (최대 10회)
+                            if (checkPanelVisible.retryCount === undefined) {
+                                checkPanelVisible.retryCount = 0;
+                            }
+                            checkPanelVisible.retryCount++;
+                            if (checkPanelVisible.retryCount < 10) {
+                                requestAnimationFrame(checkPanelVisible);
+                            } else {
+                                console.error("[_setHeight] 높이 계산 실패: 최대 재시도 횟수 초과");
+                            }
+                        }
+                    } else if (!panel) {
+                        // 패널이 없으면 일반적으로 처리
+                        height = content.scrollHeight;
+                        if (height > 0) {
+                            wrap.style.height = height + "px";
+                            wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
+                        } else {
+                            console.warn("[_setHeight] 패널이 없지만 높이가 0입니다.");
+                        }
+                    } else {
+                        // 패널이 여전히 hidden 또는 display:none이면 재시도 (최대 10회)
+                        if (checkPanelVisible.retryCount === undefined) {
+                            checkPanelVisible.retryCount = 0;
+                        }
+                        checkPanelVisible.retryCount++;
+                        if (checkPanelVisible.retryCount < 10) {
+                            requestAnimationFrame(checkPanelVisible);
+                        } else {
+                            console.error("[_setHeight] 패널이 표시되지 않음: 최대 재시도 횟수 초과");
+                        }
+                    }
+                };
+                requestAnimationFrame(checkPanelVisible);
+            } else if (height === 0) {
+                // 패널이 표시되어 있는데도 높이가 0인 경우
+                console.warn("[_setHeight] 높이가 0입니다. 컨텐츠가 없거나 다른 문제가 있을 수 있습니다.", {
+                    content: content,
+                    contentChildren: content.children.length,
+                    wrapDisplay: getComputedStyle(wrap).display
+                });
+                // 그래도 높이 설정 시도
+                wrap.style.height = height + "px";
+                wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
+            } else {
+                // 정상적인 경우
+                wrap.style.height = height + "px";
+                wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
+                console.log("[_setHeight] 높이 설정:", height);
+            }
+        };
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                calculateAndSetHeight();
+            });
         });
 
 
