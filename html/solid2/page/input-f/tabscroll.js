@@ -1468,9 +1468,13 @@ class SolidBasicTabs extends BaseComponent {
             return isOpen;
         };
         
-        // 아코디언이 이미 열려있으면 바로 초기화
+        // 아코디언이 이미 열려있으면 약간의 지연 후 초기화 (DOM 렌더링 완료 대기)
         if (isAccordionOpen()) {
-            this._initTabAfterAccordionOpen(wrap, group);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this._initTabAfterAccordionOpen(wrap, group);
+                });
+            });
             return;
         }
         
@@ -1548,9 +1552,13 @@ class SolidBasicTabs extends BaseComponent {
             return isOpen;
         };
         
-        // 아코디언이 이미 열려있으면 바로 콜백 실행
+        // 아코디언이 이미 열려있으면 약간의 지연 후 콜백 실행 (DOM 렌더링 완료 대기)
         if (isAccordionOpen()) {
-            if (callback) callback();
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    if (callback) callback();
+                });
+            });
             return;
         }
         
