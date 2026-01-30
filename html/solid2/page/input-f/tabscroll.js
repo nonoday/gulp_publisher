@@ -645,47 +645,62 @@ class ScrollNavigation {
 
 
 const SolidTabsUpdate = (elements) => {
-    let scrollTabsElements = null;
-    let scrollspyTabsElements = null;
+    let scrollTabsElements = [];
+    let scrollspyTabsElements = [];
 
-    if(typeof elements == "undefined") {
-        scrollTabsElements = document.querySelectorAll(".ui-basic-tab");
-        scrollspyTabsElements = document.querySelectorAll(".ui-scrollspy");
-    } else if(typeof elements == "object" && typeof elements.length == "number") {
-       Object.values(elements ?? []).forEach((el) => {
-        if (el.classList.contains("ui-basic-tab")) {
-            scrollTabsElements = [...(scrollTabsElements ?? []), el];
-        } else if (el.classList.contains("ui-scrollspy")) {
-            scrollspyTabsElements = [...(scrollspyTabsElements ?? []), el];
-        }
-       })
-    } else if(typeof elements == "string") {
-        const targets = document.querySelectorAll(elements);
-        Object.values(targets ?? []).forEach((el) => {
-            if (el.classList.contains("ui-basic-tab")) {
-                scrollTabsElements = [...(scrollTabsElements ?? []), el];
-            } else if (el.classList.contains("ui-scrollspy")) {
-                scrollspyTabsElements = [...(scrollspyTabsElements ?? []), el];
+    try {
+        if(typeof elements == "undefined") {
+            scrollTabsElements = Array.from(document.querySelectorAll(".ui-basic-tab"));
+            scrollspyTabsElements = Array.from(document.querySelectorAll(".ui-scrollspy"));
+        } else if(typeof elements == "object" && elements !== null) {
+            // NodeList, HTMLCollection, 또는 배열인지 확인
+            if (typeof elements.length == "number") {
+                Array.from(elements).forEach((el) => {
+                    if (el && el.classList) {
+                        if (el.classList.contains("ui-basic-tab")) {
+                            scrollTabsElements.push(el);
+                        } else if (el.classList.contains("ui-scrollspy")) {
+                            scrollspyTabsElements.push(el);
+                        }
+                    }
+                });
             }
-        });
-    } else {
+        } else if(typeof elements == "string") {
+            const targets = document.querySelectorAll(elements);
+            Array.from(targets).forEach((el) => {
+                if (el && el.classList) {
+                    if (el.classList.contains("ui-basic-tab")) {
+                        scrollTabsElements.push(el);
+                    } else if (el.classList.contains("ui-scrollspy")) {
+                        scrollspyTabsElements.push(el);
+                    }
+                }
+            });
+        } else {
+            return false;
+        }
+    } catch (e) {
+        console.warn("SolidTabsUpdate: Error processing elements:", e);
         return false;
     }
 
-    Object.values(scrollTabsElements ?? []).forEach((tabElement) => {
-        try {
-            let scrollInstance = SolidBasicTabs.getInstance(tabElement);
-            if(scrollInstance === null) {
-                tabElement.classList.remove("initiated");
-                scrollInstance = new SolidBasicTabs(tabElement);
+    // scrollTabsElements 처리
+    if (scrollTabsElements && scrollTabsElements.length > 0) {
+        scrollTabsElements.forEach((tabElement) => {
+            try {
+                let scrollInstance = SolidBasicTabs.getInstance(tabElement);
+                if(scrollInstance === null) {
+                    tabElement.classList.remove("initiated");
+                    scrollInstance = new SolidBasicTabs(tabElement);
+                }
+                if(scrollInstance && typeof scrollInstance._initDepth1 === "function") {
+                    scrollInstance._initDepth1();
+                }
+            } catch (e) {
+                console.warn("Failed to update basic tabs:", e);
             }
-            if(scrollInstance && typeof scrollInstance._initDepth1 === "function") {
-                scrollInstance._initDepth1();
-            }
-        } catch (e) {
-            console.warn("Failed to update basic tabs:", e);
-        }
-    });
+        });
+    }
     // scrollspyTabsElements가 있고 scrollspyTabs가 정의되어 있을 때만 처리
     if (scrollspyTabsElements && scrollspyTabsElements.length > 0) {
         // scrollspyTabs가 정의되어 있는지 확인
