@@ -238,9 +238,11 @@ class SolidAccordion extends BaseComponent {
         wrap.addEventListener("transitionend", function onStart(e) {
             if (e.target !== wrap || e.propertyName !== "height") return;
             
-            if (wrap.style.maxHeight !== "0px") {
-                wrap.style.overflow = "auto";
-            }
+            // 애니메이션 완료 후 높이를 auto로 변경하여 컨텐츠 높이에 자동으로 맞춤
+            wrap.style.height = "auto";
+            wrap.style.overflow = "auto";
+            
+            console.log("[_setHeight] transitionend - 높이를 auto로 변경, 컨텐츠 높이에 자동 맞춤");
             
             // 아코디언이 열린 후 내부 탭 초기화 (패널이 hidden 상태가 아닐 때만)
             const panel = wrap.closest('[role="tabpanel"]');
@@ -290,20 +292,9 @@ class SolidAccordion extends BaseComponent {
         };
         wrap.addEventListener('transitionend', transitionEndHandler, { once: true });
         
-        // transitionstart가 발생하지 않는 경우를 대비해 타임아웃으로 is-animating 제거
-        const timeoutId = setTimeout(() => {
-            if (targetElement && targetElement.classList.contains('is-animating')) {
-                console.log("[_setHeight] 타임아웃으로 is-animating 강제 제거", targetElement);
-                targetElement.classList.remove('is-animating');
-            }
-            wrap.removeEventListener('transitionstart', transitionStartHandler);
-            wrap.removeEventListener('transitionend', transitionEndHandler);
-        }, 400);
-        
-        // transitionend 발생 시 타임아웃 취소
-        wrap.addEventListener('transitionend', () => {
-            clearTimeout(timeoutId);
-        }, { once: true });
+        // transitionend에서만 is-animating 제거 (타임아웃 제거하지 않음)
+        // transitionstart와 transitionend 이벤트 핸들러가 이미 is-animating을 제거하므로
+        // 타임아웃은 필요 없음
     }
 
     _setCloseHeight() {
@@ -367,20 +358,9 @@ class SolidAccordion extends BaseComponent {
        };
        wrap.addEventListener('transitionend', transitionEndHandler, { once: true });
        
-       // transitionstart가 발생하지 않는 경우를 대비해 타임아웃으로 is-animating 제거
-       const timeoutId = setTimeout(() => {
-           if (targetElement && targetElement.classList.contains('is-animating')) {
-               console.log("[_setCloseHeight] 타임아웃으로 is-animating 강제 제거", targetElement);
-               targetElement.classList.remove('is-animating');
-           }
-           wrap.removeEventListener('transitionstart', transitionStartHandler);
-           wrap.removeEventListener('transitionend', transitionEndHandler);
-       }, 400);
-       
-       // transitionend 발생 시 타임아웃 취소
-       wrap.addEventListener('transitionend', () => {
-           clearTimeout(timeoutId);
-       }, { once: true });
+       // transitionend에서만 is-animating 제거 (타임아웃 제거하지 않음)
+       // transitionstart와 transitionend 이벤트 핸들러가 이미 is-animating을 제거하므로
+       // 타임아웃은 필요 없음
        
        wrap.addEventListener('transitionsEnd', function() {
         // element가 .accordion-area가 아니면 parentNode 찾기
@@ -542,18 +522,9 @@ class SolidAccordion extends BaseComponent {
          parentNode.classList.add("is-animating");
          console.log("[SolidAccordion.openContent] is-animating 클래스 추가");
          
-         // 안전장치: 일정 시간 후 is-animating이 남아있으면 강제 제거
-         const timeoutId = setTimeout(() => {
-             if (parentNode.classList.contains("is-animating")) {
-                 console.warn("[SolidAccordion.openContent] 타임아웃으로 is-animating 강제 제거", parentNode);
-                 parentNode.classList.remove("is-animating");
-             }
-         }, 600);
-         
-         // transitionend 이벤트에서 타임아웃 취소 및 is-animating 제거
+         // transitionend 이벤트에서만 is-animating 제거 (타임아웃 제거하지 않음)
          const cleanupHandler = (e) => {
              if (e.target === this._accoContentWrap && e.propertyName === "height") {
-                 clearTimeout(timeoutId);
                  if (parentNode.classList.contains("is-animating")) {
                      console.log("[SolidAccordion.openContent] transitionend로 is-animating 제거", parentNode);
                      parentNode.classList.remove("is-animating");
