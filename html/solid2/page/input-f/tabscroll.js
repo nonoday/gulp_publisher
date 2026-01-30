@@ -843,7 +843,7 @@ class SolidBasicTabs extends BaseComponent {
 
             const currentWidth = window.innerWidth;
 
-            if(currentWidth === prevWidth)  {
+            if(currentWidth !== prevWidth) {
                 clearTimeout(timer);
                 timer = setTimeout(() => {
                     const tab = Array.from(this._tabs).find(
@@ -890,7 +890,15 @@ class SolidBasicTabs extends BaseComponent {
             if (!tab || !tab.parentNode) return;
 
             if(this._defaultTab) tab = this._defaultTab;
-            this._moveDepth1Indicator(tab);
+            
+            // 리사이즈 시에는 즉시 위치 설정
+            const tabRect = tab.getBoundingClientRect();
+            const parentRect = tab.parentNode.getBoundingClientRect();
+            const targetX = tabRect.left - parentRect.left + tab.parentNode.scrollLeft;
+            const targetW = tab.offsetWidth;
+            
+            this._indicator.style.width = targetW + "px";
+            this._indicator.style.transform = `translateX(${targetX}px)`;
 
             requestAnimationFrame(() => {
                 if (this._indicator) {
