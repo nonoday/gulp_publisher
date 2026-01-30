@@ -750,12 +750,56 @@ class SolidBasicTabs extends BaseComponent {
         }
         
         //초기활성화
-        const activeTab = this._element.querySelector(".solid-tab[aria-selected='true']") || this._tabs[0]
+        // 아코디언 안에 있는지 확인
+        const accordionContentWrap = this._element.closest('.acco-content-wrap');
+        const activeTab = this._element.querySelector(".solid-tab[aria-selected='true']") || (accordionContentWrap ? null : this._tabs[0]);
+        
         if (activeTab) {
-            if (!shouldSkipIndicator) {
-                this._initIndicator(activeTab);
+            if (accordionContentWrap) {
+                // 아코디언이 열려있는지 확인
+                const isAccordionOpen = () => {
+                    const computedStyle = getComputedStyle(accordionContentWrap);
+                    const display = computedStyle.display;
+                    const height = computedStyle.height;
+                    const inlineDisplay = accordionContentWrap.style.display;
+                    const inlineHeight = accordionContentWrap.style.height;
+                    
+                    const finalDisplay = inlineDisplay || display;
+                    const finalHeight = inlineHeight || height;
+                    
+                    return finalDisplay !== 'none' && 
+                           finalHeight !== '0px' && 
+                           finalHeight !== '0' &&
+                           finalHeight !== '';
+                };
+                
+                // 아코디언이 이미 열려있으면 바로 활성화
+                if (isAccordionOpen()) {
+                    if (!shouldSkipIndicator) {
+                        this._initIndicator(activeTab);
+                    }
+                    this._activateDepth1Tab(activeTab);
+                } else {
+                    // 아코디언이 닫혀있으면 transitionend 이벤트를 기다림
+                    const transitionEndHandler = (e) => {
+                        if (e.propertyName === 'height' || e.propertyName === 'max-height') {
+                            if (isAccordionOpen()) {
+                                if (!shouldSkipIndicator) {
+                                    this._initIndicator(activeTab);
+                                }
+                                this._activateDepth1Tab(activeTab);
+                            }
+                        }
+                    };
+                    accordionContentWrap.addEventListener('transitionend', transitionEndHandler, { once: true });
+                }
+            } else {
+                // 아코디언 안에 없으면 바로 활성화
+                if (!shouldSkipIndicator) {
+                    this._initIndicator(activeTab);
+                }
+                this._activateDepth1Tab(activeTab);
             }
-            this._activateDepth1Tab(activeTab);
         } else {
             // 초기 활성 탭이 없어도 모든 scroll-nav-wrap은 숨김 처리
             const subTabsList = this._element.querySelector(".sub-tabs-list");
@@ -1354,74 +1398,15 @@ class SolidBasicTabs extends BaseComponent {
             return;
         }
         
-        // 초기화 진행 중 표시
-        wrap.dataset[initKey] = 'processing';
-        
-        // 아코디언이 닫혀있으면 열릴 때까지 기다림
-        let checkCount = 0;
-        const maxChecks = 50; // 최대 5초 대기 (100ms * 50)
-        let checkInterval = null;
-        let transitionEndHandler = null;
-        let accordionOpenedHandler = null;
-        
-        const cleanup = () => {
-            if (checkInterval) {
-                clearInterval(checkInterval);
-                checkInterval = null;
-            }
-            if (transitionEndHandler && accordionContentWrap) {
-                accordionContentWrap.removeEventListener('transitionend', transitionEndHandler);
-                transitionEndHandler = null;
-            }
-            if (accordionOpenedHandler && accordionContentWrap) {
-                accordionContentWrap.removeEventListener('accordion:opened', accordionOpenedHandler);
-                accordionOpenedHandler = null;
-            }
-            // 초기화 완료 표시
-            delete wrap.dataset[initKey];
-        };
-        
-        // accordion:opened 이벤트 리스너 추가 (가장 빠른 감지)
+        // 아코디언이 닫혀있으면 transitionend 이벤트를 기다림
         if (accordionContentWrap) {
-            accordionOpenedHandler = () => {
-                cleanup();
-                // 아코디언이 열린 후 약간의 지연을 두고 탭 초기화
-                setTimeout(() => {
-                    this._initTabAfterAccordionOpen(wrap, group);
-                }, 50);
-            };
-            accordionContentWrap.addEventListener('accordion:opened', accordionOpenedHandler, { once: true });
-        }
-        
-        checkInterval = setInterval(() => {
-            checkCount++;
-            
-            if (isAccordionOpen()) {
-                cleanup();
-                // 아코디언이 열린 후 약간의 지연을 두고 탭 초기화
-                setTimeout(() => {
-                    this._initTabAfterAccordionOpen(wrap, group);
-                }, 100);
-            } else if (checkCount >= maxChecks) {
-                cleanup();
-                // 타임아웃 후에도 초기화 시도
-                this._initTabAfterAccordionOpen(wrap, group);
-            }
-        }, 100);
-        
-        // transitionend 이벤트도 감지 (acco-content-wrap에서)
-        if (accordionContentWrap) {
-            transitionEndHandler = (e) => {
+            const transitionEndHandler = (e) => {
+                // height 또는 max-height transition이 완료되었을 때만 처리
                 if (e.propertyName === 'height' || e.propertyName === 'max-height') {
-                    if (isAccordionOpen()) {
-                        cleanup();
-                        setTimeout(() => {
-                            this._initTabAfterAccordionOpen(wrap, group);
-                        }, 50);
-                    }
+                    this._initTabAfterAccordionOpen(wrap, group);
                 }
             };
-            accordionContentWrap.addEventListener('transitionend', transitionEndHandler);
+            accordionContentWrap.addEventListener('transitionend', transitionEndHandler, { once: true });
         }
     }
     
@@ -1491,74 +1476,15 @@ class SolidBasicTabs extends BaseComponent {
             return;
         }
         
-        // 처리 중 표시
-        panel.dataset[panelKey] = 'processing';
-        
-        // 아코디언이 닫혀있으면 열릴 때까지 기다림
-        let checkCount = 0;
-        const maxChecks = 50; // 최대 5초 대기 (100ms * 50)
-        let checkInterval = null;
-        let transitionEndHandler = null;
-        let accordionOpenedHandler = null;
-        
-        const cleanup = () => {
-            if (checkInterval) {
-                clearInterval(checkInterval);
-                checkInterval = null;
-            }
-            if (transitionEndHandler && accordionContentWrap) {
-                accordionContentWrap.removeEventListener('transitionend', transitionEndHandler);
-                transitionEndHandler = null;
-            }
-            if (accordionOpenedHandler && accordionContentWrap) {
-                accordionContentWrap.removeEventListener('accordion:opened', accordionOpenedHandler);
-                accordionOpenedHandler = null;
-            }
-            // 처리 완료 표시
-            delete panel.dataset[panelKey];
-        };
-        
-        // accordion:opened 이벤트 리스너 추가 (가장 빠른 감지)
+        // 아코디언이 닫혀있으면 transitionend 이벤트를 기다림
         if (accordionContentWrap) {
-            accordionOpenedHandler = () => {
-                cleanup();
-                // 아코디언이 열린 후 약간의 지연을 두고 콜백 실행
-                setTimeout(() => {
-                    if (callback) callback();
-                }, 50);
-            };
-            accordionContentWrap.addEventListener('accordion:opened', accordionOpenedHandler, { once: true });
-        }
-        
-        checkInterval = setInterval(() => {
-            checkCount++;
-            
-            if (isAccordionOpen()) {
-                cleanup();
-                // 아코디언이 열린 후 약간의 지연을 두고 콜백 실행
-                setTimeout(() => {
-                    if (callback) callback();
-                }, 100);
-            } else if (checkCount >= maxChecks) {
-                cleanup();
-                // 타임아웃 후에도 콜백 실행
-                if (callback) callback();
-            }
-        }, 100);
-        
-        // transitionend 이벤트도 감지 (acco-content-wrap에서)
-        if (accordionContentWrap) {
-            transitionEndHandler = (e) => {
+            const transitionEndHandler = (e) => {
+                // height 또는 max-height transition이 완료되었을 때만 처리
                 if (e.propertyName === 'height' || e.propertyName === 'max-height') {
-                    if (isAccordionOpen()) {
-                        cleanup();
-                        setTimeout(() => {
-                            if (callback) callback();
-                        }, 50);
-                    }
+                    if (callback) callback();
                 }
             };
-            accordionContentWrap.addEventListener('transitionend', transitionEndHandler);
+            accordionContentWrap.addEventListener('transitionend', transitionEndHandler, { once: true });
         }
     }
     
