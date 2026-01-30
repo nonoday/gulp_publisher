@@ -83,6 +83,10 @@ class SolidAccordion extends BaseComponent {
         this._init();
         this._eventBind();
         this._bindResize();
+        
+        // 인스턴스를 요소에 저장 (재초기화 시 참조용)
+        element._accordionInstance = this;
+        element.classList.add("initiated");
     }
 
     _bindResize() {
@@ -1322,6 +1326,51 @@ class SolidBasicTabs extends BaseComponent {
                 requestAnimationFrame(() => {
                     panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                     panel.hidden = false;
+                });
+                // 패널이 표시된 후 아코디언 재초기화 (hidden 상태에서 표시 상태로 변경될 때 이벤트가 제대로 바인딩되도록)
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        // .accordion-area 내부의 .accordion-item 찾기
+                        panel.querySelectorAll(".accordion-area").forEach((accordionArea) => {
+                            const accordionElement = accordionArea.querySelector(".accordion-item");
+                            if (!accordionElement) return;
+                            
+                            // 아코디언 인스턴스 찾기 또는 재초기화
+                            let accordionInstance = accordionElement._accordionInstance;
+                            
+                            if (!accordionInstance || !accordionElement.classList.contains("initiated")) {
+                                // 인스턴스가 없거나 초기화되지 않은 경우 재초기화
+                                try {
+                                    accordionElement.classList.remove("initiated");
+                                    accordionInstance = new SolidAccordion(accordionElement);
+                                } catch (e) {
+                                    console.warn("Failed to initialize accordion:", e);
+                                    return;
+                                }
+                            }
+                            
+                            // 이벤트가 제대로 바인딩되었는지 확인하고 필요시 재바인딩
+                            if (accordionInstance && accordionInstance._accoTitleWrap) {
+                                const titleWrap = accordionInstance._accoTitleWrap;
+                                // 기존 이벤트 리스너가 있는지 확인 (간단한 방법: 이벤트를 다시 바인딩)
+                                // 클릭 이벤트가 제대로 동작하도록 보장
+                                if (!accordionInstance._isAccordionControl) {
+                                    // 기존 이벤트 제거를 위해 클론 후 교체
+                                    const hasListener = titleWrap._hasAccordionListener;
+                                    if (!hasListener) {
+                                        titleWrap.addEventListener("click", (e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            if (accordionInstance && accordionInstance.openContent) {
+                                                accordionInstance.openContent();
+                                            }
+                                        });
+                                        titleWrap._hasAccordionListener = true;
+                                    }
+                                }
+                            }
+                        });
+                    });
                 });
                 // 패널 내부의 모든 탭 초기화 (아코디언 내부 포함)
                 try {
