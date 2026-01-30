@@ -63,6 +63,16 @@ class SolidAccordion extends BaseComponent {
         this._element = element;
         this._accoTitleWrap = element.querySelector(".acco-title-wrap");
         this._accoContentWrap = element.querySelector(".acco-content-wrap");
+        
+        // 필수 요소가 없으면 초기화 중단
+        if (!this._accoTitleWrap || !this._accoContentWrap) {
+            console.warn("SolidAccordion: 필수 요소를 찾을 수 없습니다.", {
+                titleWrap: !!this._accoTitleWrap,
+                contentWrap: !!this._accoContentWrap
+            });
+            return;
+        }
+        
         this._isActive = true;
         this._isScrollArmed = false;
         this._isScroll = true;
@@ -172,8 +182,19 @@ class SolidAccordion extends BaseComponent {
 
     _setHeight() {
         const element = this._element;
-        const wrap = this._accoContentWrap;
-        if(!wrap) return;
+        let wrap = this._accoContentWrap;
+        if(!wrap) {
+            // _accoContentWrap이 없으면 다시 찾기 시도
+            wrap = element.querySelector(".acco-content-wrap");
+            if (!wrap) return;
+            this._accoContentWrap = wrap;
+        }
+        
+        // _accoTitleWrap도 확인
+        if (!this._accoTitleWrap) {
+            this._accoTitleWrap = element.querySelector(".acco-title-wrap");
+            if (!this._accoTitleWrap) return;
+        }
 
         wrap.style.overflow = "hidden";
         wrap.style.display = "block";
@@ -216,14 +237,30 @@ class SolidAccordion extends BaseComponent {
         });
 
         wrap.addEventListener('transitionstart', function() {
-            element.classList.remove('is-animating')
+            // element가 .accordion-area가 아니면 parentNode 찾기
+            let targetElement = element;
+            if (!targetElement.classList.contains("accordion-area")) {
+                targetElement = targetElement.closest(".accordion-area") || targetElement;
+            }
+            targetElement.classList.remove('is-animating');
         }, { once: true });
     }
 
     _setCloseHeight() {
         const element = this._element;
-        const wrap = this._accoContentWrap;
-        if(!wrap) return;
+        let wrap = this._accoContentWrap;
+        if(!wrap) {
+            // _accoContentWrap이 없으면 다시 찾기 시도
+            wrap = element.querySelector(".acco-content-wrap");
+            if (!wrap) return;
+            this._accoContentWrap = wrap;
+        }
+        
+        // _accoTitleWrap도 확인
+        if (!this._accoTitleWrap) {
+            this._accoTitleWrap = element.querySelector(".acco-title-wrap");
+            if (!this._accoTitleWrap) return;
+        }
 
        setAriaAttribute(this._accoTitleWrap, "expanded", false);
        wrap.setAttribute("hidden", true);
@@ -239,7 +276,12 @@ class SolidAccordion extends BaseComponent {
        });
 
        wrap.addEventListener('transitionsEnd', function() {
-        element.classList.remove('is-animating')
+        // element가 .accordion-area가 아니면 parentNode 찾기
+        let targetElement = element;
+        if (!targetElement.classList.contains("accordion-area")) {
+            targetElement = targetElement.closest(".accordion-area") || targetElement;
+        }
+        targetElement.classList.remove('is-animating');
        }, { once: true });
     }
 
@@ -249,11 +291,20 @@ class SolidAccordion extends BaseComponent {
     }
 
     _eventBind() {
-        if(!this._isAccordionControl) {
-            this._accoTitleWrap.addEventListener("click", (e) => {
+        if(!this._isAccordionControl && this._accoTitleWrap) {
+            // 기존 이벤트 리스너가 있으면 제거 (재초기화 시 중복 방지)
+            if (this._accoTitleWrap._originalClickHandler) {
+                this._accoTitleWrap.removeEventListener("click", this._accoTitleWrap._originalClickHandler);
+            }
+            
+            const clickHandler = (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 this.openContent();
-            });
+            };
+            
+            this._accoTitleWrap._originalClickHandler = clickHandler;
+            this._accoTitleWrap.addEventListener("click", clickHandler);
         }
 
         this._accoContentWrap.addEventListener("transitionend", (e) => {
@@ -296,15 +347,24 @@ class SolidAccordion extends BaseComponent {
     }
 
     openContent(isOpen, isScroll = true) {
-         if (!this._accoTitleWrap) return;
+         if (!this._accoTitleWrap) {
+             // _accoTitleWrap이 없으면 다시 찾기 시도
+             this._accoTitleWrap = this._element.querySelector(".acco-title-wrap");
+             if (!this._accoTitleWrap) return;
+         }
          
-         const parentNode = this._accoTitleWrap.closest(".accordion-area");
+         // this._element가 .accordion-area인지 확인
+         let parentNode = this._element;
+         if (!parentNode.classList.contains("accordion-area")) {
+             parentNode = this._accoTitleWrap.closest(".accordion-area");
+         }
          if (!parentNode) return;
          
          const willOpen = !parentNode.classList.contains("on");
 
-         if(this._element.classList.contains("is-animating")) return;
-         this._element.classList.add("is-animating");
+         // parentNode에 is-animating 클래스 확인 및 추가
+         if(parentNode.classList.contains("is-animating")) return;
+         parentNode.classList.add("is-animating");
 
          this._isScroll = isScroll;
 
