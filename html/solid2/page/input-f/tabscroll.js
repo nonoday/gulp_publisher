@@ -260,14 +260,31 @@ class SolidAccordion extends BaseComponent {
             wrap.removeEventListener("transitionend", onStart);
         });
 
-        wrap.addEventListener('transitionstart', function() {
+        // transitionstart 이벤트에서 is-animating 제거
+        wrap.addEventListener('transitionstart', function onTransitionStart(e) {
+            if (e.target !== wrap || e.propertyName !== "height") return;
+            
             // element가 .accordion-area가 아니면 parentNode 찾기
             let targetElement = element;
             if (!targetElement.classList.contains("accordion-area")) {
                 targetElement = targetElement.closest(".accordion-area") || targetElement;
             }
+            console.log("[_setHeight] transitionstart - is-animating 제거", targetElement);
             targetElement.classList.remove('is-animating');
+            wrap.removeEventListener('transitionstart', onTransitionStart);
         }, { once: true });
+        
+        // transitionstart가 발생하지 않는 경우를 대비해 타임아웃으로 is-animating 제거
+        setTimeout(() => {
+            let targetElement = element;
+            if (!targetElement.classList.contains("accordion-area")) {
+                targetElement = targetElement.closest(".accordion-area") || targetElement;
+            }
+            if (targetElement && targetElement.classList.contains('is-animating')) {
+                console.log("[_setHeight] 타임아웃으로 is-animating 강제 제거", targetElement);
+                targetElement.classList.remove('is-animating');
+            }
+        }, 500);
     }
 
     _setCloseHeight() {
@@ -293,19 +310,50 @@ class SolidAccordion extends BaseComponent {
         wrap.style.height = "0px";
        });
 
-       wrap.addEventListener("transitionend", function onEnd() {
-        wrap.style.overflow = "hidden";
-        wrap.style.display = "none";
-        wrap.removeEventListener("transitionend", onEnd);
+       wrap.addEventListener("transitionend", function onEnd(e) {
+           if (e.target !== wrap || e.propertyName !== "height") return;
+           
+           wrap.style.overflow = "hidden";
+           wrap.style.display = "none";
+           wrap.removeEventListener("transitionend", onEnd);
        });
 
+       // transitionstart 이벤트에서 is-animating 제거
+       wrap.addEventListener('transitionstart', function onTransitionStart(e) {
+           if (e.target !== wrap || e.propertyName !== "height") return;
+           
+           // element가 .accordion-area가 아니면 parentNode 찾기
+           let targetElement = element;
+           if (!targetElement.classList.contains("accordion-area")) {
+               targetElement = targetElement.closest(".accordion-area") || targetElement;
+           }
+           console.log("[_setCloseHeight] transitionstart - is-animating 제거", targetElement);
+           targetElement.classList.remove('is-animating');
+           wrap.removeEventListener('transitionstart', onTransitionStart);
+       }, { once: true });
+       
+       // transitionstart가 발생하지 않는 경우를 대비해 타임아웃으로 is-animating 제거
+       setTimeout(() => {
+           let targetElement = element;
+           if (!targetElement.classList.contains("accordion-area")) {
+               targetElement = targetElement.closest(".accordion-area") || targetElement;
+           }
+           if (targetElement && targetElement.classList.contains('is-animating')) {
+               console.log("[_setCloseHeight] 타임아웃으로 is-animating 강제 제거", targetElement);
+               targetElement.classList.remove('is-animating');
+           }
+       }, 500);
+       
        wrap.addEventListener('transitionsEnd', function() {
         // element가 .accordion-area가 아니면 parentNode 찾기
         let targetElement = element;
         if (!targetElement.classList.contains("accordion-area")) {
             targetElement = targetElement.closest(".accordion-area") || targetElement;
         }
-        targetElement.classList.remove('is-animating');
+        if (targetElement && targetElement.classList.contains('is-animating')) {
+            console.log("[_setCloseHeight] transitionsEnd - is-animating 제거", targetElement);
+            targetElement.classList.remove('is-animating');
+        }
        }, { once: true });
     }
 
@@ -416,12 +464,21 @@ class SolidAccordion extends BaseComponent {
          console.log("[SolidAccordion.openContent] willOpen:", willOpen, "parentNode:", parentNode);
 
          // parentNode에 is-animating 클래스 확인 및 추가
+         // is-animating이 있으면 일정 시간 후 강제로 제거하고 진행 (애니메이션이 멈춘 경우 대비)
          if(parentNode.classList.contains("is-animating")) {
-             console.log("[SolidAccordion.openContent] 이미 애니메이션 중, 중단");
-             return;
+             console.warn("[SolidAccordion.openContent] 이미 애니메이션 중, 강제 제거 후 진행");
+             parentNode.classList.remove("is-animating");
+             // 짧은 지연 후 진행하여 이전 애니메이션이 완전히 종료되도록 함
+             setTimeout(() => {
+                 if (!parentNode.classList.contains("is-animating")) {
+                     parentNode.classList.add("is-animating");
+                     console.log("[SolidAccordion.openContent] is-animating 클래스 재추가");
+                 }
+             }, 50);
+         } else {
+             parentNode.classList.add("is-animating");
+             console.log("[SolidAccordion.openContent] is-animating 클래스 추가");
          }
-         parentNode.classList.add("is-animating");
-         console.log("[SolidAccordion.openContent] is-animating 클래스 추가");
 
          this._isScroll = isScroll;
 
