@@ -246,7 +246,10 @@ class SolidAccordion extends BaseComponent {
 
     _eventBind() {
         if(!this._isAccordionControl) {
-            this._accoTitleWrap.addEventListener("click", this.openContent())
+            this._accoTitleWrap.addEventListener("click", (e) => {
+                e.preventDefault();
+                this.openContent();
+            });
         }
 
         this._accoContentWrap.addEventListener("transitionend", (e) => {
@@ -289,7 +292,11 @@ class SolidAccordion extends BaseComponent {
     }
 
     openContent(isOpen, isScroll = true) {
-         const parentNode = this?._accoTitleWrap?.closest(".accordion-area");
+         if (!this._accoTitleWrap) return;
+         
+         const parentNode = this._accoTitleWrap.closest(".accordion-area");
+         if (!parentNode) return;
+         
          const willOpen = !parentNode.classList.contains("on");
 
          if(this._element.classList.contains("is-animating")) return;
