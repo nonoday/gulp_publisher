@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast 샘플</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #005df9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0047cc;
+        }
+        button:active {
+            background-color: #003399;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        /* Toast 스타일 */
+        .solid-toast-popup {
+            position: fixed;
+            z-index: 120;
+            display: flex;
+            justify-content: center;
+            left: 50%;
+            top: 100%;
+            padding: 10px 16px;
+            background-color: rgba(18, 22, 25, 0.9);
+            border-radius: 4px;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-50%) translateY(0);
+            max-width: calc(100% - 32px);
+            box-sizing: border-box;
+        }
+        .solid-toast-popup.center {
+            justify-content: center;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+        }
+        .solid-toast-popup.left {
+            justify-content: flex-start;
+            left: 16px;
+            right: auto;
+            transform: translateY(0);
+        }
+        .solid-toast-popup.right {
+            justify-content: flex-end;
+            left: auto;
+            right: 16px;
+            transform: translateY(0);
+        }
+        .solid-toast-popup .inner {
+            font-size: 14px;
+            line-height: 1.5;
+            letter-spacing: -0.5px;
+            color: #FFFFFF;
+            text-align: left;
+        }
+        .solid-toast-popup.left .inner {
+            text-align: left;
+        }
+        .solid-toast-popup.right .inner {
+            text-align: right;
+        }
+        .solid-toast-popup.center .inner {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Toast 컴포넌트 샘플</h1>
+        
+        <div class="section">
+            <h2>기본 사용법</h2>
+            <div class="button-group">
+                <button onclick="showBasicToast()">기본 Toast</button>
+                <button onclick="showCenterToast()">중앙 정렬 Toast</button>
+                <button onclick="showLeftToast()">왼쪽 정렬 Toast</button>
+                <button onclick="showRightToast()">오른쪽 정렬 Toast</button>
+            </div>
+            <div class="code-block">
+new SolidToast({
+    message: "기본 토스트 메시지입니다.",
+    align: "center"
+});
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>긴 메시지</h2>
+            <div class="button-group">
+                <button onclick="showLongToast()">긴 메시지 Toast</button>
+                <button onclick="showMultiLineToast()">여러 줄 Toast</button>
+            </div>
+            <div class="code-block">
+new SolidToast({
+    message: "이것은 매우 긴 메시지입니다. 토스트는 자동으로 여러 줄로 표시되며, 높이에 따라 자동으로 표시 시간이 조정됩니다.",
+    align: "left"
+});
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>위치 조정</h2>
+            <div class="button-group">
+                <button onclick="showTopToast()">위치 조정 Toast</button>
+            </div>
+            <div class="code-block">
+new SolidToast({
+    message: "위에서 50px 떨어진 위치에 표시됩니다.",
+    align: "center",
+    top: 50
+});
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>HTML 태그 포함</h2>
+            <div class="button-group">
+                <button onclick="showHtmlToast()">HTML 태그 포함 Toast</button>
+            </div>
+            <div class="code-block">
+new SolidToast({
+    message: "첫 번째 줄<br>두 번째 줄",
+    align: "left"  // &lt;br&gt; 태그가 있으면 자동으로 left 정렬
+});
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 헬퍼 함수들
+        function appendHtml(element, html) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            while (temp.firstChild) {
+                element.appendChild(temp.firstChild);
+            }
+        }
+
+        function generateRandomCode(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        class BaseComponent {
+            constructor(element) {
+                if (typeof element === 'string') {
+                    element = document.querySelector(element);
+                }
+                this._element = element;
+            }
+        }
+
+        class SolidToast extends BaseComponent {
+            constructor(config) {
+                super(null);
+                this.config = {
+                    ... {
+                        message: "",
+                        align: "center",
+                        top: "",
+                    },
+                    ...(typeof config === "object" ? config : {}),
+                };
+
+                if (this.config.message === "") {
+                    throw new Error("message is required");
+                }
+            
+                if (this.config.message.indexOf("<br>") > -1 || this.config.message.indexOf("<br />") > -1) {
+                    this.config.align = "left"; 
+                }   
+                
+                this._createHtml();
+                this.show();
+            
+                const delay = this.toast.clientHeight < 50 ? 2000 : 3500;
+            
+                this.toast.addEventListener(
+                    "transitionend",
+                    () => {
+                        setTimeout(() => {
+                            this.hide();
+                        }, delay);
+                    },
+                    {once: true}
+                )
+            }
+
+            static get NAME() {
+                return "toast";
+            }
+
+            _createHtml() {
+                let id = `toast-${generateRandomCode(4)}`;
+                let html = "";
+
+                html += `<div class="solid-toast-popup ${this.config.align}" id="${id}">`;
+                html += `<div class="inner">${this.config.message}</div>`;
+                html += `</div>`;
+
+                appendHtml(document.body, html);
+                this.toast = document.getElementById(id);
+            }
+
+            show() {
+                setTimeout(() => {
+                    const align = this.config.align || "center";
+                    if (`${this.config.top}`) {
+                        if (align === "center") {
+                            this.toast.style.transform = `translateX(-50%) translateY(calc(-100% -${this.config.top}px))`;
+                        } else if (align === "left") {
+                            this.toast.style.transform = `translateY(calc(-100% -${this.config.top}px))`;
+                        } else if (align === "right") {
+                            this.toast.style.transform = `translateY(calc(-100% -${this.config.top}px))`;
+                        }
+                    } else {
+                        if (align === "center") {
+                            this.toast.style.transform = "translateX(-50%) translateY(calc(-100% - 12px))";
+                        } else if (align === "left") {
+                            this.toast.style.transform = "translateY(calc(-100% - 12px))";
+                        } else if (align === "right") {
+                            this.toast.style.transform = "translateY(calc(-100% - 12px))";
+                        }
+                    }
+                }, 10);
+            }
+            hide() {
+                const align = this.config.align || "center";
+                if (align === "center") {
+                    this.toast.style.transform = "translateX(-50%) translateY(0)";
+                } else {
+                    this.toast.style.transform = "translateY(0)";
+                }
+                this.toast.addEventListener(
+                    "transitionend",
+                    () => {
+                        this.toast.remove();
+                    },
+                    {once: true}
+                )
+            }
+        }
+
+        // Toast 표시 함수들
+        function showBasicToast() {
+            new SolidToast({
+                message: "기본 토스트 메시지입니다."
+            });
+        }
+
+        function showCenterToast() {
+            new SolidToast({
+                message: "중앙 정렬된 토스트 메시지입니다.",
+                align: "center"
+            });
+        }
+
+        function showLeftToast() {
+            new SolidToast({
+                message: "왼쪽 정렬된 토스트 메시지입니다.",
+                align: "left"
+            });
+        }
+
+        function showRightToast() {
+            new SolidToast({
+                message: "오른쪽 정렬된 토스트 메시지입니다.",
+                align: "right"
+            });
+        }
+
+        function showLongToast() {
+            new SolidToast({
+                message: "이것은 매우 긴 메시지입니다. 토스트는 자동으로 여러 줄로 표시되며, 높이에 따라 자동으로 표시 시간이 조정됩니다.",
+                align: "left"
+            });
+        }
+
+        function showMultiLineToast() {
+            new SolidToast({
+                message: "첫 번째 줄<br>두 번째 줄<br>세 번째 줄"
+            });
+        }
+
+        function showTopToast() {
+            new SolidToast({
+                message: "위에서 50px 떨어진 위치에 표시됩니다.",
+                align: "center",
+                top: 50
+            });
+        }
+
+        function showHtmlToast() {
+            new SolidToast({
+                message: "첫 번째 줄<br>두 번째 줄"
+            });
+        }
+    </script>
+</body>
+</html>
