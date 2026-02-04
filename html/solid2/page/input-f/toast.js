@@ -109,20 +109,23 @@ class SolidToast {
             }
             
             const align = this.config.align || "center";
+            const topOffset = 12;
+            const hasTop = this.config.top !== "" && this.config.top !== null && this.config.top !== undefined;
+            const topPx = hasTop ? Number(this.config.top) : null;
             
-            if (`${this.config.top}`) {
+            if (hasTop && Number.isFinite(topPx)) {
                 // top 값이 있는 경우
                 if (align === "center") {
-                    this.toast.style.transform = `translateX(-50%) translateY(calc(-100% -${this.config.top}px))`;
+                    this.toast.style.transform = `translateX(-50%) translateY(calc(-100% - ${topPx}px))`;
                 } else {
-                    this.toast.style.transform = `translateY(calc(-100% -${this.config.top}px))`;
+                    this.toast.style.transform = `translateY(calc(-100% - ${topPx}px))`;
                 }
             } else {
                 // top 값이 없는 경우 (기본)
                 if (align === "center") {
-                    this.toast.style.transform = `translateX(-50%) translateY(calc(-100% - ${topOffset}))`;
+                    this.toast.style.transform = `translateX(-50%) translateY(calc(-100% - ${topOffset}px))`;
                 } else {
-                    this.toast.style.transform = `translateY(calc(-100% - ${topOffset}))`;
+                    this.toast.style.transform = `translateY(calc(-100% - ${topOffset}px))`;
                 }
             }
         }, 10);
