@@ -63,7 +63,7 @@ class SolidToast {
     }
 
     _createHtml() {
-        let id = `toast-${generateRandomCode(4)}`;
+        const id = "solid-toast-popup";
         let html = "";
 
         // 색상 클래스 추가
