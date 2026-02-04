@@ -1,15 +1,23 @@
 
-
-class BaseComponent {
-    constructor(element) {
-        if (typeof element === 'string') {
-            element = document.querySelector(element);
-        }
-        this._element = element;
+// 헬퍼 함수들
+function appendHtml(element, html) {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    while (temp.firstChild) {
+        element.appendChild(temp.firstChild);
     }
 }
 
-class SolidToast extends BaseComponent {
+function generateRandomCode(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+class SolidToast {
     constructor(config) {
         this.config = {
             ... {
@@ -75,21 +83,51 @@ class SolidToast extends BaseComponent {
         html += `<div class="inner">${this.config.message}</div>`;
         html += `</div>`;
 
+        if (!document.body) {
+            return;
+        }
+        
         appendHtml(document.body, html);
         this.toast = document.getElementById(id);
     }
 
     show() {
+        if (!this.toast) {
+            return;
+        }
+        
         setTimeout(() => {
+            if (!this.toast) {
+                return;
+            }
+            
+            const align = this.config.align || "center";
+            const topOffset = this.config.top ? `${this.config.top}px` : "12px";
+            
             if (`${this.config.top}`) {
-                this.toast.style.transform = `translateY(calc(-100% -${this.config.top}px))`;
+                // top 값이 있는 경우
+                if (align === "center") {
+                    this.toast.style.transform = `translateX(-50%) translateY(calc(-100% -${this.config.top}px))`;
+                } else {
+                    this.toast.style.transform = `translateY(calc(-100% -${this.config.top}px))`;
+                }
             } else {
-                this.toast.style.transform = "translateY(calc(-100% - 12px)) translateX(-50%)";
+                // top 값이 없는 경우 (기본)
+                if (align === "center") {
+                    this.toast.style.transform = `translateX(-50%) translateY(calc(-100% - ${topOffset}))`;
+                } else {
+                    this.toast.style.transform = `translateY(calc(-100% - ${topOffset}))`;
+                }
             }
         }, 10);
     }
     hide() {
-        this.toast.style.transform = "translateY(0)";
+        const align = this.config.align || "center";
+        if (align === "center") {
+            this.toast.style.transform = "translateX(-50%) translateY(0)";
+        } else {
+            this.toast.style.transform = "translateY(0)";
+        }
         this.toast.addEventListener(
             "transitionend",
             () => {
@@ -101,17 +139,19 @@ class SolidToast extends BaseComponent {
 
     // 메시지 업데이트 함수
     updateMessage(newMessage) {
-        if (this.toast) {
-            const innerElement = this.toast.querySelector('.inner');
-            if (innerElement) {
-                innerElement.innerHTML = newMessage;
-            }
+        if (!this.toast) {
+            return;
+        }
+        
+        // DOM에서 요소가 여전히 존재하는지 확인
+        if (!document.body.contains(this.toast)) {
+            return;
+        }
+        
+        const innerElement = this.toast.querySelector('.inner');
+        if (innerElement) {
+            innerElement.innerHTML = newMessage;
         }
     }
   
-}
-
-
-const index  = {
-    toast
 }

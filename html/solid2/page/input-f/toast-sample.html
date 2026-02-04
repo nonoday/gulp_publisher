@@ -112,6 +112,15 @@
         .solid-toast-popup.center .inner {
             text-align: center;
         }
+        .solid-toast-popup.white {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .solid-toast-popup.white .inner {
+            color: #121619;
+        }
+        .solid-toast-popup .icon {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -174,126 +183,84 @@ new SolidToast({
 });
             </div>
         </div>
+        
+        <div class="section">
+            <h2>로딩 모드</h2>
+            <div class="button-group">
+                <button onclick="showLoadingToast()">로딩 Toast</button>
+                <button onclick="hideLoadingToast()">로딩 Toast 숨기기</button>
+            </div>
+            <div class="code-block">
+const toast = new SolidToast({
+    message: "처리 중입니다...",
+    loading: true  // 로딩 모드 활성화 (자동으로 숨겨지지 않음)
+});
+
+// 나중에 숨기기
+toast.hide();
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>색상 옵션</h2>
+            <div class="button-group">
+                <button onclick="showBlackToast()">검은색 Toast (기본)</button>
+                <button onclick="showWhiteToast()">흰색 Toast</button>
+            </div>
+            <div class="code-block">
+// 검은색 (기본)
+new SolidToast({
+    message: "검은색 배경 토스트",
+    color: "black"
+});
+
+// 흰색
+new SolidToast({
+    message: "흰색 배경 토스트",
+    color: "white"
+});
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>모양 옵션</h2>
+            <div class="button-group">
+                <button onclick="showShapeToast()">커스텀 모양 Toast</button>
+            </div>
+            <div class="code-block">
+new SolidToast({
+    message: "커스텀 모양 토스트",
+    shape: "rounded"  // 원하는 CSS 클래스명
+});
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>조합 예제</h2>
+            <div class="button-group">
+                <button onclick="showCombinedToast()">로딩 + 흰색 Toast</button>
+                <button onclick="showUpdateMessageToast()">메시지 업데이트 예제</button>
+            </div>
+            <div class="code-block">
+// 로딩 + 흰색 조합
+const toast = new SolidToast({
+    message: "처리 중입니다...",
+    loading: true,
+    color: "white"
+});
+
+// 메시지 업데이트
+toast.updateMessage("처리 완료!");
+setTimeout(() => toast.hide(), 2000);
+            </div>
+        </div>
     </div>
-
+    <script src="toast.js"></script>
     <script>
-        // 헬퍼 함수들
-        function appendHtml(element, html) {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            while (temp.firstChild) {
-                element.appendChild(temp.firstChild);
-            }
-        }
-
-        function generateRandomCode(length) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-
-        class BaseComponent {
-            constructor(element) {
-                if (typeof element === 'string') {
-                    element = document.querySelector(element);
-                }
-                this._element = element;
-            }
-        }
-
-        class SolidToast extends BaseComponent {
-            constructor(config) {
-                super(null);
-                this.config = {
-                    ... {
-                        message: "",
-                        align: "center",
-                        top: "",
-                    },
-                    ...(typeof config === "object" ? config : {}),
-                };
-
-                if (this.config.message === "") {
-                    throw new Error("message is required");
-                }
-            
-                if (this.config.message.indexOf("<br>") > -1 || this.config.message.indexOf("<br />") > -1) {
-                    this.config.align = "left"; 
-                }   
-                
-                this._createHtml();
-                this.show();
-            
-                const delay = this.toast.clientHeight < 50 ? 2000 : 3500;
-            
-                this.toast.addEventListener(
-                    "transitionend",
-                    () => {
-                        setTimeout(() => {
-                            this.hide();
-                        }, delay);
-                    },
-                    {once: true}
-                )
-            }
-
-            static get NAME() {
-                return "toast";
-            }
-
-            _createHtml() {
-                let id = `toast-${generateRandomCode(4)}`;
-                let html = "";
-
-                html += `<div class="solid-toast-popup ${this.config.align}" id="${id}">`;
-                html += `<div class="inner">${this.config.message}</div>`;
-                html += `</div>`;
-
-                appendHtml(document.body, html);
-                this.toast = document.getElementById(id);
-            }
-
-            show() {
-                setTimeout(() => {
-                    const align = this.config.align || "center";
-                    if (`${this.config.top}`) {
-                        if (align === "center") {
-                            this.toast.style.transform = `translateX(-50%) translateY(calc(-100% -${this.config.top}px))`;
-                        } else if (align === "left") {
-                            this.toast.style.transform = `translateY(calc(-100% -${this.config.top}px))`;
-                        } else if (align === "right") {
-                            this.toast.style.transform = `translateY(calc(-100% -${this.config.top}px))`;
-                        }
-                    } else {
-                        if (align === "center") {
-                            this.toast.style.transform = "translateX(-50%) translateY(calc(-100% - 12px))";
-                        } else if (align === "left") {
-                            this.toast.style.transform = "translateY(calc(-100% - 12px))";
-                        } else if (align === "right") {
-                            this.toast.style.transform = "translateY(calc(-100% - 12px))";
-                        }
-                    }
-                }, 10);
-            }
-            hide() {
-                const align = this.config.align || "center";
-                if (align === "center") {
-                    this.toast.style.transform = "translateX(-50%) translateY(0)";
-                } else {
-                    this.toast.style.transform = "translateY(0)";
-                }
-                this.toast.addEventListener(
-                    "transitionend",
-                    () => {
-                        this.toast.remove();
-                    },
-                    {once: true}
-                )
-            }
-        }
+        // 전역 변수로 toast 인스턴스 저장
+        let loadingToastInstance = null;
+        let combinedToastInstance = null;
+        let toastInstance = null;
 
         // Toast 표시 함수들
         function showBasicToast() {
@@ -348,6 +315,74 @@ new SolidToast({
             new SolidToast({
                 message: "첫 번째 줄<br>두 번째 줄"
             });
+        }
+
+        function showLoadingToast() {
+            loadingToastInstance = new SolidToast({
+                message: "처리 중입니다...",
+                loading: true
+            });
+        }
+
+        function hideLoadingToast() {
+            if (loadingToastInstance) {
+                loadingToastInstance.hide();
+                loadingToastInstance = null;
+            }
+        }
+
+        function showBlackToast() {
+            new SolidToast({
+                message: "검은색 배경 토스트입니다.",
+                color: "black"
+            });
+        }
+
+        function showWhiteToast() {
+            new SolidToast({
+                message: "흰색 배경 토스트입니다.",
+                color: "white"
+            });
+        }
+
+        function showShapeToast() {
+            new SolidToast({
+                message: "커스텀 모양 토스트입니다.",
+                shape: "rounded"
+            });
+        }
+
+        function showCombinedToast() {
+            combinedToastInstance = new SolidToast({
+                message: "처리 중입니다...",
+                loading: true,
+                color: "white"
+            });
+            
+            // 3초 후 자동으로 숨기기
+            setTimeout(() => {
+                if (combinedToastInstance) {
+                    combinedToastInstance.hide();
+                    combinedToastInstance = null;
+                }
+            }, 3000);
+        }
+
+        function showUpdateMessageToast() {
+            toastInstance = new SolidToast({
+                message: "처리 중입니다...",
+                loading: true,
+                color: "white"
+            });
+            
+            // 2초 후 메시지 업데이트
+            setTimeout(() => {
+                toastInstance.updateMessage("처리 완료!");
+                setTimeout(() => {
+                    toastInstance.hide();
+                    toastInstance = null;
+                }, 2000);
+            }, 2000);
         }
     </script>
 </body>
