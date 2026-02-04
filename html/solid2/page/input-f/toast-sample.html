@@ -362,6 +362,7 @@ setTimeout(() => toast.hide(), 2000);
         let loadingToastInstance = null;
         let combinedToastInstance = null;
         let toastInstance = null;
+        let currentToastInstance = null; // 현재 활성 토스트 인스턴스
 
         // Toast 표시 함수들
         function showBasicToast() {
@@ -461,7 +462,7 @@ setTimeout(() => toast.hide(), 2000);
         }
 
         function showLoadingWithIconToast() {
-            new SolidToast({
+            currentToastInstance = new SolidToast({
                 message: "로딩 + 아이콘 토스트입니다.",
                 loading: true,
                 iconClass: "ic-spinner"
@@ -516,22 +517,37 @@ setTimeout(() => toast.hide(), 2000);
         }
 
         function showUpdateWithIconToast() {
-            toastInstance = new SolidToast({
-                message: "처리 중입니다...",
-                loading: true,
-                color: "white"
-            });
+            // 기존 토스트 인스턴스가 있으면 업데이트, 없으면 새로 생성
+            if (currentToastInstance && currentToastInstance.toast && document.body.contains(currentToastInstance.toast)) {
+                // 기존 토스트 업데이트
+                currentToastInstance.updateMessage("처리 중입니다...", {
+                    loading: true,
+                    iconClass: ""
+                });
+                toastInstance = currentToastInstance;
+            } else {
+                // 새 토스트 생성
+                toastInstance = new SolidToast({
+                    message: "처리 중입니다...",
+                    loading: true,
+                    color: "white"
+                });
+                currentToastInstance = toastInstance;
+            }
             
             // 2초 후 로딩 → 아이콘으로 전환
             setTimeout(() => {
-                toastInstance.updateMessage("처리 완료!", {
-                    loading: false,
-                    iconClass: "ic-check"
-                });
-                setTimeout(() => {
-                    toastInstance.hide();
-                    toastInstance = null;
-                }, 2000);
+                if (toastInstance) {
+                    toastInstance.updateMessage("처리 완료!", {
+                        loading: false,
+                        iconClass: "ic-check"
+                    });
+                    setTimeout(() => {
+                        toastInstance.hide();
+                        toastInstance = null;
+                        currentToastInstance = null;
+                    }, 2000);
+                }
             }, 2000);
         }
     </script>
