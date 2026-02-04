@@ -121,6 +121,82 @@
         .solid-toast-popup .icon {
             margin-right: 8px;
         }
+
+        /* 아이콘 클래스 샘플 (데모용) */
+        .solid-toast-popup .icon.ic-check::before,
+        .solid-toast-popup .icon.ic-info::before,
+        .solid-toast-popup .icon.ic-warn::before {
+            content: "";
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex: 0 0 16px;
+        }
+        .solid-toast-popup .icon.ic-check::before {
+            background: #22c55e; /* green */
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9);
+        }
+        .solid-toast-popup .icon.ic-info::before {
+            background: #3b82f6; /* blue */
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9);
+        }
+        .solid-toast-popup .icon.ic-warn::before {
+            background: #f59e0b; /* amber */
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9);
+        }
+        .solid-toast-popup.white .icon.ic-check::before,
+        .solid-toast-popup.white .icon.ic-info::before,
+        .solid-toast-popup.white .icon.ic-warn::before {
+            box-shadow: inset 0 0 0 2px rgba(18,22,25,0.55);
+        }
+
+        /* Toast 로딩 스피너 */
+        .solid-toast-popup .icon.is-loading {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+        }
+        /* iconClass로 "ic-spinner"를 주면 로딩처럼 보이게(데모) */
+        .solid-toast-popup .icon.ic-spinner {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+        }
+        .solid-toast-popup .icon.ic-spinner::before {
+            content: "";
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: rgba(255, 255, 255, 0.95);
+            animation: solidToastSpin 0.8s linear infinite;
+        }
+        .solid-toast-popup.white .icon.ic-spinner::before {
+            border: 2px solid rgba(18, 22, 25, 0.2);
+            border-top-color: rgba(18, 22, 25, 0.75);
+        }
+        .solid-toast-popup .solid-toast-spinner {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: rgba(255, 255, 255, 0.95);
+            animation: solidToastSpin 0.8s linear infinite;
+        }
+        .solid-toast-popup.white .solid-toast-spinner {
+            border: 2px solid rgba(18, 22, 25, 0.2);
+            border-top-color: rgba(18, 22, 25, 0.75);
+        }
+        @keyframes solidToastSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -226,11 +302,29 @@ new SolidToast({
             <h2>모양 옵션</h2>
             <div class="button-group">
                 <button onclick="showShapeToast()">커스텀 모양 Toast</button>
+                <button onclick="showIconToast()">아이콘 Toast</button>
+                <button onclick="showLoadingWithIconToast()">로딩 + 아이콘 Toast</button>
             </div>
             <div class="code-block">
 new SolidToast({
     message: "커스텀 모양 토스트",
     shape: "rounded"  // 원하는 CSS 클래스명
+});
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>아이콘 옵션</h2>
+            <div class="button-group">
+                <button onclick="showIconToast()">아이콘 Toast</button>
+                <button onclick="showLoadingWithIconToast()">로딩 + 아이콘 Toast</button>
+                <button onclick="showInfoIconToast()">정보 아이콘 Toast</button>
+                <button onclick="showWarnIconToast()">경고 아이콘 Toast</button>
+            </div>
+            <div class="code-block">
+new SolidToast({
+    message: "아이콘이 있는 토스트입니다.",
+    iconClass: "ic-check"  // 아이콘 영역에 추가할 CSS 클래스명
 });
             </div>
         </div>
@@ -349,6 +443,35 @@ setTimeout(() => toast.hide(), 2000);
             new SolidToast({
                 message: "커스텀 모양 토스트입니다.",
                 shape: "rounded"
+            });
+        }
+
+        function showIconToast() {
+            new SolidToast({
+                message: "아이콘이 있는 토스트입니다.",
+                iconClass: "ic-check"
+            });
+        }
+
+        function showLoadingWithIconToast() {
+            new SolidToast({
+                message: "로딩 + 아이콘 토스트입니다.",
+                loading: true,
+                iconClass: "ic-spinner"
+            });
+        }
+
+        function showInfoIconToast() {
+            new SolidToast({
+                message: "정보 아이콘 토스트입니다.",
+                iconClass: "ic-info"
+            });
+        }
+
+        function showWarnIconToast() {
+            new SolidToast({
+                message: "경고 아이콘 토스트입니다.",
+                iconClass: "ic-warn"
             });
         }
 

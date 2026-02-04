@@ -26,7 +26,8 @@ class SolidToast {
                 top: "",
                 loading: false,
                 color: "black", // "black" (기본) 또는 "white"
-                shape: "" // 기본 모양, 옵션 주면 해당 클래스 추가
+                shape: "", // 기본 모양, 옵션 주면 해당 클래스 추가 = 기본, rounded
+                iconClass: "" // 아이콘 영역에 추가할 CSS 클래스명(예: "ic-check"), 없으면 아이콘 미노출
             },
             ...(typeof config === "object" ? config : {}),
         };
@@ -72,12 +73,18 @@ class SolidToast {
         let colorClass = this.config.color === "white" ? " white" : "";
         // 모양 클래스 추가
         let shapeClass = this.config.shape ? ` ${this.config.shape}` : "";
+        // 아이콘 클래스 추가 (옵션)
+        let iconClass = (typeof this.config.iconClass === "string" ? this.config.iconClass.trim() : "");
 
         html += `<div class="solid-toast-popup ${this.config.align}${colorClass}${shapeClass}" id="${id}">`;
         
-        // 로딩 모드일 때 icon div 추가
-        if (this.config.loading) {
-            html += `<div class="icon">로띠</div>`;
+        // 아이콘 영역: 로딩 또는 iconClass 옵션이 있을 때만 노출
+        if (this.config.loading || iconClass) {
+            const extraIconClass = iconClass ? ` ${iconClass}` : "";
+            const loadingClass = this.config.loading ? " is-loading" : "";
+            // 로딩 모드일 경우 CSS 스피너 마크업 삽입
+            const iconContent = this.config.loading ? `<span class="solid-toast-spinner" aria-hidden="true"></span>` : "";
+            html += `<div class="icon${loadingClass}${extraIconClass}">${iconContent}</div>`;
         }
         
         html += `<div class="inner">${this.config.message}</div>`;
@@ -102,7 +109,6 @@ class SolidToast {
             }
             
             const align = this.config.align || "center";
-            const topOffset = this.config.top ? `${this.config.top}px` : "12px";
             
             if (`${this.config.top}`) {
                 // top 값이 있는 경우
@@ -122,19 +128,49 @@ class SolidToast {
         }, 10);
     }
     hide() {
-        const align = this.config.align || "center";
-        if (align === "center") {
-            this.toast.style.transform = "translateX(-50%) translateY(0)";
-        } else {
-            this.toast.style.transform = "translateY(0)";
+        if (!this.toast) {
+            return;
         }
-        this.toast.addEventListener(
-            "transitionend",
-            () => {
-                this.toast.remove();
-            },
-            {once: true}
-        )
+
+        // 이미 DOM에서 제거된 경우
+        if (!document.body || !document.body.contains(this.toast)) {
+            this.toast = null;
+            return;
+        }
+
+        const toastEl = this.toast;
+        const align = this.config.align || "center";
+
+        // transitionend가 발생하지 않는 환경을 대비한 fallback 제거 타이머
+        const fallbackMs = 500;
+        const fallbackTimer = setTimeout(() => {
+            try {
+                toastEl.remove();
+            } finally {
+                if (this.toast === toastEl) {
+                    this.toast = null;
+                }
+            }
+        }, fallbackMs);
+
+        const onEnd = () => {
+            clearTimeout(fallbackTimer);
+            try {
+                toastEl.remove();
+            } finally {
+                if (this.toast === toastEl) {
+                    this.toast = null;
+                }
+            }
+        };
+
+        if (align === "center") {
+            toastEl.style.transform = "translateX(-50%) translateY(0)";
+        } else {
+            toastEl.style.transform = "translateY(0)";
+        }
+
+        toastEl.addEventListener("transitionend", onEnd, { once: true });
     }
 
     // 메시지 업데이트 함수
