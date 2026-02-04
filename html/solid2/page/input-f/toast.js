@@ -174,7 +174,7 @@ class SolidToast {
     }
 
     // 메시지 업데이트 함수
-    updateMessage(newMessage) {
+    updateMessage(newMessage, options = {}) {
         if (!this.toast) {
             return;
         }
@@ -184,9 +184,59 @@ class SolidToast {
             return;
         }
         
+        // 메시지 업데이트
         const innerElement = this.toast.querySelector('.inner');
         if (innerElement) {
             innerElement.innerHTML = newMessage;
+        }
+        
+        // 옵션이 있으면 아이콘 영역 업데이트
+        if (options.iconClass !== undefined || options.loading !== undefined) {
+            const iconElement = this.toast.querySelector('.icon');
+            
+            // config 업데이트
+            if (options.loading !== undefined) {
+                this.config.loading = options.loading;
+            }
+            if (options.iconClass !== undefined) {
+                this.config.iconClass = options.iconClass;
+            }
+            
+            const iconClass = (typeof this.config.iconClass === "string" ? this.config.iconClass.trim() : "");
+            const shouldShowIcon = this.config.loading || iconClass;
+            
+            if (shouldShowIcon) {
+                // 아이콘 영역이 없으면 생성
+                if (!iconElement) {
+                    const iconDiv = document.createElement('div');
+                    iconDiv.className = 'icon';
+                    if (innerElement && innerElement.parentNode) {
+                        innerElement.parentNode.insertBefore(iconDiv, innerElement);
+                    }
+                }
+                
+                // 아이콘 영역 업데이트
+                const iconEl = this.toast.querySelector('.icon');
+                if (iconEl) {
+                    // 클래스 초기화 및 재설정
+                    iconEl.className = 'icon';
+                    
+                    if (this.config.loading) {
+                        iconEl.classList.add('is-loading');
+                        iconEl.innerHTML = '<span class="solid-toast-spinner" aria-hidden="true"></span>';
+                    } else if (iconClass) {
+                        iconEl.classList.add(iconClass);
+                        iconEl.innerHTML = '';
+                    } else {
+                        iconEl.innerHTML = '';
+                    }
+                }
+            } else {
+                // 아이콘 영역 제거
+                if (iconElement) {
+                    iconElement.remove();
+                }
+            }
         }
     }
   
