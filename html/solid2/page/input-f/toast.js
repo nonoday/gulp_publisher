@@ -32,9 +32,19 @@ class SolidToast {
         }
         
         // 기존 토스트가 있으면 제거 (토스트는 1개만 표시)
+        // 단, 기존 토스트가 로딩 중이면 제거하지 않음 (로딩은 수동으로만 숨김)
         const existingToast = document.getElementById("solid-toast-popup");
         if (existingToast) {
-            existingToast.remove();
+            // 기존 토스트가 로딩 중인지 확인 (is-loading 클래스로 확인)
+            const isExistingLoading = existingToast.querySelector('.icon.is-loading') !== null;
+            if (!isExistingLoading) {
+                existingToast.remove();
+            } else {
+                // 로딩 중인 토스트가 있으면 새로 생성하지 않고 기존 것을 유지
+                // 생성은 완료하되, 실제 DOM 조작은 하지 않음
+                this.toast = existingToast;
+                return;
+            }
         }
         
         this._createHtml();
