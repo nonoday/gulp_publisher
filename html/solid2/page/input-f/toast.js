@@ -8,15 +8,6 @@ function appendHtml(element, html) {
     }
 }
 
-function generateRandomCode(length) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-}
-
 class SolidToast {
     constructor(config) {
         this.config = {
@@ -38,7 +29,13 @@ class SolidToast {
     
         if (this.config.message.indexOf("<br>") > -1 || this.config.message.indexOf("<br />") > -1) {
             this.config.align = "left"; 
-        }   
+        }
+        
+        // 기존 토스트가 있으면 제거 (토스트는 1개만 표시)
+        const existingToast = document.getElementById("solid-toast-popup");
+        if (existingToast) {
+            existingToast.remove();
+        }
         
         this._createHtml();
         this.show();
