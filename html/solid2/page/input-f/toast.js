@@ -235,7 +235,11 @@ class SolidToast {
                         iconEl.classList.add('is-loading');
                         iconEl.innerHTML = '<span class="solid-toast-spinner" aria-hidden="true"></span>';
                     } else if (iconClass) {
-                        iconEl.classList.add(iconClass);
+                        // 공백으로 구분된 여러 클래스명 처리
+                        const classes = iconClass.split(/\s+/).filter(cls => cls.length > 0);
+                        if (classes.length > 0) {
+                            iconEl.classList.add(...classes);
+                        }
                         iconEl.innerHTML = '';
                     } else {
                         iconEl.innerHTML = '';
