@@ -135,6 +135,36 @@
             transform: scale(0.95);
         }
 
+        /* 리프레시 버튼 스타일 */
+        .swiper-refresh-btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 1px solid #d0d5dd;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .swiper-refresh-btn:hover {
+            background: #ebf0ff;
+            border-color: #005df9;
+            transform: scale(1.05);
+        }
+
+        .swiper-refresh-btn:active {
+            transform: scale(0.95) rotate(180deg);
+        }
+
+        .swiper-refresh-btn:focus-visible {
+            outline: 2px solid #005df9;
+            outline-offset: 2px;
+        }
+
         /* 포커스 스타일 */
         .swiper-button-prev:focus-visible,
         .swiper-button-next:focus-visible,
@@ -153,7 +183,8 @@
 
             .swiper-button-prev,
             .swiper-button-next,
-            .autoplay-control-wrap-btn {
+            .autoplay-control-wrap-btn,
+            .swiper-refresh-btn {
                 width: 36px;
                 height: 36px;
             }
@@ -162,6 +193,18 @@
             .swiper-button-next::after {
                 font-size: 14px;
             }
+        }
+
+        a {
+            position: relative;
+            display: block;
+            height: 100px;
+        }
+        a:focus {
+            position: absolute;
+            inset: 3px;
+            outline: 3px solid red;
+            z-index: 10;
         }
     </style>
    
@@ -217,6 +260,94 @@
             },
         };
     </script>
+
+<div role="region" 
+aria-label="슬라이드"
+ class="swiper comp-carousel"
+ id="delayed-swiper"
+ data-swiper-options="swiperOptions4"
+ data-swiper-instance="mySwiper"
+>
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <a href="#" class="comp-carousel-e-item">
+                dsdsaasd
+            </a>
+        </div>
+        <div class="swiper-slide">
+            <a href="#" class="comp-carousel-e-item">
+                dsdsaasd2222222222222222222
+            </a>
+        </div>
+    </div>
+
+    <div class="control-box">
+        <button class="swiper-button-prev" aria-label="이전 슬라이드"></button>
+        <button class="swiper-button-next" aria-label="다음 슬라이드"></button>
+
+        <div class="autoplay-control-wrap">
+            <button class="autoplay-control-wrap-btn" aria-label="자동 재생" aria-pressed="true">
+            </button>
+
+        </div>
+        
+        <button class="swiper-refresh-btn" aria-label="스와이퍼 새로고침" onclick="refreshSwiper4()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 2V6L10 4M8 14V10L10 12M14 8C14 11.3137 11.3137 14 8 14M2 8C2 4.68629 4.68629 2 8 2" stroke="#005df9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script>
+    var swiperOptions4 = {
+        loop: true,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: true,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: false,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    };
+    
+    var swiper4 = new Swiper('#delayed-swiper', swiperOptions4);
+    
+    // 스와이퍼 리프레시 함수
+    function refreshSwiper(swiperInstance) {
+        if (swiperInstance) {
+            // 자동 재생 중지
+            if (swiperInstance.autoplay && swiperInstance.autoplay.running) {
+                swiperInstance.autoplay.stop();
+            }
+            
+            // 스와이퍼 업데이트
+            swiperInstance.update();
+            swiperInstance.updateSlides();
+            swiperInstance.updateSize();
+            swiperInstance.updateSlidesClasses();
+            
+            // 첫 번째 슬라이드로 이동
+            swiperInstance.slideTo(0, 0);
+            
+            // 자동 재생 재시작
+            if (swiperInstance.params.autoplay) {
+                swiperInstance.autoplay.start();
+            }
+        }
+    }
+    
+    // 리프레시 함수를 전역으로 노출 (필요시 외부에서 호출 가능)
+    window.refreshSwiper4 = function() {
+        refreshSwiper(swiper4);
+    };
+
+</script>
     
     <a href="">dsdsadsadsa</a>
 </body>
