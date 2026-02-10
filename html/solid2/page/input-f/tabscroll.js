@@ -1147,11 +1147,29 @@ class SolidBasicTabs extends BaseComponent {
                 }
             } else {
                 // 1뎁스 패널 컨테이너 먼저 보여주기
-                const depth1PanelId = targetId.endsWith("-panel") ? targetId : targetId + "-panel";
-                const depth1Panel = this._element.querySelector("#" + depth1PanelId);
+                const panelList = this._element.querySelector(".panel-list");
+                // aria-controls 값을 우선 사용, 없으면 targetId 또는 targetId + "-panel"로 찾기
+                const panelId = tab.getAttribute("aria-controls");
+                let depth1Panel = null;
+                
+                if (panelId && panelList) {
+                    depth1Panel = panelList.querySelector("#" + panelId);
+                }
+                
+                if (!depth1Panel && panelList) {
+                    // targetId로 직접 찾기 시도 (fixed-width-tab의 경우)
+                    depth1Panel = panelList.querySelector("#" + targetId);
+                }
+                
+                if (!depth1Panel && panelList) {
+                    // targetId + "-panel"로 찾기 시도 (일반 탭의 경우)
+                    depth1Panel = panelList.querySelector("#" + targetId + "-panel");
+                }
+                
+                console.log("[_activateDepth1Tab] panelList:", panelList, "targetId:", targetId, "panelId:", panelId, "depth1Panel:", depth1Panel);
 
                 if (depth1Panel) {
-                  console.log("[_activateDepth1Tab] depth1Panel 찾음:", { depth1PanelId, depth1Panel, depth1PanelHidden: depth1Panel.hidden });
+                  console.log("[_activateDepth1Tab] depth1Panel 찾음:", { targetId, depth1Panel, depth1PanelHidden: depth1Panel.hidden });
                   
                   depth1Panel.hidden = false;
                   // 패널이 표시될 때 tabActivated 이벤트 발생
@@ -1300,10 +1318,23 @@ class SolidBasicTabs extends BaseComponent {
         }
 
         // 1뎁스 패널 컨테이너는 그대로 유지 (숨기지 않음)
-        const depth1PanelId = targetId.endsWith("-panel") ? targetId : targetId + "-panel";
-        const depth1Panel = this._element.querySelector("#" + depth1PanelId);
+        const panelList = this._element.querySelector(".panel-list");
+        let depth1Panel = null;
+        
+        if (panelList) {
+            // targetId로 직접 찾기 시도 (fixed-width-tab의 경우)
+            depth1Panel = panelList.querySelector("#" + targetId);
+        }
+        
+        if (!depth1Panel && panelList) {
+            // targetId + "-panel"로 찾기 시도 (일반 탭의 경우)
+            depth1Panel = panelList.querySelector("#" + targetId + "-panel");
+        }
+        
+        console.log("[_initDepth2] panelList:", panelList, "targetId:", targetId, "depth1Panel:", depth1Panel);
         
         if (!depth1Panel) {
+            console.warn("[_initDepth2] depth1Panel을 찾을 수 없습니다. targetId:", targetId);
             return;
         }
         
@@ -1529,9 +1560,20 @@ class SolidBasicTabs extends BaseComponent {
                 if (panelId) {
                     // 같은 1뎁스 패널 컨테이너 내에서 패널 찾기
                     const subTabsId = container.getAttribute("id");
-                    const depth1PanelId = subTabsId + "-panel";
-                    const depth1Panel = this._element.querySelector("#" + depth1PanelId);
-                    console.log("[_dept2EventBindForContainer] depth1Panel:", depth1Panel, "depth1PanelId:", depth1PanelId);
+                    const panelList = this._element.querySelector(".panel-list");
+                    let depth1Panel = null;
+                    
+                    if (panelList) {
+                        // subTabsId로 직접 찾기 시도 (fixed-width-tab의 경우)
+                        depth1Panel = panelList.querySelector("#" + subTabsId);
+                    }
+                    
+                    if (!depth1Panel && panelList) {
+                        // subTabsId + "-panel"로 찾기 시도 (일반 탭의 경우)
+                        depth1Panel = panelList.querySelector("#" + subTabsId + "-panel");
+                    }
+                    
+                    console.log("[_dept2EventBindForContainer] depth1Panel:", depth1Panel, "subTabsId:", subTabsId);
                     
                     if (depth1Panel) {
                         // 같은 컨테이너 내의 모든 패널 숨김
