@@ -1,43 +1,3 @@
-/**
- * SolidBasicTabs 사용법
- * 
- * 1. 인스턴스 가져오기
- *    const container = document.querySelector('.ui-basic-tab');
- *    const basicTabs = container._basicTabsInstance; // 자동 초기화된 경우
- *    // 또는 직접 생성:
- *    const basicTabs = new SolidBasicTabs(container);
- * 
- * 2. activateTab(tabElement, focus) - 탭을 활성화하고 선택적으로 포커스 설정
- *    예시:
- *    const tabElement = document.querySelector('#tab1-1');
- *    basicTabs.activateTab(tabElement); // 포커스 없이 활성화
- *    basicTabs.activateTab(tabElement, true); // 포커스와 함께 활성화
- * 
- * 3. setDefaultTab(id) - 기본적으로 보여지는 탭 설정 (id로 설정)
- *    예시:
- *    basicTabs.setDefaultTab('tab1-1'); // depth1 탭 설정
- *    basicTabs.setDefaultTab('sub-tab1-1'); // depth2 탭 설정 (해당 depth1도 자동 활성화)
- * 
- * 4. setTabsTitle(id, value) - 원하는 탭 버튼 텍스트 변경
- *    예시:
- *    basicTabs.setTabsTitle('tab1-1', '새로운 탭 이름');
- *    basicTabs.setTabsTitle('sub-tab1-1', '새로운 서브 탭 이름');
- * 
- * 5. setTabDisabled(id, isDisabled) - 원하는 탭 버튼 disabled 처리
- *    예시:
- *    basicTabs.setTabDisabled('tab1-1', true); // 탭 비활성화
- *    basicTabs.setTabDisabled('tab1-1', false); // 탭 활성화
- * 
- * 6. resetDepth2(targetId) - depth2 탭을 첫 번째 탭으로 초기화
- *    예시:
- *    basicTabs.resetDepth2(); // 현재 활성화된 depth2를 첫 번째 탭으로 초기화
- *    basicTabs.resetDepth2('sub1'); // 특정 depth2 그룹을 첫 번째 탭으로 초기화
- * 
- * 7. HTML에서 depth2 자동 초기화 옵션 설정
- *    <div class="ui-basic-tab" data-reset-depth2="true">
- *        <!-- depth1 탭 클릭 시 해당 depth2가 자동으로 첫 번째 탭으로 초기화됩니다 -->
- *    </div>
- */
 
 
 class BaseComponent {
@@ -703,6 +663,127 @@ function getElement(element) {
     }
     return element;
 }
+/**
+ * UI.SolidBasicTabs - 탭 컴포넌트 사용 가이드
+ * 
+ * @class UI.SolidBasicTabs
+ * @description 1뎁스, 2뎁스 탭 구조를 지원하는 탭 컴포넌트입니다.
+ *              HTML의 aria-controls 속성을 기반으로 탭과 패널을 자동 매칭합니다.
+ *              스크롤 네비게이션, 인디케이터, 아코디언 연동 기능을 포함합니다.
+ * 
+ * @example
+ * // HTML 구조 예시 (1뎁스 + 2뎁스 구조)
+ * <div class="ui-basic-tab">
+ *     <!-- 1뎁스 탭 -->
+ *     <div class="scroll-nav-wrap">
+ *         <div class="solid-tabs depth1" role="tablist">
+ *             <button class="solid-tab" id="tab1" data-target="sub1" aria-controls="sub1-panel" aria-selected="true">탭1</button>
+ *             <button class="solid-tab" id="tab2" aria-controls="panel2" aria-selected="false">탭2</button>
+ *         </div>
+ *     </div>
+ *     
+ *     <!-- 2뎁스 탭 목록 -->
+ *     <div class="sub-tabs-list">
+ *         <div class="scroll-nav-wrap">
+ *             <div class="sub-tabs depth2" id="sub1" role="tablist">
+ *                 <button class="solid-tab" id="sub-tab1" aria-controls="sub-panel1" aria-selected="true">서브탭1</button>
+ *                 <button class="solid-tab" id="sub-tab2" aria-controls="sub-panel2" aria-selected="false">서브탭2</button>
+ *             </div>
+ *         </div>
+ *     </div>
+ *     
+ *     <!-- 패널 목록 -->
+ *     <div class="panel-list">
+ *         <div id="sub1-panel">
+ *             <div id="sub-panel1" role="tabpanel">패널 내용1</div>
+ *             <div id="sub-panel2" role="tabpanel" hidden>패널 내용2</div>
+ *         </div>
+ *         <div id="panel2" role="tabpanel" hidden>패널 내용</div>
+ *     </div>
+ * </div>
+ * 
+ * @example
+ * // 1. 인스턴스 가져오기
+ * // 방법 1: 자동 초기화된 인스턴스 사용 (권장)
+ * const container = document.querySelector('.ui-basic-tab');
+ * const basicTabs = container._basicTabsInstance;
+ * 
+ * // 방법 2: getInstance 정적 메서드 사용
+ * const basicTabs = UI.SolidBasicTabs.getInstance('.ui-basic-tab');
+ * // 또는
+ * const basicTabs = UI.SolidBasicTabs.getInstance(container);
+ * 
+ * // 방법 3: 직접 생성 (중복 초기화 방지됨)
+ * const basicTabs = new UI.SolidBasicTabs(container);
+ * 
+ * @example
+ * // 2. activateTab(tab, focus) - 탭을 활성화하고 선택적으로 포커스 설정
+ * // @param {HTMLElement} tab - 활성화할 탭 요소
+ * // @param {boolean} [focus=false] - 포커스를 설정할지 여부
+ * 
+ * const tab = document.querySelector('#tab1');
+ * basicTabs.activateTab(tab);              // 포커스 없이 활성화
+ * basicTabs.activateTab(tab, true);        // 포커스와 함께 활성화
+ * 
+ * // depth1 또는 depth2 탭 모두 사용 가능
+ * const subTab = document.querySelector('#sub-tab1');
+ * basicTabs.activateTab(subTab);
+ * 
+ * @example
+ * // 3. setDefaultTab(id) - 기본적으로 보여지는 탭 설정
+ * // @param {string} id - 탭 버튼의 id
+ * 
+ * // depth1 탭 설정 (data-target이 있으면 해당 depth2의 첫 번째 탭도 자동 활성화)
+ * basicTabs.setDefaultTab('tab1');
+ * 
+ * // depth2 탭 설정 (해당 depth1도 자동 활성화됨)
+ * basicTabs.setDefaultTab('sub-tab1');
+ * 
+ * @example
+ * // 4. setTabsTitle(id, value) - 탭 버튼의 텍스트 변경
+ * // @param {string} id - 탭 버튼의 id
+ * // @param {string} value - 변경할 텍스트
+ * 
+ * basicTabs.setTabsTitle('tab1', '새로운 탭 이름');
+ * basicTabs.setTabsTitle('sub-tab1', '새로운 서브 탭 이름');
+ * 
+ * @example
+ * // 5. setTabDisabled(id, isDisabled) - 탭 버튼의 disabled 상태 설정
+ * // @param {string} id - 탭 버튼의 id
+ * // @param {boolean} [isDisabled=true] - disabled 상태 (기본값: true)
+ * 
+ * basicTabs.setTabDisabled('tab1', true);   // 탭 비활성화
+ * basicTabs.setTabDisabled('tab1', false);  // 탭 활성화
+ * 
+ * @example
+ * // 6. resetDepth2(targetId) - depth2 탭을 첫 번째 탭으로 초기화
+ * // @param {string} [targetId] - depth2 그룹의 id (선택사항)
+ * 
+ * // 현재 활성화된 depth1 탭의 data-target에 해당하는 depth2를 첫 번째 탭으로 초기화
+ * basicTabs.resetDepth2();
+ * 
+ * // 특정 depth2 그룹을 첫 번째 탭으로 초기화
+ * basicTabs.resetDepth2('sub1');
+ * 
+ * @example
+ * // 7. HTML에서 depth2 자동 초기화 옵션 설정
+ * // data-reset-depth2="true" 속성을 추가하면 depth1 탭 클릭 시 
+ * // 해당 depth2가 자동으로 첫 번째 탭으로 초기화됩니다.
+ * 
+ * <div class="ui-basic-tab" data-reset-depth2="true">
+ *     <!-- depth1 탭 클릭 시 해당 depth2가 자동으로 첫 번째 탭으로 초기화됩니다 -->
+ * </div>
+ * 
+ * @note 주요 특징
+ * - 탭과 패널은 HTML의 aria-controls 속성으로 자동 매칭됩니다.
+ * - panel-list 안의 패널은 직접 자식만 1뎁스 패널로 인식됩니다.
+ * - aria-selected="true"인 탭은 초기화 시 자동으로 활성화됩니다.
+ * - solid-text-tabs 또는 solid-chip-tabs 클래스가 있으면 인디케이터가 생성되지 않습니다.
+ * - scroll-nav-wrap 클래스가 있으면 스크롤 네비게이션(이전/다음 버튼)이 자동으로 추가됩니다.
+ * - 아코디언 내부에 있는 탭은 아코디언이 열릴 때까지 초기화가 지연됩니다.
+ * 
+ * @see {@link ScrollNavigation} 스크롤 네비게이션 기능
+ */
 
 class SolidBasicTabs extends BaseComponent {
     
@@ -789,6 +870,14 @@ class SolidBasicTabs extends BaseComponent {
         // 초기 상태: 모든 탭을 hidden 처리
         this._tabs.forEach((t) => {
             t.hidden = true;
+        });
+        
+        // aria-selected="true"인 탭은 hidden 속성 제거 및 active 클래스 추가
+        this._tabs.forEach((t) => {
+            if (t.getAttribute("aria-selected") === "true") {
+                t.removeAttribute("hidden");
+                t.classList.add("active");
+            }
         });
 
         // 스크롤 네비게이션은 항상 설정
@@ -959,62 +1048,11 @@ class SolidBasicTabs extends BaseComponent {
         
         const tabRect = tab.getBoundingClientRect();
         const parentRect = tab.parentNode.getBoundingClientRect();
-        const targetX = tabRect.left - parentRect.left + tab.parentNode.scrollLeft;
-        const targetW = tab.offsetWidth;
+        const x = tabRect.left - parentRect.left;
+        const w = tabRect.width;
         
-        // transition이 비활성화된 경우 (초기화 시) 바로 설정
-        if (this._indicator.style.transition === 'none') {
-            this._indicator.style.width = targetW + "px";
-            this._indicator.style.transform = `translateX(${targetX}px)`;
-            return;
-        }
-        
-        // 현재 인디케이터의 위치와 너비 계산
-        const currentTransform = getComputedStyle(this._indicator).transform;
-        let currentX = 0;
-        if (currentTransform && currentTransform !== 'none') {
-            const matrix = currentTransform.match(/matrix.*\((.+)\)/);
-            if (matrix) {
-                currentX = parseFloat(matrix[1].split(',')[4]) || 0;
-            }
-        } else {
-            // transform이 없으면 offsetLeft 사용
-            const indicatorRect = this._indicator.getBoundingClientRect();
-            const parentRect2 = this._indicator.parentElement.getBoundingClientRect();
-            currentX = indicatorRect.left - parentRect2.left + tab.parentNode.scrollLeft;
-        }
-        const currentW = this._indicator.offsetWidth || targetW;
-        
-        // 리사이즈 시 위치 차이가 거의 없으면 애니메이션 없이 바로 설정
-        const positionDiff = Math.abs(targetX - currentX);
-        if (positionDiff < 1 && Math.abs(targetW - currentW) < 1) {
-            this._indicator.style.width = targetW + "px";
-            this._indicator.style.transform = `translateX(${targetX}px)`;
-            return;
-        }
-        
-        // 늘어났다가 줄어드는 애니메이션
-        // 1단계: transition을 비활성화하고 넓이를 1.5배로 증가
-        const originalTransition = this._indicator.style.transition || getComputedStyle(this._indicator).transition;
-        this._indicator.style.transition = 'none';
-        
-        const expandedWidth = currentW * 1.5;
-        
-        // 현재 위치에서 넓이를 1.5배로 증가 (즉시 적용)
-        this._indicator.style.width = expandedWidth + "px";
-        this._indicator.style.transform = `translateX(${currentX}px)`;
-        
-        // 브라우저가 첫 번째 변경사항을 렌더링한 후 transition으로 이동
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                // transition 복원하여 부드럽게 애니메이션
-                this._indicator.style.transition = originalTransition || '';
-                
-                // 목표 위치로 이동하고 목표 넓이로 축소 (transition으로 애니메이션)
-                this._indicator.style.width = targetW + "px";
-                this._indicator.style.transform = `translateX(${targetX}px)`;
-            });
-        });
+        this._indicator.style.width = w + "px";
+        this._indicator.style.transform = `translateX(${x + tab.parentNode.scrollLeft}px)`;
     }
 
     _activateDepth1Tab(tab) {
@@ -1029,7 +1067,7 @@ class SolidBasicTabs extends BaseComponent {
             });
             tab.setAttribute("aria-selected", "true");
             tab.classList.add("active");
-            tab.hidden = false;
+            tab.removeAttribute("hidden");
 
             const depth2Group = this._element.querySelectorAll(".depth2");
             // sub-tabs-list 안의 모든 scroll-nav-wrap 찾기
@@ -1078,129 +1116,30 @@ class SolidBasicTabs extends BaseComponent {
                     const panel = this._element.querySelector("#" + panelId);
                     
                     if (panel) {
-                        // 아코디언이 열릴 때까지 기다렸다가 패널 표시
-                        this._waitForAccordionAndShowPanel(panel, () => {
-                            // 패널을 먼저 보여주기
-                            panel.hidden = false;
-                            requestAnimationFrame(() => {
-                                panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
-                            });
-                            // 패널이 표시된 후 아코디언 재초기화
-                            requestAnimationFrame(() => {
-                                requestAnimationFrame(() => {
-                                    const accordionAreas = panel.querySelectorAll(".accordion-area");
-                                    
-                                    accordionAreas.forEach((accordionArea, index) => {
-                                        // .accordion-item이 있으면 그것을 사용, 없으면 .accordion-area 자체를 사용
-                                        let accordionElement = accordionArea.querySelector(".accordion-item");
-                                        if (!accordionElement) {
-                                            accordionElement = accordionArea;
-                                        }
-                                        
-                                        // 아코디언 인스턴스 찾기 또는 재초기화
-                                        let accordionInstance = accordionElement._accordionInstance;
-                                        
-                                        if (!accordionInstance || !accordionElement.classList.contains("initiated")) {
-                                            try {
-                                                accordionElement.classList.remove("initiated");
-                                                accordionInstance = new SolidAccordion(accordionElement);
-                                            } catch (e) {
-                                                return;
-                                            }
-                                        } else if (accordionInstance) {
-                                            // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
-                                            if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
-                                                // 기존 이벤트 리스너 제거 후 재바인딩
-                                                if (accordionInstance._accoTitleWrap._originalClickHandler) {
-                                                    accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
-                                                }
-                                                
-                                                const clickHandler = (e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    if (accordionInstance && accordionInstance.openContent) {
-                                                        accordionInstance.openContent();
-                                                    }
-                                                };
-                                                
-                                                accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
-                                                accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                            // 패널 내부의 모든 탭 초기화 (아코디언 내부 포함)
-                            try {
-                                const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
-                                if (tabsContainers.length > 0) {
-                                    SolidTabsUpdate(tabsContainers);
-                                }
-                            } catch (e) {
-                            }
-                            // 패널 내부의 아코디언 탭 초기화 (hidden 상태가 아닐 때)
-                            this._initTabsInAccordions(panel);
+                        // 패널을 먼저 보여주기
+                        panel.hidden = false;
+                        requestAnimationFrame(() => {
+                            panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                         });
+                        // 패널 내부의 모든 탭 초기화 (아코디언 내부 포함)
+                        try {
+                            const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
+                            if (tabsContainers.length > 0) {
+                                SolidTabsUpdate(tabsContainers);
+                            }
+                        } catch (e) {
+                        }
                     }
                 }
             } else {
                 // 1뎁스 패널 컨테이너 먼저 보여주기
-                const depth1PanelId = targetId + "-panel";
+                // HTML에 정의된 aria-controls 값(패널 ID)으로 panel-list 안에서 패널 찾기
                 const panelList = this._element.querySelector(".panel-list");
-                const depth1Panel = panelList ? panelList.querySelector("#" + depth1PanelId) : null;
+                const panelId = tab.getAttribute("aria-controls");
+                const depth1Panel = panelList && panelId ? panelList.querySelector("#" + panelId) : null;
 
                 if (depth1Panel) {
                   depth1Panel.hidden = false;
-                  // 패널이 표시될 때 tabActivated 이벤트 발생
-                  requestAnimationFrame(() => {
-                      depth1Panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
-                  });
-                  // 패널이 표시된 후 아코디언 재초기화
-                  requestAnimationFrame(() => {
-                      requestAnimationFrame(() => {
-                          const accordionAreas = depth1Panel.querySelectorAll(".accordion-area");
-                          
-                          accordionAreas.forEach((accordionArea, index) => {
-                              let accordionElement = accordionArea.querySelector(".accordion-item");
-                              if (!accordionElement) {
-                                  accordionElement = accordionArea;
-                              }
-                              
-                              // 아코디언 인스턴스 찾기 또는 재초기화
-                              let accordionInstance = accordionElement._accordionInstance;
-                              
-                              if (!accordionInstance || !accordionElement.classList.contains("initiated")) {
-                                  try {
-                                      accordionElement.classList.remove("initiated");
-                                      accordionInstance = new SolidAccordion(accordionElement);
-                                  } catch (e) {
-                                      return;
-                                  }
-                              } else if (accordionInstance) {
-                                  // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
-                                  if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
-                                      // 기존 이벤트 리스너 제거 후 재바인딩
-                                      if (accordionInstance._accoTitleWrap._originalClickHandler) {
-                                          accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
-                                      }
-                                      
-                                      const clickHandler = (e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          if (accordionInstance && accordionInstance.openContent) {
-                                              accordionInstance.openContent();
-                                          }
-                                      };
-                                      
-                                      accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
-                                      accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
-                                  }
-                              }
-                          });
-                      });
-                  });
-                  // 패널 내부의 아코디언 탭 초기화
-                  this._initTabsInAccordions(depth1Panel);
                 }
 
                 if (this._resetDepth2OnTabChange) {
@@ -1296,13 +1235,26 @@ class SolidBasicTabs extends BaseComponent {
         }
 
         // 1뎁스 패널 컨테이너는 그대로 유지 (숨기지 않음)
-        const depth1PanelId = targetId + "-panel";
+        // panel-list 안에서 HTML에 정의된 aria-controls 값(패널 ID)으로 패널 컨테이너를 찾음
         const panelList = this._element.querySelector(".panel-list");
-        const depth1Panel = panelList ? panelList.querySelector("#" + depth1PanelId) : null;
+        let depth1Panel = null;
+        if (panelList) {
+            // data-target=targetId 인 1뎁스 탭을 찾아 aria-controls 값으로 패널 ID를 얻음
+            const depth1Tab = this._depth1?.querySelector(`.solid-tab[data-target="${targetId}"]`);
+            if (depth1Tab) {
+                const depth1PanelId = depth1Tab.getAttribute("aria-controls");
+                if (depth1PanelId) {
+                    depth1Panel = panelList.querySelector("#" + depth1PanelId);
+                }
+            }
+        }
         
         if (!depth1Panel) {
             return;
         }
+        
+        // depth1Panel 참조 저장 (나중에 _activateDepth2Tab에서 사용)
+        this._depth1Panel = depth1Panel;
         
         // 해당 1뎁스 패널 안의 2뎁스 패널들만 찾기
         const subPanelsInContainer = depth1Panel.querySelectorAll("[role='tabpanel']");
@@ -1322,6 +1274,14 @@ class SolidBasicTabs extends BaseComponent {
         this._subTabs.forEach((t) => {
             t.hidden = true;
         });
+        
+        // aria-selected="true"인 탭은 hidden 속성 제거 및 active 클래스 추가
+        this._subTabs.forEach((t) => {
+            if (t.getAttribute("aria-selected") === "true") {
+                t.removeAttribute("hidden");
+                t.classList.add("active");
+            }
+        });
 
         this._setupScrollNav(this._subDetp2Tabs);
 
@@ -1333,14 +1293,11 @@ class SolidBasicTabs extends BaseComponent {
             this._activateDepth2Tab(activeTab);
             // depth2 활성화 후 네비게이션 상태 업데이트
             // 약간의 지연을 두어 DOM이 완전히 렌더링된 후 상태 업데이트
-            // requestAnimationFrame을 사용하여 DOM이 완전히 렌더링된 후 상태 업데이트
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    if (this._subDetp2Tabs._scrollNavigation) {
-                        this._subDetp2Tabs._scrollNavigation._updateState();
-                    }
-                });
-            });
+            setTimeout(() => {
+                if (this._subDetp2Tabs._scrollNavigation) {
+                    this._subDetp2Tabs._scrollNavigation._updateState();
+                }
+            }, 50);
         }
 
     }
@@ -1354,7 +1311,7 @@ class SolidBasicTabs extends BaseComponent {
         });
         tab.setAttribute("aria-selected", "true");
         tab.classList.add("active");
-        tab.hidden = false;
+        tab.removeAttribute("hidden");
 
         // 2뎁스 패널들만 숨김 처리
         if (this._subPanels && this._subPanels.length > 0) {
@@ -1364,70 +1321,22 @@ class SolidBasicTabs extends BaseComponent {
         const panelId = tab.getAttribute("aria-controls");
         
         if (panelId) {
-            const panel = this._element.querySelector("#" + panelId);
+            // depth1Panel 안에서 패널 찾기
+            const panel = this._depth1Panel ? this._depth1Panel.querySelector("#" + panelId) : this._element.querySelector("#" + panelId);
             
             if (panel) {
                 requestAnimationFrame(() => {
                     panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                     panel.hidden = false;
                 });
-                // 패널이 표시된 후 아코디언 재초기화 (hidden 상태에서 표시 상태로 변경될 때 이벤트가 제대로 바인딩되도록)
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        const accordionAreas = panel.querySelectorAll(".accordion-area");
-                        
-                        // .accordion-area 내부의 .accordion-item 찾기 (없으면 .accordion-area 자체 사용)
-                        accordionAreas.forEach((accordionArea, index) => {
-                            let accordionElement = accordionArea.querySelector(".accordion-item");
-                            if (!accordionElement) {
-                                accordionElement = accordionArea;
-                            }
-                            
-                            // 아코디언 인스턴스 찾기 또는 재초기화
-                            let accordionInstance = accordionElement._accordionInstance;
-                            const isInitiated = accordionElement.classList.contains("initiated");
-                            
-                            if (!accordionInstance || !isInitiated) {
-                                // 인스턴스가 없거나 초기화되지 않은 경우 재초기화
-                                try {
-                                    accordionElement.classList.remove("initiated");
-                                    accordionInstance = new SolidAccordion(accordionElement);
-                                } catch (e) {
-                                    return;
-                                }
-                            } else if (accordionInstance) {
-                                // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
-                                if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
-                                    // 기존 이벤트 리스너 제거 후 재바인딩
-                                    if (accordionInstance._accoTitleWrap._originalClickHandler) {
-                                        accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
-                                    }
-                                    
-                                    const clickHandler = (e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        if (accordionInstance && accordionInstance.openContent) {
-                                            accordionInstance.openContent();
-                                        }
-                                    };
-                                    
-                                    accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
-                                    accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
-                                }
-                            }
-                        });
-                    });
-                });
-                // 패널 내부의 모든 탭 초기화 (아코디언 내부 포함)
                 try {
                     const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                     if (tabsContainers.length > 0) {
                         SolidTabsUpdate(tabsContainers);
                     }
                 } catch (e) {
+                    console.warn("Failed to update tabs:", e);
                 }
-                // 패널 내부의 열려있는 아코디언 탭 초기화 (아코디언이 닫혀있으면 초기화되지 않을 수 있으므로 보완)
-                this._initTabsInAccordions(panel);
             }
         }
 
@@ -1476,17 +1385,26 @@ class SolidBasicTabs extends BaseComponent {
                 });
                 tab.setAttribute("aria-selected", "true");
                 tab.classList.add("active");
-                tab.hidden = false;
+                tab.removeAttribute("hidden");
                 
                 // 패널 활성화 로직 추가
                 const panelId = tab.getAttribute("aria-controls");
                 
                 if (panelId) {
                     // 같은 1뎁스 패널 컨테이너 내에서 패널 찾기
+                    // subTabsId가 2뎁스 그룹 ID이면, panel-list 안에서 해당 1뎁스 탭의 aria-controls 값(패널 ID)으로 패널 컨테이너를 찾음
                     const subTabsId = container.getAttribute("id");
-                    const depth1PanelId = subTabsId + "-panel";
                     const panelList = this._element.querySelector(".panel-list");
-                    const depth1Panel = panelList ? panelList.querySelector("#" + depth1PanelId) : null;
+                    let depth1Panel = null;
+                    if (panelList) {
+                        const depth1Tab = this._depth1?.querySelector(`.solid-tab[data-target="${subTabsId}"]`);
+                        if (depth1Tab) {
+                            const depth1PanelId = depth1Tab.getAttribute("aria-controls");
+                            if (depth1PanelId) {
+                                depth1Panel = panelList.querySelector("#" + depth1PanelId);
+                            }
+                        }
+                    }
                     
                     if (depth1Panel) {
                         // 같은 컨테이너 내의 모든 패널 숨김
@@ -1495,70 +1413,22 @@ class SolidBasicTabs extends BaseComponent {
                             p.hidden = true;
                         });
                         
-                        // 선택된 패널 활성화
-                        const panel = this._element.querySelector("#" + panelId);
+                        // 선택된 패널 활성화 (depth1Panel 안에서 찾기)
+                        const panel = depth1Panel.querySelector("#" + panelId);
                         
                         if (panel) {
                             requestAnimationFrame(() => {
                                 panel.dispatchEvent(new CustomEvent("tabActivated", {bubbles: true}));
                                 panel.hidden = false;
                             });
-                            // 패널이 표시된 후 아코디언 재초기화
-                            requestAnimationFrame(() => {
-                                requestAnimationFrame(() => {
-                                    const accordionAreas = panel.querySelectorAll(".accordion-area");
-                                    
-                                    panel.querySelectorAll(".accordion-area").forEach((accordionArea, index) => {
-                                        // .accordion-item이 있으면 그것을 사용, 없으면 .accordion-area 자체를 사용
-                                        let accordionElement = accordionArea.querySelector(".accordion-item");
-                                        if (!accordionElement) {
-                                            accordionElement = accordionArea;
-                                        }
-                                        
-                                        // 아코디언 인스턴스 찾기 또는 재초기화
-                                        let accordionInstance = accordionElement._accordionInstance;
-                                        const isInitiated = accordionElement.classList.contains("initiated");
-                                        
-                                        if (!accordionInstance || !isInitiated) {
-                                            try {
-                                                accordionElement.classList.remove("initiated");
-                                                accordionInstance = new SolidAccordion(accordionElement);
-                                            } catch (e) {
-                                                return;
-                                            }
-                                        } else if (accordionInstance) {
-                                            // 이미 초기화된 경우에도 이벤트가 제대로 바인딩되어 있는지 확인하고 재바인딩
-                                            if (accordionInstance._accoTitleWrap && !accordionInstance._isAccordionControl) {
-                                                // 기존 이벤트 리스너 제거 후 재바인딩
-                                                if (accordionInstance._accoTitleWrap._originalClickHandler) {
-                                                    accordionInstance._accoTitleWrap.removeEventListener("click", accordionInstance._accoTitleWrap._originalClickHandler);
-                                                }
-                                                
-                                                const clickHandler = (e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    if (accordionInstance && accordionInstance.openContent) {
-                                                        accordionInstance.openContent();
-                                                    }
-                                                };
-                                                
-                                                accordionInstance._accoTitleWrap._originalClickHandler = clickHandler;
-                                                accordionInstance._accoTitleWrap.addEventListener("click", clickHandler);
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                            // 패널 내부의 모든 탭 초기화 (아코디언 내부 포함)
                             try {
                                 const tabsContainers = panel.querySelectorAll(".ui-basic-tab");
                                 if (tabsContainers.length > 0) {
                                     SolidTabsUpdate(tabsContainers);
                                 }
                             } catch (e) {
+                                console.warn("Failed to update tabs:", e);
                             }
-                            // 패널 내부의 아코디언 탭 초기화 (hidden 상태가 아닐 때)
-                            this._initTabsInAccordions(panel);
                         }
                     }
                 }
@@ -1644,108 +1514,6 @@ class SolidBasicTabs extends BaseComponent {
         });
     }
 
-    /**
-     * 패널 내부의 열려있는 아코디언에서 탭 초기화
-     * SolidTabsUpdate가 아코디언이 닫혀있을 때 내부 탭을 제대로 초기화하지 못할 수 있으므로,
-     * 열려있는 아코디언의 탭만 별도로 초기화
-     * @param {HTMLElement} panel - 패널 요소
-     */
-    _initTabsInAccordions(panel) {
-        if (!panel || panel.hidden) return;
-        
-        // 패널이 표시된 후 아코디언 상태를 확인하기 위해 이중 requestAnimationFrame 사용
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                const allAccordionAreas = panel.querySelectorAll(".accordion-area");
-                
-                allAccordionAreas.forEach((accordionArea) => {
-                    const accordionContentWrap = accordionArea.querySelector(".acco-content-wrap");
-                    if (!accordionContentWrap) return;
-                    
-                    // 아코디언이 열려있는지 확인 (.on 클래스 또는 실제 높이 확인)
-                    const hasOnClass = accordionArea.classList.contains("on");
-                    const computedStyle = getComputedStyle(accordionContentWrap);
-                    const finalDisplay = accordionContentWrap.style.display || computedStyle.display;
-                    const finalHeight = accordionContentWrap.style.height || computedStyle.height;
-                    
-                    const isOpen = (hasOnClass || (finalDisplay !== 'none' && 
-                                  finalHeight !== '0px' && 
-                                  finalHeight !== '0' &&
-                                  finalHeight !== '')) &&
-                                  !accordionContentWrap.hidden;
-                    
-                    if (isOpen) {
-                        // 아코디언이 열려있으면 내부 탭 초기화
-                        const tabsContainers = accordionContentWrap.querySelectorAll(".ui-basic-tab");
-                        if (tabsContainers.length > 0) {
-                            try {
-                                SolidTabsUpdate(tabsContainers);
-                            } catch (e) {
-                            }
-                        }
-                    }
-                });
-            });
-        });
-    }
-
-    /**
-     * 아코디언이 열릴 때까지 기다렸다가 패널을 표시하는 메서드
-     * @param {HTMLElement} panel - 표시할 패널 요소
-     * @param {Function} callback - 아코디언이 열린 후 실행할 콜백
-     */
-    _waitForAccordionAndShowPanel(panel, callback) {
-        // acco-content-wrap 찾기 (panel의 부모 중에서 찾기)
-        let accordionContentWrap = panel;
-        let foundAccordion = false;
-        
-        while (accordionContentWrap && accordionContentWrap.parentElement) {
-            accordionContentWrap = accordionContentWrap.parentElement;
-            if (accordionContentWrap.classList.contains('acco-content-wrap')) {
-                foundAccordion = true;
-                break;
-            }
-            if (accordionContentWrap === document.body) {
-                accordionContentWrap = null;
-                break;
-            }
-        }
-        
-        // 아코디언이 없으면 바로 콜백 실행
-        if (!foundAccordion || !accordionContentWrap) {
-            if (callback) callback();
-            return;
-        }
-        
-        // 아코디언이 열려있는지 확인
-        const isAccordionOpen = () => {
-            if (!accordionContentWrap) return true;
-            const computedStyle = getComputedStyle(accordionContentWrap);
-            const finalDisplay = accordionContentWrap.style.display || computedStyle.display;
-            const finalHeight = accordionContentWrap.style.height || computedStyle.height;
-            return finalDisplay !== 'none' && 
-                   finalHeight !== '0px' && 
-                   finalHeight !== '0' &&
-                   finalHeight !== '';
-        };
-        
-        // 아코디언이 이미 열려있으면 바로 콜백 실행
-        if (isAccordionOpen()) {
-            if (callback) callback();
-            return;
-        }
-        
-        // 아코디언이 닫혀있으면 transitionend 이벤트를 기다림
-        if (accordionContentWrap) {
-            const transitionEndHandler = (e) => {
-                if (e.propertyName === 'height' || e.propertyName === 'max-height') {
-                    if (callback) callback();
-                }
-            };
-            accordionContentWrap.addEventListener('transitionend', transitionEndHandler, { once: true });
-        }
-    }
-
     _setupAllDepth2ScrollNav() {
         const depth2Lists = this._element.querySelectorAll(".sub-tabs.depth2");
         depth2Lists.forEach((list) => {
@@ -1753,6 +1521,14 @@ class SolidBasicTabs extends BaseComponent {
             const tabs = list.querySelectorAll(".solid-tab");
             tabs.forEach((t) => {
                 t.hidden = true;
+            });
+            
+            // aria-selected="true"인 탭은 hidden 속성 제거 및 active 클래스 추가
+            tabs.forEach((t) => {
+                if (t.getAttribute("aria-selected") === "true") {
+                    t.removeAttribute("hidden");
+                    t.classList.add("active");
+                }
             });
             
             this._setupScrollNav(list);
