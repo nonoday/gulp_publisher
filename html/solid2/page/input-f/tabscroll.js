@@ -1148,7 +1148,7 @@ class SolidBasicTabs extends BaseComponent {
             } else {
                 // 1뎁스 패널 컨테이너 먼저 보여주기
                 const panelList = this._element.querySelector(".panel-list");
-                // aria-controls 값을 우선 사용, 없으면 targetId 또는 targetId + "-panel"로 찾기
+                // aria-controls 값을 우선 사용, 없으면 targetId로 찾기
                 const panelId = tab.getAttribute("aria-controls");
                 let depth1Panel = null;
                 
@@ -1157,13 +1157,8 @@ class SolidBasicTabs extends BaseComponent {
                 }
                 
                 if (!depth1Panel && panelList) {
-                    // targetId로 직접 찾기 시도 (fixed-width-tab의 경우)
+                    // targetId로 찾기 시도
                     depth1Panel = panelList.querySelector("#" + targetId);
-                }
-                
-                if (!depth1Panel && panelList) {
-                    // targetId + "-panel"로 찾기 시도 (일반 탭의 경우)
-                    depth1Panel = panelList.querySelector("#" + targetId + "-panel");
                 }
                 
                 console.log("[_activateDepth1Tab] panelList:", panelList, "targetId:", targetId, "panelId:", panelId, "depth1Panel:", depth1Panel);
@@ -1322,13 +1317,8 @@ class SolidBasicTabs extends BaseComponent {
         let depth1Panel = null;
         
         if (panelList) {
-            // targetId로 직접 찾기 시도 (fixed-width-tab의 경우)
+            // targetId로 찾기
             depth1Panel = panelList.querySelector("#" + targetId);
-        }
-        
-        if (!depth1Panel && panelList) {
-            // targetId + "-panel"로 찾기 시도 (일반 탭의 경우)
-            depth1Panel = panelList.querySelector("#" + targetId + "-panel");
         }
         
         console.log("[_initDepth2] panelList:", panelList, "targetId:", targetId, "depth1Panel:", depth1Panel);
@@ -1564,13 +1554,8 @@ class SolidBasicTabs extends BaseComponent {
                     let depth1Panel = null;
                     
                     if (panelList) {
-                        // subTabsId로 직접 찾기 시도 (fixed-width-tab의 경우)
+                        // subTabsId로 찾기
                         depth1Panel = panelList.querySelector("#" + subTabsId);
-                    }
-                    
-                    if (!depth1Panel && panelList) {
-                        // subTabsId + "-panel"로 찾기 시도 (일반 탭의 경우)
-                        depth1Panel = panelList.querySelector("#" + subTabsId + "-panel");
                     }
                     
                     console.log("[_dept2EventBindForContainer] depth1Panel:", depth1Panel, "subTabsId:", subTabsId);
