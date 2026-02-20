@@ -326,6 +326,29 @@ class UISwiper extends BaseComponent {
                     }, 50);
                 };
 
+                // 포커스가 있는 슬라이드가 현재 보이는 범위 안에 있는지 확인하는 함수
+                const isSlideVisible = (slide, swiper) => {
+                    if (!slide || !swiper) return false;
+                    
+                    // 실제 DOM에서 슬라이드가 보이는지 확인 (더 정확함)
+                    const slideRect = slide.getBoundingClientRect();
+                    const swiperRect = swiper.el.getBoundingClientRect();
+                    
+                    // 슬라이드가 Swiper 컨테이너 내부에 보이는지 확인
+                    const isInViewport = slideRect.left >= swiperRect.left && 
+                                        slideRect.right <= swiperRect.right &&
+                                        slideRect.top >= swiperRect.top && 
+                                        slideRect.bottom <= swiperRect.bottom;
+                    
+                    // 부분적으로라도 보이면 true
+                    const isPartiallyVisible = slideRect.right > swiperRect.left && 
+                                             slideRect.left < swiperRect.right &&
+                                             slideRect.bottom > swiperRect.top && 
+                                             slideRect.top < swiperRect.bottom;
+                    
+                    return isInViewport || isPartiallyVisible;
+                };
+
                 // swiper-slide 내부의 a, button 요소들
                 const slideFocusableElements = this._element.querySelectorAll(
                     '.swiper-slide a, .swiper-slide button'
@@ -340,6 +363,11 @@ class UISwiper extends BaseComponent {
                         // 포커스가 들어온 요소가 속한 슬라이드를 활성화
                         const slide = element.closest('.swiper-slide');
                         if (slide && thisSlide.swiper) {
+                            // 포커스가 있는 슬라이드가 이미 보이는 범위 안에 있으면 이동하지 않음
+                            if (isSlideVisible(slide, thisSlide.swiper)) {
+                                return;
+                            }
+                            
                             // 모든 슬라이드 찾기
                             const allSlides = Array.from(thisSlide._element.querySelectorAll('.swiper-slide'));
                             const slideIndex = allSlides.indexOf(slide);
@@ -409,6 +437,11 @@ class UISwiper extends BaseComponent {
                         // swiper-slide 내부 요소에 포커스가 들어온 경우 슬라이드 활성화
                         const slide = target.closest('.swiper-slide');
                         if (slide && thisSlide.swiper) {
+                            // 포커스가 있는 슬라이드가 이미 보이는 범위 안에 있으면 이동하지 않음
+                            if (isSlideVisible(slide, thisSlide.swiper)) {
+                                return;
+                            }
+                            
                             // 모든 슬라이드 찾기
                             const allSlides = Array.from(thisSlide._element.querySelectorAll('.swiper-slide'));
                             const slideIndex = allSlides.indexOf(slide);
