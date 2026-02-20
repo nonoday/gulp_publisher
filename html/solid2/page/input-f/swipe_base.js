@@ -106,6 +106,7 @@ class UISwiper extends BaseComponent {
         this.instanceName = getDataAttribute(this._element, "swiper-instance");
         this.id = `swiper-${generateRandonCode(4)}`;
         this._element.id = this.id;
+        this._swiper = null;
 
         this.swiperInit();
     }
@@ -165,6 +166,11 @@ class UISwiper extends BaseComponent {
                         return false;
                     }
                     
+                    // 정지/재생 버튼은 포커스 타겟 영역에서 제외 (사용자가 명시적으로 제어하는 버튼)
+                    if (element === autoPlayBtn || element.closest('.autoplay-control-wrap') === autoPlayBtn.closest('.autoplay-control-wrap')) {
+                        return false;
+                    }
+                    
                     // swiper-slide 내부의 a, button 체크
                     const slide = element.closest('.swiper-slide');
                     if (slide && thisSlide._element.contains(slide)) {
@@ -174,9 +180,13 @@ class UISwiper extends BaseComponent {
                         }
                     }
                     
-                    // control-box 내부의 button, a 체크
+                    // control-box 내부의 button, a 체크 (정지/재생 버튼 제외)
                     const controlBox = element.closest('.control-box');
                     if (controlBox && thisSlide._element.contains(controlBox)) {
+                        // 정지/재생 버튼이면 제외
+                        if (element === autoPlayBtn || element.closest('.autoplay-control-wrap')) {
+                            return false;
+                        }
                         const isLinkOrButton = element.tagName === 'A' || element.tagName === 'BUTTON';
                         if (isLinkOrButton && controlBox.contains(element)) {
                             return true;
@@ -189,6 +199,7 @@ class UISwiper extends BaseComponent {
                 // 포커스 상태 추적
                 let hasFocusInTargetArea = false;
                 let pausedByFocus = false;
+                let userPaused = false; // 사용자가 명시적으로 정지한 경우를 추적
                 let focusCheckTimeout = null;
 
                 // 오토플레이 정지 함수 (포커스로 인한 정지)
@@ -212,8 +223,18 @@ class UISwiper extends BaseComponent {
 
                 // 오토플레이 재개 함수 (포커스가 나갔을 때)
                 const resumeAutoplay = () => {
+                    // 사용자가 명시적으로 정지한 경우에는 자동으로 재생하지 않음
+                    if (userPaused) {
+                        return;
+                    }
+                    
                     const autoPlayState = autoPlayBtn.getAttribute("data-aria-autoplay");
                     const hasAutoplay = !!(thisSlide.swiper && thisSlide.swiper.autoplay);
+                    
+                    // 현재 상태가 정지 상태("false")인 경우 재생하지 않음
+                    if (autoPlayState === "false") {
+                        return;
+                    }
                     
                     // 포커스가 나갔고, 이전에 포커스로 인해 정지된 경우 재개
                     const shouldResume = !hasFocusInTargetArea && pausedByFocus;
@@ -235,8 +256,20 @@ class UISwiper extends BaseComponent {
                                 
                                 // autoplay가 실제로 시작되었는지 확인 및 재시도
                                 setTimeout(() => {
+                                    // 정지 상태인지 다시 확인 (사용자가 중간에 정지 버튼을 눌렀을 수 있음)
+                                    const currentState = autoPlayBtn.getAttribute("data-aria-autoplay");
+                                    if (currentState === "false" || userPaused) {
+                                        return; // 정지 상태면 재시도하지 않음
+                                    }
+                                    
                                     const isRunning = thisSlide.swiper.autoplay ? thisSlide.swiper.autoplay.running : false;
                                     if (!isRunning) {
+                                        // 재시도 전에도 상태 확인
+                                        const retryState = autoPlayBtn.getAttribute("data-aria-autoplay");
+                                        if (retryState === "false" || userPaused) {
+                                            return; // 정지 상태면 재시도하지 않음
+                                        }
+                                        
                                         if (thisSlide.swiper.params && thisSlide.swiper.params.autoplay) {
                                             thisSlide.swiper.params.autoplay.disableOnInteraction = false;
                                             if (typeof thisSlide.swiper.autoplay.start === 'function') {
@@ -257,6 +290,11 @@ class UISwiper extends BaseComponent {
                 const checkFocusState = () => {
                     clearTimeout(focusCheckTimeout);
                     focusCheckTimeout = setTimeout(() => {
+                        // 사용자가 명시적으로 정지한 경우에는 포커스 상태 확인을 건너뜀
+                        if (userPaused) {
+                            return;
+                        }
+                        
                         const activeElement = document.activeElement;
                         const isInTarget = isFocusInTargetArea(activeElement);
                         
@@ -327,10 +365,13 @@ class UISwiper extends BaseComponent {
                     });
                 });
 
-                // control-box 내부의 button, a 요소들
-                const controlBoxFocusableElements = this._element.querySelectorAll(
+                // control-box 내부의 button, a 요소들 (정지/재생 버튼 제외)
+                const controlBoxFocusableElements = Array.from(this._element.querySelectorAll(
                     '.control-box button, .control-box a'
-                );
+                )).filter((element) => {
+                    // 정지/재생 버튼은 제외
+                    return element !== autoPlayBtn && !element.closest('.autoplay-control-wrap');
+                });
 
                 controlBoxFocusableElements.forEach((element) => {
                     element.addEventListener("focusin", (e) => {
@@ -396,18 +437,83 @@ class UISwiper extends BaseComponent {
                 // dispose 시 이벤트 리스너 제거를 위해 저장
                 this._documentFocusInHandler = handleDocumentFocusIn;
 
+                // Swiper autoplay 이벤트 감지: 정지 상태에서 자동으로 시작되는 것을 방지
+                if (thisSlide.swiper && thisSlide.swiper.autoplay) {
+                    // autoplay가 시작될 때마다 상태 확인
+                    const checkAutoplayState = () => {
+                        const autoPlayState = autoPlayBtn.getAttribute("data-aria-autoplay");
+                        // 정지 상태인데 autoplay가 실행 중이면 강제로 정지
+                        if (autoPlayState === "false" || userPaused) {
+                            const isRunning = thisSlide.swiper.autoplay ? thisSlide.swiper.autoplay.running : false;
+                            if (isRunning) {
+                                thisSlide.swiper.autoplay.stop();
+                            }
+                        }
+                    };
+                    
+                    // 주기적으로 상태 확인 (autoplay 이벤트가 없는 경우를 대비)
+                    const autoplayStateCheckInterval = setInterval(() => {
+                        checkAutoplayState();
+                    }, 200);
+                    
+                    // dispose 시 interval 제거를 위해 저장
+                    thisSlide._autoplayStateCheckInterval = autoplayStateCheckInterval;
+                }
+
                 autoPlayBtn.addEventListener("click", (e) => {
                     let autoPlayState = autoPlayBtn.getAttribute("data-aria-autoplay");
-                    pausedByFocus = false;
 
                     if (autoPlayState === "true") {
+                        // 사용자가 명시적으로 정지 버튼을 클릭한 경우
+                        userPaused = true;
+                        pausedByFocus = false; // 포커스로 인한 정지가 아님을 명시
+                        // 정지/재생 버튼은 포커스 타겟 영역에서 제외되므로 hasFocusInTargetArea는 자동으로 false가 됨
                         autoPlayBtn.setAttribute("aria-label", "재생");
                         autoPlayBtn.setAttribute("data-aria-autoplay", "false");
-                        thisSlide.swiper.autoplay.stop();
+                        
+                        // autoplay 정지
+                        if (thisSlide.swiper && thisSlide.swiper.autoplay) {
+                            try {
+                                if (typeof thisSlide.swiper.autoplay.stop === 'function') {
+                                    thisSlide.swiper.autoplay.stop();
+                                }
+                                
+                                // 정지가 제대로 되었는지 확인
+                                setTimeout(() => {
+                                    const isRunning = thisSlide.swiper.autoplay ? thisSlide.swiper.autoplay.running : false;
+                                    if (isRunning) {
+                                        // 여전히 실행 중이면 다시 정지 시도
+                                        if (typeof thisSlide.swiper.autoplay.stop === 'function') {
+                                            thisSlide.swiper.autoplay.stop();
+                                        }
+                                    }
+                                }, 50);
+                            } catch (error) {
+                                console.error('[정지 버튼 클릭] autoplay.stop() 오류:', error);
+                            }
+                        }
                     } else if (autoPlayState === "false") {
+                        // 사용자가 명시적으로 재생 버튼을 클릭한 경우
+                        userPaused = false;
+                        pausedByFocus = false; // 포커스로 인한 정지가 아님을 명시
+                        // 정지/재생 버튼은 포커스 타겟 영역에서 제외되므로 hasFocusInTargetArea는 자동으로 false가 됨
                         autoPlayBtn.setAttribute("aria-label", "정지");
                         autoPlayBtn.setAttribute("data-aria-autoplay", "true");
-                        thisSlide.swiper.autoplay.start();
+                        
+                        // autoplay 시작
+                        if (thisSlide.swiper && thisSlide.swiper.autoplay) {
+                            try {
+                                if (thisSlide.swiper.params && thisSlide.swiper.params.autoplay) {
+                                    thisSlide.swiper.params.autoplay.disableOnInteraction = false;
+                                }
+                                
+                                if (typeof thisSlide.swiper.autoplay.start === 'function') {
+                                    thisSlide.swiper.autoplay.start();
+                                }
+                            } catch (error) {
+                                console.error('[재생 버튼 클릭] autoplay.start() 오류:', error);
+                            }
+                        }
                     }
                 });
                 if (pagination && paginationDot.length > 1) {
@@ -427,6 +533,13 @@ class UISwiper extends BaseComponent {
             document.removeEventListener("focusin", this._documentFocusInHandler, true);
             this._documentFocusInHandler = null;
         }
+        
+        // autoplay 상태 확인 interval 제거
+        if (this._autoplayStateCheckInterval) {
+            clearInterval(this._autoplayStateCheckInterval);
+            this._autoplayStateCheckInterval = null;
+        }
+        
         super.dispose();
     }
 
