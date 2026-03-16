@@ -141,6 +141,11 @@ function processHtmlFile(filePath) {
                 replacements.forEach(rep => {
                     workingLine = workingLine.replace(rep.marker, replacement);
                 });
+
+                // 2차 후처리: '신한신한 슈퍼SOL' 또는 '신한 신한 슈퍼SOL' → '신한 슈퍼SOL'
+                // (중복된 '신한' 한 번으로 정리)
+                workingLine = workingLine.replace(/신한\s*신한\s+슈퍼SOL/g, '신한 슈퍼SOL');
+
                 modified = true;
                 fileResults.push(...lineResults);
             }
