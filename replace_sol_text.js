@@ -302,7 +302,10 @@ function escapeHtml(text) {
 
 // 메인 실행
 function main() {
-    const htmlDir = path.join(__dirname, 'html');
+    // 이 스크립트 파일이 존재하는 위치(__dirname)를 기준으로
+    // 그 안의 모든 폴더를 재귀적으로 돌면서 HTML 파일을 찾도록 변경
+    // 기존: const htmlDir = path.join(__dirname, 'html');
+    const htmlDir = __dirname;
     
     if (!fs.existsSync(htmlDir)) {
         console.error('html 디렉토리를 찾을 수 없습니다.');
