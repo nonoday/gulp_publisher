@@ -1,0 +1,407 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>날짜 휠 피커</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 40px 20px;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+				background: #f5f5f5;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				min-height: 100vh;
+			}
+
+			.wheel-picker-container {
+				max-width: 300px;
+				width: 100%;
+				margin: 0 auto;
+				background: white;
+				border-radius: 12px;
+				padding: 20px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			}
+
+			.wheel-picker {
+				position: relative;
+				height: 200px;
+				overflow: hidden;
+				touch-action: none;
+				user-select: none;
+			}
+
+			.wheel-picker:focus {
+				outline: 2px solid #007aff;
+				outline-offset: 2px;
+				border-radius: 8px;
+			}
+
+			.wheel-list {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				position: absolute;
+				width: 100%;
+				left: 0;
+				right: 0;
+				transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+			}
+
+			.wheel-list.dragging {
+				transition: none;
+			}
+
+			.wheel-item {
+				height: 40px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 18px;
+				color: #999;
+				opacity: 0.3;
+				transition: opacity 0.3s, color 0.3s, transform 0.3s, font-size 0.3s, font-weight 0.3s;
+				cursor: pointer;
+				text-align: center;
+			}
+
+			.wheel-item.active {
+				color: #000;
+				opacity: 1;
+				font-weight: 600;
+				font-size: 22px;
+				transform: scale(1.1);
+				background-color: rgba(0, 0, 255, 0.06);
+			}
+
+			.wheel-item.near-active {
+				opacity: 0.6;
+			}
+
+			.wheel-picker::before,
+			.wheel-picker::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				height: 80px;
+				pointer-events: none;
+				z-index: 1;
+			}
+
+			.wheel-picker::before {
+				top: 0;
+				background: linear-gradient(to bottom, white, transparent);
+			}
+
+			.wheel-picker::after {
+				bottom: 0;
+				background: linear-gradient(to top, white, transparent);
+			}
+
+			.wheel-picker-highlight {
+				position: absolute;
+				top: calc(50% + 40px);
+				left: 10%;
+				right: 10%;
+				height: 40px;
+				transform: translateY(-50%);
+				border-top: 1px solid #ddd;
+				border-bottom: 1px solid #ddd;
+				pointer-events: none;
+				z-index: 2;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wheel-picker-container">
+			<div role="slider" tabindex="0" class="wheel-picker" id="datePicker" aria-label="일 선택" aria-valuemin="1" aria-valuemax="31" aria-valuenow="15" aria-valuetext="15일">
+				<ul role="none">
+					<li aria-hidden="true">1</li>
+					<li aria-hidden="true">2</li>
+					<li aria-hidden="true">3</li>
+					<li aria-hidden="true">4</li>
+					<li aria-hidden="true">5</li>
+					<li aria-hidden="true">6</li>
+					<li aria-hidden="true">7</li>
+					<li aria-hidden="true">8</li>
+					<li aria-hidden="true">9</li>
+					<li aria-hidden="true">10</li>
+					<li aria-hidden="true">11</li>
+					<li aria-hidden="true">12</li>
+					<li aria-hidden="true">13</li>
+					<li aria-hidden="true">14</li>
+					<li aria-hidden="true">15</li>
+					<li aria-hidden="true">16</li>
+					<li aria-hidden="true">17</li>
+					<li aria-hidden="true">18</li>
+					<li aria-hidden="true">19</li>
+					<li aria-hidden="true">20</li>
+					<li aria-hidden="true">21</li>
+					<li aria-hidden="true">22</li>
+					<li aria-hidden="true">23</li>
+					<li aria-hidden="true">24</li>
+					<li aria-hidden="true">25</li>
+					<li aria-hidden="true">26</li>
+					<li aria-hidden="true">27</li>
+					<li aria-hidden="true">28</li>
+					<li aria-hidden="true">29</li>
+					<li aria-hidden="true">30</li>
+					<li aria-hidden="true">31</li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+			class WheelPicker {
+				constructor(element) {
+					this.picker = element;
+					this.currentValue = 15;
+					this.min = 1;
+					this.max = 31;
+					this.itemHeight = 40;
+					this.visibleItems = 5;
+
+					this.isDragging = false;
+					this.startY = 0;
+					this.startTranslate = 0;
+					this.currentTranslate = 0;
+
+					this.init();
+				}
+
+				init() {
+					this.list = this.picker.querySelector("ul");
+					this.list.className = "wheel-list";
+					this.items = this.list.querySelectorAll("li");
+
+					this.items.forEach((item, index) => {
+						item.className = "wheel-item";
+						item.dataset.value = index + 1;
+					});
+
+					this.setupEventListeners();
+					this.updatePosition(false);
+					this.updateActiveStates();
+				}
+
+				setupEventListeners() {
+					// 터치 이벤트
+
+					this.picker.addEventListener("touchstart", this.handleTouchStart.bind(this), {passive: false});
+					this.picker.addEventListener("touchmove", this.handleTouchMove.bind(this), {passive: false});
+					this.picker.addEventListener("touchend", this.handleTouchEnd.bind(this));
+
+					// 마우스 이벤트
+					this.picker.addEventListener("mousedown", this.handleMouseDown.bind(this));
+					document.addEventListener("mousemove", this.handleMouseMove.bind(this));
+					document.addEventListener("mouseup", this.handleMouseUp.bind(this));
+
+					// 휠 이벤트
+					this.picker.addEventListener("wheel", this.handleWheel.bind(this), {passive: false});
+
+					// 키보드 이벤트
+					this.picker.addEventListener("keydown", this.handleKeyDown.bind(this));
+
+					// 아이템 클릭
+					this.items.forEach(item => {
+						item.addEventListener("click", e => {
+							const value = parseInt(item.dataset.value);
+							this.setValue(value);
+						});
+					});
+				}
+
+				handleTouchStart(e) {
+					e.preventDefault();
+					this.isDragging = true;
+					this.startY = e.touches[0].clientY;
+					this.startTranslate = this.currentTranslate;
+					this.list.classList.add("dragging");
+					this.touchMoved = false; // 추가: 드래그 여부 추적
+				}
+
+				handleTouchMove(e) {
+					if (!this.isDragging) return;
+					e.preventDefault();
+
+					this.touchMoved = true; // 추가: 드래그 발생 표시
+
+					const currentY = e.touches[0].clientY;
+					const deltaY = currentY - this.startY;
+					this.currentTranslate = this.startTranslate + deltaY;
+
+					this.list.style.transform = `translateY(${this.currentTranslate}px)`;
+					this.updateActiveStates();
+				}
+
+				handleTouchEnd(e) {
+					if (!this.isDragging) return;
+
+					this.isDragging = false;
+					this.list.classList.remove("dragging");
+
+					// 추가: 탭인 경우 클릭된 아이템으로 이동
+					if (!this.touchMoved) {
+						const touch = e.changedTouches[0];
+						const element = document.elementFromPoint(touch.clientX, touch.clientY);
+						if (element && element.dataset.value) {
+							this.setValue(parseInt(element.dataset.value));
+							return;
+						}
+					}
+
+					this.snapToNearest();
+				}
+
+				handleMouseDown(e) {
+					e.preventDefault();
+					this.isDragging = true;
+					this.startY = e.clientY;
+					this.startTranslate = this.currentTranslate;
+					this.list.classList.add("dragging");
+				}
+
+				handleMouseMove(e) {
+					if (!this.isDragging) return;
+
+					const currentY = e.clientY;
+					const deltaY = currentY - this.startY;
+					this.currentTranslate = this.startTranslate + deltaY;
+
+					this.list.style.transform = `translateY(${this.currentTranslate}px)`;
+					this.updateActiveStates();
+				}
+
+				handleMouseUp(e) {
+					if (!this.isDragging) return;
+
+					this.isDragging = false;
+					this.list.classList.remove("dragging");
+					this.snapToNearest();
+				}
+
+				handleWheel(e) {
+					e.preventDefault();
+
+					if (e.deltaY > 0) {
+						this.incrementValue();
+					} else {
+						this.decrementValue();
+					}
+				}
+
+				handleKeyDown(e) {
+					switch (e.key) {
+						case "ArrowUp":
+						case "ArrowLeft":
+							e.preventDefault();
+							this.decrementValue();
+							break;
+						case "ArrowDown":
+						case "ArrowRight":
+							e.preventDefault();
+							this.incrementValue();
+							break;
+						case "Home":
+							e.preventDefault();
+							this.setValue(this.min);
+							break;
+						case "End":
+							e.preventDefault();
+							this.setValue(this.max);
+							break;
+					}
+				}
+
+				incrementValue() {
+					if (this.currentValue < this.max) {
+						this.setValue(this.currentValue + 1);
+					}
+				}
+
+				decrementValue() {
+					if (this.currentValue > this.min) {
+						this.setValue(this.currentValue - 1);
+					}
+				}
+
+				setValue(value) {
+					if (value < this.min || value > this.max) return;
+
+					this.currentValue = value;
+					this.updatePosition(true);
+					this.updateARIA();
+				}
+
+				snapToNearest() {
+					const centerY = this.picker.offsetHeight / 2;
+					let closestValue = this.min;
+					let minDistance = Infinity;
+
+					this.items.forEach(item => {
+						const rect = item.getBoundingClientRect();
+						const pickerRect = this.picker.getBoundingClientRect();
+						const itemCenter = rect.top + rect.height / 2 - pickerRect.top;
+						const distance = Math.abs(itemCenter - centerY);
+
+						if (distance < minDistance) {
+							minDistance = distance;
+							closestValue = parseInt(item.dataset.value);
+						}
+					});
+
+					this.setValue(closestValue);
+				}
+
+				updatePosition(animate) {
+					const index = this.currentValue - this.min;
+					const centerOffset = this.picker.offsetHeight / 2 - this.itemHeight / 2;
+					this.currentTranslate = centerOffset - index * this.itemHeight;
+
+					if (animate) {
+						this.list.style.transition = "transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+					} else {
+						this.list.style.transition = "none";
+					}
+
+					this.list.style.transform = `translateY(${this.currentTranslate}px)`;
+
+					if (animate) {
+						setTimeout(() => {
+							this.updateActiveStates();
+						}, 10);
+					} else {
+						this.updateActiveStates();
+					}
+				}
+
+				updateActiveStates() {
+					const centerY = this.picker.offsetHeight / 2;
+					const currentItem = document.querySelector(`[data-value="${this.currentValue}"]`);
+					const prevItem = document.querySelector(`[data-value="${this.currentValue - 1}"]`);
+					const nextItem = document.querySelector(`[data-value="${this.currentValue + 1}"]`);
+
+					this.items.forEach(item => {
+						item.classList.remove("active", "near-active");
+					});
+					currentItem.classList.add("active");
+					prevItem.classList.add("near-active");
+					nextItem.classList.add("near-active");
+				}
+
+				updateARIA() {
+					this.picker.setAttribute("aria-valuenow", this.currentValue);
+					this.picker.setAttribute("aria-valuetext", `${this.currentValue}일`);
+				}
+			}
+
+			// 초기화
+			const datePicker = new WheelPicker(document.getElementById("datePicker"));
+		</script>
+	</body>
+</html>
