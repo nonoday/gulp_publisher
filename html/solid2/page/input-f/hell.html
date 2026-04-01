@@ -217,7 +217,6 @@
 				}
 
 				handleTouchStart(e) {
-					e.preventDefault();
 					this.isDragging = true;
 					this.startY = e.touches[0].clientY;
 					this.startTranslate = this.currentTranslate;
@@ -227,12 +226,17 @@
 
 				handleTouchMove(e) {
 					if (!this.isDragging) return;
-					e.preventDefault();
-
-					this.touchMoved = true; // 추가: 드래그 발생 표시
 
 					const currentY = e.touches[0].clientY;
 					const deltaY = currentY - this.startY;
+
+					// 아주 미세한 흔들림은 탭으로 취급 (클릭이 죽지 않게)
+					if (Math.abs(deltaY) > 4) {
+						this.touchMoved = true; // 드래그 발생 표시
+						// 드래그일 때만 스크롤/클릭 생성 방지
+						e.preventDefault();
+					}
+
 					this.currentTranslate = this.startTranslate + deltaY;
 
 					this.list.style.transform = `translateY(${this.currentTranslate}px)`;
@@ -245,15 +249,8 @@
 					this.isDragging = false;
 					this.list.classList.remove("dragging");
 
-					// 추가: 탭인 경우 클릭된 아이템으로 이동
-					if (!this.touchMoved) {
-						const touch = e.changedTouches[0];
-						const element = document.elementFromPoint(touch.clientX, touch.clientY);
-						if (element && element.dataset.value) {
-							this.setValue(parseInt(element.dataset.value));
-							return;
-						}
-					}
+					// 탭이면: click 이벤트가 자연스럽게 발생하도록 여기서 처리/스냅하지 않음
+					if (!this.touchMoved) return;
 
 					this.snapToNearest();
 				}
@@ -389,9 +386,9 @@
 					this.items.forEach(item => {
 						item.classList.remove("active", "near-active");
 					});
-					currentItem.classList.add("active");
-					prevItem.classList.add("near-active");
-					nextItem.classList.add("near-active");
+					if (currentItem) currentItem.classList.add("active");
+					if (prevItem) prevItem.classList.add("near-active");
+					if (nextItem) nextItem.classList.add("near-active");
 				}
 
 				updateARIA() {
