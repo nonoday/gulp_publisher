@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title></title>
+
+	</head>
+	<body>
+
+		<script>
+		(function () {
+			var root = document.documentElement;
+			if (!root.getAttribute('data-theme')) {
+				root.setAttribute('data-theme', 'light');
+			}
+			var btn = document.createElement('button');
+			btn.type = 'button';
+			btn.setAttribute('aria-label', 'Toggle theme');
+			var s = btn.style;
+			s.position = 'fixed';
+			s.top = '0';
+			s.left = '50%';
+			s.transform = 'translateX(-50%)';
+			s.width = '30px';
+			s.height = '30px';
+			s.zIndex = '999';
+			s.display = 'flex';
+			s.alignItems = 'center';
+			s.justifyContent = 'center';
+			s.border = 'none';
+			s.background = 'transparent';
+			s.color = '#000';
+			s.cursor = 'pointer';
+			btn.addEventListener('click', function () {
+				var current = root.getAttribute('data-theme');
+				var next = current === 'dark' ? 'light' : 'dark';
+				root.setAttribute('data-theme', next);
+			});
+			document.body.appendChild(btn);
+		})();
+		</script>
+		
+	</body>
+</html>
