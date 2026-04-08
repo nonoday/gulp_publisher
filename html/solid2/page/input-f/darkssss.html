@@ -11,34 +11,45 @@
 
 		<script>
 		(function () {
-			var root = document.documentElement;
-			if (!root.getAttribute('data-theme')) {
-				root.setAttribute('data-theme', 'light');
+			function initThemeToggle() {
+				var root = document.documentElement;
+				if (!root.getAttribute('data-theme')) {
+					root.setAttribute('data-theme', 'light');
+				}
+				if (document.getElementById('__themeToggleBtn__')) {
+					return;
+				}
+				var btn = document.createElement('button');
+				btn.id = '__themeToggleBtn__';
+				btn.type = 'button';
+				btn.setAttribute('aria-label', 'Toggle theme');
+				var s = btn.style;
+				s.position = 'fixed';
+				s.top = '0';
+				s.left = '50%';
+				s.transform = 'translateX(-50%)';
+				s.width = '30px';
+				s.height = '30px';
+				s.zIndex = '999';
+				s.display = 'flex';
+				s.alignItems = 'center';
+				s.justifyContent = 'center';
+				s.border = 'none';
+				s.background = 'transparent';
+				s.color = '#000';
+				s.cursor = 'pointer';
+				btn.addEventListener('click', function () {
+					var current = root.getAttribute('data-theme');
+					var next = current === 'dark' ? 'light' : 'dark';
+					root.setAttribute('data-theme', next);
+				});
+				(document.body || document.documentElement).appendChild(btn);
 			}
-			var btn = document.createElement('button');
-			btn.type = 'button';
-			btn.setAttribute('aria-label', 'Toggle theme');
-			var s = btn.style;
-			s.position = 'fixed';
-			s.top = '0';
-			s.left = '50%';
-			s.transform = 'translateX(-50%)';
-			s.width = '30px';
-			s.height = '30px';
-			s.zIndex = '999';
-			s.display = 'flex';
-			s.alignItems = 'center';
-			s.justifyContent = 'center';
-			s.border = 'none';
-			s.background = 'transparent';
-			s.color = '#000';
-			s.cursor = 'pointer';
-			btn.addEventListener('click', function () {
-				var current = root.getAttribute('data-theme');
-				var next = current === 'dark' ? 'light' : 'dark';
-				root.setAttribute('data-theme', next);
-			});
-			document.body.appendChild(btn);
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initThemeToggle, { once: true });
+			} else {
+				initThemeToggle();
+			}
 		})();
 		</script>
 		
