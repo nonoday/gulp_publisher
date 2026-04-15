@@ -25,12 +25,11 @@ class Input extends BaseComponent {
 
         if (containers.length > 0) {
             this.focusManager = new FocusManager(element, {
-                inputSelector: 'input, textarea, clear-button'
+                inputSelector: 'input, textarea, button.clear-button, .clear-button'
             });
 
-            if (element.quertSelector("input-field")?.classList.contains("line") || element.querySelector(".input-field")?.classList.contains("no-animated")) {
+            if (element.querySelector(".input-field")?.classList.contains("line") || element.querySelector(".input-field")?.classList.contains("no-animated")) {
                 this.focusManager.options.onlyFocus = true;
-                this.focusManager.init();
                 this.focusManager.registerContainer(element);
              }
         }
@@ -133,6 +132,22 @@ class Input extends BaseComponent {
         };
         this._element.addEventListener('mousedown', markClearFromPointer, true);
         this._element.addEventListener('touchstart', markClearFromPointer, { capture: true, passive: true });
+
+        this._element.addEventListener('click', (e) => {
+            const clearBtn = e.target?.closest?.('.clear-button');
+            if (!clearBtn) return;
+            const fieldRoot =
+                clearBtn.closest('.input-field') ||
+                clearBtn.closest('.svg-animated, .no-animated, .line') ||
+                this._element;
+            const inputEl = fieldRoot.querySelector('input, textarea');
+            if (!inputEl) return;
+
+            // Safari에서 버튼 포커스가 남아 입력 포커스가 끊기는 케이스 방지
+            setTimeout(() => {
+                inputEl.focus();
+            }, 0);
+        }, true);
 
         this.focusManager.setCallbacks({
             onFocusChange: (focusedEl, container) => {
