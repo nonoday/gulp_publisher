@@ -24,15 +24,13 @@ class Input extends BaseComponent {
         const containers = element.querySelectorAll(".svg-animated, .no-animated, .line");
 
         if (containers.length > 0) {
-            // 생성자에서 이미 init() 호출됨. DOM 요소를 첫 인자로 넘기면 옵션이 깨지므로 옵션 객체만 전달.
-            this.focusManager = new FocusManager({
-                inputSelector: 'input, textarea, button.clear-button',
+            this.focusManager = new FocusManager(element, {
+                inputSelector: 'input, textarea, clear-button'
             });
 
             if (element.quertSelector("input-field")?.classList.contains("line") || element.querySelector(".input-field")?.classList.contains("no-animated")) {
                 this.focusManager.options.onlyFocus = true;
-                // init() 재호출 금지: document에 focusin 리스너가 중복 등록되면 같은 이벤트에서 handleFocus·onFocusChange가
-                // 두 번 실행되고, Safari는 포커스 처리 중 동기 DOM 변경에 취약해 input 포커스가 끊길 수 있음.
+                this.focusManager.init();
                 this.focusManager.registerContainer(element);
              }
         }
@@ -127,27 +125,58 @@ class Input extends BaseComponent {
     }
 
     initClearButton() {
+        // 포커스 매니저가 넘기는 container가 버튼보다 앞쪽 노드만 가리키는 경우가 있어,
+        // 실제 포커스 요소(focusedEl)로 필드 루트를 잡는다. 클릭으로 클리어에 들어온 경우에만 짝 input으로 포커스 이동.
+        this._clearBtnFromPointer = false;
+        const markClearFromPointer = (e) => {
+            if (e.target?.closest?.('.clear-button')) this._clearBtnFromPointer = true;
+        };
+        this._element.addEventListener('mousedown', markClearFromPointer, true);
+        this._element.addEventListener('touchstart', markClearFromPointer, { capture: true, passive: true });
+
         this.focusManager.setCallbacks({
             onFocusChange: (focusedEl, container) => {
                 if (!focusedEl || !container) return;
+                if (!focusedEl.matches?.('.clear-button')) {
+                    this._clearBtnFromPointer = false;
+                }
                 if (!focusedEl.matches?.('input, textarea, .clear-button')) return;
 
-                const el = focusedEl;
-                const root = container;
-                // 포커스 이벤트 스택이 끝난 뒤에 클리어 버튼 표시를 맞춤 (Safari 포커스 안정화)
-                requestAnimationFrame(() => {
-                    if (!root.isConnected) return;
-                    if (!root.contains(el) && document.activeElement !== el) return;
+                const fieldRoot =
+                    focusedEl.closest('.input-field') ||
+                    focusedEl.closest('.svg-animated, .no-animated, .line') ||
+                    container;
 
-                    root.querySelectorAll('.clear-button').forEach((btn) => {
-                        btn.classList.remove('active');
-                    });
-
-                    const clearBtn = el.matches('.clear-button')
-                        ? el
-                        : findNextElement(el, 'BUTTON', '.clear-button');
-                    clearBtn?.classList.add('active');
+                fieldRoot.querySelectorAll('.clear-button').forEach((btn) => {
+                    btn.classList.remove('active');
                 });
+
+                let clearBtn = null;
+                if (focusedEl.matches?.('.clear-button')) {
+                    clearBtn = focusedEl;
+                    clearBtn.classList.add('active');
+
+                    if (this._clearBtnFromPointer) {
+                        this._clearBtnFromPointer = false;
+                        const inputBeforeClear = [...fieldRoot.querySelectorAll('input, textarea')].filter(
+                            (el) => focusedEl.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING
+                        );
+                        const inputEl =
+                            inputBeforeClear.length > 0
+                                ? inputBeforeClear[inputBeforeClear.length - 1]
+                                : fieldRoot.querySelector('input, textarea');
+
+                        requestAnimationFrame(() => {
+                            inputEl?.focus?.();
+                        });
+                    }
+                } else {
+                    clearBtn =
+                        typeof findNextElement === 'function'
+                            ? findNextElement(focusedEl, 'BUTTON', '.clear-button')
+                            : fieldRoot.querySelector('.clear-button');
+                    clearBtn?.classList.add('active');
+                }
             },
             onFocus: (target) => {
                 const clearBtn = findNextElement(target, 'BUTTON', '.clear-button');
