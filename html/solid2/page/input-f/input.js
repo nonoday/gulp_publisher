@@ -127,26 +127,38 @@ class Input extends BaseComponent {
         // 포커스 매니저가 넘기는 container가 버튼보다 앞쪽 노드만 가리키는 경우가 있어,
         // 실제 포커스 요소(focusedEl)로 필드 루트를 잡는다. 클릭으로 클리어에 들어온 경우에만 짝 input으로 포커스 이동.
         this._clearBtnFromPointer = false;
-        const markClearFromPointer = (e) => {
-            if (e.target?.closest?.('.clear-button')) this._clearBtnFromPointer = true;
-        };
-        this._element.addEventListener('mousedown', markClearFromPointer, true);
-        this._element.addEventListener('touchstart', markClearFromPointer, { capture: true, passive: true });
-
-        this._element.addEventListener('click', (e) => {
-            const clearBtn = e.target?.closest?.('.clear-button');
-            if (!clearBtn) return;
+        const getInputFromClearButton = (clearBtn) => {
             const fieldRoot =
                 clearBtn.closest('.input-field') ||
                 clearBtn.closest('.svg-animated, .no-animated, .line') ||
                 this._element;
-            const inputEl = fieldRoot.querySelector('input, textarea');
+            const inputBeforeClear = [...fieldRoot.querySelectorAll('input, textarea')].filter(
+                (el) => clearBtn.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING
+            );
+            return inputBeforeClear.length > 0
+                ? inputBeforeClear[inputBeforeClear.length - 1]
+                : fieldRoot.querySelector('input, textarea');
+        };
+        const focusInputForClear = (clearBtn) => {
+            const inputEl = getInputFromClearButton(clearBtn);
             if (!inputEl) return;
+            inputEl.focus();
+        };
 
-            // Safari에서 버튼 포커스가 남아 입력 포커스가 끊기는 케이스 방지
-            setTimeout(() => {
-                inputEl.focus();
-            }, 0);
+        this._element.addEventListener('mousedown', (e) => {
+            const clearBtn = e.target?.closest?.('.clear-button');
+            if (!clearBtn) return;
+            this._clearBtnFromPointer = true;
+            // Safari: click 시점보다 먼저(사용자 제스처 단계) input으로 포커스 고정
+            e.preventDefault();
+            focusInputForClear(clearBtn);
+        }, true);
+        this._element.addEventListener('touchstart', (e) => {
+            const clearBtn = e.target?.closest?.('.clear-button');
+            if (!clearBtn) return;
+            this._clearBtnFromPointer = true;
+            // iOS Safari는 touchstart의 동기 focus가 가장 안정적
+            focusInputForClear(clearBtn);
         }, true);
 
         this.focusManager.setCallbacks({
@@ -180,10 +192,7 @@ class Input extends BaseComponent {
                             inputBeforeClear.length > 0
                                 ? inputBeforeClear[inputBeforeClear.length - 1]
                                 : fieldRoot.querySelector('input, textarea');
-
-                        requestAnimationFrame(() => {
-                            inputEl?.focus?.();
-                        });
+                        inputEl?.focus?.();
                     }
                 } else {
                     clearBtn =
