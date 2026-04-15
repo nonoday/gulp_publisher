@@ -142,6 +142,8 @@ class Input extends BaseComponent {
         const focusInputForClear = (clearBtn) => {
             const inputEl = getInputFromClearButton(clearBtn);
             if (!inputEl) return;
+            // 이미 같은 input에 포커스가 있으면 재포커스하지 않음 (애니메이션 재실행 방지)
+            if (document.activeElement === inputEl) return;
             inputEl.focus();
         };
 
@@ -182,18 +184,9 @@ class Input extends BaseComponent {
                 if (focusedEl.matches?.('.clear-button')) {
                     clearBtn = focusedEl;
                     clearBtn.classList.add('active');
-
-                    if (this._clearBtnFromPointer) {
-                        this._clearBtnFromPointer = false;
-                        const inputBeforeClear = [...fieldRoot.querySelectorAll('input, textarea')].filter(
-                            (el) => focusedEl.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING
-                        );
-                        const inputEl =
-                            inputBeforeClear.length > 0
-                                ? inputBeforeClear[inputBeforeClear.length - 1]
-                                : fieldRoot.querySelector('input, textarea');
-                        inputEl?.focus?.();
-                    }
+                    // 실제 포커스 이동은 mousedown/touchstart에서만 처리하고,
+                    // onFocusChange에서는 상태 클래스만 갱신해 내부 이동 시 애니메이션 재실행을 막는다.
+                    this._clearBtnFromPointer = false;
                 } else {
                     clearBtn =
                         typeof findNextElement === 'function'
