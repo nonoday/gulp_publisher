@@ -24,13 +24,15 @@ class Input extends BaseComponent {
         const containers = element.querySelectorAll(".svg-animated, .no-animated, .line");
 
         if (containers.length > 0) {
-            this.focusManager = new FocusManager(element, {
-                inputSelector: 'input, textarea, clear-button'
+            // 생성자에서 이미 init() 호출됨. DOM 요소를 첫 인자로 넘기면 옵션이 깨지므로 옵션 객체만 전달.
+            this.focusManager = new FocusManager({
+                inputSelector: 'input, textarea, button.clear-button',
             });
 
             if (element.quertSelector("input-field")?.classList.contains("line") || element.querySelector(".input-field")?.classList.contains("no-animated")) {
                 this.focusManager.options.onlyFocus = true;
-                this.focusManager.init();
+                // init() 재호출 금지: document에 focusin 리스너가 중복 등록되면 같은 이벤트에서 handleFocus·onFocusChange가
+                // 두 번 실행되고, Safari는 포커스 처리 중 동기 DOM 변경에 취약해 input 포커스가 끊길 수 있음.
                 this.focusManager.registerContainer(element);
              }
         }
@@ -130,14 +132,22 @@ class Input extends BaseComponent {
                 if (!focusedEl || !container) return;
                 if (!focusedEl.matches?.('input, textarea, .clear-button')) return;
 
-                container.querySelectorAll('.clear-button').forEach((btn) => {
-                    btn.classList.remove('active');
-                });
+                const el = focusedEl;
+                const root = container;
+                // 포커스 이벤트 스택이 끝난 뒤에 클리어 버튼 표시를 맞춤 (Safari 포커스 안정화)
+                requestAnimationFrame(() => {
+                    if (!root.isConnected) return;
+                    if (!root.contains(el) && document.activeElement !== el) return;
 
-                const clearBtn = focusedEl.matches('.clear-button')
-                    ? focusedEl
-                    : findNextElement(focusedEl, 'BUTTON', '.clear-button');
-                clearBtn?.classList.add('active');
+                    root.querySelectorAll('.clear-button').forEach((btn) => {
+                        btn.classList.remove('active');
+                    });
+
+                    const clearBtn = el.matches('.clear-button')
+                        ? el
+                        : findNextElement(el, 'BUTTON', '.clear-button');
+                    clearBtn?.classList.add('active');
+                });
             },
             onFocus: (target) => {
                 const clearBtn = findNextElement(target, 'BUTTON', '.clear-button');
