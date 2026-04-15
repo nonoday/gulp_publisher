@@ -126,10 +126,9 @@ class Input extends BaseComponent {
 
     initClearButton() {
         this.focusManager.setCallbacks({
-            onFocusChange: (_, container) => {
-                const state = this.focusManager.focusStates.get(container);
-                const focusedEl = state?.focusedElement;
-                if (!focusedEl?.matches?.('input, textarea, .clear-button')) return;
+            onFocusChange: (focusedEl, container) => {
+                if (!focusedEl || !container) return;
+                if (!focusedEl.matches?.('input, textarea, .clear-button')) return;
 
                 container.querySelectorAll('.clear-button').forEach((btn) => {
                     btn.classList.remove('active');
