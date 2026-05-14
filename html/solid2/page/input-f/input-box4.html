@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 가이드</title>
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
+    <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        .input-field-sub-text-box {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+        }
+
+        #sub-text-input-field-1.input-field-sub-text-form {
+            min-width: 1ch;
+            max-width: 100%;
+            flex: 0 1 auto;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .input-field.focus #sub-text-input-field-1.input-field-sub-text-form,
+        .input-field.focused #sub-text-input-field-1.input-field-sub-text-form,
+        .input-field.value #sub-text-input-field-1.input-field-sub-text-form {
+            max-width: calc(100% - 24px);
+        }
+
+        .input-field.focus .input-field-sub-text-input-unit,
+        .input-field.focused .input-field-sub-text-input-unit {
+            display: none;
+            opacity: 0;
+        }
+
+        .input-field.value .input-field-sub-text-input-unit {
+            display: inline-block;
+            opacity: 1;
+        }
+    </style>
+  
+
+</head>
+<body>
+    <!-- 
+    box type
+    Basic/Box/InputField
+    Basic/Box/InputFieldDual
+    Basic/Box/InputFieldTriple
+    Basic/Box/InputFieldQuad
+    Basic/Box/InputFieldText
+    Basic/Box/InputFieldDualText
+    Basic/Box/InputFieldSubText   << 금액부분 스크립트 필요  - 금액이 입력되면(value)가 있을때 원표시 노출 + value클래스 추가 
+    Basic/Box/InputFieldDropdown
+    Basic/Box/InputFieldInnerButton
+
+    Basic/Box/InputFieldCell   << 6개 별도 케이스 
+    Basic/Box/InputFieldSegment  << 조합케이스
+    Basic/Box/InputFieldDecimal
+    Basic/Box/InputFieldTwoLine
+    Basic/Box/InputFieldThreeLine
+
+    Basic/Box/InputFieldTextArea << 별도 케이스
+
+    Inline/Box/InputInlineField
+    Inline/Box/InputInlineFieldDual
+    Inline/Box/InputInlineFieldText
+    Inline/Box/InputFieldInnerButton
+    Inline/Box/InputInlineFieldTwoLine
+    Inline/Box/InputInlineFieldThreeLine
+
+    ============================================
+    개발 시 주의사항
+    ============================================
+    
+    [접근성 관련 중요 사항]
+    - id와 for 속성은 정적으로 작성해야 함
+    - DOM 로드 후 동적으로 id/for 값을 변경하면 안됨
+    - 이유: 낮은 버전의 보이스오버(VoiceOver)에서 매치 인식 실패
+    
+    [카드번호 입력 필드 구성]
+    - 4개의 input 필드로 구성 (XXXX-XXXX-XXXX-XXXX)
+    - 각 필드는 숫자만 입력 가능 (inputmode="numeric", pattern="[0-9]")
+    - 스크린 리더용 label은 blind 클래스로 숨김 처리
+    
+    [상태별 클래스] (자동 추가/제거)
+    - 에러: error
+    - 비활성화: disabled  
+    - 읽기전용:  readonly
+    - 포커스: focus
+    
+    [애니메이션] 드롭다운 인풋 레이블 등 다양하게 쓸수있게 분리
+    - 포커스 시 SVG border 애니메이션 실행
+    - 에러/비활성화/읽기전용 상태에서는 애니메이션 비활성화
+    - 애니메이션 속도: 1000ms, easing: cubic-bezier(0.2, 0, 0, 1.0)
+
+    [드롭다운박스 - 통신사 등 선택할때]
+    - solid-dropdown의 경우 파텀시트등 여러 상황에서 사용됨  바텀시트가 열려있을때 active 클래스가 추가되서 애니메이션 동작됨  바텀시트에서 선택해서 바텀시트 닫히면 active클래스 제거됨
+    
+    ============================================
+    -->
+    <div style="width: 100%;padding:50px;">
+
+        
+        <p>Basic/Box/InputFieldSubText </p>
+        <div class="input-container">
+            <div class="input-field svg-animated" role="group">  
+                <div class="input-field-sub-text">
+                    <div class="input-field-sub-text-box">
+                        <input type="text" class="input-field-sub-text-form" id="sub-text-input-field-1" placeholder="금액을 입력하세요" inputmode="numeric" />
+                        <span class="input-field-sub-text-input-unit">원</span>
+                        <label class="blind" for="sub-text-input-field-1">금액 입력</label>
+                    </div>
+                    <div class="input-field-sub-text-amount"><span class="amount-value">0</span> 만원</div>
+                </div>
+                <button class="clear-button active" aria-label="입력 내용 지우기">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10.5858L9.41421 8L8 9.41421L10.5858 12L8 14.5858L9.41421 16L12 13.4142L14.5858 16L16 14.5858L13.4142 12L16 9.41421L14.5858 8L12 10.5858Z" fill="currentColor"/>
+                    </svg>                                              
+                </button>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- 모듈 스크립트들 -->
+    <script src="../../../../script/components/focus-manager.js"></script>
+    <script src="../../../../script/components/svg-border-animation.js"></script>
+    <script src="../../../../script/components/input-field/input-field-animation.js"></script>
+    
+    <script>
+        // SVG 애니메이션 인스턴스 생성
+        window.animatedBorderInputField = new AnimatedBorderInputField({
+            borderColor: '#005DF9',           // 기본 border 색상
+            errorColor: '#E53838',            // 에러 상태 border 색상
+            borderWidth: 2,                   // border 두께
+            animationDuration: 1000,          // 애니메이션 지속 시간 (ms)
+            borderRadius: 12,                 // 기본 border-radius (px)
+            disabledClass: 'disabled',        // 비활성화 클래스
+            errorClass: 'error',              // 에러 클래스
+            readonlyClass: 'readonly',        // 읽기전용 클래스
+            containerSelector: '.svg-animated, .input-textarea-from', // 컨테이너 셀렉터
+            focusedClass: 'focus'             // 포커스 상태 클래스
+        });
+    </script>
+
+    <script>
+        (function () {
+            var input = document.getElementById('sub-text-input-field-1');
+
+            if (!input) {
+                return;
+            }
+
+            var inputBox = input.closest('.input-field-sub-text-box');
+            var inputField = input.closest('.input-field');
+            var unit = inputBox ? inputBox.querySelector('.input-field-sub-text-input-unit') : null;
+            var measurer = document.createElement('span');
+
+            function setMeasurerTextStyle() {
+                var style = window.getComputedStyle(input);
+
+                measurer.style.fontFamily = style.fontFamily;
+                measurer.style.fontSize = style.fontSize;
+                measurer.style.fontWeight = style.fontWeight;
+                measurer.style.fontStyle = style.fontStyle;
+                measurer.style.letterSpacing = style.letterSpacing;
+                measurer.style.textTransform = style.textTransform;
+            }
+
+            function getMaxWidth() {
+                if (!inputBox) {
+                    return null;
+                }
+
+                var boxWidth = inputBox.clientWidth;
+                var unitWidth = unit && window.getComputedStyle(unit).display !== 'none'
+                    ? unit.offsetWidth
+                    : 0;
+
+                return Math.max(boxWidth - unitWidth, 24);
+            }
+
+            function resizeInput() {
+                var value = input.value;
+
+                if (inputField) {
+                    inputField.classList.toggle('value', value.length > 0);
+                }
+
+                if (!value) {
+                    input.style.width = '';
+                    return;
+                }
+
+                measurer.textContent = value;
+
+                var nextWidth = Math.ceil(measurer.getBoundingClientRect().width) + 4;
+                var maxWidth = getMaxWidth();
+
+                input.style.width = (maxWidth ? Math.min(nextWidth, maxWidth) : nextWidth) + 'px';
+            }
+
+            measurer.style.position = 'fixed';
+            measurer.style.top = '-9999px';
+            measurer.style.left = '-9999px';
+            measurer.style.visibility = 'hidden';
+            measurer.style.whiteSpace = 'pre';
+            measurer.style.pointerEvents = 'none';
+            document.body.appendChild(measurer);
+            setMeasurerTextStyle();
+
+            input.addEventListener('input', resizeInput);
+            window.addEventListener('resize', resizeInput);
+
+            resizeInput();
+        })();
+    </script>
+        
+</body>
+</html>
