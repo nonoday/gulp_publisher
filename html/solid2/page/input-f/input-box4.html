@@ -228,8 +228,19 @@
                 }
 
                 var input = subText.querySelector('.input-field-sub-text-form');
+                var inputField = subText.closest('.input-field');
 
-                if (!input || input.disabled || input.readOnly || event.target === input) {
+                if (!input || input.disabled || input.readOnly) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                if (inputField && inputField.classList.contains('focus')) {
+                    return;
+                }
+
+                if (document.activeElement === input) {
                     return;
                 }
 
@@ -240,7 +251,7 @@
                 }
             }
 
-            document.addEventListener('click', focusSubTextInput);
+            document.addEventListener('pointerdown', focusSubTextInput);
         })();
     </script>
         
