@@ -145,7 +145,7 @@
         });
     </script>
 
-    <script>
+    <!-- <script>
         (function () {
             var input = document.getElementById('sub-text-input-field-1');
 
@@ -215,6 +215,32 @@
             window.addEventListener('resize', resizeInput);
 
             resizeInput();
+        })();
+    </script> -->
+
+    <script>
+        (function () {
+            function focusSubTextInput(event) {
+                var subText = event.target.closest('.input-field-sub-text');
+
+                if (!subText) {
+                    return;
+                }
+
+                var input = subText.querySelector('.input-field-sub-text-form');
+
+                if (!input || input.disabled || input.readOnly || event.target === input) {
+                    return;
+                }
+
+                try {
+                    input.focus({ preventScroll: true });
+                } catch (error) {
+                    input.focus();
+                }
+            }
+
+            document.addEventListener('click', focusSubTextInput);
         })();
     </script>
         
