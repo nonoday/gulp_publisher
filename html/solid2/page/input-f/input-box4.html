@@ -220,30 +220,7 @@
 
     <script>
         (function () {
-            function focusSubTextInput(event) {
-                var subText = event.target.closest('.input-field-sub-text');
-
-                if (!subText) {
-                    return;
-                }
-
-                var input = subText.querySelector('.input-field-sub-text-form');
-                var inputField = subText.closest('.input-field');
-
-                if (!input || input.disabled || input.readOnly) {
-                    return;
-                }
-
-                event.preventDefault();
-
-                if (inputField && inputField.classList.contains('focus')) {
-                    return;
-                }
-
-                if (document.activeElement === input) {
-                    return;
-                }
-
+            function focusInput(input) {
                 try {
                     input.focus({ preventScroll: true });
                 } catch (error) {
@@ -251,7 +228,44 @@
                 }
             }
 
-            document.addEventListener('pointerdown', focusSubTextInput);
+            function focusSubTextInput(event) {
+                if (!event.target.closest) {
+                    return;
+                }
+
+                var subText = event.target.closest('.input-field-sub-text');
+
+                if (!subText) {
+                    return;
+                }
+
+                var input = subText.querySelector('.input-field-sub-text-form');
+
+                if (!input || input.disabled || input.readOnly) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                if (document.activeElement !== input) {
+                    focusInput(input);
+                }
+
+                window.setTimeout(function () {
+                    if (document.activeElement !== input) {
+                        focusInput(input);
+                    }
+                }, 0);
+            }
+
+            document.addEventListener('touchstart', focusSubTextInput, { capture: true, passive: false });
+            document.addEventListener('pointerdown', function (event) {
+                if (event.pointerType === 'touch') {
+                    return;
+                }
+
+                focusSubTextInput(event);
+            }, true);
         })();
     </script>
         
