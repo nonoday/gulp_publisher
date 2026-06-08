@@ -3,19 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>컴포넌트 가이드</title>
+    <title>Accordion Test</title>
     <link rel="stylesheet" href="../../../../images/web/css/solid2/tokens.css">
     <link rel="stylesheet" href="../../../../images/web/css/solid2/common.css">
+    <style>
+        body {
+            padding: 40px 20px;
+        }
 
+        .accordion-area {
+            border: 1px solid #d6dbe1;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .acco-title-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            min-height: 56px;
+            padding: 0 16px;
+            color: #121619;
+            background-color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .acco-title-wrap::after {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-area.on .acco-title-wrap::after {
+            transform: rotate(225deg);
+        }
+
+        .acco-content-wrap {
+            display: none;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .acco-content {
+            padding: 16px;
+            border-top: 1px solid #ebeef3;
+            color: #4e5968;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
-<button type="button" aria-expanded="false" aria-controls="details-content">
-  상세보기
-</button>
-<div id="details-content" hidden>
-  <!-- 여기에 상세 내용이 들어갑니다 -->
-  <p>이것은 숨겨져 있던 상세 정보입니다.</p>
-  <p>더 많은 내용이 여기에 표시될 수 있습니다.</p>
-</div>
+    <div class="accordion-area" id="sample-accordion">
+        <button type="button" class="acco-title-wrap" aria-expanded="false" aria-controls="sample-accordion-content">
+            상세보기
+        </button>
+        <div class="acco-content-wrap" id="sample-accordion-content" hidden>
+            <div class="acco-content">
+                <p>아코디언 테스트 콘텐츠입니다.</p>
+                <p>빠르게 연속 클릭하면 열리던 동작을 중단하고 다시 접히는지 확인할 수 있습니다.</p>
+                <p>다시 빠르게 클릭하면 접히던 동작을 중단하고 다시 열립니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getElement(element) {
+            return typeof element === 'string' ? document.querySelector(element) : element;
+        }
+
+        function getDataAttribute(element, attribute) {
+            if (!element || !element.dataset) return null;
+
+            var datasetKey = attribute.replace(/-([a-z])/g, function (_, char) {
+                return char.toUpperCase();
+            });
+
+            return element.dataset[datasetKey];
+        }
+
+        function setAriaAttribute(element, attribute, value) {
+            if (element) {
+                element.setAttribute('aria-' + attribute, String(value));
+            }
+        }
+    </script>
+    <script src="./acc.js"></script>
+    <script>
+        document.querySelectorAll('.accordion-area').forEach(function (accordion) {
+            new SolidAccordion(accordion);
+        });
+    </script>
 </body>
 </html>
