@@ -7,14 +7,6 @@ class BaseComponent {
         this._element = element;
     }
 }
-// 기본 열기: 정상
-// 기본 닫기: 정상
-// 열리는 중 다시 클릭해서 닫기: 정상
-// 빠른 3회 연속 클릭 후 멈춤 없음: 정상
-// 열린 상태에서 콘텐츠 동적 추가 시 높이 갱신: 정상
-// observer idle 안정성: 정상, 1.2초 대기 후 mutation count 증가 없음
-// is-animating 잔류 없음
-// JS runtime error 없음
 class SolidAccordion extends BaseComponent {
     constructor(element) {
         element = getElement(element);
@@ -56,7 +48,7 @@ class SolidAccordion extends BaseComponent {
 
         // 처음부터 on 클래스가 있으면 현재 콘텐츠 높이로 펼쳐진 상태를 맞춘다.
         if (element.classList.contains("on")) {
-            this._setHeight();
+            this._setHeight({ animate: false });
         }
 
         this._init();
@@ -76,7 +68,7 @@ class SolidAccordion extends BaseComponent {
                 timer = setTimeout(() => {
                     // 열린 아코디언은 줄바꿈/반응형 변화로 콘텐츠 높이가 달라질 수 있어 다시 맞춘다.
                     if (this._element.classList.contains("on")) {
-                        this._setHeight();
+                        this._setHeight({ animate: false });
                     }
                     prevWidth = currentWidth;
                 }, 100);
@@ -117,8 +109,6 @@ class SolidAccordion extends BaseComponent {
             // 열림/닫힘 애니메이션 중 발생한 style 변경은 재계산 루프를 만들 수 있어 무시한다.
             if (this._element.classList.contains("is-animating")) return;
 
-            mutationObserver.disconnect();
-
             let needUpdate = false;
             for (const mutation of mutations) {
                 // 중요: MutationObserver는 .acco-content-wrap 자체의 style 변경도 감지한다.
@@ -143,13 +133,14 @@ class SolidAccordion extends BaseComponent {
             }
 
             if (needUpdate) {
-                this._setHeight();
+                // 동적으로 콘텐츠가 추가/변경된 경우에는 클릭 열림 애니메이션을 다시 타지 않고
+                // 최종 높이만 즉시 보정한다. 여기서 transition을 태우면 동적 태그가 붙을 때 깜빡임처럼 보일 수 있다.
+                this._setHeight({ animate: false });
             }
 
-            // 높이를 다시 쓰는 동안 observer가 자기 변경을 다시 감지하지 않도록 짧게 지연 후 재연결한다.
-            setTimeout(() => {
-                mutationObserver.observe(this._element, this._observeConfig);
-            }, 100);
+            // wrapper 자체 style mutation은 위에서 제외하므로 observer를 끊지 않는다.
+            // disconnect/reconnect 방식을 쓰면 여러 태그가 짧은 시간에 연속 추가될 때
+            // 재연결 전 들어온 mutation을 놓쳐 최종 높이가 덜 반영될 수 있다.
         });
 
         this._observeConfig = {
@@ -164,13 +155,34 @@ class SolidAccordion extends BaseComponent {
         this.mutationObserver = mutationObserver;
     }
 
-    _setHeight() {
+    _setHeight(options = {}) {
         const element = this._element;
         let wrap = this._accoContentWrap;
         if (!wrap) return;
 
         // 빠른 연속 클릭으로 진행 중인 transition이 있으면 이전 완료 콜백을 먼저 제거한다.
         this._cancelHeightTransition();
+
+        const animate = options.animate !== false;
+        const content = this._accoContent || wrap;
+        const getContentHeight = () => Math.max(content.scrollHeight, wrap.scrollHeight);
+
+        if (!animate) {
+            const previousTransition = wrap.style.transition;
+
+            // 초기 열린 상태, resize, 동적 콘텐츠 추가는 사용자 클릭이 아니므로
+            // transition을 잠시 꺼서 깜빡임 없이 최종 높이로 바로 맞춘다.
+            wrap.style.transition = "none";
+            wrap.style.overflow = "auto";
+            wrap.style.display = "block";
+            setAriaAttribute(this._accoTitleWrap, "expanded", true);
+            wrap.removeAttribute("hidden");
+            wrap.style.height = getContentHeight() + "px";
+            wrap.offsetHeight;
+            wrap.style.transition = previousTransition;
+            element?.classList.remove('is-animating');
+            return;
+        }
 
         // 열리던 중 다시 열기 요청이 들어올 수도 있으므로 현재 보이는 높이에서 새 transition을 시작한다.
         const currentHeight = wrap.getBoundingClientRect().height;
@@ -186,8 +198,7 @@ class SolidAccordion extends BaseComponent {
 
         // 다음 frame에서 실제 콘텐츠 높이로 변경해야 0px/currentHeight -> scrollHeight 애니메이션이 동작한다.
         requestAnimationFrame(() => {
-            const content = this._accoContent || wrap;
-            let height = content.scrollHeight;
+            let height = getContentHeight();
             wrap.style.height = height + "px";
             wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
         });
