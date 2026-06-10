@@ -96,6 +96,7 @@ class SolidAccordion extends BaseComponent {
 
         const mutationObserver = new MutationObserver(mutations => {
             if (!this._element.classList.contains("on")) return;
+            if (this._element.classList.contains("is-animating")) return;
 
             mutationObserver.disconnect();
 
@@ -306,6 +307,7 @@ class SolidAccordion extends BaseComponent {
          const parentNode = this?._accoTitleWrap?.closest(".accordion-area")         
          const willOpen = !parentNode.classList.contains("on");
 
+         if(this._element.classList.contains('is-animating')) return;
          this._element.classList.add("is-animating");
 
          this._isScroll = isScroll;
