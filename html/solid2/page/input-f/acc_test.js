@@ -39,6 +39,7 @@ class SolidAccordion extends BaseComponent {
         this._accoContent = element.querySelector(".acco-content");
         this._heightTransitionCleanup = null;
         this._heightFrame = null;
+        this._pendingToggle = null;
         element._accordionInstance = this;
         element.classList.add("initiated");
 
@@ -164,12 +165,12 @@ class SolidAccordion extends BaseComponent {
             wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
         });
 
-        this._onceHeightTransition(function() {
+        this._onceHeightTransition(() => {
             if (wrap.style.height !== "0px") {
                 wrap.style.overflow = "auto";
             }
 
-            element?.classList.remove('is-animating');
+            this._finishToggle();
         });
     }
 
@@ -195,12 +196,25 @@ class SolidAccordion extends BaseComponent {
         wrap.style.height = "0px";
        });
 
-       this._onceHeightTransition(function() {           
+       this._onceHeightTransition(() => {           
            wrap.style.overflow = "hidden";
            wrap.style.display = "none";
            wrap.setAttribute("hidden", true);
-            element?.classList.remove('is-animating');
+            this._finishToggle();
        });
+    }
+
+    _finishToggle() {
+        this._element?.classList.remove('is-animating');
+
+        if (!this._pendingToggle) return;
+
+        const pendingToggle = this._pendingToggle;
+        this._pendingToggle = null;
+
+        requestAnimationFrame(() => {
+            this.openContent(pendingToggle.isOpen, pendingToggle.isScroll);
+        });
     }
 
     _cancelHeightTransition() {
@@ -307,7 +321,18 @@ class SolidAccordion extends BaseComponent {
          const parentNode = this?._accoTitleWrap?.closest(".accordion-area")         
          const willOpen = !parentNode.classList.contains("on");
 
-         if(this._element.classList.contains('is-animating')) return;
+         if(this._element.classList.contains('is-animating')) {
+            if (this._pendingToggle) {
+                this._pendingToggle = null;
+            } else {
+                this._pendingToggle = {
+                    isOpen,
+                    isScroll
+                };
+            }
+            return;
+         }
+
          this._element.classList.add("is-animating");
 
          this._isScroll = isScroll;
