@@ -7,13 +7,22 @@ class BaseComponent {
         this._element = element;
     }
 }
+
 class SolidAccordion extends BaseComponent { 
     constructor(element) {
         element = getElement(element);
 
-        // 이미 초기화된 아코디언이면 이벤트가 중복 바인딩되지 않도록 중단.
-        if(!element || element.classList.contains("initiated")) {
-            return element?._accordionInstance || {};
+        if (!element) {
+            return {};
+        }
+
+        // initiated 클래스만 있고 실제 인스턴스가 없으면 이벤트가 바인딩되지 않은 상태일 수 있어 재초기화.
+        if (element.classList.contains("initiated")) {
+            if (element._accordionInstance) {
+                return element._accordionInstance;
+            }
+
+            element.classList.remove("initiated");
         }
 
         if (element._accordionPendingInstance) {
@@ -85,7 +94,7 @@ class SolidAccordion extends BaseComponent {
     }
 
     _completeInit() {
-        if (this._isInitialized || this._element.classList.contains("initiated")) return;
+        if (this._isInitialized) return;
 
         this._isInitialized = true;
         this._element._accordionInstance = this;
@@ -440,6 +449,29 @@ class SolidAccordion extends BaseComponent {
         return "SolidAccordion";
     }
 
+    static bindToggleEvent() {
+        if (SolidAccordion._isToggleEventBound) return;
+
+        SolidAccordion._isToggleEventBound = true;
+
+        // 초기화 타이밍을 놓친 lazy load 아코디언도 첫 클릭에서 토글 가능하도록 보정.
+        document.addEventListener("click", (event) => {
+            const titleWrap = event.target.closest(".acco-title-wrap");
+            if (!titleWrap) return;
+
+            const accordion = titleWrap.closest(".accordion-area");
+            if (!accordion) return;
+
+            if (getDataAttribute(accordion, "accordion-control")) return;
+            if (accordion._accordionInstance || accordion._accordionPendingInstance) return;
+
+            const instance = new SolidAccordion(accordion);
+            if (instance && typeof instance.openContent === "function") {
+                instance.openContent();
+            }
+        });
+    }
+
     _eventBind() {
         if(!this._isAccordionControl && !this._boundTitleClick) {
             // title DOM이 lazy load로 교체되어도 동작하도록 root에서 위임 처리.
@@ -542,3 +574,5 @@ class SolidAccordion extends BaseComponent {
         }
     }
 }
+
+SolidAccordion.bindToggleEvent();
