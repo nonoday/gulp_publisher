@@ -41,6 +41,8 @@ class SolidAccordion extends BaseComponent {
         this._isScroll = true;
 
         this._heightUpdateFrame = null;
+        this._boundTitleClick = false;
+        this._boundTransitionEnd = false;
 
         if (!this._resolveElements()) {
             this._waitForStructure();
@@ -192,9 +194,9 @@ class SolidAccordion extends BaseComponent {
             subtree: true
         };
 
-        // 동적 렌더링에서 .acco-content 자체가 새 노드로 교체될 수 있으므로 wrapper 관찰.
+        // lazy load에서 title/content wrapper 자체가 교체될 수 있으므로 root 기준으로 관찰.
         // 대신 wrapper 자신에게 스크립트가 쓰는 style 변경은 위 mutation 루프에서 제외해 반복 호출을 막는다.
-        mutationObserver.observe(this._accoContentWrap, this._observeConfig);
+        mutationObserver.observe(this._element, this._observeConfig);
 
         this.mutationObserver = mutationObserver;
 
@@ -240,6 +242,7 @@ class SolidAccordion extends BaseComponent {
 
             if (!this._element.classList.contains("on")) return;
 
+            this._resolveElements();
             this._observeContentResize();
 
             if (this._element.classList.contains("is-animating")) {
@@ -255,6 +258,7 @@ class SolidAccordion extends BaseComponent {
 
     _setHeight(options = {}) {
         const element = this._element;
+        this._resolveElements();
         let wrap = this._accoContentWrap;
         if (!wrap) return;
 
@@ -332,6 +336,7 @@ class SolidAccordion extends BaseComponent {
 
     _setCloseHeight() {
         const element = this._element;
+        this._resolveElements();
         let wrap = this._accoContentWrap;
         if (!wrap) return;
 
@@ -374,6 +379,7 @@ class SolidAccordion extends BaseComponent {
     }
 
     _onceHeightTransition(callback) {
+        this._resolveElements();
         const wrap = this._accoContentWrap;
         if (!wrap) {
             callback();
@@ -435,13 +441,26 @@ class SolidAccordion extends BaseComponent {
     }
 
     _eventBind() {
-        if(!this._isAccordionControl) {
-            // 일반 아코디언은 타이틀 버튼 클릭으로 열고 닫는다.
-            this._handleTitleClick = () => this.openContent();
-            this._accoTitleWrap.addEventListener("click", this._handleTitleClick);
+        if(!this._isAccordionControl && !this._boundTitleClick) {
+            // title DOM이 lazy load로 교체되어도 동작하도록 root에서 위임 처리.
+            this._handleTitleClick = (event) => {
+                const titleWrap = event.target.closest(".acco-title-wrap");
+                if (!titleWrap || !this._element.contains(titleWrap)) return;
+
+                this._resolveElements();
+                if (titleWrap !== this._accoTitleWrap) return;
+
+                this.openContent();
+            };
+            this._element.addEventListener("click", this._handleTitleClick);
+            this._boundTitleClick = true;
         }
 
-        this._accoContentWrap.addEventListener("transitionend", (e) => {
+        if (this._boundTransitionEnd) return;
+
+        this._handleContentTransitionEnd = (e) => {
+            this._resolveElements();
+
             // notice 타입에서 열림 완료 후 스크롤하기 위한 transition 감지.
             if (e.target !== this._accoContentWrap) return;
             if (e.propertyName !== "height") return;
@@ -453,7 +472,10 @@ class SolidAccordion extends BaseComponent {
             this._isScrollArmed = false;
 
             this._scroll();
-        });
+        };
+
+        this._element.addEventListener("transitionend", this._handleContentTransitionEnd);
+        this._boundTransitionEnd = true;
 
         if(this._element.closest('[role="tabpanel"]')) {
             const tabpanel = this._element.closest('[role="tabpanel"]');
@@ -472,6 +494,8 @@ class SolidAccordion extends BaseComponent {
     }
 
     openContent(isOpen, isScroll = true) {
+        if (!this._resolveElements()) return;
+
         const parentNode = this?._accoTitleWrap?.closest(".accordion-area");
         if (!parentNode) return;
         const willOpen = !parentNode.classList.contains("on");
