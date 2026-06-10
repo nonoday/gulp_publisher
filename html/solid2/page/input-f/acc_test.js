@@ -39,6 +39,7 @@ class SolidAccordion extends BaseComponent {
         this._accoContent = element.querySelector(".acco-content");
         this._heightTransitionCleanup = null;
         this._heightFrame = null;
+        this._heightActionId = 0;
         element._accordionInstance = this;
         element.classList.add("initiated");
 
@@ -147,6 +148,7 @@ class SolidAccordion extends BaseComponent {
         if (!wrap) return;
 
         this._cancelHeightTransition();
+        const actionId = ++this._heightActionId;
 
         const currentHeight = wrap.getBoundingClientRect().height;
 
@@ -157,6 +159,8 @@ class SolidAccordion extends BaseComponent {
         wrap.removeAttribute("hidden");
 
         this._heightFrame = requestAnimationFrame(() => {
+            if (actionId !== this._heightActionId) return;
+
             this._heightFrame = null;
             const content = this._accoContent || wrap;
             let height = content.scrollHeight;                
@@ -165,6 +169,9 @@ class SolidAccordion extends BaseComponent {
         });
 
         this._onceHeightTransition(function() {
+            if (actionId !== element._accordionInstance._heightActionId) return;
+            if (!element.classList.contains("on")) return;
+
             if (wrap.style.height !== "0px") {
                 wrap.style.overflow = "auto";
             }
@@ -179,6 +186,7 @@ class SolidAccordion extends BaseComponent {
         if (!wrap) return;
 
        this._cancelHeightTransition();
+       const actionId = ++this._heightActionId;
 
        const currentHeight = wrap.getBoundingClientRect().height || wrap.scrollHeight;
 
@@ -191,11 +199,16 @@ class SolidAccordion extends BaseComponent {
        wrap.offsetHeight;
 
        this._heightFrame = requestAnimationFrame(() => {
+        if (actionId !== this._heightActionId) return;
+
         this._heightFrame = null;
         wrap.style.height = "0px";
        });
 
        this._onceHeightTransition(function() {           
+           if (actionId !== element._accordionInstance._heightActionId) return;
+           if (element.classList.contains("on")) return;
+
            wrap.style.overflow = "hidden";
            wrap.style.display = "none";
            wrap.setAttribute("hidden", true);
@@ -304,27 +317,30 @@ class SolidAccordion extends BaseComponent {
     }
 
     openContent(isOpen, isScroll = true) {
-         const parentNode = this?._accoTitleWrap?.closest(".accordion-area")         
-         const willOpen = !parentNode.classList.contains("on");
+        const parentNode = this?._accoTitleWrap?.closest(".accordion-area");
+        if (!parentNode) return;
 
-         this._element.classList.add("is-animating");
+        const willOpen = !parentNode.classList.contains("on");
 
-         this._isScroll = isScroll;
+        this._element.classList.add("is-animating");
+        this._isScroll = isScroll;
 
-         const _closeFn = () => {
+        const _closeFn = () => {
             parentNode.classList.remove("on");
             this._setCloseHeight();
             this._isScrollArmed = false;
-         }
+        };
 
-         const _openFn = () => {
+        const _openFn = () => {
             parentNode.classList.add("on");
             this._setHeight();
-         }
-         if(!this._isAccordionControl) {
+        };
+
+        if(!this._isAccordionControl) {
             if(willOpen && this._isNotice) {
                 this._isScrollArmed = true;
             }
+
             if (parentNode.classList.contains("on")) {
                 _closeFn();
             } else {
@@ -336,6 +352,7 @@ class SolidAccordion extends BaseComponent {
             } else {
                 _openFn();
             }
+
             return isOpen ? false : true;
         }
     }
