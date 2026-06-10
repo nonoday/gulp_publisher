@@ -7,7 +7,7 @@ class BaseComponent {
         this._element = element;
     }
 }
-class SolidAccordion extends BaseComponent {
+class SolidAccordion extends BaseComponent { 
     constructor(element) {
         element = getElement(element);
 
