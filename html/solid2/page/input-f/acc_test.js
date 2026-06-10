@@ -317,10 +317,10 @@ class SolidAccordion extends BaseComponent {
     }
 
     openContent(isOpen, isScroll = true) {
-        const parentNode = this?._accoTitleWrap?.closest(".accordion-area");
+        const parentNode = this._element;
         if (!parentNode) return;
 
-        const willOpen = !parentNode.classList.contains("on");
+        const willOpen = this._isAccordionControl ? !!isOpen : !parentNode.classList.contains("on");
 
         this._element.classList.add("is-animating");
         this._isScroll = isScroll;
@@ -341,19 +341,19 @@ class SolidAccordion extends BaseComponent {
                 this._isScrollArmed = true;
             }
 
-            if (parentNode.classList.contains("on")) {
-                _closeFn();
-            } else {
+            if (willOpen) {
                 _openFn();
+            } else {
+                _closeFn();
             }
         } else {
-            if(!isOpen) {
-                _closeFn();
-            } else {
+            if(willOpen) {
                 _openFn();
+            } else {
+                _closeFn();
             }
 
-            return isOpen ? false : true;
+            return willOpen ? false : true;
         }
     }
 }
