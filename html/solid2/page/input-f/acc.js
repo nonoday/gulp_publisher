@@ -13,8 +13,13 @@ class SolidAccordion extends BaseComponent {
 
         // 이미 초기화된 아코디언이면 이벤트가 중복 바인딩되지 않도록 중단.
         if(!element || element.classList.contains("initiated")) {
-            return {};
+            return element?._accordionInstance || {};
         }
+
+        if (element._accordionPendingInstance) {
+            return element._accordionPendingInstance;
+        }
+
         super(element);
 
         // 공지형 아코디언은 열림 완료 후 타이틀 위치로 스크롤하는 옵션이 필요하다.
@@ -24,15 +29,7 @@ class SolidAccordion extends BaseComponent {
         if(getDataAttribute(element, "accordion-control")) this._isAccordionControl = true;
 
         this._element = element;
-        this._accoTitleWrap = element.querySelector(".acco-title-wrap");
-        this._accoContentWrap = element.querySelector(".acco-content-wrap");
-
-        // 필수 구조가 없으면 이후 query/style 접근에서 오류가 나므로 초기화 중단.
-        if (!this._accoTitleWrap || !this._accoContentWrap) {
-            return {};
-        }
-
-        element.classList.add("initiated");
+        this._isInitialized = false;
 
         // 탭 패널 안에서 처음 활성화될 때는 자동 스크롤을 한 번 건너뛰기 위한 플래그.
         this._isActive = true;
@@ -43,12 +40,57 @@ class SolidAccordion extends BaseComponent {
         // openContent 호출 시점에 스크롤 기능을 끄고 켤 수 있는 옵션값.
         this._isScroll = true;
 
-        // 실제 높이 계산 기준이 되는 내부 콘텐츠. 없으면 wrap 자체를 기준으로 사용.
-        this._accoContent = element.querySelector(".acco-content");
         this._heightUpdateFrame = null;
 
+        if (!this._resolveElements()) {
+            this._waitForStructure();
+            return;
+        }
+
+        this._completeInit();
+    }
+
+    _resolveElements() {
+        this._accoTitleWrap = this._element.querySelector(".acco-title-wrap");
+        this._accoContentWrap = this._element.querySelector(".acco-content-wrap");
+
+        // 실제 높이 계산 기준이 되는 내부 콘텐츠. 없으면 wrap 자체를 기준으로 사용.
+        this._accoContent = this._element.querySelector(".acco-content");
+
+        return !!(this._accoTitleWrap && this._accoContentWrap);
+    }
+
+    _waitForStructure() {
+        if (this._element._accordionPendingInstance) return;
+
+        this._element._accordionPendingInstance = this;
+
+        // 개발/앱 환경에서 아코디언 뼈대가 비동기로 늦게 들어오면 최초 호출 시점에는
+        // .acco-title-wrap 또는 .acco-content-wrap이 없을 수 있어 준비될 때까지 대기.
+        this._structureObserver = new MutationObserver(() => {
+            if (!this._resolveElements()) return;
+
+            this._structureObserver.disconnect();
+            this._structureObserver = null;
+            this._element._accordionPendingInstance = null;
+            this._completeInit();
+        });
+
+        this._structureObserver.observe(this._element, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    _completeInit() {
+        if (this._isInitialized || this._element.classList.contains("initiated")) return;
+
+        this._isInitialized = true;
+        this._element._accordionInstance = this;
+        this._element.classList.add("initiated");
+
         // 처음부터 on 클래스가 있으면 현재 콘텐츠 높이로 펼쳐진 상태를 맞춘다.
-        if (element.classList.contains("on")) {
+        if (this._element.classList.contains("on")) {
             this._setHeight({ animate: false });
         }
 
