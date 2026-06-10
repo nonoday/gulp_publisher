@@ -16,6 +16,7 @@ class SolidAccordion extends BaseComponent {
             return {};
         }
 
+        // 이미 만든 인스턴스가 있으면 중복 이벤트 바인딩 방지.
         if(element.classList.contains("initiated")) {
             if (element._accordionInstance) {
                 return element._accordionInstance;
@@ -39,10 +40,11 @@ class SolidAccordion extends BaseComponent {
         this._accoContent = element.querySelector(".acco-content");
         this._heightTransitionCleanup = null;
         this._heightFrame = null;
-        this._heightActionId = 0;
+        this._pendingToggle = null;
         element._accordionInstance = this;
         element.classList.add("initiated");
 
+        // 처음부터 열린 상태인 경우 현재 콘텐츠 높이에 맞춰 세팅.
         if (element.classList.contains("on")) {
             this._setHeight();
         } 
@@ -57,6 +59,7 @@ class SolidAccordion extends BaseComponent {
         let timer = null;
         let prevWidth = window.innerWidth;
 
+        // 가로폭 변경 시 열린 아코디언 높이 재계산.
         window.addEventListener("resize", () => {
             const currentWidth = window.innerWidth;
             if (currentWidth !== prevWidth) {
@@ -74,9 +77,11 @@ class SolidAccordion extends BaseComponent {
         if (!this._isScroll) return;
 
         const ae = document.activeElement;
+        // 입력 중에는 자동 스크롤 생략.
         if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.isContentEditabled)) return;
 
         if(this._element.closest('[role="tabpanel"]')) {
+            // 탭 활성화 직후 첫 스크롤 방지.
             if(this._isActive) {
                 this._isActive = false;
                 return;
@@ -96,6 +101,7 @@ class SolidAccordion extends BaseComponent {
     _init() {
 
         const mutationObserver = new MutationObserver(mutations => {
+            // 닫힌 상태나 애니메이션 중에는 높이 보정 생략.
             if (!this._element.classList.contains("on")) return;
             if (this._element.classList.contains("is-animating")) return;
 
@@ -103,6 +109,7 @@ class SolidAccordion extends BaseComponent {
 
             let needUpdate = false;
             for (const mutation of mutations) {
+                // 스크립트가 wrapper에 직접 쓰는 style 변경은 observer 루프 방지용으로 제외.
                 if (
                     mutation.type === "attributes" &&
                     mutation.attributeName === "style" &&
@@ -122,6 +129,7 @@ class SolidAccordion extends BaseComponent {
             }
 
             if (needUpdate) {
+                // 콘텐츠 변경으로 높이가 달라진 경우 열린 높이 보정.
                 this._setHeight();
             }
 
@@ -147,8 +155,8 @@ class SolidAccordion extends BaseComponent {
         let wrap = this._accoContentWrap;
         if (!wrap) return;
 
+        // 이전 높이 transition/frame 정리 후 새 열림 애니메이션 시작.
         this._cancelHeightTransition();
-        const actionId = ++this._heightActionId;
 
         const currentHeight = wrap.getBoundingClientRect().height;
 
@@ -159,19 +167,16 @@ class SolidAccordion extends BaseComponent {
         wrap.removeAttribute("hidden");
 
         this._heightFrame = requestAnimationFrame(() => {
-            if (actionId !== this._heightActionId) return;
-
             this._heightFrame = null;
             const content = this._accoContent || wrap;
+            // 다음 프레임에서 실제 콘텐츠 높이로 변경해 height transition 유도.
             let height = content.scrollHeight;                
             wrap.style.height = height + "px";
             wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
         });
 
         this._onceHeightTransition(function() {
-            if (actionId !== element._accordionInstance._heightActionId) return;
-            if (!element.classList.contains("on")) return;
-
+            // 열림 완료 후 내부 스크롤 가능 상태로 복구.
             if (wrap.style.height !== "0px") {
                 wrap.style.overflow = "auto";
             }
@@ -185,8 +190,8 @@ class SolidAccordion extends BaseComponent {
         let wrap = this._accoContentWrap;
         if (!wrap) return;
 
+       // 현재 보이는 높이를 시작점으로 닫힘 애니메이션 구성.
        this._cancelHeightTransition();
-       const actionId = ++this._heightActionId;
 
        const currentHeight = wrap.getBoundingClientRect().height || wrap.scrollHeight;
 
@@ -199,16 +204,13 @@ class SolidAccordion extends BaseComponent {
        wrap.offsetHeight;
 
        this._heightFrame = requestAnimationFrame(() => {
-        if (actionId !== this._heightActionId) return;
-
         this._heightFrame = null;
+        // 다음 프레임에서 0px로 변경해 닫힘 transition 실행.
         wrap.style.height = "0px";
        });
 
        this._onceHeightTransition(function() {           
-           if (actionId !== element._accordionInstance._heightActionId) return;
-           if (element.classList.contains("on")) return;
-
+           // 닫힘 완료 후 레이아웃과 접근성 트리에서 제외.
            wrap.style.overflow = "hidden";
            wrap.style.display = "none";
            wrap.setAttribute("hidden", true);
@@ -217,6 +219,7 @@ class SolidAccordion extends BaseComponent {
     }
 
     _cancelHeightTransition() {
+        // 빠른 클릭 시 이전 transition 완료 대기와 예약 frame 정리.
         if (this._heightTransitionCleanup) {
             this._heightTransitionCleanup();
             this._heightTransitionCleanup = null;
@@ -246,11 +249,13 @@ class SolidAccordion extends BaseComponent {
         };
 
         const onEnd = (event) => {
+            // 자식 transition 이벤트는 무시하고 wrapper height transition만 처리.
             if (event.target !== wrap) return;
             if (event.propertyName && event.propertyName !== "height") return;
             done();
         };
 
+        // transitionend 누락 대비 fallback timer.
         const timer = setTimeout(done, this._getHeightTransitionTime(wrap) + 50);
         wrap.addEventListener("transitionend", onEnd);
 
@@ -263,6 +268,7 @@ class SolidAccordion extends BaseComponent {
     }
 
     _getHeightTransitionTime(element) {
+        // CSS transition-duration / delay 기준으로 fallback 시간 계산.
         const style = window.getComputedStyle(element);
         const durations = style.transitionDuration.split(",").map(this._toMilliseconds);
         const delays = style.transitionDelay.split(",").map(this._toMilliseconds);
@@ -284,11 +290,13 @@ class SolidAccordion extends BaseComponent {
 
     _eventBind() {
         if(!this._isAccordionControl) {
+            // 일반 아코디언은 타이틀 클릭으로 열림/닫힘 토글.
             this._handleTitleClick = () => this.openContent();
             this._accoTitleWrap.addEventListener("click", this._handleTitleClick);
         }
 
         this._accoContentWrap.addEventListener("transitionend", (e) => {
+            // notice 타입에서 열림 완료 후 스크롤 처리.
             if (e.target !== this._accoContentWrap) return;
             if (e.propertyName !== "height") return;
 
@@ -305,6 +313,7 @@ class SolidAccordion extends BaseComponent {
             const tabpanel = this._element.closest('[role="tabpanel"]');
 
             tabpanel?.addEventListener("tabActivated", (e) => {
+                // 탭 재활성화 시 열린 아코디언의 첫 스크롤 생략 플래그 복구.
                 requestAnimationFrame(() => {
                     tabpanel?.querySelectorAll('.accordion-area').forEach((el) => {
                         if (el.classList.contains("on")) {
@@ -317,21 +326,23 @@ class SolidAccordion extends BaseComponent {
     }
 
     openContent(isOpen, isScroll = true) {
-        const parentNode = this._element;
+        const parentNode = this?._accoTitleWrap?.closest(".accordion-area");
         if (!parentNode) return;
 
-        const willOpen = this._isAccordionControl ? !!isOpen : !parentNode.classList.contains("on");
+        const willOpen = !parentNode.classList.contains("on");
 
         this._element.classList.add("is-animating");
         this._isScroll = isScroll;
 
         const _closeFn = () => {
+            // 상태 클래스를 먼저 닫힘으로 바꾸고 현재 높이에서 0px로 transition.
             parentNode.classList.remove("on");
             this._setCloseHeight();
             this._isScrollArmed = false;
         };
 
         const _openFn = () => {
+            // 상태 클래스를 먼저 열림으로 바꾸고 콘텐츠 높이까지 transition.
             parentNode.classList.add("on");
             this._setHeight();
         };
@@ -341,19 +352,19 @@ class SolidAccordion extends BaseComponent {
                 this._isScrollArmed = true;
             }
 
-            if (willOpen) {
-                _openFn();
-            } else {
+            if (parentNode.classList.contains("on")) {
                 _closeFn();
+            } else {
+                _openFn();
             }
         } else {
-            if(willOpen) {
-                _openFn();
-            } else {
+            if(!isOpen) {
                 _closeFn();
+            } else {
+                _openFn();
             }
 
-            return willOpen ? false : true;
+            return isOpen ? false : true;
         }
     }
 }
