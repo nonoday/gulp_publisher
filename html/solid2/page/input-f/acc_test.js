@@ -10,10 +10,20 @@ class BaseComponent {
 
 class SolidAccordion extends BaseComponent {
     constructor(element) {
+        element = getElement(element);
         
-        if(getElement(element).classList.contains("initiated")) {
+        if (!element) {
             return {};
         }
+
+        if(element.classList.contains("initiated")) {
+            if (element._accordionInstance) {
+                return element._accordionInstance;
+            }
+
+            element.classList.remove("initiated");
+        }
+
         super(element);
 
         if(element.classList.contains("accordion-notice")) this._initNotice = true;
@@ -28,6 +38,8 @@ class SolidAccordion extends BaseComponent {
         this._isScroll = true;
         this._accoContent = element.querySelector(".acco-content");
         this._heightTransitionCleanup = null;
+        this._heightFrame = null;
+        element._accordionInstance = this;
         element.classList.add("initiated");
 
         if (element.classList.contains("on")) {
@@ -143,30 +155,19 @@ class SolidAccordion extends BaseComponent {
         setAriaAttribute(this._accoTitleWrap, "expanded", true);
         wrap.removeAttribute("hidden");
 
-        // 탭 패널 상태 확인 (로깅용)
-        const panel = wrap.closest('[role="tabpanel"]');
-        const isPanelHidden = panel && panel.hidden;
-        const panelComputedStyle = panel ? getComputedStyle(panel) : null;
-        const isPanelDisplayNone = panelComputedStyle && panelComputedStyle.display === 'none';
-
-        // 높이 계산 및 설정 (재시도 없음)
-        requestAnimationFrame(() => {
+        this._heightFrame = requestAnimationFrame(() => {
+            this._heightFrame = null;
             const content = this._accoContent || wrap;
             let height = content.scrollHeight;                
             wrap.style.height = height + "px";
             wrap.dispatchEvent(new CustomEvent("accordion:opened", { bubbles: true }));
         });
 
-
-        wrap.addEventListener("transitionend", function onStart() {
-            
-            if (wrap.style.height !== "0px") {
-                wrap.style.overflow = "auto"
-            }
-            wrap.removeEventListener("transitionend", onStart);          
-        });
-
         this._onceHeightTransition(function() {
+            if (wrap.style.height !== "0px") {
+                wrap.style.overflow = "auto";
+            }
+
             element?.classList.remove('is-animating');
         });
     }
@@ -188,7 +189,8 @@ class SolidAccordion extends BaseComponent {
        
        wrap.offsetHeight;
 
-       requestAnimationFrame(() => {
+       this._heightFrame = requestAnimationFrame(() => {
+        this._heightFrame = null;
         wrap.style.height = "0px";
        });
 
@@ -204,6 +206,11 @@ class SolidAccordion extends BaseComponent {
         if (this._heightTransitionCleanup) {
             this._heightTransitionCleanup();
             this._heightTransitionCleanup = null;
+        }
+
+        if (this._heightFrame) {
+            cancelAnimationFrame(this._heightFrame);
+            this._heightFrame = null;
         }
     }
 
