@@ -381,3 +381,16 @@
 //InputReadonlyTouchTest.setMode('log')
 //InputReadonlyTouchTest.setMode('input-label')
 //InputReadonlyTouchTest.setMode('field')
+
+document.addEventListener('pointerdown', function (e) {
+    const target = e.target.closest('.input-field.readonly input[readonly], .input-field.readonly label');
+    if (!target) return;
+
+    e.preventDefault();
+}, true);
+document.addEventListener('touchstart', function (e) {
+    const target = e.target.closest('.input-field.readonly input[readonly], .input-field.readonly label');
+    if (!target) return;
+
+    e.preventDefault();
+}, { capture: true, passive: false });
