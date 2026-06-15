@@ -376,3 +376,8 @@
     patchFocusLogger();
     window.InputReadonlyTouchTest.help();
 })();
+
+
+//InputReadonlyTouchTest.setMode('log')
+//InputReadonlyTouchTest.setMode('input-label')
+//InputReadonlyTouchTest.setMode('field')
