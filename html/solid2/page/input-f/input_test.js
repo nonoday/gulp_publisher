@@ -394,3 +394,5 @@ document.addEventListener('touchstart', function (e) {
 
     e.preventDefault();
 }, { capture: true, passive: false });
+
+// class="[^"]*\bfield-trigger-area\b[^"]*"[\s\S]*?class="[^"]*\bbtn-label\b[^"]*"
